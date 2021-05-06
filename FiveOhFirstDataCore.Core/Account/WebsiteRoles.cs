@@ -9,12 +9,14 @@ namespace FiveOhFirstDataCore.Core.Account
     public enum WebsiteRoles
     {
         Admin,
+        Manager,
+        Linked,
+
         Trooper,
         RTO,
         Medic,
+        ARC,
         NCO,
-        GlobalClerk,
-        Manager,
         Adjutant
     }
 }
