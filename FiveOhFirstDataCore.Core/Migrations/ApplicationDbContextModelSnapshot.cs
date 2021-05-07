@@ -33,8 +33,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("text");
 
-                    b.Property<decimal?>("DiscordId")
-                        .HasColumnType("numeric(20,0)");
+                    b.Property<string>("DiscordId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -103,7 +103,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<DateTime>("StartOfService")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("SteamId")
+                    b.Property<string>("SteamLink")
                         .HasColumnType("text");
 
                     b.Property<int?>("Team")

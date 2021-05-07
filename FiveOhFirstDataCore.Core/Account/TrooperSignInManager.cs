@@ -30,7 +30,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public override Task<SignInResult> PasswordSignInAsync(Trooper user, string password, bool isPersistent, bool lockoutOnFailure)
         {
-            if (user.DiscordId is null || user.SteamId is null)
+            if (user.DiscordId is null || user.SteamLink is null)
             {
                 return Task.FromResult<SignInResult>(new TrooperSignInResult()
                 {

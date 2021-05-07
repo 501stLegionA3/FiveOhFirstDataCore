@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,29 +12,38 @@ namespace FiveOhFirstDataCore.Core.Account
     {
 		public string Token { get; init; }
 		public int TrooperId { get; set; }
-		public ulong? DiscordId { get; init; }
+		public string? DiscordId { get; init; }
 		public string? SteamId { get; init; }
 		public bool LinkReady { get; init; }
 		public Timer ExparationTimer { get; init; }
+		public string Username { get; set; }
+		public string Password { get; set; }
+		public bool RememberMe { get; set; }
 
-		public LinkState(string token, int trooperId, Timer timer)
+		public LinkState(string token, int trooperId, Timer timer, string u, string p, bool r)
 		{
 			Token = token;
 			TrooperId = trooperId;
 			ExparationTimer = timer;
 			LinkReady = false;
+			Username = u;
+			Password = p;
+			RememberMe = r;
 		}
 
-		public LinkState(string token, int trooperId, ulong discordId, Timer timer)
+		public LinkState(string token, int trooperId, string discordId, Timer timer, string u, string p, bool r)
 		{
 			Token = token;
 			TrooperId = trooperId;
 			DiscordId = discordId;
 			ExparationTimer = timer;
 			LinkReady = false;
+			Username = u;
+			Password = p;
+			RememberMe = r;
 		}
 
-		public LinkState(string token, int trooperId, ulong discordId, string steamId, Timer timer)
+		public LinkState(string token, int trooperId, string discordId, string steamId, Timer timer, string u, string p, bool r)
 		{
 			Token = token;
 			TrooperId = trooperId;
@@ -41,6 +51,9 @@ namespace FiveOhFirstDataCore.Core.Account
 			SteamId = steamId;
 			ExparationTimer = timer;
 			LinkReady = true;
+			Username = u;
+			Password = p;
+			RememberMe = r;
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string Notes { get; set; } = "";
 
-        public ulong? DiscordId { get; set; }
-        public string? SteamId { get; set; }
+        public string? DiscordId { get; set; }
+        public string? SteamLink { get; set; }
     }
 }

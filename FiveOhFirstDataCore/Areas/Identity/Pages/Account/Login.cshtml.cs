@@ -90,7 +90,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                 {
                     if (res.RequiresAccountLinking)
                     {
-                        var token = await _link.StartAsync(res.TrooperId);
+                        var token = await _link.StartAsync(res.TrooperId, Input.Username, Input.Password, Input.RememberMe);
                         return Redirect($"/api/link/token/{token}");
                     };
                 }

@@ -30,7 +30,7 @@ namespace FiveOhFirstDataCore.Core.Account
 			LinkingController = new();
         }
 
-		public async Task<string> StartAsync(int trooperId)
+		public async Task<string> StartAsync(int trooperId, string username, string password, bool rememberMe)
 		{
 			var scope = _services.CreateScope();
 			var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -47,7 +47,7 @@ namespace FiveOhFirstDataCore.Core.Account
 			{
 				_ = LinkingController.TryRemove(token, out _);
 			},
-			null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan));
+			null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), username, password, rememberMe);
 
 			return token;
 		}
@@ -59,7 +59,7 @@ namespace FiveOhFirstDataCore.Core.Account
 			int failed = 0;
 			await _database.Users.AsNoTracking().ForEachAsync(x =>
 			{
-				if (x.DiscordId is not null && x.DiscordId == accountId)
+				if (x.DiscordId is not null && x.DiscordId == accountId.ToString())
 					failed += 1;
 			});
 
@@ -68,10 +68,10 @@ namespace FiveOhFirstDataCore.Core.Account
 
 			if (LinkingController.TryGetValue(token, out var old))
 			{
-				LinkingController[token] = new(token, old.TrooperId, accountId, new Timer((x) =>
+				LinkingController[token] = new(token, old.TrooperId, accountId.ToString(), new Timer((x) =>
 				{
 					_ = LinkingController.TryRemove(token, out _);
-				}, null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan));
+				}, null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
 			}
 			else
 				throw new TokenNotFoundException("An expired or invalid token was provided.");
@@ -84,7 +84,7 @@ namespace FiveOhFirstDataCore.Core.Account
 			int failed = 0;
 			await _database.Users.AsNoTracking().ForEachAsync(x =>
 			{
-				if (x.SteamId is not null && x.SteamId == steamId)
+				if (x.SteamLink is not null && x.SteamLink == steamId)
 					failed += 1;
 			});
 
@@ -96,12 +96,12 @@ namespace FiveOhFirstDataCore.Core.Account
 				if (old.DiscordId is null)
 					throw new Exception("Discord ID is missing.");
 
-				LinkingController[token] = new(token, old.TrooperId, old.DiscordId!.Value,
+				LinkingController[token] = new(token, old.TrooperId, old.DiscordId,
 					steamId, new Timer((x) =>
 					{
 						_ = LinkingController.TryRemove(token, out _);
 					},
-					null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan));
+					null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
 			}
 			else
 				throw new TokenNotFoundException("An expired or invalid token was provided.");
@@ -127,7 +127,7 @@ namespace FiveOhFirstDataCore.Core.Account
 			return LinkStatus.Invalid;
 		}
 
-		public async Task FinalizeLink(string token)
+		public async Task<(string, string, bool)> FinalizeLink(string token)
 		{
 			if (LinkingController.TryRemove(token, out var state))
 			{
@@ -141,11 +141,13 @@ namespace FiveOhFirstDataCore.Core.Account
 					throw new Exception("No user to bind link to.");
 
 				user.DiscordId = state.DiscordId;
-				user.SteamId = state.SteamId;
+				user.SteamLink = state.SteamId;
 
 				await _database.SaveChangesAsync();
 
 				await disp;
+
+				return (state.Username, state.Password, state.RememberMe);
 			}
 			else
 				throw new TokenNotFoundException("An expired or invalid token was provided.");

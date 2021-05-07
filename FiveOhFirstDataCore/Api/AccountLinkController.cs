@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,10 +16,13 @@ namespace FiveOhFirstDataCore.Api
     public class AccountLinkController : ControllerBase
     {
 		private readonly AccountLinkService _linkService;
+		private readonly TrooperSignInManager _signInManager;
 
-		public AccountLinkController(AccountLinkService linkService)
+		public AccountLinkController(AccountLinkService linkService,
+			TrooperSignInManager signInManager)
 		{
 			_linkService = linkService;
+			_signInManager = signInManager;
 		}
 
 		[HttpGet("token/{token}")]
@@ -31,9 +35,13 @@ namespace FiveOhFirstDataCore.Api
 				case AccountLinkService.LinkStatus.Ready:
 					// If it is ready (discord and steam account sign in completed)
 					// then save the link, and tell the user.
-					_ = Task.Run(async () => await _linkService.FinalizeLink(token));
+					var reLogin = await _linkService.FinalizeLink(token);
 
-					return Redirect("/Identity/Account/Login");
+					var res = await _signInManager.PasswordSignInAsync(reLogin.Item1, reLogin.Item2, reLogin.Item3, false);
+
+					if (res.Succeeded)
+						return Redirect("~/");
+					else return Redirect("/Identity/Account/Login");
 
 				case AccountLinkService.LinkStatus.Waiting:
 					// If it is waiting, clear any errors, save the token as a cookie,
