@@ -26,6 +26,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("AccessCode")
+                        .HasColumnType("text");
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
@@ -60,6 +63,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int?>("MedicRank")
                         .HasColumnType("integer");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)

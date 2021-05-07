@@ -41,6 +41,20 @@ namespace FiveOhFirstDataCore.Core.Account
 
             return base.PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
         }
+
+        public override Task SignInAsync(Trooper user, bool isPersistent, string? authenticationMethod = null)
+        {
+            if (user.DiscordId is null || user.SteamLink is null)
+            {
+                return Task.FromResult<SignInResult>(new TrooperSignInResult()
+                {
+                    RequiresAccountLinking = true,
+                    TrooperId = user.Id
+                });
+            }
+
+            return base.SignInAsync(user, isPersistent, authenticationMethod);
+        }
     }
 
     public class TrooperSignInResult : SignInResult

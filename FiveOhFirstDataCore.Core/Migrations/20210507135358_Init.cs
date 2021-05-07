@@ -29,6 +29,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    NickName = table.Column<string>(type: "text", nullable: false),
                     Rank = table.Column<int>(type: "integer", nullable: false),
                     RTORank = table.Column<int>(type: "integer", nullable: true),
                     MedicRank = table.Column<int>(type: "integer", nullable: true),
@@ -44,6 +45,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Notes = table.Column<string>(type: "text", nullable: false),
                     DiscordId = table.Column<string>(type: "text", nullable: true),
                     SteamLink = table.Column<string>(type: "text", nullable: true),
+                    AccessCode = table.Column<string>(type: "text", nullable: true),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

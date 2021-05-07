@@ -60,9 +60,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.RTO,
                         Slot = Slot.AvalancheThreeThree,
-                        Team = Team.NA,
+                        Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -82,9 +84,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Lead,
                         Slot = Slot.AvalancheThreeThree,
-                        Team = Team.NA,
+                        Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -106,6 +110,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Alpha,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -126,6 +132,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Alpha,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -145,6 +153,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Alpha,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -164,6 +174,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Alpha,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -185,6 +197,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Bravo,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -205,6 +219,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Bravo,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -224,6 +240,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Bravo,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -243,6 +261,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = Team.Bravo,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -260,9 +280,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.ARC,
                         Slot = Slot.AvalancheThreeThree,
-                        Team = Team.NA,
+                        Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -280,9 +302,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Trooper,
                         Slot = Slot.ZetaOneOne,
-                        Team = Team.NA,
+                        Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -299,9 +323,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Trooper,
                         Slot = Slot.InactiveReserve,
-                        Team = Team.NA,
+                        Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
+                        DiscordId = "a",
+                        SteamLink = "b"
                     },
                     new()
                     {
@@ -311,6 +337,25 @@ namespace FiveOhFirstDataCore.Core.Services
                     {
                         "Trooper"
                     }),
+                    (new Trooper()
+                    {
+                        Id = 554433,
+                        UserName = "LinkTest",
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        Role = Role.Trooper,
+                        Slot = Slot.InactiveReserve,
+                        Team = null,
+                        StartOfService = DateTime.Now,
+                        LastPromotion = DateTime.Now,
+                    },
+                    new()
+                    {
+
+                    },
+                    new()
+                    {
+                        "Trooper"
+                    })
                 };
             }
         }

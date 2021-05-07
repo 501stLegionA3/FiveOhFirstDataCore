@@ -10,6 +10,8 @@ namespace FiveOhFirstDataCore.Core.Account
 {
     public class Trooper : IdentityUser<int>
     {
+        public string NickName { get; set; } = "";
+
         public TrooperRank Rank { get; set; }
         public RTORank? RTORank { get; set; }
         public MedicRank? MedicRank { get; set; }
@@ -30,5 +32,6 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string? DiscordId { get; set; }
         public string? SteamLink { get; set; }
+        public string? AccessCode { get; set; }
     }
 }

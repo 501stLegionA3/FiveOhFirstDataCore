@@ -160,7 +160,10 @@ namespace FiveOhFirstDataCore.Core.Data
         ZetaThreeFour,
         // Inactive
         [SlotDetails("Inactive Reserves")]
-        InactiveReserve = 700
+        InactiveReserve = 700,
+        // Archives
+        [SlotDetails("Archived")]
+        Archived = 1000
     }
 
     [AttributeUsage(AttributeTargets.All)]

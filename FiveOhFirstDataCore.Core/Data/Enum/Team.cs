@@ -9,8 +9,7 @@ namespace FiveOhFirstDataCore.Core.Data
     public enum Team
     {
         Alpha,
-        Bravo,
-        NA
+        Bravo
     }
 
     public enum Flight

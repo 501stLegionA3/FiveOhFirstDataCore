@@ -3,16 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31220.234
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveOhFirstDataCore", "FiveOhFirstDataCore\FiveOhFirstDataCore.csproj", "{96CD3676-BFF1-47D0-B54D-326C99461334}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore", "FiveOhFirstDataCore\FiveOhFirstDataCore.csproj", "{96CD3676-BFF1-47D0-B54D-326C99461334}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveOhFirstDataCore.Core", "FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Core.csproj", "{7F44F965-24C5-43A1-850C-0EF13F81506A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Core", "FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Core.csproj", "{7F44F965-24C5-43A1-850C-0EF13F81506A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{EFCCD6A6-B0C5-49E0-8027-599FD6F3D6AC}"
 	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		Dockerfile = Dockerfile
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiveOhFirstDataCore.Shared", "FiveOhFirstDataCore.Shared\FiveOhFirstDataCore.Shared.csproj", "{D3F164DA-C336-4C24-880B-1C9623A667FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Shared", "FiveOhFirstDataCore.Shared\FiveOhFirstDataCore.Shared.csproj", "{D3F164DA-C336-4C24-880B-1C9623A667FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
