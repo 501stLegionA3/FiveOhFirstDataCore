@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>aspnet-FiveOhFirstDataCore-F8D19B96-2F60-4E73-85FB-211C681A12C4</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-	  <Nullable>enable</Nullable>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Core.csproj" />
+    <ProjectReference Include="..\FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Pages.csproj" />
     <ProjectReference Include="..\FiveOhFirstDataCore.Shared\FiveOhFirstDataCore.Shared.csproj" />
   </ItemGroup>
 

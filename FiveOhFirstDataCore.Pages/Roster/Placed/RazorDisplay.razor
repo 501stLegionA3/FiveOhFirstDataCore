@@ -16,7 +16,7 @@
         Squadron Commander
     </th>
     <td class="text-left" colspan="2">
-        @(Razor.Commander?.PilotRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
+        @(Razor.Commander?.WarrantRank is null ? Razor.Commander?.PilotRank?.AsFull() + " " ?? "" : Razor.Commander.WarrantRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
@@ -24,7 +24,7 @@
         Squadron Sub-Commander
     </th>
     <td class="text-left" colspan="2">
-        @(Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
+        @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
     </td>
 </tr>
 

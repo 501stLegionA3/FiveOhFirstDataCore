@@ -11,7 +11,7 @@
         Pilot (@($"{SectionNumber}A"))
     </th>
     <td class="text-left" colspan="2">
-        @(Section.Alpha?.PilotRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
+        @(Section.Alpha?.WarrantRank is null ? Section.Alpha?.PilotRank?.AsFull() + " " ?? "" : Section.Alpha?.WarrantRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
@@ -19,7 +19,7 @@
         Pilot (@($"{SectionNumber}B"))
     </th>
     <td class="text-left" colspan="2">
-        @(Section.Bravo?.PilotRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
+        @(Section.Bravo?.WarrantRank is null ? Section.Bravo?.PilotRank?.AsFull() + " " ?? "" : Section.Bravo?.WarrantRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
@@ -27,7 +27,7 @@
         Pilot (@($"{SectionNumber}C"))
     </th>
     <td class="text-left" colspan="2">
-        @(Section.Charlie?.PilotRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
+        @(Section.Charlie?.WarrantRank is null ? Section.Charlie?.PilotRank?.AsFull() + " " ?? "" : Section.Charlie?.WarrantRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
@@ -35,7 +35,7 @@
         Pilot (@($"{SectionNumber}D"))
     </th>
     <td class="text-left" colspan="2">
-        @(Section.Delta?.PilotRank?.AsFull() + " " ?? "")@(Section.Delta?.NickName ?? "TBD")
+        @(Section.Delta?.WarrantRank is null ? Section.Delta?.PilotRank?.AsFull() + " " ?? "" : Section.Delta?.WarrantRank?.AsFull() + " " ?? "")@(Section.Delta?.NickName ?? "TBD")
     </td>
 </tr>
 

@@ -161,6 +161,16 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
+                options.AddPolicy("RequireRosterClerk", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.HasClaim("Clerk", "Roster")
+                            || ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager");
+                    });
+                });
+
                 options.AddPolicy("RequireSquad", policy =>
                 {
                     policy.RequireAssertion(ctx =>
