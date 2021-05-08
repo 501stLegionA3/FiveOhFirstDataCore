@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Roster\Zeta\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

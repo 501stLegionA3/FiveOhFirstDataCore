@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Core.Account;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 {
@@ -23,7 +18,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         private readonly ILogger<LoginModel> _logger;
         private readonly AccountLinkService _link;
 
-        public LoginModel(TrooperSignInManager signInManager, 
+        public LoginModel(TrooperSignInManager signInManager,
             ILogger<LoginModel> logger,
             UserManager<Trooper> userManager,
             AccountLinkService link)
@@ -73,7 +68,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            
+
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout

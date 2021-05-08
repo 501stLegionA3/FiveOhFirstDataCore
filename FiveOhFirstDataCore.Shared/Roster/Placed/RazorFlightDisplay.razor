@@ -1,0 +1,28 @@
+﻿<thead class="table-dark text-light text-center">
+    <tr>
+        <th colspan="4">
+            @FlightNumber.AsOrdinal() Flight LAAT
+        </th>
+    </tr>
+</thead>
+
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Flight Commander
+    </th>
+    <td class="text-left" colspan="2">
+        @(Flight.Commander?.PilotRank?.AsFull() + " " ?? "")@(Flight.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@for(int i = 0; i < Flight.Sections.Length; i++)
+{
+    <RazorFlightSectionDisplay Section="Flight.Sections[i]" FlightNumber="FlightNumber" SectionNumber="i + 1" />
+}
+
+@code {
+    [Parameter]
+    public RazorFlightData Flight { get; set; }
+    [Parameter]
+    public int FlightNumber { get; set; }
+}

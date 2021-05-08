@@ -34,6 +34,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     RTORank = table.Column<int>(type: "integer", nullable: true),
                     MedicRank = table.Column<int>(type: "integer", nullable: true),
                     PilotRank = table.Column<int>(type: "integer", nullable: true),
+                    WarrantRank = table.Column<int>(type: "integer", nullable: true),
+                    WardenRank = table.Column<int>(type: "integer", nullable: true),
                     Slot = table.Column<int>(type: "integer", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
                     Team = table.Column<int>(type: "integer", nullable: true),

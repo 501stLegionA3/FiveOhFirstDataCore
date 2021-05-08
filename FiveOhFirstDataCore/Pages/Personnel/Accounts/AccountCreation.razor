@@ -1,0 +1,17 @@
+﻿@page "/c1/accounts/create"
+
+<AuthorizeView Policy="RequireMemberStaff" >
+    <Authorized>
+        <h2>Create New Member Account</h2>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+
+}

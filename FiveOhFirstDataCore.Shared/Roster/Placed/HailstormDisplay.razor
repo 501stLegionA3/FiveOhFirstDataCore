@@ -1,0 +1,74 @@
+﻿<thead class="bg-primary text-light text-center">
+    <tr>
+        <th colspan="4">
+            501st Legion, 1st Regiment
+        </th>
+    </tr>
+    <tr>
+        <th colspan="4">
+            3rd Battalion "Hailstorm"
+        </th>
+    </tr>
+</thead>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion Commander
+    </th>
+    <td>
+          @(Hailstorm.Commander?.Rank.AsFull() + " " ?? "")@(Hailstorm.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion Executive Officer
+    </th>
+    <td>
+          @(Hailstorm.XO?.Rank.AsFull() + " " ?? "")@(Hailstorm.XO?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion C-Shop Commander
+    </th>
+    <td>
+          @(Hailstorm.CShopCommander?.Rank.AsFull() + " " ?? "")@(Hailstorm.CShopCommander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        C-Shope Executive Officer
+    </th>
+    <td>
+          @(Hailstorm.CShopXO?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.CShopXO?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion NCOIC
+    </th>
+    <td>
+          @(Hailstorm.NCOIC?.Rank.AsFull() + " " ?? "")@(Hailstorm.NCOIC?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion Medic
+    </th>
+    <td>
+          @(Hailstorm.Medic?.Rank.AsFull() + " " ?? "")@(Hailstorm.Medic?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Battalion RT
+    </th>
+    <td>
+          @(Hailstorm.RT?.Rank.AsFull() + " " ?? "")@(Hailstorm.RT?.NickName ?? "TBD")
+    </td>
+</tr>
+
+
+@code {
+    [Parameter]
+    public HailstormData Hailstorm { get; set; }
+}

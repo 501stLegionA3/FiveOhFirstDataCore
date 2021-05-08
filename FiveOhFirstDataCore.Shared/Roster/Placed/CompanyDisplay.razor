@@ -1,0 +1,32 @@
+﻿<thead class="bg-primary text-light text-center">
+    <tr>
+        <th colspan="8">
+            501st Legion, 1st Regiment, 3rd Battalion
+        </th>
+    </tr>
+    <tr>
+        <th colspan="8">
+            @Name Company
+        </th>
+    </tr>
+</thead>
+
+<CompanyStaff Company="Company" />
+
+<CascadingValue Value="Name" Name="CompanyName">
+    @for(int i = 0; i < Company.Platoons.Length; i++)
+    {
+        <PlatoonDisplay Platoon="Company.Platoons[i]" Number="i + 1" Airborne="Airborne" />
+    }
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public CompanyData Company { get; set; }
+
+    [Parameter]
+    public bool Airborne { get; set; } = false;
+}

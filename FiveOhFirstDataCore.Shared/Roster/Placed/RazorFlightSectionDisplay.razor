@@ -1,0 +1,49 @@
+﻿<thead class="table-primary text-center">
+    <tr>
+        <th colspan="4">
+            @SectionNumber.AsOrdinal() Section, Razor @FlightNumber-@SectionNumber
+        </th>
+    </tr>
+</thead>
+
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Pilot (@($"{SectionNumber}A"))
+    </th>
+    <td class="text-left" colspan="2">
+        @(Section.Alpha?.PilotRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Pilot (@($"{SectionNumber}B"))
+    </th>
+    <td class="text-left" colspan="2">
+        @(Section.Bravo?.PilotRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Pilot (@($"{SectionNumber}C"))
+    </th>
+    <td class="text-left" colspan="2">
+        @(Section.Charlie?.PilotRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Pilot (@($"{SectionNumber}D"))
+    </th>
+    <td class="text-left" colspan="2">
+        @(Section.Delta?.PilotRank?.AsFull() + " " ?? "")@(Section.Delta?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public RazorSectionData Section {get;set;}
+    [Parameter]
+    public int FlightNumber {get;set;}
+    [Parameter]
+    public int SectionNumber {get;set;}
+}

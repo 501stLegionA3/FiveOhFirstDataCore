@@ -24,4 +24,14 @@
     <ProjectReference Include="..\FiveOhFirstDataCore.Shared\FiveOhFirstDataCore.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Logistics\" />
+    <Folder Include="Pages\Communications\" />
+    <Folder Include="Pages\Civil.Affairs\" />
+    <Folder Include="Pages\Personnel\Roster\" />
+    <Folder Include="Pages\Resource.Management\" />
+    <Folder Include="Pages\Training\" />
+    <Folder Include="Pages\Operations\" />
+  </ItemGroup>
+
 </Project>

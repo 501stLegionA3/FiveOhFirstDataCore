@@ -1,0 +1,41 @@
+﻿<thead class="table-primary text-center">
+    <tr>
+        <th colspan="4">
+            Deck Officer - Wardens
+        </th>
+    </tr>
+</thead>
+
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Master Warden
+    </th>
+    <td>
+        @(Warden.Master?.WardenRank?.AsFull() + " " ?? "")@(Warden.Master?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Chief Warden
+    </th>
+    <td>
+        @(Warden.Chief?.WardenRank?.AsFull() + " " ?? "")@(Warden.Chief?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@for(int i = 0; i < Warden.Wardens.Length; i++)
+{
+    <tr>
+        <th scope="row" colspan="2" class="text-right">
+            Warden
+        </th>
+        <td>
+            @(Warden.Wardens[i]?.WardenRank?.AsFull() + " " ?? "")@(Warden.Wardens[i]?.NickName ?? "TBD")
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public WardenData Warden {get;set;}
+}

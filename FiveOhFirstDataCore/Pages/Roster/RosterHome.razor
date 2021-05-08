@@ -1,0 +1,86 @@
+﻿@page "/roster"
+@inject IRefreshRequestService _refresh
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.Orbat ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.Orbat)">ORBAT</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.Roster)">Placed Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.ReserveOrbat ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.ReserveOrbat)">Zeta ORBAT</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.ReserveRoster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.ReserveRoster)">Active Reserves</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.InactiveReserves ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.InactiveReserves)">Inactive Reserves</button>
+    </li>    
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.Archive ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.Archive)">Archived</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RosterType.FullRoster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.FullRoster)">Full Roster</button>
+    </li>
+</ul>
+<div class="tab-content">
+    @switch(Active)
+    {
+        case RosterType.Orbat:
+            <OrbatDisplay />
+            break;
+        case RosterType.Roster:
+            <ActiveRosterDisplay />
+            break;
+        case RosterType.ReserveOrbat:
+            <ZetaOrbatDisplay />
+            break;
+        case RosterType.ReserveRoster:
+            <ZetaRosterDisplay />
+            break;
+        case RosterType.InactiveReserves:
+            <InactiveReservesDisplay />
+            break;
+        case RosterType.Archive:
+            <ArchivedRosterDisplay />
+            break;
+        case RosterType.FullRoster:
+            <FullRosterDisplay />
+            break;
+    }
+</div>
+
+
+@code {
+    public enum RosterType
+    {
+        Orbat,
+        Roster,
+        ReserveOrbat,
+        ReserveRoster,
+        InactiveReserves,
+        Archive,
+        FullRoster
+    }
+
+    public RosterType Active { get; set; } = RosterType.Orbat;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _refresh.RefreshRequested += RefreshMe;
+    }
+
+    private void RefreshMe()
+    {
+        StateHasChanged();
+    }
+
+    protected void OnTypeChange(RosterType newType)
+    {
+        Active = newType;
+        _refresh.CallRequestRefresh();
+    }
+}

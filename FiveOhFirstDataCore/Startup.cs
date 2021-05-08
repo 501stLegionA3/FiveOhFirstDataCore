@@ -1,29 +1,22 @@
+using AspNet.Security.OpenId;
+using DSharpPlus;
 using FiveOhFirstDataCore.Areas.Identity;
 using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Services;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-
-using DSharpPlus;
-using AspNet.Security.OpenId;
-using FiveOhFirstDataCore.Core.Services;
-using System.Web;
 
 namespace FiveOhFirstDataCore
 {
@@ -129,25 +122,146 @@ namespace FiveOhFirstDataCore
                         OnRemoteFailure = async context =>
                         {
                             // TODO remove token from cookies and delete server token cache.
-
-
+                            if (context.Request.Cookies.TryGetValue("token", out var token))
+                            {
+                                var link = context.HttpContext.RequestServices.GetRequiredService<AccountLinkService>();
+                                await link.AbortLinkAsync(token);
+                            }
                         }
                     };
                 });
-
+            #region Policy Setup
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireTrooper", policy =>
                 {
-                    policy.RequireRole("Admin", "Trooper");
+                    policy.RequireRole("Admin", "Manager", "Trooper");
                 });
 
-                options.AddPolicy("RequireLinked", policy =>
+                options.AddPolicy("RequireManager", policy =>
                 {
-                    policy.RequireRole("Linked", "Admin");
+                    policy.RequireRole("Admin", "Manager");
+                });
+
+                options.AddPolicy("RequireAdmin", policy =>
+                {
+                    policy.RequireRole("Admin");
+                });
+
+                // Allows acces to pages that create new accounts for members,
+                // or modify the users access to accounts such as their password/username.
+                options.AddPolicy("RequireMemberStaff", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("C1", "Recruiter")
+                            || ctx.User.HasClaim("C1", "Returning Members");
+                    });
+                });
+
+                options.AddPolicy("RequireSquad", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Slotted", "Squad");
+                    });
+                });
+
+                options.AddPolicy("RequirePlatoon", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Slotted", "Platoon");
+                    });
+                });
+
+                options.AddPolicy("RequireCompany", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Slotted", "Company");
+                    });
+                });
+
+                options.AddPolicy("RequireC1", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C1");
+                    });
+                });
+
+                options.AddPolicy("RequireC3", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C3");
+                    });
+                });
+
+                options.AddPolicy("RequireC4", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C4");
+                    });
+                });
+
+                options.AddPolicy("RequireC5", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C5");
+                    });
+                });
+
+                options.AddPolicy("RequireC6", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C6");
+                    });
+                });
+
+                options.AddPolicy("RequireC7", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C7");
+                    });
+                });
+
+                options.AddPolicy("RequireC8", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => x.Type == "C8");
+                    });
                 });
             });
-
+            #endregion
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -158,7 +272,9 @@ namespace FiveOhFirstDataCore
                 options.Password.RequiredUniqueChars = 0;
             });
 
-            services.AddSingleton<AccountLinkService>();
+            services.AddSingleton<AccountLinkService>()
+                .AddScoped<IRefreshRequestService, RefreshRequestService>()
+                .AddScoped<IRosterService, RosterService>();
 
 #if DEBUG
             #region Example Tools

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data
 {
@@ -116,6 +113,20 @@ namespace FiveOhFirstDataCore.Core.Data
         Captian,
         [RankDisplay("CX-W", "Warden")]
         Warden
+    }
+
+    public enum WardenRank
+    {
+        [RankDisplay("CX-W", "Petty Officer")]
+        Warden,
+        [RankDisplay("CX-W", "Senior Petty Officer")]
+        Senior,
+        [RankDisplay("CX-W", "Veteran Petty Officer")]
+        Veteran,
+        [RankDisplay("CX-W", "Chief Petty Officer")]
+        Chief,
+        [RankDisplay("CX-W", "Master Chief Petty Officer")]
+        Master,
     }
 
     [AttributeUsage(AttributeTargets.All)]

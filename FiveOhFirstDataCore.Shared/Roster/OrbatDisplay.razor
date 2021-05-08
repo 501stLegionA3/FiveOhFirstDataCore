@@ -1,0 +1,28 @@
+﻿@inject IRosterService _roster
+
+@if(Data is not null)
+{
+    <table class="table">
+        <HailstormDisplay Hailstorm="Data.Hailstorm" />
+        <CompanyDisplay Company="Data.Avalanche" Name="Avalanche" />
+        <CompanyDisplay Company="Data.Cyclone" Name="Cyclone" />
+        <CompanyDisplay Company="Data.Acklay" Name="Acklay" Airborne="true" />
+        <MynockDisplay Mynock="Data.Mynock" />
+        <RazorDisplay Razor="Data.Razor" />
+    </table>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public OrbatData Data { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Data = await _roster.GetOrbatDataAsync();
+    }
+}

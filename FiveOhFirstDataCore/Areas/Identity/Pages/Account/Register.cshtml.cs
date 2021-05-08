@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
+﻿using FiveOhFirstDataCore.Core.Account;
 using Microsoft.AspNetCore.Authorization;
-using FiveOhFirstDataCore.Core.Account;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 {
@@ -92,23 +83,23 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                         user.UserName = Input.UserName;
                         await _userManager.UpdateAsync(user);
 
-                        if(passChangeRes.Succeeded)
+                        if (passChangeRes.Succeeded)
                         {
                             var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
 
-                            if(res is TrooperSignInResult result)
+                            if (res is TrooperSignInResult result)
                             {
-                                if(result.RequiresAccountLinking)
+                                if (result.RequiresAccountLinking)
                                 {
                                     returnUrl = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
                                 }
                             }
-                            
+
                             return Redirect(returnUrl);
                         }
                         else
                         {
-                            foreach(var error in passChangeRes.Errors)
+                            foreach (var error in passChangeRes.Errors)
                             {
                                 ModelState.AddModelError(error.Code, error.Description);
                             }

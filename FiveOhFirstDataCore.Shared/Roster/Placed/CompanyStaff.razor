@@ -1,0 +1,61 @@
+﻿<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company Commander
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.Commander?.Rank.AsFull() + " " ?? "")@(Company.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company Executive Officer
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.XO?.Rank.AsFull() + " " ?? "")@(Company.XO?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company NCOIC
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.NCOIC?.Rank.AsFull() + " " ?? "")@(Company.NCOIC?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company Medic
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.Medic?.Rank.AsFull() + " " ?? "")@(Company.Medic?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company RT
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.RT?.Rank.AsFull() + " " ?? "")@(Company.RT?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company ARC
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.ARC?.Rank.AsFull() + " " ?? "")@(Company.ARC?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" colspan="2" class="text-right">
+        Company Adjutant
+    </th>
+    <td colspan="2" class="text-left">
+        @(Company.Commander?.WarrantRank?.AsFull() + " " + " " ?? "")@(Company.Adjutant?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public CompanyData Company { get; set; }
+}

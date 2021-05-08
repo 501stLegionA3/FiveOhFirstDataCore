@@ -1,0 +1,41 @@
+﻿<thead class="bg-primary text-light text-center">
+    <tr>
+        <th colspan="4">
+            501st Legion, Razor Squadron
+        </th>
+    </tr>
+    <tr>
+        <th colspan="4">
+            Squadron Headquarters
+        </th>
+    </tr>
+</thead>
+
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Squadron Commander
+    </th>
+    <td class="text-left" colspan="2">
+        @(Razor.Commander?.PilotRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right" colspan="2">
+        Squadron Sub-Commander
+    </th>
+    <td class="text-left" colspan="2">
+        @(Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@for(int i = 0; i < Razor.Flights.Length; i++)
+{
+    <RazorFlightDisplay Flight="Razor.Flights[i]" FlightNumber="i + 1" />
+}
+
+<WardenDisplay Warden="Razor.Warden" />
+
+@code {
+    [Parameter]
+    public RazorSquadronData Razor { get; set; }
+}

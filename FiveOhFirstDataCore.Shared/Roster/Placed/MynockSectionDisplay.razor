@@ -1,0 +1,158 @@
+﻿<thead class="text-center table-dark text-light">
+    <tr>
+        <th colspan="4">
+            @SectionNumber.AsOrdinal() Section
+        </th>
+    </tr>
+</thead>
+<tr class="table-warning">
+    <th scope="row" colspan="2" class="text-right">
+        Section Leader
+    </th>
+    <td colspan="2" class="text-left">
+        @(Section.Lead?.Rank.AsFull() + " " ?? "")@(Section.Lead?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr class="table-warning">
+    <th scope="row" colspan="2" class="text-right">
+        Section RT
+    </th>
+    <td colspan="2" class="text-left">
+        @(Section.RT?.Rank.AsFull() + " " ?? "")@(Section.RT?.NickName ?? "TBD")
+    </td>
+</tr>
+
+<tr>
+    <th scope="row" class="table-danger text-right">
+        Alpha Team Leader
+    </th>
+    <td class="table-danger text-left">
+        @(Section.Teams[0].Lead?.Rank.AsFull() + " " ?? "")@(Section.Teams[0].Lead?.NickName ?? "TBD") 
+    </td>
+    <th scope="row" class="table-primary text-right">
+        Bravo Team Leader
+    </th>
+    <td class="table-primary text-left">
+        @(Section.Teams[1].Lead?.Rank.AsFull() + " " ?? "")@(Section.Teams[1].Lead?.NickName ?? "TBD") 
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="table-danger text-right">
+        Alpha Trooper 
+    </th>
+    <td class="table-danger text-left">
+        @(AT1?.Rank.AsFull() + " " ?? "")@(AT1?.NickName ?? "TBD") 
+    </td>
+    <th scope="row" class="table-primary text-right">
+        Bravo Trooper
+    </th>
+    <td class="table-primary text-left">
+        @(BT1?.Rank.AsFull() + " " ?? "")@(BT1?.NickName ?? "TBD") 
+    </td>
+</tr>
+
+<tr>
+    <th scope="row" class="table-danger text-right">
+        Alpha Trooper 
+    </th>
+    <td class="table-danger text-left">
+        @(AT2?.Rank.AsFull() + " " ?? "")@(AT2?.NickName ?? "TBD") 
+    </td>
+    <th scope="row" class="table-primary text-right">
+        Bravo Trooper
+    </th>
+    <td class="table-primary text-left">
+        @(BT2?.Rank.AsFull() + " " ?? "")@(BT2?.NickName ?? "TBD") 
+    </td>
+</tr>
+
+@for(int i = 0; i < AAdditional.Count && i < BAdditional.Count; i++)
+{
+    Trooper AT3 = null;
+    if (AAdditional.Count < i)
+    {
+        AT3 = AAdditional[i];
+    }
+
+    Trooper BT3 = null;
+    if (BAdditional.Count < i)
+    {
+        BT3 = BAdditional[i];
+    }
+
+    <tr>
+        <th scope="row" class="table-danger text-right">
+            Alpha Trooper 
+        </th>
+        <td class="table-danger text-left">
+            @(AT3?.Rank.AsFull() + " " ?? "")@(AT3?.NickName ?? "TBD") 
+        </td>
+        <th scope="row" class="table-primary text-right">
+            Bravo Trooper
+        </th>
+        <td class="table-primary text-left">
+            @(BT3?.Rank.AsFull() + " " ?? "")@(BT3?.NickName ?? "TBD") 
+        </td>
+    </tr>
+}
+
+<tr>
+    <th scope="row" class="table-danger text-right">
+        Alpha Medic 
+    </th>
+    <td class="table-danger text-left">
+        @(Section.Teams[0].Medic?.Rank.AsFull() + " " ?? "")@(Section.Teams[0].Medic?.NickName ?? "TBD") 
+    </td>
+    <th scope="row" class="table-primary text-right">
+        Bravo Medic
+    </th>
+    <td class="table-primary text-left">
+        @(Section.Teams[1].Medic?.Rank.AsFull() + " " ?? "")@(Section.Teams[1].Medic?.NickName ?? "TBD") 
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public MynockSectionData Section {get;set;}
+    [Parameter]
+    public int SectionNumber { get; set; }
+
+    private Trooper? AT1 { get; set; } = null;
+    private Trooper? AT2 { get; set; } = null;
+    private List<Trooper> AAdditional { get; set; } = new();
+
+    private Trooper? BT1 { get; set; } = null;
+    private Trooper? BT2 { get; set; } = null;
+    private List<Trooper> BAdditional { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        int c = 0;
+        foreach(var t in Section.Teams[0].Troopers)
+        {
+            if (c == 0)
+                AT1 = t;
+            else if (c == 1)
+                AT2 = t;
+            else
+                AAdditional.Add(t);
+
+            c++;
+        }
+
+        c = 0;
+        foreach(var t in Section.Teams[1].Troopers)
+        {
+            if (c == 0)
+                BT1 = t;
+            else if (c == 1)
+                BT2 = t;
+            else
+                BAdditional.Add(t);
+
+            c++;
+        }
+    }
+}

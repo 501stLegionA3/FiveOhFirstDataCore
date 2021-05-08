@@ -1,10 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
@@ -16,6 +12,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public RTORank? RTORank { get; set; }
         public MedicRank? MedicRank { get; set; }
         public PilotRank? PilotRank { get; set; }
+        public WarrantRank? WarrantRank { get; set; }
+        public WardenRank? WardenRank { get; set; }
 
         public Slot Slot { get; set; }
         public Role Role { get; set; }

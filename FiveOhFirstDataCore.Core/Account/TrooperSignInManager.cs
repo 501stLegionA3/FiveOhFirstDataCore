@@ -3,10 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
@@ -20,11 +16,11 @@ namespace FiveOhFirstDataCore.Core.Account
         {
             var user = await UserManager.FindByNameAsync(userName);
 
-            if(user is not null)
+            if (user is not null)
             {
                 return await PasswordSignInAsync(user, password, isPersistent, lockoutOnFailure);
             }
-            
+
             return await base.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
         }
 
