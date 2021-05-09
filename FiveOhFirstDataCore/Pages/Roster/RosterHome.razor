@@ -1,7 +1,7 @@
 ﻿@page "/roster"
 @inject IRefreshRequestService _refresh
 
-<ul class="nav nav-tabs row sticky-top">
+<ul class="nav nav-tabs row">
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == RosterType.Orbat ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RosterType.Orbat)">ORBAT</button>
     </li>

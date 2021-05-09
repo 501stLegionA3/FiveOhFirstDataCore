@@ -40,6 +40,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Role = table.Column<int>(type: "integer", nullable: false),
                     Team = table.Column<int>(type: "integer", nullable: true),
                     Flight = table.Column<int>(type: "integer", nullable: true),
+                    CShops = table.Column<long>(type: "bigint", nullable: false),
+                    Qualifications = table.Column<long>(type: "bigint", nullable: false),
                     LastPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     StartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     InitalTraining = table.Column<string>(type: "text", nullable: true),

@@ -1,0 +1,44 @@
+﻿@page "/c1"
+
+<AuthorizeView Policy="RequireC1">
+    <Authorized>
+        <div class="container">
+            <div class="row text-center">
+                <h1 class="col">C-1 PERSONNEL</h1>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 p-2">
+                    @*Roster Staff*@
+                    <a href="/c1/roster" class="btn btn-block btn-primary">Roster Staff Home</a>
+                </div>
+                <div class="col-md-6 col-sm-12 p-2">
+                    @*Document Maintenance*@
+                    <a href="/c1/docs" class="btn btn-block btn-primary">Document Maintenance Home</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-12 p-2">
+                    @*Recruting*@
+                    <a href="/c1/recruiter" class="btn btn-block btn-primary">Recruiting Staff Home</a>
+                </div>
+                <div class="col-md-6 col-sm-12 p-2">
+                    @*Returning Members*@
+                    <a href="/c1/returning" class="btn btn-block btn-primary">Returning Member Staff Home</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col p-2">
+                    @*Medals*@
+                    <a href="/c1/medals" class="btn btn-block btn-primary">Medals Staff Home</a>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

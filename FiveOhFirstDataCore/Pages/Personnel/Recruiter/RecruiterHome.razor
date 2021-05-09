@@ -1,0 +1,14 @@
+﻿@page "/c1/recruiter"
+
+<AuthorizeView Policy="RequireRecruiter">
+    <Authorized>
+        <h1>Recruiter Home</h1>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

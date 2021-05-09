@@ -32,6 +32,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<long>("CShops")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
@@ -91,6 +94,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int?>("PilotRank")
                         .HasColumnType("integer");
+
+                    b.Property<long>("Qualifications")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("RTORank")
                         .HasColumnType("integer");

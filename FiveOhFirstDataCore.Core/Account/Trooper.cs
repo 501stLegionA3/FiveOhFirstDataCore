@@ -20,6 +20,9 @@ namespace FiveOhFirstDataCore.Core.Account
         public Team? Team { get; set; }
         public Flight? Flight { get; set; }
 
+        public CShop CShops { get; set; }
+        public Qualification Qualifications { get; set; }
+
         public DateTime LastPromotion { get; set; }
         public DateTime StartOfService { get; set; }
 

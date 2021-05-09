@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210507235443_Init")]
+    [Migration("20210509223151_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
+
+                    b.Property<long>("CShops")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -93,6 +96,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int?>("PilotRank")
                         .HasColumnType("integer");
+
+                    b.Property<long>("Qualifications")
+                        .HasColumnType("bigint");
 
                     b.Property<int?>("RTORank")
                         .HasColumnType("integer");
