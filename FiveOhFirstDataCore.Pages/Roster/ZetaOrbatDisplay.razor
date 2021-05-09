@@ -1,5 +1,24 @@
-﻿<h3>ZetaOrbatDisplay</h3>
+﻿@inject IRosterService _roster
+
+@if(Data is not null)
+{
+    <table class="table">
+        <HailstormDisplay Hailstorm="Data.Hailstorm" Single="true" />
+        <ZetaDisplay Zeta="Data.Zeta" />
+    </table>
+}
+else
+{
+    <em>Loading...</em>
+}
 
 @code {
+    public ZetaOrbatData Data { get; set; }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Data = await _roster.GetZetaOrbatDataAsync();
+    }
 }

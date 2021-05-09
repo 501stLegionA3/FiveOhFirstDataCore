@@ -1,68 +1,68 @@
 ﻿<thead class="bg-primary text-light text-center">
     <tr>
-        <th colspan="4">
+        <th colspan="@(Single ? 2 : 4)">
             501st Legion, 1st Regiment
         </th>
     </tr>
     <tr>
-        <th colspan="4">
+        <th colspan="@(Single ? 2 : 4)">
             3rd Battalion "Hailstorm"
         </th>
     </tr>
 </thead>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right w-50">
         Battalion Commander
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left w-50">
           @(Hailstorm.Commander?.WarrantRank is null ? Hailstorm.Commander?.Rank.AsFull() + " " ?? "" : Hailstorm.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.Commander?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         Battalion Executive Officer
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.XO?.WarrantRank is null ? Hailstorm.XO?.Rank.AsFull() + " " ?? "" : Hailstorm.XO?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.XO?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         Battalion C-Shop Commander
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.CShopCommander?.WarrantRank is null ? Hailstorm.CShopCommander?.Rank.AsFull() + " " ?? "" : Hailstorm.CShopCommander?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.CShopCommander?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         C-Shope Executive Officer
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.CShopXO?.WarrantRank is null ? Hailstorm.CShopXO?.Rank.AsFull() + " " ?? "" : Hailstorm.CShopXO?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.CShopXO?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         Battalion NCOIC
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.NCOIC?.WarrantRank is null ? Hailstorm.NCOIC?.Rank.AsFull() + " " ?? "" : Hailstorm.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.NCOIC?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         Battalion Medic
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.Medic?.WarrantRank is null ? Hailstorm.Medic?.Rank.AsFull() + " " ?? "" : Hailstorm.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.Medic?.NickName ?? "TBD")
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="@(Single ? 1 : 2)" class="text-right">
         Battalion RT
     </th>
-    <td>
+    <td colspan="@(Single ? 1 : 2)" class="text-left">
           @(Hailstorm.RT?.WarrantRank is null ? Hailstorm.RT?.Rank.AsFull() + " " ?? "" : Hailstorm.RT?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.RT?.NickName ?? "TBD")
     </td>
 </tr>
@@ -71,4 +71,6 @@
 @code {
     [Parameter]
     public HailstormData Hailstorm { get; set; }
+    [Parameter]
+    public bool Single { get; set; } = true;
 }

@@ -1,0 +1,35 @@
+﻿<thead>
+    <tr class="table-dark text-light text-center">
+        <th colspan="2">
+            @Number.AsOrdinal() Squad
+        </th>
+    </tr>
+</thead>
+
+<tr>
+    <th scope="row" class="text-right">
+        Squad Leader
+    </th>
+    <td >
+        @(UTCSquad.SquadLeader?.WarrantRank is null ? UTCSquad.SquadLeader?.Rank.AsFull() + " " ?? "" : UTCSquad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.SquadLeader?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@for(int i = 0; i < UTCSquad.Troopers.Length; i++)
+{
+    <tr>
+        <th scope="row" class="text-right">
+            Trooper
+        </th>
+        <td >
+            @(UTCSquad.Troopers[i]?.WarrantRank is null ? UTCSquad.Troopers[i]?.Rank.AsFull() + " " ?? "" : UTCSquad.Troopers[i]?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.Troopers[i]?.NickName ?? "TBD")
+        </td>
+    </tr>
+}
+
+@code {
+    [Parameter]
+    public ZetaUTCSquadData UTCSquad { get; set; }
+    [Parameter]
+    public int Number { get; set; }
+}

@@ -165,9 +165,29 @@ namespace FiveOhFirstDataCore.Core.Data
             if (name is null) return "";
 
             return type?.GetField(name)
-                ?.GetCustomAttributes<RankDisplayAttribute>()
-                .SingleOrDefault()
+                ?.GetCustomAttribute<RankDisplayAttribute>()
                 ?.Full ?? "";
+        }
+
+        public static T? ValueFromString<T>(this string value) where T : Enum
+        {
+            var type = typeof(T);
+            foreach (var v in Enum.GetValues(type))
+            {
+                if (type is null) continue;
+
+                var name = Enum.GetName(type, v);
+
+                if(name is not null)
+                {
+                    if(name == value)
+                    {
+                        return (T)v;
+                    }   
+                }
+            }
+
+            return default;
         }
     }
 }

@@ -1,0 +1,26 @@
+﻿<thead class="bg-primary text-light text-center">
+    <tr>
+        <th colspan="2">
+            501st Legion, 1st Regiment, 3rd Battalion
+        </th>
+    </tr>
+    <tr>
+        <th colspan="2">
+            Zeta Company
+        </th>
+    </tr>
+</thead>
+
+<ZetaCompanyStaff Company="Zeta" />
+
+@for(int i = 0; i < Zeta.Sections.Length; i++)
+{
+    <ZetaSectionDisplay Section="Zeta.Sections[i]" Number="i + 1" />
+}
+
+<ZetaUtcSectionDisplay UTCSection="Zeta.UTCSection" Number="3" />
+
+@code {
+    [Parameter]
+    public ZetaCompanyData Zeta { get; set; }
+}

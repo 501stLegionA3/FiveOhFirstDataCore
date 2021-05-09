@@ -1,0 +1,37 @@
+﻿<tr>
+    <th scope="row" class="text-right">
+        Company Commander
+    </th>
+    <td class="text-left">
+        @(Company.Commander?.WarrantRank is null ? Company.Commander?.Rank.AsFull() + " " ?? "" : Company.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Company.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right">
+        Company Executive Officer
+    </th>
+    <td class="text-left">
+        @(Company.XO?.WarrantRank is null ? Company.XO?.Rank.AsFull() + " " ?? "" : Company.XO?.WarrantRank?.AsFull() + " " ?? "")@(Company.XO?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right">
+        Company NCOIC
+    </th>
+    <td class="text-left">
+        @(Company.NCOIC?.WarrantRank is null ? Company.NCOIC?.Rank.AsFull() + " " ?? "" : Company.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Company.NCOIC?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr>
+    <th scope="row" class="text-right">
+        Company Adjutant
+    </th>
+    <td class="text-left">
+        @(Company.Adjutant?.WarrantRank is null ? Company.Adjutant?.Rank.AsFull() + " " ?? "" : Company.Adjutant?.WarrantRank?.AsFull() + " " ?? "")@(Company.Adjutant?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@code {
+    [Parameter]
+    public ZetaCompanyData Company { get; set; }
+}

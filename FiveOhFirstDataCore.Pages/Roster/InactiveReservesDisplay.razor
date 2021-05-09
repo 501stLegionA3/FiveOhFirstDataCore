@@ -1,5 +1,21 @@
-﻿<h3>InactiveReservesDisplay</h3>
+﻿@inject IRosterService _roster
+
+@if(Roster is not null)
+{
+    <RosterListing Troopers="Roster" />
+}
+else
+{
+    <em>Loading...</em>
+}
 
 @code {
+    public List<Trooper> Roster { get; set; }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Roster = await _roster.GetInactiveReservesAsync();
+    }
 }

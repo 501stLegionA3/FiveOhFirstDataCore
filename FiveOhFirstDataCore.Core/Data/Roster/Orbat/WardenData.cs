@@ -21,8 +21,13 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                     break;
                 case Role.Warden:
                     for (int i = 0; i < Wardens.Length; i++)
+                    {
                         if (Wardens[i] is null)
+                        {
                             Wardens[i] = t;
+                            break;
+                        }
+                    }
                     break;
             }
         }

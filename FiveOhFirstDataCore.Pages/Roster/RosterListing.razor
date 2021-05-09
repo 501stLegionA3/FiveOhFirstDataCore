@@ -1,0 +1,231 @@
+﻿@inject IRefreshRequestService _refresh
+
+<EditForm Model="Search" class="form form-inline w-100">
+    <table class="sticky-top w-100 justify-content-center">
+        <tr>
+            <td>
+                <div class="form-floating p-1">
+                    <InputText class="form-control" placeholder="Designation" @bind-Value="Search.DesignationFilter" id="designation-filter" @oninput="OnDesgChange" />
+                </div>
+            </td>
+            <td>
+                <div class="input-group p-1">
+                    <button class="@(Search.Ascending ? "oi-arrow-top" : "oi-arrow-bottom") oi btn input-group-text" aria-hidden="true" @onclick="OnSearchDirectionChanged"></button>
+                    <div class="form-floating">
+                        <InputText class="form-control" placeholder="Birth #" @bind-Value="Search.IdFilter" id="id-roster-filter" @oninput="OnIdChange" />
+                    </div>
+                </div>
+            </td>
+            <td>
+                <div class="form-floating p-1">
+                    <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="Search.NickNameFilter" id="nickname-filter" @oninput="OnNickChange" />
+                </div>
+            </td>
+            <td>
+            <InputSelect @bind-Value="Search.RankFilter" @oninput="OnRankChange" class="form-control form-inline p-1">
+                <option value="null">Rank</option>
+                @foreach(TrooperRank r in Enum.GetValues(typeof(TrooperRank)))
+                {
+                    <option value="@r">@r.AsFull()</option>
+                }
+            </InputSelect>
+            </td>
+            <td>
+            <InputSelect @bind-Value="Search.UnitFilter" @oninput="OnUnitChange" class="form-control form-inline p-1">
+                <option value="null">Unit</option>
+                @foreach(Slot r in Enum.GetValues(typeof(Slot)))
+                {
+                    <option value="@r">@r.AsName()</option>
+                }
+            </InputSelect>
+            </td>
+            <td>
+            <InputSelect @bind-Value="Search.RoleFilter" @oninput="OnRoleChange" class="form-control form-inline p-1">
+                <option value="null">Role</option>
+                @foreach(Role r in Enum.GetValues(typeof(Role)))
+                {
+                    <option value="@r">@r.AsName()</option>
+                }
+            </InputSelect>
+            </td>
+        </tr>
+    </table>
+</EditForm>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th scope="col" class="w-5">Designation</th>
+            <th scope="col">Brith #</th>
+            <th scope="col">Nickname</th>
+            <th scope="col">Rank</th>
+            <th scope="col">Unit</th>
+            <th scope="col">Role</th>
+            <th scope="col">TiG</th>
+            <th scope="col">TiS</th>
+            <td scope="col"></td>
+            <AuthorizeView Policy="RequireRosterClerk">
+                <Authorized>
+                    <td scope="col"></td>
+                </Authorized>
+            </AuthorizeView>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var t in Filtered)
+        {
+            <RosterListingRow Trooper="t" />
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<Trooper> Troopers { get; set; } = new();
+    private List<Trooper> Filtered { get; set; } = new();
+
+    private RosterSearch Search { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _refresh.RefreshRequested += RefreshMe;
+
+        await BuildFilteredList();
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    public Task BuildFilteredList()
+    {
+        Filtered = Troopers;
+
+        if(!string.IsNullOrWhiteSpace(Search.DesignationFilter))
+        {
+            Filtered = Filtered.Where(x => 
+            {
+                if(x.Role == Role.RTO)
+                {
+                    return x.RTORank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                }
+                else if(x.Role == Role.Pilot)
+                {
+                    return x.PilotRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                }
+                else if(x.Role == Role.Medic)
+                {
+                    return x.MedicRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                }
+                else if (x.Role == Role.Warden
+                    || x.Role == Role.MasterWarden
+                    || x.Role == Role.CheifWarden)
+                {
+                    return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                }
+                else if(x.WarrantRank is not null)
+                {
+                    return x.WarrantRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                }
+                else
+                {
+                    return x.Rank.AsShorthand().StartsWith(Search.DesignationFilter);
+                }
+            }).ToList();
+        }
+
+        if(!string.IsNullOrWhiteSpace(Search.NickNameFilter))
+        {
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(Search.NickNameFilter)).ToList();
+        }
+
+        if(!string.IsNullOrWhiteSpace(Search.IdFilter))
+        {
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter)).ToList();
+        }
+
+        if(Search.RankFilter is not null)
+        {
+            Filtered = Filtered.Where(x => x.Rank == Search.RankFilter).ToList();   
+        }
+
+        if(Search.UnitFilter is not null)
+        {
+            Filtered = Filtered.Where(x => x.Slot == Search.UnitFilter).ToList();   
+        }
+
+        if(Search.RoleFilter is not null)
+        {
+            Filtered = Filtered.Where(x => x.Role == Search.RoleFilter).ToList();   
+        }
+
+        if (Search.Ascending)
+            Filtered.Sort((x, y) => x.Id.CompareTo(y.Id));
+        else
+            Filtered.Sort((x, y) => y.Id.CompareTo(x.Id));
+
+        _refresh.CallRequestRefresh();
+
+        return Task.CompletedTask;
+    }
+
+    private Task OnSearchDirectionChanged(EventArgs e)
+    {
+        Search.Ascending = !Search.Ascending;
+
+        return BuildFilteredList();
+    }
+
+    public Task OnDesgChange(ChangeEventArgs e)
+    {
+        Search.DesignationFilter = (string)e.Value;
+
+        return BuildFilteredList();
+    }
+
+    public Task OnIdChange(ChangeEventArgs e)
+    {
+        Search.IdFilter = (string)e.Value;
+
+        return BuildFilteredList();
+    }
+
+    public Task OnNickChange(ChangeEventArgs e)
+    {
+        Search.NickNameFilter = (string)e.Value;
+
+        return BuildFilteredList();
+    }
+
+    public Task OnRankChange(ChangeEventArgs e)
+    {
+        var val = ((string)e.Value);
+
+        if(val == "null") Search.RankFilter = null;
+        else Search.RankFilter = val.ValueFromString<TrooperRank>();
+
+        return BuildFilteredList();
+    }
+
+    public Task OnUnitChange(ChangeEventArgs e)
+    {
+        var val = ((string)e.Value);
+
+        if(val == "null") Search.UnitFilter = null;
+        else Search.UnitFilter = val.ValueFromString<Slot>();
+
+        return BuildFilteredList();
+    }
+
+    public Task OnRoleChange(ChangeEventArgs e)
+    {
+        var val = ((string)e.Value);
+
+        if(val == "null") Search.RoleFilter = null;
+        else Search.RoleFilter = val.ValueFromString<Role>();
+
+        return BuildFilteredList();
+    }
+}

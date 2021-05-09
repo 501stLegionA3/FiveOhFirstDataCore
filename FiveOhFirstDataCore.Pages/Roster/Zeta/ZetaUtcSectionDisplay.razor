@@ -1,0 +1,41 @@
+﻿<thead class="bg-dark text-light text-center">
+    <tr>
+        <th colspan="2">
+            501st Legion, 1st Regiment, 3rd Battalion, Company Z "Reserves"
+        </th>
+    </tr>
+    <tr>
+        <th colspan="2">
+            @Number.AsOrdinal() Section
+        </th>
+    </tr>
+</thead>
+
+<tr class="table-warning">
+    <th scope="row" class="text-right">
+        Section Commander
+    </th>
+    <td class="text-left">
+        @(UTCSection.Commander?.WarrantRank is null ? UTCSection.Commander?.Rank.AsFull() + " " ?? "" : UTCSection.Commander?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Commander?.NickName ?? "TBD")
+    </td>
+</tr>
+<tr class="table-warning">
+    <th scope="row" class="text-right">
+        Section Subordinate
+    </th>
+    <td  class="text-left">
+        @(UTCSection.Subordinate?.WarrantRank is null ? UTCSection.Subordinate?.Rank.AsFull() + " " ?? "" : UTCSection.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Subordinate?.NickName ?? "TBD")
+    </td>
+</tr>
+
+@for(int i = 0; i < UTCSection.Squads.Length; i++)
+{
+    <ZetaUtcSquadDisplay UTCSquad="UTCSection.Squads[i]" Number="i + 1" />
+}
+
+@code {
+    [Parameter]
+    public ZetaUTCSectionData UTCSection { get; set; }
+    [Parameter]
+    public int Number { get; set; }
+}

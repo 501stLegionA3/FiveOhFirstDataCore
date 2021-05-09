@@ -43,7 +43,12 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetFullRosterAsync()
         {
-            var troopers = await _dbContext.Users.AsNoTracking().ToListAsync();
+            List<Trooper> troopers = new();
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            {
+                if (x.Slot < Data.Slot.Archived)
+                    troopers.Add(x);
+            });
 
             return troopers;
         }

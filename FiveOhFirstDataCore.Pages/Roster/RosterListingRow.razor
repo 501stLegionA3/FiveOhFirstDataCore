@@ -1,0 +1,66 @@
+﻿<tr>
+    <td>
+        @if(Trooper.Role == Role.RTO)
+        {
+            @Trooper.RTORank?.AsShorthand()
+        }
+        else if(Trooper.Role == Role.Pilot)
+        {
+            @Trooper.PilotRank?.AsShorthand()
+        }
+        else if(Trooper.Role == Role.Medic)
+        {
+            @Trooper.MedicRank?.AsShorthand()
+        }
+        else if (Trooper.Role == Role.Warden
+            || Trooper.Role == Role.MasterWarden
+            || Trooper.Role == Role.CheifWarden)
+        {
+            @Trooper.WardenRank?.AsShorthand()
+        }
+        else if(Trooper.WarrantRank is not null)
+        {
+            @Trooper.WarrantRank?.AsShorthand()
+        }
+        else
+        {
+            @Trooper.Rank.AsShorthand()
+        }
+    </td>
+    <td>
+        @Trooper.Id
+    </td>
+    <td>
+        @Trooper.NickName
+    </td>
+    <td>
+        @Trooper.Rank.AsFull()
+    </td>
+    <td>
+        @Trooper.Slot.AsName()
+    </td>
+    <td>
+        @Trooper.GetRoleName()
+    </td>
+    <td>
+        @((int)DateTime.Now.Subtract(Trooper.LastPromotion).TotalDays) DAY(S)
+    </td>
+    <td>
+        @((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
+    </td>
+    <td>
+        <a href="" class="oi oi-arrow-circle-right" aria-hidden="true"></a>
+    </td>
+    <AuthorizeView Policy="RequireRosterClerk">
+        <Authorized>
+            <td>
+                <a href="" class="oi oi-pencil" aria-hidden="true"></a>
+            </td>
+        </Authorized>
+    </AuthorizeView>
+</tr>
+
+@code {
+    [Parameter]
+    public Trooper Trooper { get; set; }
+}
