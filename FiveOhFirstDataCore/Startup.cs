@@ -211,6 +211,27 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
+                options.AddPolicy("RequireMemberStaff", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("C1", "Recruiter")
+                            || ctx.User.HasClaim("C1", "Returning Member");
+                    });
+                });
+
+                options.AddPolicy("RequireRecruiter", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("C1", "Recruiter");
+                    });
+                });
+
                 options.AddPolicy("RequireC3", policy =>
                 {
                     policy.RequireAssertion(ctx =>
@@ -284,7 +305,8 @@ namespace FiveOhFirstDataCore
 
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
-                .AddScoped<IRosterService, RosterService>();
+                .AddScoped<IRosterService, RosterService>()
+                .AddScoped<INicknameComparisonService, NicknameComparisionService>();
 
 #if DEBUG
             #region Example Tools

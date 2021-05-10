@@ -2,7 +2,26 @@
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
-        <h1>Recruiter Home</h1>
+        <div class="row">
+            <div class="col-md-8 col-sm-12">
+                <div class="row text-center">
+                    <h1 class="col">Recruiting Home</h1>
+                </div>
+                <div class="row">
+                    <div class="col p-2">
+                        <a href="/c1/recruiter/addmember" class="btn btn-block btn-primary">New Recruit Form</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col text-center">
+                        <h3>Notices</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-12">
+                <h3 class="text-center">Recent Activity</h3>
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />

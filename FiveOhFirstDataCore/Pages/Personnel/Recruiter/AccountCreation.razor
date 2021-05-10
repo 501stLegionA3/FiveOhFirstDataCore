@@ -1,8 +1,56 @@
 ﻿@page "/c1/recruiter/addmember"
+@inject IRefreshRequestService _refresh
+@inject INicknameComparisonService _nicks
 
-<AuthorizeView Policy="RequireMemberStaff" >
+<AuthorizeView Policy="RequireRecruiter" Context="authContext">
     <Authorized>
-        <h2>Create New Member Account</h2>
+        <div class="row">
+            <h1 class="col">New Recruit Form</h1>
+        </div>
+        <EditForm Model="TrooperData" Context="trooperDataContext">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 form-group @(ValidNewId ? "has-success" : "has-danger")">
+                    @if(ValidNewId)
+                    {
+                        <InputText class="form-control is-valid" @oninput="IdChanged" @bind-Value="IdPlaceholder" />
+                        <div class="valid-feedback">That Birth Number is avalible!</div>
+                    }
+                    else
+                    {
+                        <InputText class="form-control is-invalid" @oninput="IdChanged" @bind-Value="IdPlaceholder" />
+                        <div class="invalid=feedback">That Birth Number has been taken or is invalid.</div>
+                    }
+                </div>
+                <div class="col-md-6 col-sm-12 form-group">
+                    <div class="row">
+                        <div class="col-md-8 col-sm-12 @(ValidNewNickname ? "has-success" : "has-danger")">
+                            @if(ValidNewNickname)
+                            {
+                                <InputText class="form-control is-vaid" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" />
+                                <div class="valid-feedback">That Nickname is avalible!</div>
+                            }
+                            else
+                            {
+                                <InputText class="form-control is-invalid" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" />
+                                <div class="invalid=feedback">That Nickname has been taken.</div>
+                            }
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="similarNames">Similar Nicknames</label>
+                            <select multiple class="form-control" id="similarNames">
+                            @foreach(var nick in SimilarNicknames)
+                            {
+                                <option value="@nick">@nick</option>
+                            }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                
+            </div>
+        </EditForm>
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />
@@ -13,5 +61,81 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
+    private HashSet<string> TakenNicknames { get; set; } = new();
+    private HashSet<int> TakenIds { get; set; } = new();
 
+    private List<string> SimilarNicknames { get; set; } = new();
+    private Timer SimNickTimer { get; set; }
+
+    private bool ValidNewId { get; set; } = false;
+    private bool ValidNewNickname { get; set; } = false;
+
+    private NewTrooperData TrooperData { get; set; } = new();
+
+    private string IdPlaceholder { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _refresh.RefreshRequested += RefreshMe;
+        await _nicks.InitalizeAsync();
+
+        SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    protected void IdChanged(ChangeEventArgs e)
+    {
+        string str = (string?)e.Value ?? "";
+        if(int.TryParse(str, out int val))
+        {
+            if(TakenIds.Contains(val))
+            {
+                ValidNewId = false;
+            }
+            else
+            {
+                TrooperData.Id = val;
+                ValidNewId = true;
+            }
+        }
+        else
+        {
+            ValidNewId = false;
+        }
+
+        _refresh.CallRequestRefresh();
+    }
+
+    protected void NicknameChanged(ChangeEventArgs e)
+    {
+        string? str = (string?)e.Value;
+
+        if(str is null
+            || TakenNicknames.Contains(str))
+        {
+            ValidNewNickname = false;
+        }
+        else
+        {
+            TrooperData.NickName = str;
+            ValidNewNickname = true;
+
+            SimNickTimer.Change(TimeSpan.FromSeconds(0.5), Timeout.InfiniteTimeSpan);
+        }
+
+        _refresh.CallRequestRefresh();
+    }
+
+    protected async Task GetNickSimList()
+    {
+        SimilarNicknames = await _nicks.GetPhoneticMatches(TrooperData.NickName);
+
+        _refresh.CallRequestRefresh();
+    }
 }

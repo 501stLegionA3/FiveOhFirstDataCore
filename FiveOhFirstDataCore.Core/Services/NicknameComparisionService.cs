@@ -1,0 +1,61 @@
+﻿using FiveOhFirstDataCore.Core.Database;
+using Lucene.Net.Analysis.Phonetic.Language;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FiveOhFirstDataCore.Core.Services
+{
+    public class NicknameComparisionService : INicknameComparisonService
+    {
+        private ConcurrentDictionary<string, List<string>> Keys { get; set; }
+
+        private readonly ApplicationDbContext _dbContext;
+
+        public NicknameComparisionService(ApplicationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+            Keys = new();
+        }
+
+        public async Task InitalizeAsync()
+        {
+            var encoder = new DoubleMetaphone();
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            {
+                var key = encoder.GetDoubleMetaphone(x.NickName);
+
+                if (key is null) return;
+
+                if(Keys.TryGetValue(key, out var list))
+                {
+                    list.Add(x.NickName);
+                }
+                else
+                {
+                    Keys[key] = new() { x.NickName };
+                }
+            });
+        }
+
+        public Task<List<string>> GetPhoneticMatches(string nickname)
+        {
+            var meta = new DoubleMetaphone();
+            var toMatch = meta.GetDoubleMetaphone(nickname);
+            List<string> names = new();
+            foreach(var pair in Keys)
+            {
+                if(meta.IsDoubleMetaphoneEqual(pair.Key, toMatch))
+                {
+                    names.AddRange(pair.Value);
+                }
+            }
+
+            return Task.FromResult(names);
+        }
+    }
+}
