@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -6,126 +7,176 @@ namespace FiveOhFirstDataCore.Core.Data
 {
     public enum TrooperRank
     {
-        [RankDisplay("CR", "Clone Recruit")]
+        [RankDisplay("CR")]
+        [Description("Recruit")]
         Recruit,
-        [RankDisplay("CR-C", "Clone Cadet")]
+        [RankDisplay("CR-C")]
+        [Description("Cadet")]
         Cadet,
-        [RankDisplay("CT", "Clone Trooper")]
+        [RankDisplay("CT")]
+        [Description("Trooper")]
         Trooper,
-        [RankDisplay("CT", "Clone Senior Trooper")]
+        [RankDisplay("CT")]
+        [Description("Senior Trooper")]
         SeniorTrooper,
-        [RankDisplay("CT", "Clone Veteran Trooper")]
+        [RankDisplay("CT")]
+        [Description("Veteran Trooper")]
         VeteranTrooper,
-        [RankDisplay("CP", "Clone Corporal")]
+        [RankDisplay("CP")]
+        [Description("Corporal")]
         Corporal,
-        [RankDisplay("CP", "Clone Senior Corporal")]
+        [RankDisplay("CP")]
+        [Description("Senior Corporal")]
         SeniorCorporal,
-        [RankDisplay("CS", "Clone Sergeant")]
+        [RankDisplay("CS")]
+        [Description("Sergeant")]
         Sergeant,
-        [RankDisplay("CS", "Clone Senior Sergeant")]
+        [RankDisplay("CS")]
+        [Description("Senior Sergeant")]
         Seniorsergeant,
-        [RankDisplay("CS-M", "Clone Sergeant Major")]
+        [RankDisplay("CS-M")]
+        [Description("Sergeant Major")]
         SergeantMajor,
-        [RankDisplay("CS-M", "Clone Company Sergeant Major")]
+        [RankDisplay("CS-M")]
+        [Description("Company Sergeant Major")]
         CompanySergeantMajor,
-        [RankDisplay("CS-M", "Clone Battalion Command Sergeant Major")]
+        [RankDisplay("CS-M")]
+        [Description("Battalion Command Sergeant Major")]
         BattalionSergeantMajor,
-        [RankDisplay("CC", "Second Lieutenant")]
+        [RankDisplay("CC")]
+        [Description("Second Lieutenant")]
         SecondLieutenant,
-        [RankDisplay("CC", "First Lieutenant")]
+        [RankDisplay("CC")]
+        [Description("First Lieutenant")]
         FirstLieutenant,
-        [RankDisplay("CC", "Captian")]
+        [RankDisplay("CC")]
+        [Description("Captian")]
         Captian,
-        [RankDisplay("BC", "Major")]
+        [RankDisplay("BC")]
+        [Description("Major")]
         Major
     }
 
 
     public enum MedicRank
     {
-        [RankDisplay("CM-C", "Clone Medical Cadet")]
+        [RankDisplay("CM-C")]
+        [Description("Medical Cadet")]
         Cadet,
-        [RankDisplay("CM", "Clone Medic")]
+        [RankDisplay("CM")]
+        [Description("Medic")]
         Medic,
-        [RankDisplay("CM-T", "Clone Medical Technician")]
+        [RankDisplay("CM-T")]
+        [Description("Medical Technician")]
         Technician,
-        [RankDisplay("CM-P", "Clone Medical Corporal")]
+        [RankDisplay("CM-P")]
+        [Description("Medical Corporal")]
         Corporal,
-        [RankDisplay("CM-S", "Clone Medical Sergeant")]
+        [RankDisplay("CM-S")]
+        [Description("Medical Sergeant")]
         Sergeant,
-        [RankDisplay("CM-O", "Clone Batallion Medical Sergeant Major")]
+        [RankDisplay("CM-O")]
+        [Description("Batallion Medical Sergeant Major")]
         BattalionSergeantMajor
     }
 
     public enum RTORank
     {
-        [RankDisplay("CI-C", "Clone Intercommunicator Cadet")]
+        [RankDisplay("CI-C")]
+        [Description("Intercommunicator Cadet")]
         Cadet,
-        [RankDisplay("CI", "Clone Intercommunicator")]
+        [RankDisplay("CI")]
+        [Description("Intercommunicator")]
         Intercommunicator,
-        [RankDisplay("CI-T", "Clone Intercommunicator Technician")]
+        [RankDisplay("CI-T")]
+        [Description("Intercommunicator Technician")]
         Technician,
-        [RankDisplay("CI-P", "Clone Intercommunicator Corporal")]
+        [RankDisplay("CI-P")]
+        [Description("Intercommunicator Corporal")]
         Corporal,
-        [RankDisplay("CI-S", "Clone Intercommunicator Sergeant")]
+        [RankDisplay("CI-S")]
+        [Description("Intercommunicator Sergeant")]
         Sergeant,
-        [RankDisplay("CI-O", "Clone Batallion Radio Sergeant Major")]
+        [RankDisplay("CI-O")]
+        [Description("Batallion Radio Sergeant Major")]
         BattalionSergeantMajor
     }
 
     public enum WarrantRank
     {
-        [RankDisplay("CW", "Chief Warrant Officer")]
+        [RankDisplay("CW")]
+        [Description("Chief Warrant Officer")]
         Chief,
-        [RankDisplay("CW-T", "Chief Warrant Officer One")]
+        [RankDisplay("CW-T")]
+        [Description("Chief Warrant Officer One")]
         One,
-        [RankDisplay("CW-P", "Chief Warrant Officer Two")]
+        [RankDisplay("CW-P")]
+        [Description("Chief Warrant Officer Two")]
         Two,
-        [RankDisplay("CW-S", "Chief Warrant Officer Three")]
+        [RankDisplay("CW-S")]
+        [Description("Chief Warrant Officer Three")]
         Three,
-        [RankDisplay("CW-M", "Chief Warrant Officer Four")]
+        [RankDisplay("CW-M")]
+        [Description("Chief Warrant Officer Four")]
         Four,
-        [RankDisplay("CW-O", "Chief Warrant Officer Five")]
+        [RankDisplay("CW-O")]
+        [Description("Chief Warrant Officer Five")]
         Five
     }
 
     public enum PilotRank
     {
-        [RankDisplay("CX-C", "Cadet")]
+        [RankDisplay("CX-C")]
+        [Description("Cadet")]
         Cadet,
-        [RankDisplay("CX-C", "Senior Cadet")]
+        [RankDisplay("CX-C")]
+        [Description("Senior Cadet")]
         SeniorCadet,
-        [RankDisplay("CX-X", "Ensign")]
+        [RankDisplay("CX-X")]
+        [Description("Ensign")]
         Ensign,
-        [RankDisplay("CX-X", "Senior Ensign")]
+        [RankDisplay("CX-X")]
+        [Description("Senior Ensign")]
         SeniorEnsign,
-        [RankDisplay("CX-M", "Master Aviator")]
+        [RankDisplay("CX-M")]
+        [Description("Master Aviator")]
         Master,
-        [RankDisplay("CX-P", "Flight Officer")]
+        [RankDisplay("CX-P")]
+        [Description("Flight Officer")]
         FlightOfficer,
-        [RankDisplay("CX-S", "Junior Lieutenant")]
+        [RankDisplay("CX-S")]
+        [Description("Junior Lieutenant")]
         JuniorLieutenant,
-        [RankDisplay("CX", "Second Lieutenant")]
+        [RankDisplay("CX")]
+        [Description("Second Lieutenant")]
         SecondLieutenant,
-        [RankDisplay("CX", "First Lieutenant")]
+        [RankDisplay("CX")]
+        [Description("First Lieutenant")]
         FirstLieutenant,
-        [RankDisplay("CX", "Captian")]
+        [RankDisplay("CX")]
+        [Description("Captian")]
         Captian,
-        [RankDisplay("CX-W", "Warden")]
+        [RankDisplay("CX-W")]
+        [Description("Warden")]
         Warden
     }
 
     public enum WardenRank
     {
-        [RankDisplay("CX-W", "Petty Officer")]
+        [RankDisplay("CX-W")]
+        [Description("Petty Officer")]
         Warden,
-        [RankDisplay("CX-W", "Senior Petty Officer")]
+        [RankDisplay("CX-W")]
+        [Description("Senior Petty Officer")]
         Senior,
-        [RankDisplay("CX-W", "Veteran Petty Officer")]
+        [RankDisplay("CX-W")]
+        [Description("Veteran Petty Officer")]
         Veteran,
-        [RankDisplay("CX-W", "Chief Petty Officer")]
+        [RankDisplay("CX-W")]
+        [Description("Chief Petty Officer")]
         Chief,
-        [RankDisplay("CX-W", "Master Chief Petty Officer")]
+        [RankDisplay("CX-W")]
+        [Description("Master Chief Petty Officer")]
         Master,
     }
 
@@ -133,12 +184,10 @@ namespace FiveOhFirstDataCore.Core.Data
     public class RankDisplayAttribute : Attribute
     {
         public string Shorthand { get; set; } = "";
-        public string Full { get; set; } = "";
 
-        public RankDisplayAttribute(string shorthand, string full)
+        public RankDisplayAttribute(string shorthand)
         {
             Shorthand = shorthand;
-            Full = full;
         }
     }
 
@@ -165,8 +214,8 @@ namespace FiveOhFirstDataCore.Core.Data
             if (name is null) return "";
 
             return type?.GetField(name)
-                ?.GetCustomAttribute<RankDisplayAttribute>()
-                ?.Full ?? "";
+                ?.GetCustomAttribute<DescriptionAttribute>()
+                ?.Description ?? "";
         }
 
         public static T? ValueFromString<T>(this string value) where T : Enum

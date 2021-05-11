@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -6,41 +7,41 @@ namespace FiveOhFirstDataCore.Core.Data
 {
     public enum Role
     {
-        [RoleDetails("Leader")]
+        [Description("Leader")]
         Lead,
-        [RoleDetails("RT")]
+        [Description("RT")]
         RTO,
-        [RoleDetails("Trooper")]
+        [Description("Trooper")]
         Trooper,
-        [RoleDetails("Medic")]
+        [Description("Medic")]
         Medic,
-        [RoleDetails("ARC Trooper")]
+        [Description("ARC Trooper")]
         ARC,
-        [RoleDetails("Commander")]
+        [Description("Commander")]
         Commander,
-        [RoleDetails("Sergeant Major")]
+        [Description("Sergeant Major")]
         SergeantMajor,
-        [RoleDetails("XO")]
+        [Description("XO")]
         XO,
-        [RoleDetails("NCOIC")]
+        [Description("NCOIC")]
         NCOIC,
-        [RoleDetails("Adjutant")]
+        [Description("Adjutant")]
         Adjutant,
-        [RoleDetails("C-Shop XO")]
+        [Description("C-Shop XO")]
         CShopXO,
-        [RoleDetails("C-Shop Commander")]
+        [Description("C-Shop Commander")]
         CShopCommander,
-        [RoleDetails("Sub-Commander")]
+        [Description("Sub-Commander")]
         SubCommander,
-        [RoleDetails("Master Warden")]
+        [Description("Master Warden")]
         MasterWarden,
-        [RoleDetails("Cheif Warden")]
+        [Description("Cheif Warden")]
         CheifWarden,
-        [RoleDetails("Warden")]
+        [Description("Warden")]
         Warden,
-        [RoleDetails("Pilot")]
+        [Description("Pilot")]
         Pilot,
-        [RoleDetails("Subordinate")]
+        [Description("Subordinate")]
         Subordiante
     }
 
@@ -64,11 +65,11 @@ namespace FiveOhFirstDataCore.Core.Data
             if (name is null) return "";
 
             var attribute = type?.GetField(name)
-                ?.GetCustomAttributes<RoleDetailsAttribute>()
+                ?.GetCustomAttributes<DescriptionAttribute>()
                 .SingleOrDefault();
 
             if (attribute is null) return "";
-            else return attribute.Name;
+            else return attribute.Description;
         }
     }
 }

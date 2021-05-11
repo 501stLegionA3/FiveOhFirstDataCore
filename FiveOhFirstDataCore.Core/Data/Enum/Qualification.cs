@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -11,14 +12,23 @@ namespace FiveOhFirstDataCore.Core.Data
     public enum Qualification : long
     {
         None = 0x0000000000,
+        [Description("Zeus")]
         Zeus = 0x0000000001, // 1 << 0
+        [Description("RTO")]
         RTO = 0x0000000002, // 1 << 1
+        [Description("Assault")]
         Assault = 0x0000000004, // 1 << 2
+        [Description("Marksman")]
         Marksman = 0x0000000008, // 1 << 3
+        [Description("Grenadier")]
         Grenadier = 0x0000000010, // 1 << 4
+        [Description("Support")]
         Support = 0x0000000020, // 1 << 5
+        [Description("Medic")]
         Medic = 0x0000000040, // 1 << 6
+        [Description("Jumpmaster")]
         Jumpmaster = 0x0000000080, // 1 << 7
+        [Description("Combat Engineer")]
         CombatEngineer = 0x0000000100 // 1 << 8
     }
 

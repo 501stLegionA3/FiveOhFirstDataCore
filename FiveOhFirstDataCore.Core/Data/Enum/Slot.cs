@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 
@@ -7,171 +8,160 @@ namespace FiveOhFirstDataCore.Core.Data
     public enum Slot : int
     {
         // Command
-        [SlotDetails("Hailstorm HQ")]
+        [Description("Hailstorm HQ")]
         Hailstorm = 0,
         // Avalanche
-        [SlotDetails("Avalanche HQ")]
+        [Description("Avalanche HQ")]
         AvalancheCompany = 100,
-        [SlotDetails("Avalanche 1 HQ")]
+        [Description("Avalanche 1 HQ")]
         AvalancheOne = 110,
-        [SlotDetails("Avalanche 1-1")]
+        [Description("Avalanche 1-1")]
         AvalancheOneOne,
-        [SlotDetails("Avalanche 1-2")]
+        [Description("Avalanche 1-2")]
         AvalancheOneTwo,
-        [SlotDetails("Avalanche 1-3")]
+        [Description("Avalanche 1-3")]
         AvalancheOneThree,
-        [SlotDetails("Avalanche 2 HQ")]
+        [Description("Avalanche 2 HQ")]
         AvalancheTwo = 120,
-        [SlotDetails("Avalanche 2-1")]
+        [Description("Avalanche 2-1")]
         AvalancheTwoOne,
-        [SlotDetails("Avalanche 2-2")]
+        [Description("Avalanche 2-2")]
         AvalancheTwoTwo,
-        [SlotDetails("Avalanche 2-3")]
+        [Description("Avalanche 2-3")]
         AvalancheTwoThree,
-        [SlotDetails("Avalanche 3 HQ")]
+        [Description("Avalanche 3 HQ")]
         AvalancheThree = 130,
-        [SlotDetails("Avalanche 3-1")]
+        [Description("Avalanche 3-1")]
         AvalancheThreeOne,
-        [SlotDetails("Avalanche 3-2")]
+        [Description("Avalanche 3-2")]
         AvalancheThreeTwo,
-        [SlotDetails("Avalanche 3-3")]
+        [Description("Avalanche 3-3")]
         AvalancheThreeThree,
         // Cyclone
-        [SlotDetails("Cyclone HQ")]
+        [Description("Cyclone HQ")]
         CycloneCompany = 200,
-        [SlotDetails("Cyclone 1 HQ")]
+        [Description("Cyclone 1 HQ")]
         CycloneOne = 210,
-        [SlotDetails("Cyclone 1-1")]
+        [Description("Cyclone 1-1")]
         CycloneOneOne,
-        [SlotDetails("Cyclone 1-2")]
+        [Description("Cyclone 1-2")]
         CycloneOneTwo,
-        [SlotDetails("Cyclone 1-3")]
+        [Description("Cyclone 1-3")]
         CycloneOneThree,
-        [SlotDetails("Cyclone 2 HQ")]
+        [Description("Cyclone 2 HQ")]
         CycloneTwo = 220,
-        [SlotDetails("Cyclone 2-1")]
+        [Description("Cyclone 2-1")]
         CycloneTwoOne,
-        [SlotDetails("Cyclone 2-2")]
+        [Description("Cyclone 2-2")]
         CycloneTwoTwo,
-        [SlotDetails("Cyclone 2-3")]
+        [Description("Cyclone 2-3")]
         CycloneTwoThree,
-        [SlotDetails("Cyclone 3 HQ")]
+        [Description("Cyclone 3 HQ")]
         CycloneThree = 230,
-        [SlotDetails("Cyclone 3-1")]
+        [Description("Cyclone 3-1")]
         CycloneThreeOne,
-        [SlotDetails("Cyclone 3-2")]
+        [Description("Cyclone 3-2")]
         CycloneThreeTwo,
-        [SlotDetails("Cyclone 3-3")]
+        [Description("Cyclone 3-3")]
         CycloneThreeThree,
         // Airborne.
-        [SlotDetails("Acklay HQ")]
+        [Description("Acklay HQ")]
         AcklayCompany = 300,
-        [SlotDetails("Acklay 1 HQ")]
+        [Description("Acklay 1 HQ")]
         AcklayOne = 310,
-        [SlotDetails("Acklay 1-1")]
+        [Description("Acklay 1-1")]
         AcklayOneOne,
-        [SlotDetails("Acklay 1-2")]
+        [Description("Acklay 1-2")]
         AcklayOneTwo,
-        [SlotDetails("Acklay 1-3")]
+        [Description("Acklay 1-3")]
         AcklayOneThree,
-        [SlotDetails("Acklay 2 HQ")]
+        [Description("Acklay 2 HQ")]
         AcklayTwo = 320,
-        [SlotDetails("Acklay 2-1")]
+        [Description("Acklay 2-1")]
         AcklayTwoOne,
-        [SlotDetails("Acklay 2-2")]
+        [Description("Acklay 2-2")]
         AcklayTwoTwo,
-        [SlotDetails("Acklay 2-3")]
+        [Description("Acklay 2-3")]
         AcklayTwoThree,
         // Mynock
-        [SlotDetails("Bastion Detachment")]
+        [Description("Bastion Detachment")]
         Mynock = 400,
-        [SlotDetails("Bastion Detachment")]
+        [Description("Bastion Detachment")]
         MynockOneOne,
-        [SlotDetails("Bastion Detachment")]
+        [Description("Bastion Detachment")]
         MynockOneTwo,
-        [SlotDetails("Bastion Detachment")]
+        [Description("Bastion Detachment")]
         MynockOneThree,
         // Aviators
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         Razor = 500,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorOne = 510,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorOneOne,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorOneTwo,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorTwo = 520,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorTwoOne,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorTwoTwo,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorThree = 530,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorThreeOne,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorThreeTwo,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFour = 540,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFourOne,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFourTwo,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFive = 550,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFiveOne,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         RazorFiveTwo,
-        [SlotDetails("Razor Squadron")]
+        [Description("Razor Squadron")]
         Warden = 560,
         // Reserve.
-        [SlotDetails("Zeta HQ")]
+        [Description("Zeta HQ")]
         ZetaCompany = 600,
-        [SlotDetails("Zeta 1 HQ")]
+        [Description("Zeta 1 HQ")]
         ZetaOne = 610,
-        [SlotDetails("Zeta 1-1")]
+        [Description("Zeta 1-1")]
         ZetaOneOne,
-        [SlotDetails("Zeta 1-2")]
+        [Description("Zeta 1-2")]
         ZetaOneTwo,
-        [SlotDetails("Zeta 1-3")]
+        [Description("Zeta 1-3")]
         ZetaOneThree,
-        [SlotDetails("Zeta 2 HQ")]
+        [Description("Zeta 2 HQ")]
         ZetaTwo = 620,
-        [SlotDetails("Zeta 2-1")]
+        [Description("Zeta 2-1")]
         ZetaTwoOne,
-        [SlotDetails("Zeta 2-2")]
+        [Description("Zeta 2-2")]
         ZetaTwoTwo,
-        [SlotDetails("Zeta 2-3")]
+        [Description("Zeta 2-3")]
         ZetaTwoThree,
-        [SlotDetails("Zeta 3 HQ")]
+        [Description("Zeta 3 HQ")]
         ZetaThree = 630,
-        [SlotDetails("Zeta 3-1")]
+        [Description("Zeta 3-1")]
         ZetaThreeOne,
-        [SlotDetails("Zeta 3-2")]
+        [Description("Zeta 3-2")]
         ZetaThreeTwo,
-        [SlotDetails("Zeta 3-3")]
+        [Description("Zeta 3-3")]
         ZetaThreeThree,
-        [SlotDetails("Zeta 3-4")]
+        [Description("Zeta 3-4")]
         ZetaThreeFour,
         // Inactive
-        [SlotDetails("Inactive Reserves")]
+        [Description("Inactive Reserves")]
         InactiveReserve = 700,
         // Archives
-        [SlotDetails("Archived")]
+        [Description("Archived")]
         Archived = 1000
-    }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class SlotDetailsAttribute : Attribute
-    {
-        public string Name { get; set; } = "";
-
-        public SlotDetailsAttribute(string name)
-        {
-            Name = name;
-        }
     }
 
     public static class SlotExtensions
@@ -184,9 +174,9 @@ namespace FiveOhFirstDataCore.Core.Data
             if (name is null) return "";
 
             return type?.GetField(name)
-                ?.GetCustomAttributes<SlotDetailsAttribute>()
+                ?.GetCustomAttributes<DescriptionAttribute>()
                 .SingleOrDefault()
-                ?.Name ?? "";
+                ?.Description ?? "";
         }
     }
 }
