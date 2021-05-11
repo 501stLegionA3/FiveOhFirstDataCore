@@ -35,6 +35,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public string? SteamLink { get; set; }
         public string? AccessCode { get; set; }
 
+        public RecruitStatus RecruitStatus { get; set; } = new();
+
         public string GetRoleName()
         {
             if (Slot == Slot.InactiveReserve)

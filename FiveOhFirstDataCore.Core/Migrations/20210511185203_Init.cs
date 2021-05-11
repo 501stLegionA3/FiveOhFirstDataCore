@@ -176,6 +176,27 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RecruitStatuses",
+                columns: table => new
+                {
+                    RecruitStatusKey = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OverSixteen = table.Column<bool>(type: "boolean", nullable: false),
+                    ModsInstalled = table.Column<bool>(type: "boolean", nullable: false),
+                    TrooperId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecruitStatuses", x => x.RecruitStatusKey);
+                    table.ForeignKey(
+                        name: "FK_RecruitStatuses_AspNetUsers_TrooperId",
+                        column: x => x.TrooperId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -212,6 +233,12 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecruitStatuses_TrooperId",
+                table: "RecruitStatuses",
+                column: "TrooperId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -230,6 +257,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "RecruitStatuses");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

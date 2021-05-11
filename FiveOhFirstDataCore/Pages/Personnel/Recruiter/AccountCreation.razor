@@ -1,6 +1,7 @@
 ﻿@page "/c1/recruiter/addmember"
 @inject IRefreshRequestService _refresh
 @inject INicknameComparisonService _nicks
+@inject IRosterService _roster
 
 <AuthorizeView Policy="RequireRecruiter" Context="authContext">
     <Authorized>
@@ -9,31 +10,19 @@
         </div>
         <EditForm Model="TrooperData" Context="trooperDataContext">
             <div class="row">
-                <div class="col-md-6 col-sm-12 form-group @(ValidNewId ? "has-success" : "has-danger")">
-                    @if(ValidNewId)
-                    {
-                        <InputText class="form-control is-valid" @oninput="IdChanged" @bind-Value="IdPlaceholder" />
-                        <div class="valid-feedback">That Birth Number is avalible!</div>
-                    }
-                    else
-                    {
-                        <InputText class="form-control is-invalid" @oninput="IdChanged" @bind-Value="IdPlaceholder" />
-                        <div class="invalid=feedback">That Birth Number has been taken or is invalid.</div>
-                    }
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group @(ValidNewId ? "has-success" : "has-danger")">
+                    <label for="idSetter">Birth Number</label>
+                    <InputTextValid class="form-control" id="idSetter" @oninput="IdChanged" @bind-Value="IdPlaceholder" Valid="ValidNewId" />
+                    <div class="valid-feedback">That Birth Number is avalible!</div>
+                    <div class="invalid-feedback">That Birth Number has been taken or is invalid.</div>
                 </div>
-                <div class="col-md-6 col-sm-12 form-group">
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group">
                     <div class="row">
                         <div class="col-md-8 col-sm-12 @(ValidNewNickname ? "has-success" : "has-danger")">
-                            @if(ValidNewNickname)
-                            {
-                                <InputText class="form-control is-vaid" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" />
-                                <div class="valid-feedback">That Nickname is avalible!</div>
-                            }
-                            else
-                            {
-                                <InputText class="form-control is-invalid" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" />
-                                <div class="invalid=feedback">That Nickname has been taken.</div>
-                            }
+                            <label for="nicknameSetter">Nickname</label>
+                            <InputTextValid class="form-control" id="nicknameSetter" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" Valid="ValidNewNickname" />
+                            <div class="valid-feedback">That Nickname is avalible!</div>
+                            <div class="invalid-feedback">That Nickname has been taken or is invalid.</div>
                         </div>
                         <div class="col-md-4 col-sm-12">
                             <label for="similarNames">Similar Nicknames</label>
@@ -48,7 +37,28 @@
                 </div>
             </div>
             <div class="row">
-                
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <label for="startingRole">Starting Role</label>
+                    <InputEnumSelect @bind-Value="TrooperData.StartingRank" class="form-control" id="startingRole" />
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group" id="miscData">
+                <fieldset>    
+                    <label for="miscData">Member Details</label>
+                        <div class="form-check">
+                            <InputCheckbox @bind-Value="TrooperData.Sixteen" class="form-check-input" id="overSixteen" />
+                            <label for="overSixteen" class="form-check-label">Over Sixteen</label>
+                        </div>
+                        <div class="form-check">
+                            <InputCheckbox @bind-Value="TrooperData.ModsDownloaded" class="form-check-input" id="hasModsInstalled" />
+                            <label for="hasModsInstalled" class="form-check-label">Mods Installed</label>
+                        </div>
+                </fieldset>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-block btn-primary" @onclick="async (x) => await SubmitNewMember()" >Submit</button>
+                </div>
             </div>
         </EditForm>
     </Authorized>
@@ -80,6 +90,10 @@
 
         _refresh.RefreshRequested += RefreshMe;
         await _nicks.InitalizeAsync();
+        var inUse = await _roster.GetInUseUserDataAsync();
+
+        TakenIds = inUse.Item1;
+        TakenNicknames = inUse.Item2;
 
         SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
     }
@@ -116,7 +130,8 @@
     {
         string? str = (string?)e.Value;
 
-        if(str is null
+        if (string.IsNullOrWhiteSpace(str)
+            || !str.IsAlphabetical()
             || TakenNicknames.Contains(str))
         {
             ValidNewNickname = false;
@@ -125,10 +140,9 @@
         {
             TrooperData.NickName = str;
             ValidNewNickname = true;
-
-            SimNickTimer.Change(TimeSpan.FromSeconds(0.5), Timeout.InfiniteTimeSpan);
         }
 
+        SimNickTimer.Change(TimeSpan.FromSeconds(0.5), Timeout.InfiniteTimeSpan);
         _refresh.CallRequestRefresh();
     }
 
@@ -137,5 +151,10 @@
         SimilarNicknames = await _nicks.GetPhoneticMatches(TrooperData.NickName);
 
         _refresh.CallRequestRefresh();
+    }
+
+    protected async Task SubmitNewMember()
+    {
+        
     }
 }

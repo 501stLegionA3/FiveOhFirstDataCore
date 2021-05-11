@@ -12,7 +12,7 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class NicknameComparisionService : INicknameComparisonService
     {
-        private ConcurrentDictionary<string, List<string>> Keys { get; set; }
+        private ConcurrentDictionary<string, HashSet<string>> Keys { get; set; }
 
         private readonly ApplicationDbContext _dbContext;
 

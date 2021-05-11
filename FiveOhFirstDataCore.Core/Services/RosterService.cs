@@ -65,6 +65,21 @@ namespace FiveOhFirstDataCore.Core.Services
             return troopers;
         }
 
+        public async Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync()
+        {
+            HashSet<int> ids = new();
+            HashSet<string> nicknames = new();
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            {
+                ids.Add(x.Id);
+
+                if (x.Slot < Data.Slot.InactiveReserve)
+                    nicknames.Add(x.NickName);
+            });
+
+            return (ids, nicknames);
+        }
+
         public async Task<OrbatData> GetOrbatDataAsync()
         {
             OrbatData data = new();

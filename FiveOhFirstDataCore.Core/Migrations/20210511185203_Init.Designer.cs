@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210509223151_Init")]
+    [Migration("20210511185203_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,30 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
                 .HasAnnotation("ProductVersion", "6.0.0-preview.3.21201.2")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
+                {
+                    b.Property<int>("RecruitStatusKey")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("ModsInstalled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("OverSixteen")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("TrooperId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("RecruitStatusKey");
+
+                    b.HasIndex("TrooperId")
+                        .IsUnique();
+
+                    b.ToTable("RecruitStatuses");
+                });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
                 {
@@ -281,6 +305,17 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Trooper")
+                        .WithOne("RecruitStatus")
+                        .HasForeignKey("FiveOhFirstDataCore.Core.Account.RecruitStatus", "TrooperId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trooper");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.TrooperRole", null)
@@ -329,6 +364,12 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
+                {
+                    b.Navigation("RecruitStatus")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

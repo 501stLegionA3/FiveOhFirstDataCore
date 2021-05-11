@@ -14,5 +14,6 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<List<Trooper>> GetFullRosterAsync();
         public Task<OrbatData> GetOrbatDataAsync();
         public Task<ZetaOrbatData> GetZetaOrbatDataAsync();
+        public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
     }
 }

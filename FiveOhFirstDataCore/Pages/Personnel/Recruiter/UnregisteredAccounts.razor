@@ -1,0 +1,38 @@
+﻿@page "/c1/recruiter/unrgistered"
+
+<AuthorizeView Policy="RequireRecruiter">
+    <Authorized>
+        <EditForm Context="unregisteredForm" class="form form-inline" Model="this">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td colspan="3">
+                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" />
+                        </td>
+                        <td colspan="2">
+                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Birth #</th>
+                        <th scope="col">Nickname</th>
+                        <th scope="col">Over 16?</th>
+                        <th scope="col">Mods Installed?</th>
+                        <th scope="col">Access Token</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </EditForm>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public string IdSearch { get; set; } = "";
+    public string NickSearch { get; set; } = "";
+}
