@@ -177,6 +177,89 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CShopChanges",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Added = table.Column<long>(type: "bigint", nullable: false),
+                    Removed = table.Column<long>(type: "bigint", nullable: false),
+                    OldCShops = table.Column<long>(type: "bigint", nullable: false),
+                    ChangedById = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CShopChanges", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_CShopChanges_AspNetUsers_ChangedById",
+                        column: x => x.ChangedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CShopChanges_AspNetUsers_ChangeForId",
+                        column: x => x.ChangeForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QualificationChanges",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Added = table.Column<long>(type: "bigint", nullable: false),
+                    Removed = table.Column<long>(type: "bigint", nullable: false),
+                    Revoked = table.Column<bool>(type: "boolean", nullable: false),
+                    OldQualifications = table.Column<long>(type: "bigint", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QualificationChanges", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_QualificationChanges_AspNetUsers_ChangeForId",
+                        column: x => x.ChangeForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RankChanges",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChangedFrom = table.Column<int>(type: "integer", nullable: false),
+                    ChangedTo = table.Column<int>(type: "integer", nullable: false),
+                    ChangedById = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RankChanges", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_RankChanges_AspNetUsers_ChangedById",
+                        column: x => x.ChangedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RankChanges_AspNetUsers_ChangeForId",
+                        column: x => x.ChangeForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RecruitStatuses",
                 columns: table => new
                 {
@@ -194,6 +277,82 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         column: x => x.TrooperId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SlotChanges",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    NewSlot = table.Column<int>(type: "integer", nullable: false),
+                    NewTeam = table.Column<int>(type: "integer", nullable: true),
+                    NewRole = table.Column<int>(type: "integer", nullable: true),
+                    NewFlight = table.Column<int>(type: "integer", nullable: true),
+                    OldSlot = table.Column<int>(type: "integer", nullable: false),
+                    OldTeam = table.Column<int>(type: "integer", nullable: true),
+                    OldRole = table.Column<int>(type: "integer", nullable: true),
+                    OldFlight = table.Column<int>(type: "integer", nullable: true),
+                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SlotChanges", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_SlotChanges_AspNetUsers_ChangeForId",
+                        column: x => x.ChangeForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QualificationChangeTrooper",
+                columns: table => new
+                {
+                    InstructorsId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedQualificationChangesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QualificationChangeTrooper", x => new { x.InstructorsId, x.SubmittedQualificationChangesChangeId });
+                    table.ForeignKey(
+                        name: "FK_QualificationChangeTrooper_AspNetUsers_InstructorsId",
+                        column: x => x.InstructorsId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QualificationChangeTrooper_QualificationChanges_SubmittedQu~",
+                        column: x => x.SubmittedQualificationChangesChangeId,
+                        principalTable: "QualificationChanges",
+                        principalColumn: "ChangeId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SlotChangeTrooper",
+                columns: table => new
+                {
+                    ApprovedById = table.Column<int>(type: "integer", nullable: false),
+                    ApprovedSlotChangesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SlotChangeTrooper", x => new { x.ApprovedById, x.ApprovedSlotChangesChangeId });
+                    table.ForeignKey(
+                        name: "FK_SlotChangeTrooper_AspNetUsers_ApprovedById",
+                        column: x => x.ApprovedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SlotChangeTrooper_SlotChanges_ApprovedSlotChangesChangeId",
+                        column: x => x.ApprovedSlotChangesChangeId,
+                        principalTable: "SlotChanges",
+                        principalColumn: "ChangeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -235,10 +394,50 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CShopChanges_ChangedById",
+                table: "CShopChanges",
+                column: "ChangedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CShopChanges_ChangeForId",
+                table: "CShopChanges",
+                column: "ChangeForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QualificationChanges_ChangeForId",
+                table: "QualificationChanges",
+                column: "ChangeForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_QualificationChangeTrooper_SubmittedQualificationChangesCha~",
+                table: "QualificationChangeTrooper",
+                column: "SubmittedQualificationChangesChangeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RankChanges_ChangedById",
+                table: "RankChanges",
+                column: "ChangedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RankChanges_ChangeForId",
+                table: "RankChanges",
+                column: "ChangeForId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RecruitStatuses_TrooperId",
                 table: "RecruitStatuses",
                 column: "TrooperId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SlotChanges_ChangeForId",
+                table: "SlotChanges",
+                column: "ChangeForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SlotChangeTrooper_ApprovedSlotChangesChangeId",
+                table: "SlotChangeTrooper",
+                column: "ApprovedSlotChangesChangeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -259,10 +458,28 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "CShopChanges");
+
+            migrationBuilder.DropTable(
+                name: "QualificationChangeTrooper");
+
+            migrationBuilder.DropTable(
+                name: "RankChanges");
+
+            migrationBuilder.DropTable(
                 name: "RecruitStatuses");
 
             migrationBuilder.DropTable(
+                name: "SlotChangeTrooper");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "QualificationChanges");
+
+            migrationBuilder.DropTable(
+                name: "SlotChanges");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

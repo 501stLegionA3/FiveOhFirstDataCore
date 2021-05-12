@@ -7,16 +7,12 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures
 {
-    public class RegisterTrooperResult
+    public class RegisterTrooperResult : ResultBase
     {
-        private bool Success { get; set; }
         public string? AccessToken { get; set; }
-        private List<string>? Errors { get; set; }
 
-        public RegisterTrooperResult(bool success, string? accessToken, List<string>? errors = null)
+        public RegisterTrooperResult(bool success, string? accessToken, List<string>? errors = null) : base(success, errors)
         {
-            Success = success;
-            Errors = errors;
             AccessToken = accessToken;
         }
 

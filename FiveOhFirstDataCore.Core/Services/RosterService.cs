@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
-    public class RosterService : IRosterService
+    public partial class RosterService : IRosterService
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Trooper> _userManager;

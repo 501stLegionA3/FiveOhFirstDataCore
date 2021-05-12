@@ -1,4 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Updates;
+using J2N.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using System;
 
@@ -36,6 +39,22 @@ namespace FiveOhFirstDataCore.Core.Account
         public string? AccessCode { get; set; }
 
         public RecruitStatus RecruitStatus { get; set; } = new();
+
+        /// <summary>
+        /// Rank changes applied to this account.
+        /// </summary>
+        public List<RankChange> RankChanges { get; set; } = new();
+        /// <summary>
+        /// Rank changes submitted by this account for other accounts.
+        /// </summary>
+        public List<RankChange> SubmittedRankChanges { get; set; } = new();
+        public List<SlotChange> SlotChanges { get; set; } = new();
+        public List<SlotChange> ApprovedSlotChanges { get; set; } = new();
+        public List<CShopChange> CShopChanges { get; set; } = new();
+        public List<CShopChange> SubmittedCShopChanges { get; set; } = new();
+        public List<QualificationChange> QualificationChanges { get; set; } = new();
+        public List<QualificationChange> SubmittedQualificationChanges { get; set; } = new();
+
 
         public string GetRoleName()
         {

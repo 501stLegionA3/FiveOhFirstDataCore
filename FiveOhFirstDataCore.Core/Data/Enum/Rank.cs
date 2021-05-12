@@ -5,11 +5,11 @@ using System.Reflection;
 
 namespace FiveOhFirstDataCore.Core.Data
 {
-    public enum TrooperRank
+    public enum TrooperRank : int
     {
         [RankDisplay("CR")]
         [Description("Recruit")]
-        Recruit,
+        Recruit = 0,
         [RankDisplay("CR-C")]
         [Description("Cadet")]
         Cadet,
@@ -58,11 +58,11 @@ namespace FiveOhFirstDataCore.Core.Data
     }
 
 
-    public enum MedicRank
+    public enum MedicRank : int
     {
         [RankDisplay("CM-C")]
         [Description("Medical Cadet")]
-        Cadet,
+        Cadet = 100,
         [RankDisplay("CM")]
         [Description("Medic")]
         Medic,
@@ -80,11 +80,11 @@ namespace FiveOhFirstDataCore.Core.Data
         BattalionSergeantMajor
     }
 
-    public enum RTORank
+    public enum RTORank : int
     {
         [RankDisplay("CI-C")]
         [Description("Intercommunicator Cadet")]
-        Cadet,
+        Cadet = 200,
         [RankDisplay("CI")]
         [Description("Intercommunicator")]
         Intercommunicator,
@@ -102,11 +102,11 @@ namespace FiveOhFirstDataCore.Core.Data
         BattalionSergeantMajor
     }
 
-    public enum WarrantRank
+    public enum WarrantRank : int
     {
         [RankDisplay("CW")]
         [Description("Chief Warrant Officer")]
-        Chief,
+        Chief = 300,
         [RankDisplay("CW-T")]
         [Description("Chief Warrant Officer One")]
         One,
@@ -124,11 +124,11 @@ namespace FiveOhFirstDataCore.Core.Data
         Five
     }
 
-    public enum PilotRank
+    public enum PilotRank : int
     {
         [RankDisplay("CX-C")]
         [Description("Cadet")]
-        Cadet,
+        Cadet = 400,
         [RankDisplay("CX-C")]
         [Description("Senior Cadet")]
         SeniorCadet,
@@ -161,11 +161,11 @@ namespace FiveOhFirstDataCore.Core.Data
         Warden
     }
 
-    public enum WardenRank
+    public enum WardenRank : int
     {
         [RankDisplay("CX-W")]
         [Description("Petty Officer")]
-        Warden,
+        Warden = 500,
         [RankDisplay("CX-W")]
         [Description("Senior Petty Officer")]
         Senior,
@@ -193,6 +193,49 @@ namespace FiveOhFirstDataCore.Core.Data
 
     public static class RankExtensions
     {
+        public static Enum? GetRank(this int value)
+        {
+            if (value == -1) return null;
+
+            foreach(var val in Enum.GetValues(typeof(TrooperRank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            foreach (var val in Enum.GetValues(typeof(MedicRank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            foreach (var val in Enum.GetValues(typeof(RTORank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            foreach (var val in Enum.GetValues(typeof(WardenRank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            foreach (var val in Enum.GetValues(typeof(WarrantRank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            foreach (var val in Enum.GetValues(typeof(PilotRank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
+            return null;
+        }
+
         public static string AsShorthand<T>(this T value) where T : System.Enum
         {
             var type = typeof(T);
