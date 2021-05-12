@@ -25,11 +25,11 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Returing Member Staff")]
         ReturningMemberStaff = 0x0000000008,
         // 1 << 5
-        [Description("Campaign Managment")]
-        CampaignManagment = 0x0000000010,
+        [Description("Campaign Management")]
+        CampaignManagement = 0x0000000010,
         // 1 << 6
-        [Description("Event Managment")]
-        EventManagment = 0x0000000020,
+        [Description("Event Management")]
+        EventManagement = 0x0000000020,
         // 1 << 7
         [Description("Logistics Team")]
         Logistics = 0x0000000040,
@@ -41,7 +41,7 @@ namespace FiveOhFirstDataCore.Core.Data
         HolositeSupport = 0x0000000100,
         // 1 << 10
         [Description("Discord Management")]
-        DiscordManagment = 0x0000000200,
+        DiscordManagement = 0x0000000200,
         // 1 << 11
         [Description("Tech Support")]
         TechSupport = 0x0000000400,
@@ -58,8 +58,8 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Qualification/MOS Training Staff")]
         QualTrainingStaff = 0x0000004000,
         // 1 << 16
-        [Description("Server Managment")]
-        ServerManagment = 0x0000008000,
+        [Description("Server Management")]
+        ServerManagement = 0x0000008000,
         // 1 << 17
         [Description("Auxiliary Mod Team")]
         AuxModTeam = 0x0000010000,

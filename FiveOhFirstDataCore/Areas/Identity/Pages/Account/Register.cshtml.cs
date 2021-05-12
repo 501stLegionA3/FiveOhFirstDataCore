@@ -38,7 +38,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         {
             [Required]
             [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Username", Description = "The username you will use to sign in with. This is not your display/trooper name.")]
+            [Display(Name = "Account Username (Not your Trooper name)", Description = "The username you will use to sign in with. This is not your display/trooper name.")]
             public string UserName { get; set; }
 
             [Required]
@@ -80,22 +80,34 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                     {
                         var passChangeRes = await _userManager.ChangePasswordAsync(user, user.AccessCode, Input.Password);
 
-                        user.UserName = Input.UserName;
-                        await _userManager.UpdateAsync(user);
-
                         if (passChangeRes.Succeeded)
                         {
-                            var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
+                            user.UserName = Input.UserName;
+                            user.AccessCode = null;
+                            var identResult = await _userManager.UpdateAsync(user);
 
-                            if (res is TrooperSignInResult result)
+                            if (!identResult.Succeeded)
                             {
-                                if (result.RequiresAccountLinking)
+                                foreach (var error in identResult.Errors)
                                 {
-                                    returnUrl = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
+                                    ModelState.AddModelError(error.Code, error.Description);
                                 }
                             }
+                            else
+                            {
+                                var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
 
-                            return Redirect(returnUrl);
+                                if (res is TrooperSignInResult result)
+                                {
+                                    if (result.RequiresAccountLinking)
+                                    {
+                                        var token = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
+                                        returnUrl = $"/api/link/token/{token}";
+                                    }
+                                }
+
+                                return Redirect(returnUrl);
+                            }
                         }
                         else
                         {

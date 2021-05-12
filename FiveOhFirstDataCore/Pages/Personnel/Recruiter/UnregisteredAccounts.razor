@@ -1,4 +1,5 @@
-﻿@page "/c1/recruiter/unrgistered"
+﻿@page "/c1/recruiter/unregistered"
+@inject IRosterService _roster
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
@@ -7,10 +8,10 @@
                 <thead>
                     <tr>
                         <td colspan="3">
-                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" />
+                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" @onchange="IdChanged"/>
                         </td>
                         <td colspan="2">
-                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" />
+                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" @onchange="NickChanged"/>
                         </td>
                     </tr>
                     <tr>
@@ -22,7 +23,16 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    @foreach(var t in Filtered)
+                    {
+                    <tr>
+                        <td>@(t.Id)</td>
+                        <td>@(t.NickName)</td>
+                        <td>@(t.RecruitStatus?.OverSixteen)</td>
+                        <td>@(t.RecruitStatus?.ModsInstalled)</td>
+                        <td>@(t.AccessCode)</td>
+                    </tr>
+                    }
                 </tbody>
             </table>
         </EditForm>
@@ -33,6 +43,59 @@
 </AuthorizeView>
 
 @code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
     public string IdSearch { get; set; } = "";
     public string NickSearch { get; set; } = "";
+
+    public List<Trooper> Unregistered { get; set; } = new();
+    public List<Trooper> Filtered { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var claim = (await AuthStateTask).User;
+
+        if(claim.IsInRole("Admin")
+            || claim.IsInRole("Manager")
+            || claim.HasClaim("C1", "Recruiter"))
+        {
+            Unregistered = await _roster.GetUnregisteredTroopersAsync();
+
+            await BuildFilteredList();
+        }
+    }
+
+    private async Task IdChanged(ChangeEventArgs e)
+    {
+        IdSearch = (string?)e.Value ?? "";
+
+        await BuildFilteredList();
+    }
+
+    private async Task NickChanged(ChangeEventArgs e)
+    {
+        NickSearch = (string?)e.Value ?? "";
+
+        await BuildFilteredList();
+    }
+
+    private Task BuildFilteredList()
+    {
+        Filtered = Unregistered;
+
+        if(!string.IsNullOrWhiteSpace(IdSearch))
+        {
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(IdSearch)).ToList();
+        }
+
+        if(!string.IsNullOrWhiteSpace(NickSearch))
+        {
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch)).ToList();
+        }
+
+        return Task.CompletedTask;
+    }
 }
