@@ -8,10 +8,17 @@
     <Authorized>
         <EditForm Context="editTrooperContext" class="form" Model="Trooper">
             <div class="row">
+                <div class="col form-group">
                 <label for="trooperSelection">Trooper To Edit</label>
-                <InputSelectSingleTrooper Troopers="AllTroopers" class="form-control" id="trooperSelection" @bind-Value="Trooper" />
+                <InputSelectSingleTrooper Troopers="AllTroopers" disabled="@IsEditing" class="form-control w-100" id="trooperSelection" @bind-Value="Trooper" />
+                </div>
             </div>
-            @if (!IsEditing)
+            <div class="row">
+                <div class="col form-group">
+                    <button class="btn btn-primary btn-block" disabled="@IsEditing" @onclick="StartEdit">Edit</button>
+                </div>
+            </div>
+            @if (IsEditing)
             {
             <hr />
             <div class="form-group">
@@ -125,7 +132,7 @@
                         }
                             <div calss="row">
                                 <div class="col">
-                                    <button class="btn btn-primary w-100" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
+                                    <button class="btn btn-primary btn-block" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
                                 </div>
                             </div>
                         </div>
@@ -149,6 +156,14 @@
                     <div class="col">
                         <label for="trooperUTC">Notes</label>
                         <InputTextArea @bind-Value="Trooper.Notes" class="form-control w-100" id="trooperNotes" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-primary btn-block">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -234,6 +249,16 @@
         if(CShopClaims.TryGetValue(shop, out var list))
         {
             list.RemoveAt(item);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    protected Task StartEdit(EventArgs e)
+    {
+        if(Trooper is not null && Trooper.Id != 0)
+        {
+            IsEditing = true;
         }
 
         return Task.CompletedTask;
