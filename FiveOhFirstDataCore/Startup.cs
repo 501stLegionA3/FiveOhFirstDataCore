@@ -316,7 +316,8 @@ namespace FiveOhFirstDataCore
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
                 .AddScoped<IRosterService, RosterService>()
-                .AddScoped<INicknameComparisonService, NicknameComparisionService>();
+                .AddScoped<INicknameComparisonService, NicknameComparisionService>()
+                .AddScoped<IUpdateService, UpdateService>();
 
 #if DEBUG
             #region Example Tools

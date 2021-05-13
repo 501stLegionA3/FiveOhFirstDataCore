@@ -12,7 +12,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
         {
             if (item.Slot == Slot.Hailstorm)
                 Hailstorm.Assign(item);
-            else if (item.Slot <= Slot.ZetaCompany && item.Slot > Slot.InactiveReserve)
+            else if (item.Slot >= Slot.ZetaCompany && item.Slot < Slot.InactiveReserve)
                 Zeta.Assign(item);
         }
     }

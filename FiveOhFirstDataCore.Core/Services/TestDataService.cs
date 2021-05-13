@@ -395,7 +395,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Trooper,
                         Slot = Slot.ZetaOneOne,
-                        Team = null,
+                        Team = Team.Alpha,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
                         DiscordId = "a",
