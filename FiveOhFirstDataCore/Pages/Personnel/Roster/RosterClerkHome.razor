@@ -1,4 +1,5 @@
 ﻿@page "/c1/roster"
+@inject IUpdateService _update
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
@@ -20,6 +21,126 @@
             </div>
             <div class="col-md-4 col-sm-12">
                 <h3 class="text-center">Recent Activity</h3>
+                @for(int i = 0; i < 10 && i < Updates.Count; i++)
+                {
+                    switch (Updates[i])
+                    {
+                        case CShopChange c:
+                        <div class="card bg-warning mb-3">
+                            <div class="card-header">CShop Update by [@c.ChangedById] @c.ChangedBy?.NickName</div>
+                            <h4 class="card-title">Edited [@c.ChangeForId] @c.ChangeFor?.NickName</h4>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    @foreach(CShop num in Enum.GetValues(typeof(CShop)))
+                                    {
+                                        if((c.Added & num) == num)
+                                        {
+                                            @($"Added {num.AsFull()}")
+                                        }
+                                    }
+                                </p>
+                                <hr />
+                                <p class="card-text">
+                                    @foreach(CShop num in Enum.GetValues(typeof(CShop)))
+                                    {
+                                        if((c.Removed & num) == num)
+                                        {
+                                            @($"Removed {num.AsFull()}")
+                                        }
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        break;
+                        case RankChange c:
+                        <div class="card text-light bg-primary mb-3">
+                            <div class="card-header">Rank Update by [@c.ChangedById] @c.ChangedBy?.NickName</div>
+                            <h4 class="card-title">Edited [@c.ChangeForId] @c.ChangeFor?.NickName</h4>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    Granted Rank: @c.ChangedTo
+                                </p>
+                                <hr />
+                                <p class="card-text">
+                                    Removed Rank: @c.ChangedFrom
+                                </p>
+                            </div>
+                        </div>
+                        break;
+                        case SlotChange c:
+                        <div class="card text-light bg-secondary mb-3">
+                            <div class="card-header">Slot Update by @c.ApprovedBy?.FirstOrDefault()?.NickName</div>
+                            <h4 class="card-title">Edited [@c.ChangeForId] @c.ChangeFor?.NickName</h4>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    @if(c.NewSlot != c.OldSlot)
+                                    {
+                                        @($"To Slot: {c.NewSlot.AsFull()}")
+                                    }
+                                    @if(c.NewTeam != c.OldTeam)
+                                    {
+                                        @($"To Team: {c.NewTeam?.AsFull()}")
+                                    }
+                                    @if(c.NewRole != c.OldRole)
+                                    {
+                                        @($"To Role: {c.NewRole?.AsFull()}")
+                                    }
+                                    @if(c.NewFlight != c.OldFlight)
+                                    {
+                                        @($"To Flight: {c.NewFlight?.AsFull()}")
+                                    }
+                                </p>
+                                <hr />
+                                <p class="card-text">
+                                    @if(c.NewSlot != c.OldSlot)
+                                    {
+                                        @($"From Slot: {c.OldSlot.AsFull()}")
+                                    }
+                                    @if(c.NewTeam != c.OldTeam)
+                                    {
+                                        @($"From Team: {c.OldTeam?.AsFull()}")
+                                    }
+                                    @if(c.NewRole != c.OldRole)
+                                    {
+                                        @($"From Role: {c.OldRole?.AsFull()}")
+                                    }
+                                    @if(c.NewFlight != c.OldFlight)
+                                    {
+                                        @($"From Flight: {c.OldFlight?.AsFull()}")
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        break;
+                        case QualificationChange c:
+                        <div class="card text-light bg-success mb-3">
+                            <div class="card-header">Qualification Update by @c.Instructors?.FirstOrDefault()?.NickName</div>
+                            <h4 class="card-title">Edited [@c.ChangeForId] @c.ChangeFor?.NickName</h4>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    @foreach(Qualification num in Enum.GetValues(typeof(Qualification)))
+                                    {
+                                        if((c.Added & num) == num)
+                                        {
+                                            @($"Added {num.AsFull()}")
+                                        }
+                                    }
+                                </p>
+                                <hr />
+                                <p class="card-text">
+                                    @foreach(Qualification num in Enum.GetValues(typeof(Qualification)))
+                                    {
+                                        if((c.Removed & num) == num)
+                                        {
+                                            @($"Removed {num.AsFull()}")
+                                        }
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        break;
+                    }
+                }
             </div>
         </div>
     </Authorized>
@@ -35,6 +156,7 @@
     {
         await base.OnParametersSetAsync();
 
-
+        Updates = await _update.GetRosterUpdatesAsync();
+        Updates.Sort((x, y) => x.ChangedOn.CompareTo(y.ChangedOn));
     }
 }

@@ -84,48 +84,48 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Acklay 2-3")]
         AcklayTwoThree,
         // Mynock
-        [Description("Bastion Detachment")]
+        [Description("Mynock HQ")]
         Mynock = 400,
-        [Description("Bastion Detachment")]
+        [Description("Mynock 1-1")]
         MynockOneOne,
-        [Description("Bastion Detachment")]
+        [Description("Mynock 1-2")]
         MynockOneTwo,
-        [Description("Bastion Detachment")]
+        [Description("Mynock 1-3")]
         MynockOneThree,
         // Aviators
-        [Description("Razor Squadron")]
+        [Description("Razor HQ")]
         Razor = 500,
-        [Description("Razor Squadron")]
+        [Description("Razor 1 HQ")]
         RazorOne = 510,
-        [Description("Razor Squadron")]
+        [Description("Razor 1-1")]
         RazorOneOne,
-        [Description("Razor Squadron")]
+        [Description("Razor 1-2")]
         RazorOneTwo,
-        [Description("Razor Squadron")]
+        [Description("Razor 2 HQ")]
         RazorTwo = 520,
-        [Description("Razor Squadron")]
+        [Description("Razor 2-1")]
         RazorTwoOne,
-        [Description("Razor Squadron")]
+        [Description("Razor 2-2")]
         RazorTwoTwo,
-        [Description("Razor Squadron")]
+        [Description("Razor 3 HQ")]
         RazorThree = 530,
-        [Description("Razor Squadron")]
+        [Description("Razor 3-1")]
         RazorThreeOne,
-        [Description("Razor Squadron")]
+        [Description("Razor 3-2")]
         RazorThreeTwo,
-        [Description("Razor Squadron")]
+        [Description("Razor 4 HQ")]
         RazorFour = 540,
-        [Description("Razor Squadron")]
+        [Description("Razor 4-1")]
         RazorFourOne,
-        [Description("Razor Squadron")]
+        [Description("Razor 4-2")]
         RazorFourTwo,
-        [Description("Razor Squadron")]
+        [Description("Razor 5 HQ")]
         RazorFive = 550,
-        [Description("Razor Squadron")]
+        [Description("Razor 5-1")]
         RazorFiveOne,
-        [Description("Razor Squadron")]
+        [Description("Razor 5-2")]
         RazorFiveTwo,
-        [Description("Razor Squadron")]
+        [Description("Warden")]
         Warden = 560,
         // Reserve.
         [Description("Zeta HQ")]

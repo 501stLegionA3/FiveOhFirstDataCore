@@ -1,6 +1,8 @@
 ﻿using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,9 +19,48 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext = dbContext;
         }
 
-        public Task<List<UpdateBase>> GetRosterUpdatesAsync()
+        public async Task<List<UpdateBase>> GetRosterUpdatesAsync()
         {
-            throw new NotImplementedException();
+            ConcurrentBag<UpdateBase> data = new();
+            List<Task> actions = new();
+
+            await _dbContext
+                .RankChanges
+                .AsNoTracking()
+                .ForEachAsync(x =>
+                {
+                    if(x.SubmittedByRosterClerk)
+                        data.Add(x);
+                });
+
+            await _dbContext
+                .CShopChanges
+                .AsNoTracking()
+                .ForEachAsync(x =>
+                {
+                    if(x.SubmittedByRosterClerk)
+                        data.Add(x);
+                });
+
+            await _dbContext
+                .QualificationChanges
+                .AsNoTracking()
+                .ForEachAsync(x =>
+                {
+                    if(x.SubmittedByRosterClerk)
+                        data.Add(x);
+                });
+
+            await _dbContext
+                .SlotChanges
+                .AsNoTracking()
+                .ForEachAsync(x =>
+                {
+                    if(x.SubmittedByRosterClerk)
+                        data.Add(x);
+                });
+
+            return data.ToList();
         }
     }
 }

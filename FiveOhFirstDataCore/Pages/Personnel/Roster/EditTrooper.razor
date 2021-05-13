@@ -1,0 +1,246 @@
+﻿@page "/c1/roster/edit"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+@inject NavigationManager _nav
+@inject IRefreshRequestService _refresh
+
+<AuthorizeView Policy="RequireRosterClerk">
+    <Authorized>
+        <EditForm Context="editTrooperContext" class="form" Model="Trooper">
+            <div class="row">
+                <label for="trooperSelection">Trooper To Edit</label>
+                <InputSelectSingleTrooper Troopers="AllTroopers" class="form-control" id="trooperSelection" @bind-Value="Trooper" />
+            </div>
+            @if (!IsEditing)
+            {
+            <hr />
+            <div class="form-group">
+                <h4>Slot Details</h4>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="trooperSlot">Slot</label>
+                        <InputEnumSelect @bind-Value="Trooper.Slot" id="trooperSlot" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="trooperRole">Role</label>
+                        <InputEnumSelect @bind-Value="Trooper.Role" id="trooperRole" class="form-control p-2" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="trooperTeam">Team</label>
+                        <InputEnumSelect @bind-Value="Trooper.Team" id="trooperTeam" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="trooperFlight">Flight</label>
+                        <InputEnumSelect @bind-Value="Trooper.Flight" id="trooperFlight" class="form-control p-2" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <h4>Rank Details</h4>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperRank">Trooper Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.Rank" id="trooperRank" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperRTORank">RTO Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.RTORank" id="trooperRTORank" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperMedicRank">Medic Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.MedicRank" id="trooperMedicRank" class="form-control p-2" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperPilotRank">Pilot Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.PilotRank" id="trooperPilotRank" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperWardenRank">Warden Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.WardenRank" id="trooperWardenRank" class="form-control p-2" />
+                    </div>
+                    <div class="col-lg-4 col-md-12 p-2">
+                        <label for="trooperWarrantRank">Warrant Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="form-group">
+                <h4>Qualification and CShop Management</h4>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 p-4">
+                        <label for="trooperQualifications">Qualifications</label>
+                        <InputQualificationFlagSelect @bind-Value="Trooper.Qualifications" id="trooperQualifications" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 p-4">
+                        <label for="trooperUpperCShops">Upper Level CShops</label>
+                        <InputCShopFlagSelect @bind-Value="Trooper.CShops" id="trooperUpperCShops" />
+                    </div>
+                </div>
+            </div>
+            @if(Trooper.CShops != CShop.None)
+            {
+                @foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+                {
+                    @if((shop & Trooper.CShops) == shop && shop != CShop.None)
+                    {
+                        <div class="form-group">
+                        <h5>@shop.AsFull() Details</h5>
+                        @if(CShopClaims.TryGetValue(shop, out var claims))
+                        {
+                            @for(int i = 0; i < claims.Count; i++)
+                            {
+                                    int local = i;
+                                    CShop localShop = shop;
+                            <div class="row p-2">
+                                <div class="col-lg-5 col-md-12 p-2">
+                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Key" >
+                                    @foreach(var item in CShopExtensions.ClaimsTree[localShop].Keys)
+                                    {
+                                        <option value="@item">@item</option>
+                                    }
+                                    </InputSelect>
+                                </div>
+                                <div class="col-lg-5 col-md-12 p-2">
+                                    @if (!string.IsNullOrWhiteSpace(CShopClaims[localShop][local].Key))
+                                    {
+                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Value" >
+                                        @foreach (var item in CShopExtensions.ClaimsTree[localShop][CShopClaims[localShop][local].Key])
+                                        {
+                                        <option value="@item">@item</option>
+                                        }
+                                    </InputSelect>
+                                    }
+                                </div>
+                                <div class="col-lg-2 col-md-12 p-2">
+                                    <button class="btn btn-danger" @onclick="async (x) => await RemoveClaimGroup(localShop, local)">Remove</button>
+                                </div>
+                            </div>
+                            }
+                        }
+                            <div calss="row">
+                                <div class="col">
+                                    <button class="btn btn-primary w-100" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            <hr />
+            <div class="form-group">
+                <h4>Additional Information</h4>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12">
+                        <label for="trooperInital">Inital Training</label>
+                        <InputText @bind-Value="Trooper.InitalTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0"/>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <label for="trooperUTC">UTC Class</label>
+                        <InputText @bind-Value="Trooper.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label for="trooperUTC">Notes</label>
+                        <InputTextArea @bind-Value="Trooper.Notes" class="form-control w-100" id="trooperNotes" />
+                    </div>
+                </div>
+            </div>
+            }
+        </EditForm>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    protected bool IsEditing { get; set; } = false;
+    protected int ToEdit { get; set; } = 0;
+
+    private List<Trooper> AllTroopers { get; set; } = new();
+
+    private Trooper Trooper { get; set; } = new();
+
+    private Dictionary<CShop, List<ClaimUpdate>> CShopClaims { get; set; } = new();
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var user = (await AuthStateTask).User;
+
+        if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+        {
+            if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
+                .TryGetValue("edit", out var edit))
+            {
+                if(int.TryParse(edit, out int val))
+                {
+                    IsEditing = true;
+                    ToEdit = val;
+                }
+            }
+        }
+
+        _refresh.RefreshRequested += RefreshMe;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        AllTroopers = await _roster.GetFullRosterAsync();
+
+        if(IsEditing)
+        {
+            var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
+            if(first is not null)
+            {
+                Trooper = first;
+                CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+            }
+        }
+
+        if (Trooper is null)
+            IsEditing = false;
+    }
+
+    protected Task AddNewClaimGroup(CShop shop)
+    {
+        if(CShopClaims.TryGetValue(shop, out var list))
+        {
+            list.Add(new());
+        }
+        else
+        {
+            CShopClaims.Add(shop, new() { new() });
+        }
+
+        return Task.CompletedTask;
+    }
+
+    protected Task RemoveClaimGroup(CShop shop, int item)
+    {
+        if(CShopClaims.TryGetValue(shop, out var list))
+        {
+            list.RemoveAt(item);
+        }
+
+        return Task.CompletedTask;
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+}

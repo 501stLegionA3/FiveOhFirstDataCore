@@ -1,6 +1,8 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Updates;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -27,7 +29,8 @@ namespace FiveOhFirstDataCore.Core.Services
         #endregion
 
         #region Roster Updates
-        public Task<ResultBase> UpdateAsync(Trooper edit, ClaimsPrincipal subitter);
+        public Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper);
+        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimUpdates, ClaimsPrincipal subitter);
         #endregion
     }
 }

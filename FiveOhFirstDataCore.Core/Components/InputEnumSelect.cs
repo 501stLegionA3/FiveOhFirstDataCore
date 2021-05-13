@@ -27,7 +27,19 @@ namespace FiveOhFirstDataCore.Core.Components
                 CurrentValueAsString, 
                 CultureInfo.CurrentCulture));
 
-            var type = GetValueType();
+            var typeSet = GetValueType();
+            var type = typeSet.Item1;
+            bool isNullable = typeSet.Item2;
+            if(isNullable)
+            {
+                builder.OpenElement(5, "option");
+
+                builder.AddAttribute(6, "value", "");
+                builder.AddContent(7, "N/A");
+
+                builder.CloseElement();
+            }
+
             foreach (TEnum value in Enum.GetValues(type))
             {
                 builder.OpenElement(5, "option");
@@ -65,17 +77,17 @@ namespace FiveOhFirstDataCore.Core.Components
             }
 
             result = default;
-            validationErrorMessage = $"Value is not an enum of type {GetValueType().Name}";
+            validationErrorMessage = $"Value is not an enum of type {GetValueType().Item1.Name}";
             return false;
         }
 
-        private static Type GetValueType()
+        private static (Type, bool) GetValueType()
         {
             var nullableType = Nullable.GetUnderlyingType(typeof(TEnum));
             if (nullableType != null)
-                return nullableType;
+                return (nullableType, true);
 
-            return typeof(TEnum);
+            return (typeof(TEnum), false);
         }
 
         private string GetDisplayName(TEnum obj, Type type, string? name)

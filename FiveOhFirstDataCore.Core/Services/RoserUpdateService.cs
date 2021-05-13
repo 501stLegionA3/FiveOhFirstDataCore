@@ -13,7 +13,29 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        public async Task<ResultBase> UpdateAsync(Trooper edit, ClaimsPrincipal submitterClaim)
+        public async Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper)
+        {
+            Dictionary<CShop, List<ClaimUpdate>> claimUpdates = new();
+
+            var rawSet = await _userManager.GetClaimsAsync(trooper);
+
+            foreach(var c in rawSet)
+            {
+                foreach(var shops in CShopExtensions.ClaimsTree)
+                {
+                    if(shops.Value.ContainsKey(c.Type))
+                    {
+                        if (claimUpdates.TryGetValue(shops.Key, out var list))
+                            list.Add(new(c.Type, c.Value));
+                        else claimUpdates.Add(shops.Key, new() { new(c.Type, c.Value) });
+                    }
+                }
+            }
+
+            return claimUpdates;
+        }
+
+        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimUpdates, ClaimsPrincipal submitterClaim)
         {
             var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
             var submitter = await _userManager.GetUserAsync(submitterClaim);
