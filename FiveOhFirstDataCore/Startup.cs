@@ -2,6 +2,7 @@ using AspNet.Security.OpenId;
 using DSharpPlus;
 using FiveOhFirstDataCore.Areas.Identity;
 using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Services;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -148,29 +149,6 @@ namespace FiveOhFirstDataCore
                     policy.RequireRole("Admin");
                 });
 
-                // Allows acces to pages that create new accounts for members,
-                // or modify the users access to accounts such as their password/username.
-                options.AddPolicy("RequireMemberStaff", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("C1", "Recruiter")
-                            || ctx.User.HasClaim("C1", "Returning Members");
-                    });
-                });
-
-                options.AddPolicy("RequireRosterClerk", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.HasClaim("Clerk", "Roster")
-                            || ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager");
-                    });
-                });
-
                 options.AddPolicy("RequireSquad", policy =>
                 {
                     policy.RequireAssertion(ctx =>
@@ -207,18 +185,11 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C1");
-                    });
-                });
-
-                options.AddPolicy("RequireMemberStaff", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("C1", "Recruiter")
-                            || ctx.User.HasClaim("C1", "Returning Member");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.DocMainCom].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.MedalsStaff].ContainsKey(x.Type));
                     });
                 });
 
@@ -228,7 +199,7 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Clerk", "Roster");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type));
                     });
                 });
 
@@ -238,7 +209,7 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("C1", "Recruiter");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type));
                     });
                 });
 
@@ -248,7 +219,8 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C3");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.CampaignManagement].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.EventManagement].ContainsKey(x.Type));
                     });
                 });
 
@@ -258,7 +230,7 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C4");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.Logistics].ContainsKey(x.Type));
                     });
                 });
 
@@ -268,7 +240,10 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C5");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.TeamSpeakAdmin].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.HolositeSupport].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.DiscordManagement].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.TechSupport].ContainsKey(x.Type));
                     });
                 });
 
@@ -278,7 +253,20 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C6");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.BCTStaff].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.PrivateTrainingInstructor].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.UTCStaff].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.QualTrainingStaff].ContainsKey(x.Type));
+                    });
+                });
+
+                options.AddPolicy("RequireQualificationInstructor", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.QualTrainingStaff].ContainsKey(x.Type));
                     });
                 });
 
@@ -288,7 +276,8 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C7");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ServerManagement].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.AuxModTeam].ContainsKey(x.Type));
                     });
                 });
 
@@ -298,7 +287,9 @@ namespace FiveOhFirstDataCore
                     {
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim(x => x.Type == "C8");
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.PublicAffairs].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.MediaOutreach].ContainsKey(x.Type)
+                                || CShopExtensions.ClaimsTree[CShop.NewsTeam].ContainsKey(x.Type));
                     });
                 });
             });

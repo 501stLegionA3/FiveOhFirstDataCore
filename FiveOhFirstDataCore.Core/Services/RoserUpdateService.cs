@@ -35,7 +35,8 @@ namespace FiveOhFirstDataCore.Core.Services
             return claimUpdates;
         }
 
-        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimUpdates, ClaimsPrincipal submitterClaim)
+        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, 
+            List<ClaimUpdate> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
             var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
             var submitter = await _userManager.GetUserAsync(submitterClaim);
@@ -84,12 +85,49 @@ namespace FiveOhFirstDataCore.Core.Services
             primary.UTC = edit.UTC;
 
             primary.Notes = edit.Notes;
+            // Claim Modification
+            List<Claim> remove = new();
+            claimsToRemove.ForEach(x =>
+            {
+                remove.Add(new(x.Key, x.Value));
+            });
+
+            var identResult = await _userManager.RemoveClaimsAsync(primary, remove);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            var exsistingClaims = (await GetCShopClaimsAsync(primary)).ToList();
+
+            List<Claim> add = new();
+            claimsToAdd.ForEach(x =>
+            {
+                var exsisting = exsistingClaims.Any(z => z.Value.Any(y => y.Key == x.Key && y.Value == x.Value));
+
+                if (!exsisting)
+                {
+                    add.Add(new(x.Key, x.Value));
+                }
+            });
+
+            identResult = await _userManager.AddClaimsAsync(primary, add);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
 
             try
             {
                 _dbContext.Update(primary);
                 await _dbContext.SaveChangesAsync();
-                var identResult = await _userManager.UpdateAsync(submitter);
+                identResult = await _userManager.UpdateAsync(submitter);
 
                 if(!identResult.Succeeded)
                 {

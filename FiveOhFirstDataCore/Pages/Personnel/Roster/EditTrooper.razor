@@ -7,6 +7,23 @@
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
         <EditForm Context="editTrooperContext" class="form" Model="Trooper">
+            @if(Errors.Count > 0)
+            {
+            <div class="row">
+                <div class="col p-3">
+                    <div class="alert alert-danger alert-dismissible w-100">
+                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+                        <strong>Something went wrong!</strong>
+                        <ul>
+                        @foreach(var i in Errors)
+                        {
+                            <li>@i</li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            }
             <div class="row">
                 <div class="col form-group">
                 <label for="trooperSelection">Trooper To Edit</label>
@@ -163,7 +180,7 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col">
-                        <button class="btn btn-primary btn-block">Save Changes</button>
+                        <button class="btn btn-primary btn-block" @onclick="async (x) => await SaveChangesAsync()">Save Changes</button>
                     </div>
                 </div>
             </div>
@@ -176,6 +193,8 @@
 </AuthorizeView>
 
 @code {
+    protected List<string> Errors { get; set; } = new();
+
     protected bool IsEditing { get; set; } = false;
     protected int ToEdit { get; set; } = 0;
 
@@ -184,6 +203,7 @@
     private Trooper Trooper { get; set; } = new();
 
     private Dictionary<CShop, List<ClaimUpdate>> CShopClaims { get; set; } = new();
+    private List<ClaimUpdate> RemovedClaims { get; set; } = new();
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -248,20 +268,67 @@
     {
         if(CShopClaims.TryGetValue(shop, out var list))
         {
-            list.RemoveAt(item);
+            var claim = list[item];
+            RemovedClaims.Add(claim);
+            list.Remove(claim);
         }
 
         return Task.CompletedTask;
     }
 
-    protected Task StartEdit(EventArgs e)
+    protected async Task StartEdit(EventArgs e)
     {
         if(Trooper is not null && Trooper.Id != 0)
         {
             IsEditing = true;
+            CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+        }
+    }
+
+    protected async Task SaveChangesAsync()
+    {
+        Errors.Clear();
+
+        var user = (await AuthStateTask).User;
+
+        if ((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+        {
+            List<ClaimUpdate> additions = new();
+            List<ClaimUpdate> removals = RemovedClaims;
+
+            foreach(var pair in CShopClaims)
+            {
+                if((pair.Key & Trooper.CShops) == pair.Key)
+                {
+                    foreach (var c in pair.Value)
+                        additions.Add(c);
+                }
+                else
+                {
+                    foreach (var c in pair.Value)
+                        removals.Add(c);
+                }
+            }
+
+            var res = await _roster.UpdateAsync(Trooper, additions, removals, user);
+
+            if(!res.GetResult(out var errors))
+            {
+                Errors.AddRange(errors);
+            }
+        }
+        else
+        {
+            Errors.Add("You are not authorized to complete that action.");
         }
 
-        return Task.CompletedTask;
+        _refresh.CallRequestRefresh();
+    }
+
+    private void ClearErrors(EventArgs e)
+    {
+        Errors.Clear();
+        _refresh.CallRequestRefresh();
     }
 
     private void RefreshMe()

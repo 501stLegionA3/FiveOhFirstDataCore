@@ -8,6 +8,11 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data
 {
+    // DO NOT CHANGE NAMES
+    // They are needed for permissions purposes.
+    // If a name change is needed, a claim update will have to be completed for that name,
+    // so members still have correct permissions.
+
     [Flags]
     public enum CShop : long
     {

@@ -30,7 +30,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         #region Roster Updates
         public Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper);
-        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimUpdates, ClaimsPrincipal subitter);
+        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, List<ClaimUpdate> claimsToRemove, ClaimsPrincipal subitter);
         #endregion
     }
 }
