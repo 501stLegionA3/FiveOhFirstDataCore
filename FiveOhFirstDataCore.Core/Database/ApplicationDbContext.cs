@@ -33,35 +33,35 @@ namespace FiveOhFirstDataCore.Core.Database
 
             var rankChange = builder.Entity<RankChange>();
             rankChange.HasKey(e => e.ChangeId);
-            rankChange.HasOne(e => e.ChangeFor)
+            rankChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.RankChanges)
-                .HasForeignKey(e => e.ChangeForId);
+                .HasForeignKey(e => e.ChangedForId);
             rankChange.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.SubmittedRankChanges)
                 .HasForeignKey(e => e.ChangedById);
 
             var slotChange = builder.Entity<SlotChange>();
             slotChange.HasKey(e => e.ChangeId);
-            slotChange.HasOne(e => e.ChangeFor)
+            slotChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.SlotChanges)
-                .HasForeignKey(e => e.ChangeForId);
+                .HasForeignKey(e => e.ChangedForId);
             slotChange.HasMany(e => e.ApprovedBy)
                 .WithMany(p => p.ApprovedSlotChanges);
 
             var shopChange = builder.Entity<CShopChange>();
             shopChange.HasKey(e => e.ChangeId);
-            shopChange.HasOne(e => e.ChangeFor)
+            shopChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.CShopChanges)
-                .HasForeignKey(e => e.ChangeForId);
+                .HasForeignKey(e => e.ChangedForId);
             shopChange.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.SubmittedCShopChanges)
                 .HasForeignKey(e => e.ChangedById);
 
             var qualChange = builder.Entity<QualificationChange>();
             qualChange.HasKey(e => e.ChangeId);
-            qualChange.HasOne(e => e.ChangeFor)
+            qualChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.QualificationChanges)
-                .HasForeignKey(e => e.ChangeForId);
+                .HasForeignKey(e => e.ChangedForId);
             qualChange.HasMany(e => e.Instructors)
                 .WithMany(p => p.SubmittedQualificationChanges);
         }

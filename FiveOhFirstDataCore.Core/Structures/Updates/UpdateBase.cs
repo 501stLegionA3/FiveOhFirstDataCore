@@ -11,8 +11,8 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
     {
         public Guid ChangeId { get; set; }
         public DateTime ChangedOn { get; set; }
-        public Trooper ChangeFor { get; set; }
-        public int ChangeForId { get; set; }
+        public virtual Trooper ChangedFor { get; set; }
+        public int ChangedForId { get; set; }
         public bool SubmittedByRosterClerk { get; set; } = false;
     }
 }

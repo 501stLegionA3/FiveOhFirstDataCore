@@ -40,7 +40,8 @@ namespace FiveOhFirstDataCore
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Secrets.GetConnectionString("database")));
+                    Secrets.GetConnectionString("database"))
+                    .UseLazyLoadingProxies());
             services.AddIdentity<Trooper, TrooperRole>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()

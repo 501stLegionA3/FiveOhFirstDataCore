@@ -186,7 +186,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     OldCShops = table.Column<long>(type: "bigint", nullable: false),
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
                     SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -199,8 +199,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CShopChanges_AspNetUsers_ChangeForId",
-                        column: x => x.ChangeForId,
+                        name: "FK_CShopChanges_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -216,15 +216,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Revoked = table.Column<bool>(type: "boolean", nullable: false),
                     OldQualifications = table.Column<long>(type: "bigint", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
                     SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_QualificationChanges", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_QualificationChanges_AspNetUsers_ChangeForId",
-                        column: x => x.ChangeForId,
+                        name: "FK_QualificationChanges_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -239,7 +239,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     ChangedTo = table.Column<int>(type: "integer", nullable: false),
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
                     SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -252,8 +252,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RankChanges_AspNetUsers_ChangeForId",
-                        column: x => x.ChangeForId,
+                        name: "FK_RankChanges_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -293,16 +293,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     OldTeam = table.Column<int>(type: "integer", nullable: true),
                     OldRole = table.Column<int>(type: "integer", nullable: true),
                     OldFlight = table.Column<int>(type: "integer", nullable: true),
-                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
                     SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SlotChanges", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_SlotChanges_AspNetUsers_ChangeForId",
-                        column: x => x.ChangeForId,
+                        name: "FK_SlotChanges_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -399,14 +399,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ChangedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CShopChanges_ChangeForId",
+                name: "IX_CShopChanges_ChangedForId",
                 table: "CShopChanges",
-                column: "ChangeForId");
+                column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QualificationChanges_ChangeForId",
+                name: "IX_QualificationChanges_ChangedForId",
                 table: "QualificationChanges",
-                column: "ChangeForId");
+                column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QualificationChangeTrooper_SubmittedQualificationChangesCha~",
@@ -419,9 +419,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ChangedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RankChanges_ChangeForId",
+                name: "IX_RankChanges_ChangedForId",
                 table: "RankChanges",
-                column: "ChangeForId");
+                column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RecruitStatuses_TrooperId",
@@ -430,9 +430,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SlotChanges_ChangeForId",
+                name: "IX_SlotChanges_ChangedForId",
                 table: "SlotChanges",
-                column: "ChangeForId");
+                column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SlotChangeTrooper_ApprovedSlotChangesChangeId",

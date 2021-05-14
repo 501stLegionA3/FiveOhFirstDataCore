@@ -13,6 +13,6 @@ namespace FiveOhFirstDataCore.Core.Account
         public bool ModsInstalled { get; set; } = true;
 
         public int TrooperId { get; set; }
-        public Trooper Trooper { get; set; }
+        public virtual Trooper Trooper { get; set; }
     }
 }

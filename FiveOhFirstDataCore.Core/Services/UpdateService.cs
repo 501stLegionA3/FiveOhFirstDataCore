@@ -26,7 +26,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext
                 .RankChanges
-                .AsNoTracking()
+                .Include(p => p.ChangedBy)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
                 .ForEachAsync(x =>
                 {
                     if(x.SubmittedByRosterClerk)
@@ -35,7 +37,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext
                 .CShopChanges
-                .AsNoTracking()
+                .Include(p => p.ChangedBy)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
                 .ForEachAsync(x =>
                 {
                     if(x.SubmittedByRosterClerk)
@@ -44,7 +48,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext
                 .QualificationChanges
-                .AsNoTracking()
+                .Include(p => p.Instructors)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
                 .ForEachAsync(x =>
                 {
                     if(x.SubmittedByRosterClerk)
@@ -53,14 +59,18 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext
                 .SlotChanges
-                .AsNoTracking()
+                .Include(p => p.ApprovedBy)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
                 .ForEachAsync(x =>
                 {
                     if(x.SubmittedByRosterClerk)
                         data.Add(x);
                 });
 
-            return data.ToList();
+            var dataList = data.ToList();
+
+            return dataList;
         }
     }
 }

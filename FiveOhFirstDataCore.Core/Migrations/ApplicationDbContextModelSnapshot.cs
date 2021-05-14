@@ -211,10 +211,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<long>("Added")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("ChangeForId")
+                    b.Property<int>("ChangedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int>("ChangedForId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ChangedOn")
@@ -231,9 +231,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasKey("ChangeId");
 
-                    b.HasIndex("ChangeForId");
-
                     b.HasIndex("ChangedById");
+
+                    b.HasIndex("ChangedForId");
 
                     b.ToTable("CShopChanges");
                 });
@@ -247,7 +247,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<long>("Added")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("ChangeForId")
+                    b.Property<int>("ChangedForId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ChangedOn")
@@ -267,7 +267,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasKey("ChangeId");
 
-                    b.HasIndex("ChangeForId");
+                    b.HasIndex("ChangedForId");
 
                     b.ToTable("QualificationChanges");
                 });
@@ -278,10 +278,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ChangeForId")
+                    b.Property<int>("ChangedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int>("ChangedForId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedFrom")
@@ -298,9 +298,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasKey("ChangeId");
 
-                    b.HasIndex("ChangeForId");
-
                     b.HasIndex("ChangedById");
+
+                    b.HasIndex("ChangedForId");
 
                     b.ToTable("RankChanges");
                 });
@@ -311,7 +311,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ChangeForId")
+                    b.Property<int>("ChangedForId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("ChangedOn")
@@ -346,7 +346,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasKey("ChangeId");
 
-                    b.HasIndex("ChangeForId");
+                    b.HasIndex("ChangedForId");
 
                     b.ToTable("SlotChanges");
                 });
@@ -495,62 +495,62 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopChange", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
-                        .WithMany("CShopChanges")
-                        .HasForeignKey("ChangeForId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("SubmittedCShopChanges")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChangeFor");
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("CShopChanges")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ChangedBy");
+
+                    b.Navigation("ChangedFor");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("QualificationChanges")
-                        .HasForeignKey("ChangeForId")
+                        .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChangeFor");
+                    b.Navigation("ChangedFor");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankChange", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
-                        .WithMany("RankChanges")
-                        .HasForeignKey("ChangeForId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("SubmittedRankChanges")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChangeFor");
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("RankChanges")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("ChangedBy");
+
+                    b.Navigation("ChangedFor");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("SlotChanges")
-                        .HasForeignKey("ChangeForId")
+                        .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChangeFor");
+                    b.Navigation("ChangedFor");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

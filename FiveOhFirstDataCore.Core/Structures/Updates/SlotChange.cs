@@ -20,9 +20,6 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
         public Role? OldRole { get; set; }
         public Flight? OldFlight { get; set; }
 
-        public Trooper ChangeFor { get; set; }
-        public int ChangeForId { get; set; }
-
-        public List<Trooper> ApprovedBy { get; set; } = new();
+        public virtual List<Trooper> ApprovedBy { get; set; } = new();
     }
 }
