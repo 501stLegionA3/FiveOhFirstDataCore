@@ -26,16 +26,101 @@
                     switch (Updates[i])
                     {
                         case CShopChange c:
-                        
+                        <div class="alert alert-warning">
+                            <b class="mb-0">[@c.ChangedById] @c.ChangedBy?.NickName updated C-Shops for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
+                            @if(c.Added != CShop.None)
+                            {
+                                <div class="mb-0"><b>Added:</b>
+                                <ul>
+                                @foreach(CShop shop in (Enum.GetValues(typeof(CShop))))
+                                {
+                                    if((shop & c.Added) == shop && shop != CShop.None)
+                                    {
+                                        <li>@shop.AsFull()</li>
+                                    }
+                                }
+                                </ul>
+                                </div>
+                            }
+                            @if(c.Removed != CShop.None)
+                            {
+                                <div class="mb-0"><b>Removed:</b>
+                                <ul>
+                                @foreach(CShop shop in (Enum.GetValues(typeof(CShop))))
+                                {
+                                    if((shop & c.Removed) == shop && shop != CShop.None)
+                                    {
+                                        <li>@shop.AsFull()</li>
+                                    }
+                                }
+                                </ul>
+                                </div>
+                            }
+                        </div>
                         break;
                         case RankChange c:
-                        
+                        <div class="alert alert-success">
+                            <b class="mb-0">[@c.ChangedById] @c.ChangedBy?.NickName updated the Rank for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
+                            <p class="mb-0">
+                                From @c.ChangedFrom to @c.ChangedTo
+                            </p>
+                        </div>
                         break;
                         case SlotChange c:
-                        
+                        <div class="alert alert-success">
+                            <b class="mb-0">[@c.ApprovedBy.FirstOrDefault()?.Id] @c.ApprovedBy.FirstOrDefault()?.NickName updated the Slot for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
+                            <ul class="mb-0">
+                                @if(c.NewSlot != c.OldSlot)
+                                {
+                                    <li>Slot changed from @c.OldSlot.AsFull() to @c.NewSlot.AsFull()</li>
+                                }
+                                @if(c.NewRole != c.OldRole)
+                                {
+                                    <li>Role changed from @c.OldRole?.AsFull() to @c.NewRole?.AsFull()</li>
+                                }
+                                @if(c.NewTeam != c.OldTeam)
+                                {
+                                    <li>Slot changed from @c.OldTeam?.AsFull() to @c.NewTeam?.AsFull()</li>
+                                }
+                                @if(c.NewFlight != c.OldFlight)
+                                {
+                                    <li>Slot changed from @c.OldFlight?.AsFull() to @c.NewFlight?.AsFull()</li>
+                                }
+                            </ul>
+                        </div>
                         break;
                         case QualificationChange c:
-                        
+                        <div class="alert alert-warning">
+                            <b class="mb-0">[@c.Instructors.FirstOrDefault()?.Id] @c.Instructors.FirstOrDefault()?.NickName updated Qualifications for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
+                            @if(c.Added != Qualification.None)
+                            {
+                                <div class="mb-0"><b>Added:</b>
+                                <ul>
+                                @foreach(Qualification shop in (Enum.GetValues(typeof(Qualification))))
+                                {
+                                    if((shop & c.Added) == shop && shop != Qualification.None)
+                                    {
+                                        <li>@shop.AsFull()</li>
+                                    }
+                                }
+                                </ul>
+                                </div>
+                            }
+                            @if(c.Removed != Qualification.None)
+                            {
+                                <div class="mb-0"><b>Removed:</b>
+                                <ul>
+                                @foreach(Qualification shop in (Enum.GetValues(typeof(Qualification))))
+                                {
+                                    if((shop & c.Removed) == shop && shop != Qualification.None)
+                                    {
+                                        <li>@shop.AsFull()</li>
+                                    }
+                                }
+                                </ul>
+                                </div>
+                            }
+                        </div>
                         break;
                     }
                 }
