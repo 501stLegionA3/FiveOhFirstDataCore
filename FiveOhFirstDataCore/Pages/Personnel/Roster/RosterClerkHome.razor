@@ -3,6 +3,7 @@
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
+        <BreadcrumbsList Url="Urls" />
         <div class="row">
             <div class="col-md-8 col-sm-12">
                 <div class="row text-center">
@@ -133,6 +134,7 @@
 </AuthorizeView>
 
 @code {
+    public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home") };
     private List<UpdateBase> Updates { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()

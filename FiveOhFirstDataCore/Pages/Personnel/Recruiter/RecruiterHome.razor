@@ -2,6 +2,7 @@
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
+        <BreadcrumbsList Url="Urls" />
         <div class="row">
             <div class="col-md-8 col-sm-12">
                 <div class="row text-center">
@@ -34,5 +35,5 @@
 </AuthorizeView>
 
 @code {
-
+    public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home") };
 }

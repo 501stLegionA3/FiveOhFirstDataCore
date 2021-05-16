@@ -3,6 +3,7 @@
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
+        <BreadcrumbsList Url="Urls" />
         <EditForm Context="unregisteredForm" class="form form-inline" Model="this">
             <table class="table table-hover">
                 <thead>
@@ -43,6 +44,8 @@
 </AuthorizeView>
 
 @code {
+    public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home"), ("/c1/recruiter/unregistered", "Unregistered Troopers") };
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 

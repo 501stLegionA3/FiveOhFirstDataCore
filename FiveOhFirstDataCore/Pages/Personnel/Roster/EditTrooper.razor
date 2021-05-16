@@ -6,6 +6,7 @@
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
+        <BreadcrumbsList Url="Urls" />
         <EditForm Context="editTrooperContext" class="form" Model="Trooper">
             @if(Errors.Count > 0)
             {
@@ -193,6 +194,8 @@
 </AuthorizeView>
 
 @code {
+    public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home"), ("/c1/roster/edit", "Edit Trooper") };
+
     protected List<string> Errors { get; set; } = new();
 
     protected bool IsEditing { get; set; } = false;

@@ -5,6 +5,7 @@
 
 <AuthorizeView Policy="RequireRecruiter" Context="authContext">
     <Authorized>
+        <BreadcrumbsList Url="Urls" />
         <div class="row">
             <h1 class="col">New Recruit Form</h1>
         </div>
@@ -96,6 +97,8 @@
 </AuthorizeView>
 
 @code {
+    public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home"), ("/c1/recruiter/addmember", "Add New Trooper") };
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
