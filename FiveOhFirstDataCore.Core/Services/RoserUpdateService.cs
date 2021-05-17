@@ -1,7 +1,10 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +18,11 @@ namespace FiveOhFirstDataCore.Core.Services
     {
         public async Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper)
         {
+            using var scope = _services.CreateScope(); 
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
             Dictionary<CShop, List<ClaimUpdate>> claimUpdates = new();
 
-            var rawSet = await _userManager.GetClaimsAsync(trooper);
+            var rawSet = await userManager.GetClaimsAsync(trooper);
 
             foreach(var c in rawSet)
             {
@@ -38,8 +43,11 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, 
             List<ClaimUpdate> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
-            var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
-            var submitter = await _userManager.GetUserAsync(submitterClaim);
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
+            var primary = await dbContext.FindAsync<Trooper>(edit.Id);
+            var submitter = await userManager.GetUserAsync(submitterClaim);
 
             List<string> errors = new();
 
@@ -92,7 +100,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 remove.Add(new(x.Key, x.Value));
             });
 
-            var identResult = await _userManager.RemoveClaimsAsync(primary, remove);
+            var identResult = await userManager.RemoveClaimsAsync(primary, remove);
             if (!identResult.Succeeded)
             {
                 foreach (var err in identResult.Errors)
@@ -114,7 +122,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 }
             });
 
-            identResult = await _userManager.AddClaimsAsync(primary, add);
+            identResult = await userManager.AddClaimsAsync(primary, add);
             if (!identResult.Succeeded)
             {
                 foreach (var err in identResult.Errors)
@@ -125,9 +133,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
-                _dbContext.Update(primary);
-                await _dbContext.SaveChangesAsync();
-                identResult = await _userManager.UpdateAsync(submitter);
+                dbContext.Update(primary);
+                await dbContext.SaveChangesAsync();
+                identResult = await userManager.UpdateAsync(submitter);
 
                 if(!identResult.Succeeded)
                 {
@@ -249,17 +257,11 @@ namespace FiveOhFirstDataCore.Core.Services
                     ChangedOn = DateTime.UtcNow
                 };
 
-                primary.CShops = edit.CShops;
+                primary.Qualifications = edit.Qualifications;
 
                 primary.QualificationChanges.Add(update);
                 submitter.SubmittedQualificationChanges.Add(update);
             }
-        }
-
-        public Task<Trooper> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims)
-        {
-            var trooper = _userManager.GetUserAsync(claims);
-            return trooper;
         }
     }
 }

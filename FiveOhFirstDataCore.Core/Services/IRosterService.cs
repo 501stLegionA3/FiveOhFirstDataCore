@@ -4,6 +4,7 @@ using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,7 +23,8 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<OrbatData> GetOrbatDataAsync();
         public Task<ZetaOrbatData> GetZetaOrbatDataAsync();
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
-        public Task<Trooper> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
+        public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
+        public Task<Trooper?> GetTrooperFromIdAsync(int id);
         #endregion
 
         #region Roster Registration

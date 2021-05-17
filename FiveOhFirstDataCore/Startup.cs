@@ -186,6 +186,16 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
+                options.AddPolicy("RequireNCO", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.IsInRole("NCO");
+                    });
+                });
+
                 options.AddPolicy("RequireC1", policy =>
                 {
                     policy.RequireAssertion(ctx =>
@@ -314,7 +324,7 @@ namespace FiveOhFirstDataCore
             var mailSection = Secrets.GetRequiredSection("Email");
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
-                .AddScoped<IRosterService, RosterService>()
+                .AddSingleton<IRosterService, RosterService>()
                 .AddScoped<INicknameComparisonService, NicknameComparisionService>()
                 .AddScoped<IUpdateService, UpdateService>()
                 .AddSingleton(new MailConfiguration()

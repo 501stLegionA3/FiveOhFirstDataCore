@@ -1,31 +1,6 @@
 ﻿<tr>
     <td>
-        @if(Trooper.Role == Role.RTO)
-        {
-            @Trooper.RTORank?.AsShorthand()
-        }
-        else if(Trooper.Role == Role.Pilot)
-        {
-            @Trooper.PilotRank?.AsShorthand()
-        }
-        else if(Trooper.Role == Role.Medic)
-        {
-            @Trooper.MedicRank?.AsShorthand()
-        }
-        else if (Trooper.Role == Role.Warden
-            || Trooper.Role == Role.MasterWarden
-            || Trooper.Role == Role.CheifWarden)
-        {
-            @Trooper.WardenRank?.AsShorthand()
-        }
-        else if(Trooper.WarrantRank is not null)
-        {
-            @Trooper.WarrantRank?.AsShorthand()
-        }
-        else
-        {
-            @Trooper.Rank.AsShorthand()
-        }
+        <RankDisplay Trooper="Trooper" />
     </td>
     <td>
         @Trooper.Id
@@ -49,12 +24,12 @@
         @((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
     </td>
     <td>
-        <a href="" class="oi oi-arrow-circle-right" aria-hidden="true"></a>
+        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right" aria-hidden="true"></a>
     </td>
     <AuthorizeView Policy="RequireRosterClerk">
         <Authorized>
             <td>
-                <a href="" class="oi oi-pencil" aria-hidden="true"></a>
+                <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil" aria-hidden="true"></a>
             </td>
         </Authorized>
     </AuthorizeView>

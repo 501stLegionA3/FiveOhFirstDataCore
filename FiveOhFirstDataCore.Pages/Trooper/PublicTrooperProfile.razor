@@ -1,0 +1,127 @@
+﻿@using FiveOhFirstDataCore.Core.Structures.Updates
+@inject IRosterService _roster
+
+<div class="row w-100">
+    <div class="col-md-3 col-sm-12">
+        <div class="row">
+            <div class="col text-center">
+                @*Trooper Basic Details*@
+                <h4><RankDisplay Trooper="Trooper" /> @Trooper.Id @Trooper.NickName</h4>
+                <table class="w-100">
+                    <tr>
+                        <th scope="col" class="w-50">
+                            TiG
+                        </th>
+                        <th scope="col" class="w-50">
+                            TiS
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @ServiceStrings[0]
+                        </td>
+                        <td>
+                            @ServiceStrings[1]
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @ServiceStrings[2] DAY(S)
+                        </td>
+                        <td>
+                            @ServiceStrings[3] DAY(S)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @*Slot Details*@
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9 col-sm-12">
+        <div class="row">
+            @*Trooper Full Details*@
+            <div class="col-lg-6 col-md-12">
+                <div class="row">
+                    <div class="col">
+                        <h5 class="text-center">C-Shops</h5>
+                        <div class="list-group">
+                            @foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+                            {
+                                if (shop != CShop.None && (Trooper.CShops & shop) == shop)
+                                {
+                                    <div class="list-group-item">
+                                        <strong class="mb-1">@shop.AsFull()</strong>
+                                        @if(ShopPositions.TryGetValue(shop, out var positions))
+                                        {
+                                            <ul class="mb-1">
+                                            @foreach(var pos in positions)
+                                            {
+                                                <li class="mb-1">@pos.Key @pos.Value</li>
+                                            }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 text-center">
+                <h5>Qualifications</h5>
+                <ul class="list-group">
+                    @foreach(Qualification qual in Enum.GetValues(typeof(Qualification)))
+                    {
+                        if (qual != Qualification.None)
+                        {
+                            <li class="list-group-item @((Trooper.Qualifications & qual) == qual ? "bg-success text-light" : "disabled")">@qual.AsFull()</li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <AuthorizeView Policy="RequireNCO">
+            <Authorized>
+                <div class="row">
+                    @*NCO Box*@
+
+                </div>
+            </Authorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Trooper Trooper { get; set; }
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private Dictionary<CShop, List<ClaimUpdate>> ShopPositions { get; set; } = new();
+
+    public string[] ServiceStrings = new string[4];
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
+
+        ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
+        ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
+        ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
+        ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+    }
+}

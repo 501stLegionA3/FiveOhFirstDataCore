@@ -4,27 +4,29 @@ using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly UserManager<Trooper> _userManager;
+        private readonly IServiceProvider _services;
 
-        public RosterService(ApplicationDbContext dbContext, UserManager<Trooper> userManager)
+        public RosterService(IServiceProvider services)
         {
-            _dbContext = dbContext;
-            _userManager = userManager;
+            _services = services;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
                     troopers.Add(x);
@@ -35,8 +37,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetArchivedTroopersAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot == Data.Slot.Archived)
                     troopers.Add(x);
@@ -47,8 +51,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetFullRosterAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot < Data.Slot.Archived)
                     troopers.Add(x);
@@ -59,8 +65,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetInactiveReservesAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot == Data.Slot.InactiveReserve)
                     troopers.Add(x);
@@ -71,9 +79,11 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             HashSet<int> ids = new();
             HashSet<string> nicknames = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 ids.Add(x.Id);
 
@@ -86,8 +96,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<OrbatData> GetOrbatDataAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             OrbatData data = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if(x.Slot < Data.Slot.ZetaCompany)
                     data.Assign(x);
@@ -98,8 +110,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetPlacedRosterAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot < Data.Slot.ZetaCompany)
                     troopers.Add(x);
@@ -108,10 +122,28 @@ namespace FiveOhFirstDataCore.Core.Services
             return troopers;
         }
 
+        public async Task<Trooper?> GetTrooperFromIdAsync(int id)
+        {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var trooper = await dbContext.FindAsync<Trooper>(id);
+            return trooper;
+        }
+
+        public async Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims)
+        {
+            using var scope = _services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
+            var trooper = await userManager.GetUserAsync(claims);
+            return trooper;
+        }
+
         public async Task<List<Trooper>> GetUnregisteredTroopersAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking()
+            await dbContext.Users.AsNoTracking()
                 .Include(x => x.RecruitStatus)
                 .ForEachAsync(x =>
             {
@@ -124,8 +156,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ZetaOrbatData> GetZetaOrbatDataAsync()
         {
+            using var scope = _services.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             ZetaOrbatData data = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
                     data.Assign(x);
@@ -136,6 +170,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData)
         {
+            using var scope = _services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
             List<string> errors = new();
             try
             {
@@ -166,7 +202,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     AccessCode = token
                 };
 
-                var identRes = await _userManager.CreateAsync(trooper, token);
+                var identRes = await userManager.CreateAsync(trooper, token);
 
                 if (!identRes.Succeeded)
                 {
@@ -176,7 +212,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, null, errors);
                 }
 
-                identRes = await _userManager.AddToRoleAsync(trooper, "Trooper");
+                identRes = await userManager.AddToRoleAsync(trooper, "Trooper");
 
                 if (!identRes.Succeeded)
                 {
@@ -186,7 +222,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, null, errors);
                 }
 
-                identRes = await _userManager.AddClaimAsync(trooper, new("Training", "BCT"));
+                identRes = await userManager.AddClaimAsync(trooper, new("Training", "BCT"));
 
                 if (!identRes.Succeeded)
                 {
