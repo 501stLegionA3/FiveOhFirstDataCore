@@ -9,6 +9,7 @@
     <PackageReference Include="DSharpPlus" Version="4.0.1" />
     <PackageReference Include="DSharpPlus.Rest" Version="4.0.1" />
     <PackageReference Include="Lucene.Net.Analysis.Phonetic" Version="4.8.0-beta00014" />
+    <PackageReference Include="MailKit" Version="2.12.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-preview.3.21201.13" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0-preview.3.21201.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.0-preview.3.21201.2" />

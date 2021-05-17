@@ -1,16 +1,20 @@
+using AngleSharp.Text;
 using AspNet.Security.OpenId;
 using DSharpPlus;
 using FiveOhFirstDataCore.Areas.Identity;
 using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Mail;
 using FiveOhFirstDataCore.Core.Services;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -86,6 +90,7 @@ namespace FiveOhFirstDataCore
                     options.TokenEndpoint = $"{Configuration["Config:Discord:TokenEndpoint"]}";
 
                     options.Scope.Add("identify");
+                    options.Scope.Add("email");
 
                     options.Events = new OAuthEvents
                     {
@@ -105,9 +110,10 @@ namespace FiveOhFirstDataCore
                                 var link = context.HttpContext.RequestServices.GetRequiredService<AccountLinkService>();
 
                                 try
-                                { // verify the user information grabbed matches the user info
-                                  // saved from the inital command
-                                    await link.BindDiscordAsync(token, user.Id);
+                                { 
+                                    // verify the user information grabbed matches the user info
+                                    // saved from the inital command
+                                    await link.BindDiscordAsync(token, user.Id, user.Email);
                                 }
                                 catch (Exception ex)
                                 {
@@ -305,12 +311,23 @@ namespace FiveOhFirstDataCore
                 options.Password.RequiredUniqueChars = 0;
             });
 
+            var mailSection = Secrets.GetRequiredSection("Email");
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
                 .AddScoped<IRosterService, RosterService>()
                 .AddScoped<INicknameComparisonService, NicknameComparisionService>()
-                .AddScoped<IUpdateService, UpdateService>();
-
+                .AddScoped<IUpdateService, UpdateService>()
+                .AddSingleton(new MailConfiguration()
+                {
+                    Client = mailSection["Client"],
+                    Port = mailSection["Port"].ToInteger(0),
+                    Email = mailSection["Email"],
+                    RequireLogin = mailSection["RequireLogin"].ToBoolean(false),
+                    User = mailSection["User"],
+                    Password = mailSection["Password"]
+                })
+                .AddScoped<SmtpClient>()
+                .AddScoped<IEmailSender, MailSender>();
 #if DEBUG
             #region Example Tools
             services.AddScoped<TestDataService>();

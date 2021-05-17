@@ -23,7 +23,8 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Username { get; set; }
+        public string NickName { get; set; }
+        public int TrooperNumber { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -33,22 +34,18 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            public string Username { get; set; }
         }
 
         private async Task LoadAsync(Trooper user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            if (Input is null) Input = new();
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
+            Input.Username = userName;
+            NickName = user.NickName;
+            TrooperNumber = user.Id;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -77,16 +74,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
-            {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
-                {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
-                }
-            }
+
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

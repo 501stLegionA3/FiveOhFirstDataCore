@@ -49,7 +49,7 @@ namespace FiveOhFirstDataCore.Core.Account
             return token;
         }
 
-        public async Task BindDiscordAsync(string token, ulong accountId)
+        public async Task BindDiscordAsync(string token, ulong accountId, string email)
         {
             var scope = _services.CreateScope();
             var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
@@ -65,7 +65,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
             if (LinkingController.TryGetValue(token, out var old))
             {
-                LinkingController[token] = new(token, old.TrooperId, accountId.ToString(), new Timer((x) =>
+                LinkingController[token] = new(token, old.TrooperId, accountId.ToString(), email, new Timer((x) =>
                 {
                     _ = LinkingController.TryRemove(token, out _);
                 }, null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
@@ -93,7 +93,7 @@ namespace FiveOhFirstDataCore.Core.Account
                 if (old.DiscordId is null)
                     throw new Exception("Discord ID is missing.");
 
-                LinkingController[token] = new(token, old.TrooperId, old.DiscordId,
+                LinkingController[token] = new(token, old.TrooperId, old.DiscordId, old.DiscordEmail,
                     steamId, new Timer((x) =>
                     {
                         _ = LinkingController.TryRemove(token, out _);
@@ -139,6 +139,8 @@ namespace FiveOhFirstDataCore.Core.Account
 
                 user.DiscordId = state.DiscordId;
                 user.SteamLink = state.SteamId;
+                user.Email = state.DiscordEmail;
+                user.EmailConfirmed = user.Email is not null;
 
                 await _database.SaveChangesAsync();
 
