@@ -12,19 +12,17 @@
         <form id="profile-form" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="NickName"></label>
-                <input asp-for="NickName" class="form-control" disabled />
+                <label asp-for="Input.NickName"></label>
+                <input asp-for="Input.NickName" class="form-control" disabled />
             </div>
             <div class="form-group">
-                <label asp-for="TrooperNumber"></label>
-                <input asp-for="TrooperNumber" class="form-control" disabled />
+                <label asp-for="Input.TrooperNumber"></label>
+                <input asp-for="Input.TrooperNumber" class="form-control" disabled />
             </div>
             <div class="form-group">
                 <label asp-for="Input.Username"></label>
-                <input asp-for="Input.Username" class="form-control" />
-                <span asp-validation-for="Input.Username" class="text-danger"></span>
+                <input asp-for="Input.Username" class="form-control" disabled />
             </div>
-            <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </div>

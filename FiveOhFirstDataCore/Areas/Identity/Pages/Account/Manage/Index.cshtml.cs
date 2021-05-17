@@ -23,9 +23,6 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string NickName { get; set; }
-        public int TrooperNumber { get; set; }
-
         [TempData]
         public string StatusMessage { get; set; }
 
@@ -34,7 +31,12 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [Display(Name = "Account Username")]
             public string Username { get; set; }
+            [Display(Name = "Trooper Name")]
+            public string NickName { get; set; }
+            [Display(Name = "Birth Number")]
+            public int TrooperNumber { get; set; }
         }
 
         private async Task LoadAsync(Trooper user)
@@ -44,8 +46,8 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
             if (Input is null) Input = new();
 
             Input.Username = userName;
-            NickName = user.NickName;
-            TrooperNumber = user.Id;
+            Input.NickName = user.NickName;
+            Input.TrooperNumber = user.Id;
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -73,8 +75,6 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
-
-
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
