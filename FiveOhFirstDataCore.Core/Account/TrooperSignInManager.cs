@@ -14,7 +14,15 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
         {
-            var user = await UserManager.FindByNameAsync(userName);
+            Trooper user;
+            if(int.TryParse(userName, out _))
+            {
+                user = await UserManager.FindByIdAsync(userName);
+            }
+            else
+            {
+                user = await UserManager.FindByNameAsync(userName);
+            }
 
             if (user is not null)
             {
