@@ -1,4 +1,5 @@
 ﻿@page "/c1"
+@inject IRosterService _roster
 
 <AuthorizeView Policy="RequireC1">
     <Authorized>
@@ -10,27 +11,27 @@
             <div class="row">
                 <div class="col-md-6 col-sm-12 p-2">
                     @*Roster Staff*@
-                    <a href="/c1/roster" class="btn btn-block btn-primary">Roster Staff Home</a>
+                    <a href="/c1/roster" class="btn btn-block btn-primary @(Access[0] ? "" : "disabled")">Roster Staff Home</a>
                 </div>
                 <div class="col-md-6 col-sm-12 p-2">
                     @*Document Maintenance*@
-                    <a href="/c1/docs" class="btn btn-block btn-primary">Document Maintenance Home</a>
+                    <a href="/c1/docs" class="btn btn-block btn-primary @(Access[1] ? "" : "disabled")">Document Maintenance Home</a>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6 col-sm-12 p-2">
                     @*Recruting*@
-                    <a href="/c1/recruiter" class="btn btn-block btn-primary">Recruiting Staff Home</a>
+                    <a href="/c1/recruiter" class="btn btn-block btn-primary @(Access[2] ? "" : "disabled")">Recruiting Staff Home</a>
                 </div>
                 <div class="col-md-6 col-sm-12 p-2">
                     @*Returning Members*@
-                    <a href="/c1/returning" class="btn btn-block btn-primary">Returning Member Staff Home</a>
+                    <a href="/c1/returning" class="btn btn-block btn-primary @(Access[3] ? "" : "disabled")">Returning Member Staff Home</a>
                 </div>
             </div>
             <div class="row">
                 <div class="col p-2">
                     @*Medals*@
-                    <a href="/c1/medals" class="btn btn-block btn-primary">Medals Staff Home</a>
+                    <a href="/c1/medals" class="btn btn-block btn-primary @(Access[4] ? "" : "disabled")">Medals Staff Home</a>
                 </div>
             </div>
         </div>
@@ -42,4 +43,17 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL") };
+
+    public bool[] Access { get; set; } = new bool[] { false, false, false, false, false };
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        Access = await _roster.GetC1PermissionsAsync(user);
+    }
 }

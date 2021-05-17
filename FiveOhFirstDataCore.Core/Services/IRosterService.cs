@@ -33,5 +33,15 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper);
         public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, List<ClaimUpdate> claimsToRemove, ClaimsPrincipal subitter);
         #endregion
+
+        #region Permissions
+        public Task<bool[]> GetC1PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC3PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC4PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC5PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims);
+        public Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims);
+        #endregion
     }
 }
