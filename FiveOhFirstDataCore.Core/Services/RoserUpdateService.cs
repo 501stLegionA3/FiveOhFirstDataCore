@@ -255,5 +255,11 @@ namespace FiveOhFirstDataCore.Core.Services
                 submitter.SubmittedQualificationChanges.Add(update);
             }
         }
+
+        public Task<Trooper> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var trooper = _userManager.GetUserAsync(claims);
+            return trooper;
+        }
     }
 }

@@ -22,6 +22,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<OrbatData> GetOrbatDataAsync();
         public Task<ZetaOrbatData> GetZetaOrbatDataAsync();
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
+        public Task<Trooper> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         #endregion
 
         #region Roster Registration

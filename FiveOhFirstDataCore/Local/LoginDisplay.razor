@@ -1,6 +1,8 @@
-﻿<AuthorizeView>
+﻿@inject IRosterService _roster
+
+<AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+        <a href="Identity/Account/Manage">Welcome @(Trooper?.Id.ToString() ?? "") @(Trooper?.NickName ?? "")</a>
         <form method="post" action="Identity/Account/LogOut">
             <button type="submit" class="nav-link btn btn-link">Log out</button>
         </form>
@@ -10,3 +12,18 @@
         <a href="Identity/Account/Login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
+
+@code {
+    public Trooper Trooper { get; set; } = new();
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        Trooper = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+    }
+}
