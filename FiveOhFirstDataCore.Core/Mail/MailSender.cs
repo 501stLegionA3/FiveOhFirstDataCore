@@ -39,14 +39,21 @@ namespace FiveOhFirstDataCore.Core.Mail
                     {
                         Text = htmlMessage
                     };
-
-                    if(!_noReplyClient.IsConnected)
+                    try
                     {
-                        await _noReplyClient.ConnectAsync(_config.Client, _config.Port, false);
-                        await _noReplyClient.AuthenticateAsync(_config.User, _config.Password);
-                    }
+                        if (!_noReplyClient.IsConnected)
+                        {
+                            await _noReplyClient.ConnectAsync(_config.Client, _config.Port, false);
+                            if (_config.RequireLogin)
+                                await _noReplyClient.AuthenticateAsync(_config.User, _config.Password);
+                        }
 
-                    await _noReplyClient.SendAsync(message);
+                        await _noReplyClient.SendAsync(message);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"An email failed to send.");
+                    }
                 }
                 else
                 {
