@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<SlotChange> SlotChanges { get; internal set; }
         public DbSet<CShopChange> CShopChanges { get; internal set; }
         public DbSet<QualificationChange> QualificationChanges { get; internal set; }
+        public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -64,6 +66,20 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             qualChange.HasMany(e => e.Instructors)
                 .WithMany(p => p.SubmittedQualificationChanges);
+
+            var da = builder.Entity<DisciplinaryAction>();
+            da.HasKey(e => e.DAID);
+            da.HasOne(e => e.FiledBy)
+                .WithMany(p => p.FiledDisciplinaryActions)
+                .HasForeignKey(e => e.FiledById);
+            da.HasOne(e => e.FiledTo)
+                .WithMany(p => p.DisciplinaryActionInbox)
+                .HasForeignKey(e => e.FiledToId);
+            da.HasOne(e => e.FiledAgainst)
+                .WithMany(p => p.DisciplinaryActions)
+                .HasForeignKey(e => e.FiledAgainstId);
+            da.HasMany(e => e.Witnesses)
+                .WithMany(p => p.WitnessedDisciplinaryActions);
         }
     }
 }

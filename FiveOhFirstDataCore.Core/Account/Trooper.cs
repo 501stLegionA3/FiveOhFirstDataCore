@@ -1,9 +1,11 @@
-﻿using FiveOhFirstDataCore.Core.Data;
+﻿using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using J2N.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
@@ -38,8 +40,11 @@ namespace FiveOhFirstDataCore.Core.Account
         public string? SteamLink { get; set; }
         public string? AccessCode { get; set; }
 
+        public List<Guid> NotificationItems { get; set; } = new();
+
         public virtual RecruitStatus RecruitStatus { get; set; } = new();
 
+        #region Logging
         /// <summary>
         /// Rank changes applied to this account.
         /// </summary>
@@ -54,7 +59,26 @@ namespace FiveOhFirstDataCore.Core.Account
         public virtual List<CShopChange> SubmittedCShopChanges { get; set; } = new();
         public virtual List<QualificationChange> QualificationChanges { get; set; } = new();
         public virtual List<QualificationChange> SubmittedQualificationChanges { get; set; } = new();
+        #endregion
 
+        #region Disciplinary Actions
+        /// <summary>
+        /// Holds the DA's filed against this Trooper
+        /// </summary>
+        public virtual List<DisciplinaryAction> DisciplinaryActions { get; set; } = new();
+        /// <summary>
+        /// Holds the DA's filed by this Trooper
+        /// </summary>
+        public virtual List<DisciplinaryAction> FiledDisciplinaryActions { get; set; } = new();
+        /// <summary>
+        /// Holds the DA's this Trooper has been recorded as witnessed.
+        /// </summary>
+        public virtual List<DisciplinaryAction> WitnessedDisciplinaryActions { get; set; } = new();
+        /// <summary>
+        /// Holds the DA's that have been sent to this Trooper for further review. This is not DA's filed against this Trooper.
+        /// </summary>
+        public virtual List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
+        #endregion
 
         public string GetRoleName()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -50,6 +51,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     DiscordId = table.Column<string>(type: "text", nullable: true),
                     SteamLink = table.Column<string>(type: "text", nullable: true),
                     AccessCode = table.Column<string>(type: "text", nullable: true),
+                    NotificationItems = table.Column<List<Guid>>(type: "uuid[]", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -207,6 +209,48 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DisciplinaryActions",
+                columns: table => new
+                {
+                    DAID = table.Column<Guid>(type: "uuid", nullable: false),
+                    FiledById = table.Column<int>(type: "integer", nullable: false),
+                    FiledToId = table.Column<int>(type: "integer", nullable: false),
+                    FiledAgainstId = table.Column<int>(type: "integer", nullable: false),
+                    FiledOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OccouredOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Location = table.Column<string>(type: "text", nullable: false),
+                    Situation = table.Column<string>(type: "text", nullable: false),
+                    IncidentReport = table.Column<string>(type: "text", nullable: false),
+                    Summary = table.Column<string>(type: "text", nullable: false),
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    Recommendation = table.Column<string>(type: "text", nullable: false),
+                    ActionTaken = table.Column<bool>(type: "boolean", nullable: false),
+                    WillTakeAction = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DisciplinaryActions", x => x.DAID);
+                    table.ForeignKey(
+                        name: "FK_DisciplinaryActions_AspNetUsers_FiledAgainstId",
+                        column: x => x.FiledAgainstId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DisciplinaryActions_AspNetUsers_FiledById",
+                        column: x => x.FiledById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DisciplinaryActions_AspNetUsers_FiledToId",
+                        column: x => x.FiledToId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QualificationChanges",
                 columns: table => new
                 {
@@ -309,6 +353,30 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DisciplinaryActionTrooper",
+                columns: table => new
+                {
+                    WitnessedDisciplinaryActionsDAID = table.Column<Guid>(type: "uuid", nullable: false),
+                    WitnessesId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DisciplinaryActionTrooper", x => new { x.WitnessedDisciplinaryActionsDAID, x.WitnessesId });
+                    table.ForeignKey(
+                        name: "FK_DisciplinaryActionTrooper_AspNetUsers_WitnessesId",
+                        column: x => x.WitnessesId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DisciplinaryActionTrooper_DisciplinaryActions_WitnessedDisc~",
+                        column: x => x.WitnessedDisciplinaryActionsDAID,
+                        principalTable: "DisciplinaryActions",
+                        principalColumn: "DAID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QualificationChangeTrooper",
                 columns: table => new
                 {
@@ -404,6 +472,26 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DisciplinaryActions_FiledAgainstId",
+                table: "DisciplinaryActions",
+                column: "FiledAgainstId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DisciplinaryActions_FiledById",
+                table: "DisciplinaryActions",
+                column: "FiledById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DisciplinaryActions_FiledToId",
+                table: "DisciplinaryActions",
+                column: "FiledToId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DisciplinaryActionTrooper_WitnessesId",
+                table: "DisciplinaryActionTrooper",
+                column: "WitnessesId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QualificationChanges_ChangedForId",
                 table: "QualificationChanges",
                 column: "ChangedForId");
@@ -461,6 +549,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "CShopChanges");
 
             migrationBuilder.DropTable(
+                name: "DisciplinaryActionTrooper");
+
+            migrationBuilder.DropTable(
                 name: "QualificationChangeTrooper");
 
             migrationBuilder.DropTable(
@@ -474,6 +565,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "DisciplinaryActions");
 
             migrationBuilder.DropTable(
                 name: "QualificationChanges");
