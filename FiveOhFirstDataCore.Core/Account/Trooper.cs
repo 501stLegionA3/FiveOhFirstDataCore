@@ -90,7 +90,7 @@ namespace FiveOhFirstDataCore.Core.Account
                 return "Archived";
             else if (Slot < Slot.AvalancheCompany)
             {
-                return $"Battalion {Role.AsName()}";
+                return $"Battalion {Role.AsFull()}";
             }
             else if (Slot >= Slot.AvalancheCompany && Slot < Slot.AcklayCompany
                 || Slot >= Slot.ZetaCompany)
@@ -98,14 +98,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if(tag == 0)
                 {
-                    return $"Company {Slot.AsName()}";
+                    return $"Company {Slot.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if(tag == 0)
                     {
-                        return $"Platoon {Slot.AsName()}";
+                        return $"Platoon {Slot.AsFull()}";
                     }
                     else
                     {
@@ -113,20 +113,20 @@ namespace FiveOhFirstDataCore.Core.Account
                         {
                             if(Team is null)
                             {
-                                return $"Squad {Role.AsName()}";
+                                return $"Squad {Role.AsFull()}";
                             }
                             else
                             {
-                                return $"Taem {Role.AsName()}";
+                                return $"Taem {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
                         {
-                            return $"Squad {Role.AsName()}";
+                            return $"Squad {Role.AsFull()}";
                         }
                         else
                         {
-                            return Role.AsName();
+                            return Role.AsFull();
                         }
                     }
                 }
@@ -136,14 +136,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"Company {Slot.AsName()}";
+                    return $"Company {Slot.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"Airborne {Slot.AsName()}";
+                        return $"Airborne {Slot.AsFull()}";
                     }
                     else
                     {
@@ -151,20 +151,20 @@ namespace FiveOhFirstDataCore.Core.Account
                         {
                             if (Team is null)
                             {
-                                return $"Squad {Role.AsName()}";
+                                return $"Squad {Role.AsFull()}";
                             }
                             else
                             {
-                                return $"Taem {Role.AsName()}";
+                                return $"Taem {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
                         {
-                            return $"Squad {Role.AsName()}";
+                            return $"Squad {Role.AsFull()}";
                         }
                         else
                         {
-                            return $"Airborne {Role.AsName()}";
+                            return $"Airborne {Role.AsFull()}";
                         }
                     }
                 }
@@ -174,14 +174,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"Company {Slot.AsName()}";
+                    return $"Company {Slot.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"Platoon {Slot.AsName()}";
+                        return $"Platoon {Slot.AsFull()}";
                     }
                     else
                     {
@@ -189,20 +189,20 @@ namespace FiveOhFirstDataCore.Core.Account
                         {
                             if (Team is null)
                             {
-                                return $"Section {Role.AsName()}";
+                                return $"Section {Role.AsFull()}";
                             }
                             else
                             {
-                                return $"Taem {Role.AsName()}";
+                                return $"Taem {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
                         {
-                            return $"Section {Role.AsName()}";
+                            return $"Section {Role.AsFull()}";
                         }
                         else
                         {
-                            return Role.AsName();
+                            return Role.AsFull();
                         }
                     }
                 }
@@ -212,18 +212,18 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"Squadron {Slot.AsName()}";
+                    return $"Squadron {Slot.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"Flight {Slot.AsName()}";
+                        return $"Flight {Slot.AsFull()}";
                     }
                     else
                     {
-                        return Role.AsName();
+                        return Role.AsFull();
                     }
                 }
             }

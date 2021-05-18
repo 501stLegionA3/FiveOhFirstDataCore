@@ -44,32 +44,4 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Subordinate")]
         Subordiante
     }
-
-    [AttributeUsage(AttributeTargets.All)]
-    public class RoleDetailsAttribute : Attribute
-    {
-        public string Name { get; set; }
-        public RoleDetailsAttribute(string name)
-        {
-            Name = name;
-        }
-    }
-
-    public static class RoleExtensions
-    {
-        public static string AsName(this Role role)
-        {
-            var type = typeof(Role);
-            var name = Enum.GetName(type, role);
-
-            if (name is null) return "";
-
-            var attribute = type?.GetField(name)
-                ?.GetCustomAttributes<DescriptionAttribute>()
-                .SingleOrDefault();
-
-            if (attribute is null) return "";
-            else return attribute.Description;
-        }
-    }
 }

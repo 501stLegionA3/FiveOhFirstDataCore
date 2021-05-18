@@ -6,7 +6,7 @@
 @if(Trooper is not null)
 {
 <div class="row w-100">
-    <div class="col-md-3 col-sm-12">
+    <div class="col-md-3 col-sm-12 text-center align-content-center">
         <div class="row">
             <div class="col text-center">
                 @*Trooper Basic Details*@
@@ -40,9 +40,13 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col text-center">
                 @*Slot Details*@
-
+                <table>
+                    <tr>
+                        <th>@Trooper.Slot.AsFull()</th>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
