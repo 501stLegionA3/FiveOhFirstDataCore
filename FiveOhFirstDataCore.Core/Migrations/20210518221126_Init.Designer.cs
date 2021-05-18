@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210518153229_Init")]
+    [Migration("20210518221126_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -160,6 +160,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LastPromotion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("LastSlotChange")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("LockoutEnabled")

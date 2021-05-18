@@ -11,40 +11,64 @@
             <div class="col text-center">
                 @*Trooper Basic Details*@
                 <h4><RankDisplay Trooper="Trooper" /> @Trooper.Id @Trooper.NickName</h4>
-                <table class="w-100">
-                    <tr>
-                        <th scope="col" class="w-50">
-                            TiG
-                        </th>
-                        <th scope="col" class="w-50">
-                            TiS
-                        </th>
-                    </tr>
-                    <tr>
-                        <td>
-                            @ServiceStrings[0]
-                        </td>
-                        <td>
-                            @ServiceStrings[1]
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            @ServiceStrings[2] DAY(S)
-                        </td>
-                        <td>
-                            @ServiceStrings[3] DAY(S)
-                        </td>
-                    </tr>
-                </table>
+                <div class="row w-100">
+                    <div class="col-lg-6 col-md-12">
+                        <table class="w-100">
+                            <tr>
+                                <th scope="col" class="w-50">
+                                    TiS
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @ServiceStrings[1]
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @ServiceStrings[3] DAY(S)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <table class="w-100">
+                            <tr>
+                                <th scope="col" class="w-50">
+                                    TiG
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @ServiceStrings[0]
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    @ServiceStrings[2] DAY(S)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
+        <hr />
         <div class="row">
             <div class="col text-center">
                 @*Slot Details*@
-                <table>
+                <table class="w-100">
                     <tr>
                         <th>@Trooper.Slot.AsFull()</th>
+                    </tr>
+                    <tr>
+                        <th>TiB</th>
+                    </tr>
+                    <tr>
+                        <td>@ServiceStrings[4]</td>
+                    </tr>
+                    <tr>
+                        <td>@ServiceStrings[5] DAY(S)</td>
                     </tr>
                 </table>
             </div>
@@ -183,7 +207,7 @@ else
 
     private Dictionary<CShop, List<ClaimUpdate>> ShopPositions { get; set; } = new();
 
-    public string[] ServiceStrings = new string[4];
+    public string[] ServiceStrings = new string[6];
 
     private TrooperFlag Flag { get; set; } = new();
     private bool LoadedAdditional { get; set; } = false;
@@ -202,6 +226,8 @@ else
         ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
         ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
         ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+        ServiceStrings[4] = Trooper.LastSlotChange.ToShortDateString();
+        ServiceStrings[5] = DateTime.UtcNow.Subtract(Trooper.LastSlotChange).TotalDays.ToString("F0");
 
         if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
         {

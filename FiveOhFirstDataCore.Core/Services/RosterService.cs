@@ -212,6 +212,16 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, null, errors);
                 }
 
+                identRes = await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
+
+                if (!identRes.Succeeded)
+                {
+                    foreach (var error in identRes.Errors)
+                        errors.Add($"[{error.Code}] {error.Description}");
+
+                    return new(false, null, errors);
+                }
+
                 return new(true, token, null);
             }
             catch (Exception ex)

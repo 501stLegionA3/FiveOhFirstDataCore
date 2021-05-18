@@ -30,6 +30,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public DateTime LastPromotion { get; set; }
         public DateTime StartOfService { get; set; }
+        public DateTime LastSlotChange { get; set; }
 
         public string? InitalTraining { get; set; }
         public string? UTC { get; set; }

@@ -160,6 +160,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<DateTime>("LastPromotion")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<DateTime>("LastSlotChange")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
 

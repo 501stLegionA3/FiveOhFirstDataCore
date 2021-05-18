@@ -45,9 +45,11 @@ namespace FiveOhFirstDataCore
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Secrets.GetConnectionString("database"))
+#if DEBUG
                 .EnableSensitiveDataLogging()
-                .EnableDetailedErrors(),
-                ServiceLifetime.Scoped, ServiceLifetime.Scoped);
+                .EnableDetailedErrors()
+#endif
+                , ServiceLifetime.Scoped, ServiceLifetime.Scoped);
             services.AddIdentity<Trooper, TrooperRole>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()

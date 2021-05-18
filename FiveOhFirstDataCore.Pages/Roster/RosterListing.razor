@@ -35,7 +35,7 @@
                 <option value="null">Unit</option>
                 @foreach(Slot r in Enum.GetValues(typeof(Slot)))
                 {
-                    <option value="@r">@r.AsName()</option>
+                    <option value="@r">@r.AsFull()</option>
                 }
             </InputSelect>
             </td>
@@ -44,7 +44,7 @@
                 <option value="null">Role</option>
                 @foreach(Role r in Enum.GetValues(typeof(Role)))
                 {
-                    <option value="@r">@r.AsName()</option>
+                    <option value="@r">@r.AsFull()</option>
                 }
             </InputSelect>
             </td>

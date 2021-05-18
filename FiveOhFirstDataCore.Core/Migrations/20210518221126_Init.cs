@@ -45,6 +45,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Qualifications = table.Column<long>(type: "bigint", nullable: false),
                     LastPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     StartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    LastSlotChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     InitalTraining = table.Column<string>(type: "text", nullable: true),
                     UTC = table.Column<string>(type: "text", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: false),
