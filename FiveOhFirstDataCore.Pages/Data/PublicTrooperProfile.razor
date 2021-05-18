@@ -1,6 +1,10 @@
 ﻿@using FiveOhFirstDataCore.Core.Structures.Updates
 @inject IRosterService _roster
+@inject IRefreshRequestService _refresh
+@inject IAuthorizationService _auth
 
+@if(Trooper is not null)
+{
 <div class="row w-100">
     <div class="col-md-3 col-sm-12">
         <div class="row">
@@ -92,14 +96,80 @@
         </div>
         <AuthorizeView Policy="RequireNCO">
             <Authorized>
+                @if (LoadedAdditional)
+                {
                 <div class="row">
                     @*NCO Box*@
-
+                    <div class="col-lg-6 col-md-12">
+                        <strong>Disciplinary Actions</strong>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Filed By</th>
+                                    <th>Occoured On</th>
+                                    <th>Situation</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tboday>
+                                @foreach (var da in Trooper.DisciplinaryActions)
+                                {
+                                    <tr>
+                                        <td>@(da.FiledBy?.NickName ?? da.FiledById.ToString())</td>
+                                        <td>@da.OccouredOn.ToString("g")</td>
+                                        <td>@da.Situation</td>
+                                        <td><a href="" class="oi oi-arrow-circle-right" aria-hidden="true"></a></td>
+                                    </tr>
+                                }
+                            </tboday>
+                        </table>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <strong>Flags</strong>
+                        <EditForm Context="flagFormContext" class="form form-inline" Model="Flag">
+                            <table class="table table-hover">
+                                <thead>
+                                    @if((LoggedIn?.Id ?? 0) != Trooper.Id)
+                                    {
+                                    <tr>
+                                        <td colspan="2">
+                                            <InputText @bind-Value="Flag.Contents" class="form-control" placeholder="Flag Contents" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" @onclick="SaveFlag">Save</button>
+                                        </td>
+                                    </tr>
+                                    }
+                                    <tr>
+                                        <th>Author</th>
+                                        <th>Date</th>
+                                        <th>Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var flag in Trooper.Flags)
+                                    {
+                                        <tr>
+                                            <td>@(flag.Author?.NickName ?? flag.AuthorId.ToString())</td>
+                                            <td>@flag.CreatedOn.ToString("g")</td>
+                                            <td>@flag.Contents</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </EditForm>
+                    </div>
                 </div>
+                }
             </Authorized>
         </AuthorizeView>
     </div>
 </div>
+}
+else
+{
+    <em>Something went wrong, and a trooper was unabled to be loaded. Go <a href="/">home</a>.</em>
+}
 
 @code {
     [Parameter]
@@ -110,6 +180,11 @@
     private Dictionary<CShop, List<ClaimUpdate>> ShopPositions { get; set; } = new();
 
     public string[] ServiceStrings = new string[4];
+
+    private TrooperFlag Flag { get; set; } = new();
+    private bool LoadedAdditional { get; set; } = false;
+    
+    private Trooper LoggedIn { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -123,5 +198,29 @@
         ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
         ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
         ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+
+        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
+        {
+            await _roster.LoadPublicProfileDataAsync(Trooper);
+            LoggedIn = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+            Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+            LoadedAdditional = true;
+        }
+
+        _refresh.RefreshRequested += () => InvokeAsync(StateHasChanged);
+    }
+
+    private async Task SaveFlag(EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(Flag.Contents)) return;
+
+        var user = (await AuthStateTask).User;
+        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
+        {
+            await _roster.SaveNewFlag(user, Trooper, Flag);
+            Flag = new();
+            Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+            _refresh.CallRequestRefresh();
+        }
     }
 }

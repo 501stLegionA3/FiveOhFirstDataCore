@@ -15,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<CShopChange> CShopChanges { get; internal set; }
         public DbSet<QualificationChange> QualificationChanges { get; internal set; }
         public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
-
+        public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -80,6 +80,15 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.FiledAgainstId);
             da.HasMany(e => e.Witnesses)
                 .WithMany(p => p.WitnessedDisciplinaryActions);
+
+            var flags = builder.Entity<TrooperFlag>();
+            flags.HasKey(e => e.FlagId);
+            flags.HasOne(e => e.FlagFor)
+                .WithMany(p => p.Flags)
+                .HasForeignKey(e => e.FlagForId);
+            flags.HasOne(e => e.Author)
+                .WithMany(p => p.CreatedFlags)
+                .HasForeignKey(e => e.AuthorId);
         }
     }
 }

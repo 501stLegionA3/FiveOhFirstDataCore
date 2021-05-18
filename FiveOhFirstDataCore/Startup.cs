@@ -45,7 +45,9 @@ namespace FiveOhFirstDataCore
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Secrets.GetConnectionString("database"))
-                    .UseLazyLoadingProxies());
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors(),
+                ServiceLifetime.Scoped, ServiceLifetime.Scoped);
             services.AddIdentity<Trooper, TrooperRole>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()
@@ -335,7 +337,7 @@ namespace FiveOhFirstDataCore
             var mailSection = Secrets.GetRequiredSection("Email");
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
-                .AddSingleton<IRosterService, RosterService>()
+                .AddScoped<IRosterService, RosterService>()
                 .AddScoped<INicknameComparisonService, NicknameComparisionService>()
                 .AddScoped<IUpdateService, UpdateService>()
                 .AddSingleton(new MailConfiguration()

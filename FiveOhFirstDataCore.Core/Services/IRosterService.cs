@@ -31,9 +31,10 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData);
         #endregion
 
-        #region Roster Updates
+        #region Data Updates
         public Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper);
         public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, List<ClaimUpdate> claimsToRemove, ClaimsPrincipal subitter);
+        public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
         #endregion
 
         #region Permissions
@@ -44,6 +45,10 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims);
         public Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims);
         public Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims);
+        #endregion
+
+        #region Data Loading
+        public Task LoadPublicProfileDataAsync(Trooper trooper);
         #endregion
     }
 }

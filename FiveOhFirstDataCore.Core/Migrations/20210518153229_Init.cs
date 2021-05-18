@@ -353,6 +353,33 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TrooperFlags",
+                columns: table => new
+                {
+                    FlagId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    FlagForId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Contents = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrooperFlags", x => x.FlagId);
+                    table.ForeignKey(
+                        name: "FK_TrooperFlags_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TrooperFlags_AspNetUsers_FlagForId",
+                        column: x => x.FlagForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DisciplinaryActionTrooper",
                 columns: table => new
                 {
@@ -526,6 +553,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "IX_SlotChangeTrooper_ApprovedSlotChangesChangeId",
                 table: "SlotChangeTrooper",
                 column: "ApprovedSlotChangesChangeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrooperFlags_AuthorId",
+                table: "TrooperFlags",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrooperFlags_FlagForId",
+                table: "TrooperFlags",
+                column: "FlagForId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -562,6 +599,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "SlotChangeTrooper");
+
+            migrationBuilder.DropTable(
+                name: "TrooperFlags");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

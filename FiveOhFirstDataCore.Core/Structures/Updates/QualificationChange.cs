@@ -16,6 +16,6 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
 
         public Qualification OldQualifications { get; set; }
 
-        public virtual List<Trooper> Instructors { get; set; }
+        public List<Trooper> Instructors { get; set; }
     }
 }

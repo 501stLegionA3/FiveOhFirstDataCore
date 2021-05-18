@@ -284,6 +284,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("AspNetRoles");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
+                {
+                    b.Property<Guid>("FlagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Contents")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("FlagForId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("FlagId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("FlagForId");
+
+                    b.ToTable("TrooperFlags");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopChange", b =>
                 {
                     b.Property<Guid>("ChangeId")
@@ -617,6 +645,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("Trooper");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                        .WithMany("CreatedFlags")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FlagFor")
+                        .WithMany("Flags")
+                        .HasForeignKey("FlagForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("FlagFor");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopChange", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
@@ -762,11 +809,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 {
                     b.Navigation("CShopChanges");
 
+                    b.Navigation("CreatedFlags");
+
                     b.Navigation("DisciplinaryActionInbox");
 
                     b.Navigation("DisciplinaryActions");
 
                     b.Navigation("FiledDisciplinaryActions");
+
+                    b.Navigation("Flags");
 
                     b.Navigation("QualificationChanges");
 

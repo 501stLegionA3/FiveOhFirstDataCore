@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -14,19 +16,19 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        private readonly IServiceProvider _services;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<Trooper> _userManager;
 
-        public RosterService(IServiceProvider services)
+        public RosterService(ApplicationDbContext dbContext, UserManager<Trooper> userManager)
         {
-            _services = services;
+            this._dbContext = dbContext;
+            this._userManager = userManager;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
                     troopers.Add(x);
@@ -37,10 +39,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetArchivedTroopersAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot == Data.Slot.Archived)
                     troopers.Add(x);
@@ -51,10 +51,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetFullRosterAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot < Data.Slot.Archived)
                     troopers.Add(x);
@@ -65,10 +63,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetInactiveReservesAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot == Data.Slot.InactiveReserve)
                     troopers.Add(x);
@@ -79,11 +75,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             HashSet<int> ids = new();
             HashSet<string> nicknames = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 ids.Add(x.Id);
 
@@ -96,10 +90,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<OrbatData> GetOrbatDataAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             OrbatData data = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if(x.Slot < Data.Slot.ZetaCompany)
                     data.Assign(x);
@@ -110,10 +102,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetPlacedRosterAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot < Data.Slot.ZetaCompany)
                     troopers.Add(x);
@@ -124,26 +114,20 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<Trooper?> GetTrooperFromIdAsync(int id)
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var trooper = await dbContext.FindAsync<Trooper>(id);
+            var trooper = await _dbContext.FindAsync<Trooper>(id);
             return trooper;
         }
 
         public async Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims)
         {
-            using var scope = _services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
-            var trooper = await userManager.GetUserAsync(claims);
-            return trooper;
+            _ = int.TryParse(_userManager.GetUserId(claims), out int id);
+            return await GetTrooperFromIdAsync(id);
         }
 
         public async Task<List<Trooper>> GetUnregisteredTroopersAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             List<Trooper> troopers = new();
-            await dbContext.Users.AsNoTracking()
+            await _dbContext.Users.AsNoTracking()
                 .Include(x => x.RecruitStatus)
                 .ForEachAsync(x =>
             {
@@ -156,10 +140,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ZetaOrbatData> GetZetaOrbatDataAsync()
         {
-            using var scope = _services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             ZetaOrbatData data = new();
-            await dbContext.Users.AsNoTracking().ForEachAsync(x =>
+            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
                 if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
                     data.Assign(x);
@@ -170,8 +152,6 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData)
         {
-            using var scope = _services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<Trooper>>();
             List<string> errors = new();
             try
             {
@@ -202,7 +182,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     AccessCode = token
                 };
 
-                var identRes = await userManager.CreateAsync(trooper, token);
+                var identRes = await _userManager.CreateAsync(trooper, token);
 
                 if (!identRes.Succeeded)
                 {
@@ -212,7 +192,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, null, errors);
                 }
 
-                identRes = await userManager.AddToRoleAsync(trooper, "Trooper");
+                identRes = await _userManager.AddToRoleAsync(trooper, "Trooper");
 
                 if (!identRes.Succeeded)
                 {
@@ -222,7 +202,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, null, errors);
                 }
 
-                identRes = await userManager.AddClaimAsync(trooper, new("Training", "BCT"));
+                identRes = await _userManager.AddClaimAsync(trooper, new("Training", "BCT"));
 
                 if (!identRes.Succeeded)
                 {
@@ -239,6 +219,27 @@ namespace FiveOhFirstDataCore.Core.Services
                 errors.Add(ex.Message);
                 return new(false, null, errors);
             }
+        }
+
+        public async Task LoadPublicProfileDataAsync(Trooper trooper)
+        {
+            await _dbContext.DisciplinaryActions.Include(e => e.FiledBy)
+                .Where(e => e.FiledAgainstId == trooper.Id)
+                .LoadAsync();
+
+            await _dbContext.TrooperFlags.Include(e => e.Author)
+                .Where(e => e.FlagForId == trooper.Id)
+                .LoadAsync();
+
+            if(_dbContext.Entry(trooper).State == EntityState.Detached)
+                _dbContext.Attach(trooper);
+
+            await _dbContext.Entry(trooper)
+                .Collection(e => e.DisciplinaryActions)
+                .LoadAsync();
+            await _dbContext.Entry(trooper)
+                .Collection(e => e.Flags)
+                .LoadAsync();
         }
     }
 }

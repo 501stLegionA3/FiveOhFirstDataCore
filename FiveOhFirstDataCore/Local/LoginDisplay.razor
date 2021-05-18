@@ -1,8 +1,8 @@
-﻿@inject IRosterService _roster
+﻿@inject IAuthorizationService _auth
 
 <AuthorizeView>
     <Authorized>
-        <a href="Identity/Account/Manage">Welcome @(Trooper?.Id.ToString() ?? "") @(Trooper?.NickName ?? "")</a>
+        <a href="Identity/Account/Manage">Welcome @Display</a>
         <form method="post" action="Identity/Account/LogOut">
             <button type="submit" class="nav-link btn btn-link">Log out</button>
         </form>
@@ -14,7 +14,7 @@
 </AuthorizeView>
 
 @code {
-    public Trooper Trooper { get; set; } = new();
+    public string Display { get; set; }
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
@@ -24,6 +24,6 @@
 
         var user = (await AuthStateTask).User;
 
-        Trooper = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+        Display = user.Claims.FirstOrDefault(x => x.Type == "Display")?.Value ?? "Error: No claim found.";
     }
 }

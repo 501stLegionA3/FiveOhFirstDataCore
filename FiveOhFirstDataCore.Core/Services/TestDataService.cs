@@ -75,7 +75,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     new()
                     {
                         new("Slotted", "SomeDate"),
-                        new("Instructor", "RTO")
+                        new("Instructor", "RTO"),
+                        new("Display", "42127 Soyvolon")
                     },
                     new()
                     {
@@ -108,6 +109,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     {
                         new("Slotted", "SomeDate"),
                         new("Instructor", "Grenadier"),
+                        new("Display", "11345 Del")
                     },
                     new()
                     {
@@ -137,7 +139,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "70303 Crebar")
                     },
                     new()
                     {
@@ -167,7 +170,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "56273 Knight")
                     },
                     new()
                     {
@@ -196,7 +200,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "30253 Chimera")
                     },
                     new()
                     {
@@ -225,7 +230,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     new()
                     {
                         new("Slotted", "SomeDate"),
-                        new("Instructor", "Medic")
+                        new("Instructor", "Medic"),
+                        new("Display", "23996 Deytow")
                     },
                     new()
                     {
@@ -255,7 +261,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "54077 Klinger")
                     },
                     new()
                     {
@@ -285,7 +292,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "14577 Clover")
                     },
                     new()
                     {
@@ -314,7 +322,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "42361 Negeta")
                     },
                     new()
                     {
@@ -324,7 +333,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     {
                         Id = 87071,
                         UserName = "Bones",
-                        NickName = "Crebar",
+                        NickName = "Bones",
                         Rank = TrooperRank.VeteranTrooper,
                         RTORank = null,
                         MedicRank = MedicRank.Cadet,
@@ -343,7 +352,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "87071 Bones")
                     },
                     new()
                     {
@@ -373,7 +383,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Slotted", "SomeDate")
+                        new("Slotted", "SomeDate"),
+                        new("Display", "17077 Tal")
                     },
                     new()
                     {
@@ -403,7 +414,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-
+                        new("Display", "123456 Reservist")
                     },
                     new()
                     {
@@ -432,7 +443,8 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-                        new("Clerk", "Roster")
+                        new("Clerk", "Roster"),
+                        new("Display", "23456 Roster Clerk")
                     },
                     new()
                     {
@@ -451,7 +463,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     },
                     new()
                     {
-
+                        new("Display", "554433 LinkTest")
                     },
                     new()
                     {
