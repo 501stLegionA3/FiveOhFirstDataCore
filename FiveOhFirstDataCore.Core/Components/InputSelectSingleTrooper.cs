@@ -40,7 +40,7 @@ namespace FiveOhFirstDataCore.Core.Components
             {
                 DisplayValue = ((string?)x.Value) ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString() == DisplayValue || x.NickName == DisplayName);
+                var item = Troopers.FirstOrDefault(x => x.Id.ToString() == DisplayValue || x.NickName == DisplayValue);
 
                 if(item is not null)
                 {
