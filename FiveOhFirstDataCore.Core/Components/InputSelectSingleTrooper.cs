@@ -46,8 +46,7 @@ namespace FiveOhFirstDataCore.Core.Components
                 {
                     Valid = true;
                     Suggestions.Clear();
-                    CurrentValue = item;
-                    DisplayValue = item.NickName;
+                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(DisplayValue) || x.NickName.StartsWith(DisplayValue)));
                 }
                 else if(!string.IsNullOrWhiteSpace(DisplayValue))
                 {

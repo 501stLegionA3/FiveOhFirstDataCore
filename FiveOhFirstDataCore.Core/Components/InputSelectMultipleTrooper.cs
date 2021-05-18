@@ -46,14 +46,7 @@ namespace FiveOhFirstDataCore.Core.Components
 
                 Suggestions.Clear();
 
-                if (item is not null)
-                {
-                    if (CurrentValue is null) CurrentValue = new();
-                    if (CurrentValue.FirstOrDefault(x => x.Id == item.Id) is null)
-                        CurrentValue.Add(item);
-                    DisplayValue = "";
-                }
-                else if (!string.IsNullOrWhiteSpace(DisplayValue))
+                if (item is not null || !string.IsNullOrWhiteSpace(DisplayValue))
                 {
                     Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(DisplayValue) || x.NickName.StartsWith(DisplayValue))
                         && !(CurrentValue?.Contains(x) ?? false)));
@@ -87,7 +80,7 @@ namespace FiveOhFirstDataCore.Core.Components
                     var value = suggest;
 
                     builder.AddAttribute(14, "class", "btn btn-primary btn-block");
-                    builder.AddAttribute(15, "type", "button");
+                    builder.AddAttribute(15, "type", "submit");
                     builder.AddAttribute(16, "onclick", EventCallback.Factory.Create(this, (x) =>
                     {
                         if (CurrentValue is null) CurrentValue = new();
