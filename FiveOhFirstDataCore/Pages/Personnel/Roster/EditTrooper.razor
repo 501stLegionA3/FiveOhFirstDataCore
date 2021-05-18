@@ -4,7 +4,7 @@
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 
-<AuthorizeView Policy="RequireRosterClerk">
+<AuthorizeView Policy="RequireRosterClerkOrReturningMemberStaff">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="editTrooperContext" class="form" Model="Trooper">
@@ -38,6 +38,15 @@
             </div>
             @if (IsEditing)
             {
+                @if(Trooper.Id != 0 && Trooper.AccessCode is not null)
+            {
+                <hr />
+                <div class="row">
+                    <div class="col p-1 w-100 text-center">
+                        <span class="p-4 alert-secondary"><strong>This user has not registered their account.</strong> Give them the following code so they can register: @Trooper.AccessCode</span>
+                    </div>
+                </div>
+            }
             <hr />
             <div class="form-group">
                 <h4>Slot Details</h4>

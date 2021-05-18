@@ -220,6 +220,17 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
+                options.AddPolicy("RequireRosterClerkOrReturningMemberStaff", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type))
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
+                    });
+                });
+
                 options.AddPolicy("RequireRecruiter", policy =>
                 {
                     policy.RequireAssertion(ctx =>
