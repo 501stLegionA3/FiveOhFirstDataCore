@@ -1,0 +1,14 @@
+﻿@page "/manager"
+
+<AuthorizeView Policy="RequireManager">
+    <Authorized>
+        
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}
