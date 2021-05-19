@@ -3,6 +3,7 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,6 +63,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<CShopChange> SubmittedCShopChanges { get; set; } = new();
         public List<QualificationChange> QualificationChanges { get; set; } = new();
         public List<QualificationChange> SubmittedQualificationChanges { get; set; } = new();
+        public List<RecruitmentChange> Recruitments { get; set; } = new();
+        public RecruitmentChange RecruitedByData { get; set; }
         #endregion
 
         #region Disciplinary Actions

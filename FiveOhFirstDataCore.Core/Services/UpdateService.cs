@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,10 +20,32 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<UpdateBase>> GetRosterUpdatesAsync()
+        public Task<IEnumerable<RecruitmentChange>> GetRecruitmentChangesAsync()
+        {
+            return Task.FromResult(_dbContext
+                .RecruitmentChanges
+                .Include(p => p.ChangedFor)
+                .Include(p => p.RecruitedBy)
+                .AsSplitQuery()
+                .OrderByDescending(x => x.ChangedOn)
+                .AsEnumerable());
+        }
+
+        public Task<IEnumerable<SlotChange>> GetReturningMemberChangesAsync()
+        {
+            return Task.FromResult(_dbContext
+                .SlotChanges
+                .Where(x => x.OldSlot == Data.Slot.Archived)
+                .Include(p => p.ChangedFor)
+                .Include(p => p.ApprovedBy)
+                .AsSplitQuery()
+                .OrderByDescending(x => x.ChangedOn)
+                .AsEnumerable());
+        }
+
+        public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
         {
             ConcurrentBag<UpdateBase> data = new();
-            List<Task> actions = new();
 
             await _dbContext
                 .RankChanges
@@ -68,9 +91,9 @@ namespace FiveOhFirstDataCore.Core.Services
                         data.Add(x);
                 });
 
-            var dataList = data.ToList();
+            var dataList = data.AsEnumerable();
 
-            return dataList;
+            return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
         }
     }
 }

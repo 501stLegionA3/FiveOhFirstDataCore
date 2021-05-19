@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210518221126_Init")]
+    [Migration("20210519000408_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -420,6 +420,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("RankChanges");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", b =>
+                {
+                    b.Property<Guid>("ChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("RecruitedById")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ChangeId");
+
+                    b.HasIndex("ChangedForId")
+                        .IsUnique();
+
+                    b.HasIndex("RecruitedById");
+
+                    b.ToTable("RecruitmentChanges");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", b =>
                 {
                     b.Property<Guid>("ChangeId")
@@ -718,6 +746,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithOne("RecruitedByData")
+                        .HasForeignKey("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", "ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "RecruitedBy")
+                        .WithMany("Recruitments")
+                        .HasForeignKey("RecruitedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedFor");
+
+                    b.Navigation("RecruitedBy");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
@@ -830,6 +877,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("RecruitStatus")
                         .IsRequired();
+
+                    b.Navigation("RecruitedByData")
+                        .IsRequired();
+
+                    b.Navigation("Recruitments");
 
                     b.Navigation("SlotChanges");
 

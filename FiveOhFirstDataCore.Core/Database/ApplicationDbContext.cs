@@ -16,6 +16,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<QualificationChange> QualificationChanges { get; internal set; }
         public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
         public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
+        public DbSet<RecruitmentChange> RecruitmentChanges { get; internal set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -89,6 +90,15 @@ namespace FiveOhFirstDataCore.Core.Database
             flags.HasOne(e => e.Author)
                 .WithMany(p => p.CreatedFlags)
                 .HasForeignKey(e => e.AuthorId);
+
+            var recruit = builder.Entity<RecruitmentChange>();
+            recruit.HasKey(e => e.ChangeId);
+            recruit.HasOne(e => e.ChangedFor)
+                .WithOne(p => p.RecruitedByData)
+                .HasForeignKey<RecruitmentChange>(e => e.ChangedForId);
+            recruit.HasOne(e => e.RecruitedBy)
+                .WithMany(p => p.Recruitments)
+                .HasForeignKey(e => e.RecruitedById);
         }
     }
 }

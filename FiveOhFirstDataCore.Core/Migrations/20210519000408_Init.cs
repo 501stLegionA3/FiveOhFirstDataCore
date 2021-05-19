@@ -305,6 +305,33 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RecruitmentChanges",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RecruitedById = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecruitmentChanges", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_RecruitmentChanges_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RecruitmentChanges_AspNetUsers_RecruitedById",
+                        column: x => x.RecruitedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RecruitStatuses",
                 columns: table => new
                 {
@@ -540,6 +567,17 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RecruitmentChanges_ChangedForId",
+                table: "RecruitmentChanges",
+                column: "ChangedForId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecruitmentChanges_RecruitedById",
+                table: "RecruitmentChanges",
+                column: "RecruitedById");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RecruitStatuses_TrooperId",
                 table: "RecruitStatuses",
                 column: "TrooperId",
@@ -594,6 +632,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "RankChanges");
+
+            migrationBuilder.DropTable(
+                name: "RecruitmentChanges");
 
             migrationBuilder.DropTable(
                 name: "RecruitStatuses");

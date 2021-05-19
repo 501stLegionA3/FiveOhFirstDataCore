@@ -28,7 +28,7 @@ namespace FiveOhFirstDataCore.Core.Services
         #endregion
 
         #region Roster Registration
-        public Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData);
+        public Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData, ClaimsPrincipal user);
         #endregion
 
         #region Data Updates

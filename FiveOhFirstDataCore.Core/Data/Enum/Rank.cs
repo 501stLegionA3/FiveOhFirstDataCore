@@ -251,7 +251,9 @@ namespace FiveOhFirstDataCore.Core.Data
 
         public static string AsFull<T>(this T value) where T : System.Enum
         {
-            var type = typeof(T);
+            if (value is null) return "";
+
+            var type = value.GetType();
             var name = Enum.GetName(type, value);
 
             if (name is null) return "";

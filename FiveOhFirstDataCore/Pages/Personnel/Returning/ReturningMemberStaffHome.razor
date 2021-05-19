@@ -1,4 +1,5 @@
 ﻿@page "/c1/returning"
+@inject IUpdateService _update
 
 <AuthorizeView>
     <Authorized>
@@ -21,6 +22,21 @@
             </div>
             <div class="col-md-4 col-sm-12">
                 <h3 class="text-center">Recent Activity</h3>
+                @if(Changes is not null)
+                {
+                    Count = 0;
+                    foreach(var c in Changes)
+                    {
+                        if(Count++ >= 10) return;
+
+                        <div class="alert alert-success">
+                            <b class="mb-0">[@c.ChangedForId] @c.ChangedFor?.NickName returned with approval from [@c.ApprovedBy?.FirstOrDefault()?.Id] @c.ApprovedBy?.FirstOrDefault()?.NickName</b>
+                            <p class="mb-0">@c.ChangedFor?.NickName was moved to @c.NewSlot.AsFull()</p>
+                            <br />
+                            <small>@c.ChangedOn.ToString("f")</small>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </Authorized>
@@ -31,4 +47,14 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/returning", "Returning Member Staff Home") };
+
+    public IEnumerable<SlotChange>? Changes { get; set; } = null;
+    public int Count { get; set; } = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Changes = await _update.GetReturningMemberChangesAsync();
+    }
 }

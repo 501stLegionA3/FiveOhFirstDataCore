@@ -211,7 +211,7 @@
             || claim.IsInRole("Manager")
             || claim.HasClaim("C1", "Recruiter"))
         {
-            var res = await _roster.RegisterTrooper(TrooperData);
+            var res = await _roster.RegisterTrooper(TrooperData, claim);
 
             if(res.GetResult(out var token, out var errors))
             {

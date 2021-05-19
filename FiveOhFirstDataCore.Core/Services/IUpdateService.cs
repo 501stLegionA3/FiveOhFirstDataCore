@@ -9,6 +9,8 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IUpdateService
     {
-        public Task<List<UpdateBase>> GetRosterUpdatesAsync();
+        public Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync();
+        public Task<IEnumerable<RecruitmentChange>> GetRecruitmentChangesAsync();
+        public Task<IEnumerable<SlotChange>> GetReturningMemberChangesAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿@page "/c1/recruiter"
+@inject IUpdateService _update
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
@@ -26,6 +27,20 @@
             </div>
             <div class="col-md-4 col-sm-12">
                 <h3 class="text-center">Recent Activity</h3>
+                @if(Changes is not null)
+                {
+                    Counter = 0;
+                    foreach(var c in Changes)
+                    {
+                        if(Counter++ >= 10) break;
+
+                        <div class="alert alert-success">
+                            <b class="mb-0">[@c.RecruitedById] @c.RecruitedBy?.NickName recruited [@c.ChangedForId] @c.ChangedFor?.NickName</b>
+                            <br />
+                            <small>@c.ChangedOn.ToString("f")</small>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </Authorized>
@@ -36,4 +51,14 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home") };
+
+    public IEnumerable<RecruitmentChange>? Changes { get; set; } = null;
+    public int Counter { get; set; } = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Changes = await _update.GetRecruitmentChangesAsync();
+    }
 }

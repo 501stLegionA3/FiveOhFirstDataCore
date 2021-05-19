@@ -150,7 +150,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData)
+        public async Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData, ClaimsPrincipal user)
         {
             List<string> errors = new();
             try
@@ -180,6 +180,13 @@ namespace FiveOhFirstDataCore.Core.Services
                     StartOfService = DateTime.Now,
                     LastPromotion = DateTime.Now,
                     AccessCode = token
+                };
+
+                var recruiter = await GetTrooperFromClaimsPrincipalAsync(user);
+                trooper.RecruitedByData = new()
+                {
+                    RecruitedById = recruiter?.Id ?? 0,
+                    ChangedOn = DateTime.UtcNow,
                 };
 
                 var identRes = await _userManager.CreateAsync(trooper, token);
