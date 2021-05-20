@@ -58,7 +58,16 @@ namespace FiveOhFirstDataCore.Core.Components
 
                 if (DisplayValue?.EndsWith(' ') ?? false)
                 {
-                    InvalidSearches.Add(DisplayValue);
+                    if (item is not null)
+                    {
+                        if (CurrentValue is null) CurrentValue = new();
+                        CurrentValue.Add(item);
+                    }
+                    else
+                    {
+                        InvalidSearches.Add(DisplayValue);
+                    }
+
                     DisplayValue = "";
                 }
             }));
@@ -110,7 +119,7 @@ namespace FiveOhFirstDataCore.Core.Components
                     builder.OpenElement(20, "span");
 
                     builder.AddAttribute(21, "class", "btn btn-outline-success m-1");
-                    builder.AddContent(22, CurrentValue[i].UserName);
+                    builder.AddContent(22, CurrentValue[i].NickName);
 
                     builder.OpenElement(23, "button");
                     builder.AddAttribute(24, "type", "button");
