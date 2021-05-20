@@ -319,5 +319,46 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<ResultBase> UpdateUserNameAsync(Trooper trooper)
+        {
+            var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            var identResult = await _userManager.SetUserNameAsync(actual, trooper.UserName);
+
+            if (!identResult.Succeeded)
+            {
+                List<string> errors = new();
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password)
+        {
+            var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            var validPassword = await _userManager.CheckPasswordAsync(actual, password);
+
+            if(!validPassword)
+            {
+                return new(false, new() { "The proivded password is invalid for your account." });
+            }
+
+            var identResult = await _userManager.DeleteAsync(actual);
+
+            if (!identResult.Succeeded)
+            {
+                List<string> errors = new();
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            return new(true, null);
+        }
     }
 }

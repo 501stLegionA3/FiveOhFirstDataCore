@@ -246,7 +246,7 @@
     {
         await base.OnParametersSetAsync();
 
-        AllTroopers = await _roster.GetFullRosterAsync();
+        AllTroopers = await _roster.GetAllTroopersAsync();
 
         if(IsEditing)
         {

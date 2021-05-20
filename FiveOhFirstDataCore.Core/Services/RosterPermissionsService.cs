@@ -104,5 +104,24 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return Task.FromResult(perms);
         }
+
+        public async Task<(bool, bool)> GetAdminAndManagerValuesAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            bool admin = await _userManager.IsInRoleAsync(user, "Admin");
+            bool manager = await _userManager.IsInRoleAsync(user, "Manager");
+
+            return (admin, manager);
+        }
+
+        public async Task SaveAdminAndManagerValuesAsync(bool admin, bool manager, string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(admin)
+                await _userManager.AddToRoleAsync(user, "Admin");
+            if (manager)
+                await _userManager.AddToRoleAsync(user, "Manager");
+        }
     }
 }

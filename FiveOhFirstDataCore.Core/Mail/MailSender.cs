@@ -1,4 +1,6 @@
-﻿using MailKit.Net.Smtp;
+﻿using FiveOhFirstDataCore.Core.Account;
+using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
 using MimeKit;
@@ -6,23 +8,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Mail
 {
-    public class MailSender : IEmailSender
+    public class MailSender : ICustomMailSender
     {
         private readonly MailConfiguration _config;
         private readonly ILogger _logger;
         private readonly SmtpClient _noReplyClient;
         private readonly SmtpClient _userClient;
+        private readonly UserManager<Trooper> _userManager;
 
-        public MailSender(MailConfiguration config, ILogger<MailSender> logger, SmtpClient noReplyClient, SmtpClient userClient)
+        public MailSender(MailConfiguration config, ILogger<MailSender> logger, SmtpClient noReplyClient, SmtpClient userClient,
+            UserManager<Trooper> userManager)
         {
             _config = config;
             _logger = logger;
             _noReplyClient = noReplyClient;
             _userClient = userClient;
+            _userManager = userManager;
         }
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
@@ -66,6 +72,20 @@ namespace FiveOhFirstDataCore.Core.Mail
                 throw new Exception("The configured email is inavlid.");
             }
             
+        }
+
+        public async Task TriggerRemoteResetPasswordAsync(string id, string email, string redirectBase)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            if (user is null) return;
+
+            var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = $"{redirectBase}/Identity/Account/ResetPassword?code={code}";
+
+            await SendEmailAsync(
+                    email,
+                    "Reset Password",
+                    $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
     }
 }

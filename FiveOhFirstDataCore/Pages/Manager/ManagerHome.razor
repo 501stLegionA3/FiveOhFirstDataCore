@@ -2,7 +2,17 @@
 
 <AuthorizeView Policy="RequireManager">
     <Authorized>
-        
+        <BreadcrumbsList Url="Urls" />
+        <div class="row text-center">
+            <div class="col">
+                <h1>Manager Home</h1>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col p-5">
+                  <a class="btn btn-block m-1 btn-primary" href="/manager/modify">Modify Trooper Data</a>     
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />
@@ -10,5 +20,5 @@
 </AuthorizeView>
 
 @code {
-
+    public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home") };
 }

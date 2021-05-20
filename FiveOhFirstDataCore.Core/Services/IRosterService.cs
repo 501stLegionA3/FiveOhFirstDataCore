@@ -18,6 +18,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<List<Trooper>> GetActiveReservesAsync();
         public Task<List<Trooper>> GetInactiveReservesAsync();
         public Task<List<Trooper>> GetArchivedTroopersAsync();
+        public Task<List<Trooper>> GetAllTroopersAsync();
         public Task<List<Trooper>> GetFullRosterAsync();
         public Task<List<Trooper>> GetUnregisteredTroopersAsync();
         public Task<OrbatData> GetOrbatDataAsync();
@@ -45,10 +46,29 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims);
         public Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims);
         public Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims);
+        /// <summary>
+        /// Checks the premissions of an ID to determine its permission level.
+        /// </summary>
+        /// <param name="id">ID of a Trooper.</param>
+        /// <returns>Two true or false values for if the user is an admin and if they are a manager. Item1 is for Admin, Item2 is for Manager.</returns>
+        public Task<(bool, bool)> GetAdminAndManagerValuesAsync(string id);
+        /// <summary>
+        /// Updates the permissions of an ID to match the admin and manager roles.
+        /// </summary>
+        /// <param name="admin">Is the ID an Admin?</param>
+        /// <param name="manager">Is the ID a Manager?</param>
+        /// <param name="id">The ID representing the Trooper.</param>
+        /// <returns>A Task for this operation.</returns>
+        public Task SaveAdminAndManagerValuesAsync(bool admin, bool manager, string id);
         #endregion
 
         #region Data Loading
         public Task LoadPublicProfileDataAsync(Trooper trooper);
+        #endregion
+
+        #region Account Management
+        public Task<ResultBase> UpdateUserNameAsync(Trooper trooper);
+        public Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password);
         #endregion
     }
 }

@@ -356,7 +356,7 @@ namespace FiveOhFirstDataCore
                     Password = mailSection["Password"]
                 })
                 .AddScoped<SmtpClient>()
-                .AddScoped<IEmailSender, MailSender>();
+                .AddScoped<ICustomMailSender, MailSender>();
 
             #region Discord Setup
             var cshop = Configuration.GetSection("Config:Discord:CShopRoleBindings");
