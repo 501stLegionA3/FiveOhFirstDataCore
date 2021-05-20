@@ -5,8 +5,10 @@ using FiveOhFirstDataCore.Areas.Identity;
 using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Mail;
 using FiveOhFirstDataCore.Core.Services;
+using FiveOhFirstDataCore.Core.Structures;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +21,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -114,7 +118,7 @@ namespace FiveOhFirstDataCore
                                 var link = context.HttpContext.RequestServices.GetRequiredService<AccountLinkService>();
 
                                 try
-                                { 
+                                {
                                     // verify the user information grabbed matches the user info
                                     // saved from the inital command
                                     await link.BindDiscordAsync(token, user.Id, user.Email);
@@ -353,11 +357,30 @@ namespace FiveOhFirstDataCore
                 })
                 .AddScoped<SmtpClient>()
                 .AddScoped<IEmailSender, MailSender>();
+
+            #region Discord Setup
+            var cshop = Configuration.GetSection("Config:Discord:CShopRoleBindings");
+            var roles = Configuration.GetSection("Config:Discord:RoleBindings");
+            services.AddSingleton<DiscordConfiguration>(x => new()
+            {
+                Token = Secrets["Discord:Token"],
+                TokenType = TokenType.Bot,
+                MessageCacheSize = 0
+            })
+                .AddSingleton<DiscordRestClient>()
+                .AddSingleton<DiscordBotConfiguration>(x => new()
+                {
+                    HomeGuild = ulong.Parse(Configuration["Config:Discord:HomeGuild"]),
+                    CShopRoleBindings = cshop.Get<Dictionary<CShop, Dictionary<string, Dictionary<string, ulong[]>>>>(),
+                    RoleBindings = roles.Get<Dictionary<string, Dictionary<string, DiscordRoleDetails>>>()
+                })
+                .AddScoped<IDiscordService, DiscordService>();
+            #endregion
 #if DEBUG
             #region Example Tools
             services.AddScoped<TestDataService>();
             #endregion
-#endif
+#endif            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -415,3 +438,25 @@ namespace FiveOhFirstDataCore
         }
     }
 }
+
+// For use in generating the inital dataset for discord role grants.
+// 
+//var types = new Type[] {typeof(Role), typeof(Slot), typeof(Team), typeof(Flight), typeof(TrooperRank),
+//typeof(RTORank), typeof(MedicRank), typeof(PilotRank), typeof(WardenRank), typeof(WarrantRank), typeof(Qualification)};
+//var dict = new Dictionary<string, Dictionary<Enum, DiscordRoleDetails>>();
+//foreach (var t in types)
+//{
+//    var name = t.Name;
+//    dict.Add(name, new());
+//    foreach(Enum val in Enum.GetValues(t))
+//    {
+//        dict[name].Add(val, new()
+//        {
+//            RoleGrants = new ulong[] { 0 },
+//            RoleReplaces = new ulong[] { 0 }
+//        });
+//    }
+//}
+
+//File.WriteAllText(Path.Join("Config", "test_set.json"), 
+//    JsonConvert.SerializeObject(dict, Formatting.Indented));

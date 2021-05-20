@@ -69,7 +69,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,
-                        DiscordId = "a",
+                        DiscordId = "133735496479145984",
                         SteamLink = "b"
                     },
                     new()
