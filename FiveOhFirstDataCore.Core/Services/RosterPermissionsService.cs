@@ -1,5 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Structures;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -122,6 +124,12 @@ namespace FiveOhFirstDataCore.Core.Services
                 await _userManager.AddToRoleAsync(user, "Admin");
             if (manager)
                 await _userManager.AddToRoleAsync(user, "Manager");
+        }
+
+        public async Task<List<Trooper>> GetAllowedNameChangersAsync()
+        {
+            var data = await _userManager.GetUsersForClaimAsync(new("Change", "Name"));
+            return data.ToList();
         }
     }
 }

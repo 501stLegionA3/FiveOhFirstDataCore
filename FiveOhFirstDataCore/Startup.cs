@@ -146,6 +146,7 @@ namespace FiveOhFirstDataCore
                         }
                     };
                 });
+
             #region Policy Setup
             services.AddAuthorization(options =>
             {
@@ -225,6 +226,16 @@ namespace FiveOhFirstDataCore
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type));
+                    });
+                });
+
+                options.AddPolicy("RequireNameChange", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Change", "Name");
                     });
                 });
 
@@ -330,6 +341,7 @@ namespace FiveOhFirstDataCore
                 });
             });
             #endregion
+
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;

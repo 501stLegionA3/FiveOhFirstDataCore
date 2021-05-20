@@ -36,6 +36,8 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper);
         public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, List<ClaimUpdate> claimsToRemove, ClaimsPrincipal subitter);
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
+        public Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers);
+        public Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver);
         #endregion
 
         #region Permissions
@@ -60,6 +62,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="id">The ID representing the Trooper.</param>
         /// <returns>A Task for this operation.</returns>
         public Task SaveAdminAndManagerValuesAsync(bool admin, bool manager, string id);
+        /// <summary>
+        /// Gets the Troopers who are allowed to change names.
+        /// </summary>
+        /// <returns>A list of troopers explicitly allowed to change names.</returns>
+        public Task<List<Trooper>> GetAllowedNameChangersAsync();
         #endregion
 
         #region Data Loading

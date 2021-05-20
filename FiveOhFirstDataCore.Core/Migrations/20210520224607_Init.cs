@@ -252,6 +252,35 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NickNameChange",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ApprovedById = table.Column<int>(type: "integer", nullable: false),
+                    OldNickname = table.Column<string>(type: "text", nullable: false),
+                    NewNickname = table.Column<string>(type: "text", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NickNameChange", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_NickNameChange_AspNetUsers_ApprovedById",
+                        column: x => x.ApprovedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NickNameChange_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QualificationChanges",
                 columns: table => new
                 {
@@ -547,6 +576,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "WitnessesId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_NickNameChange_ApprovedById",
+                table: "NickNameChange",
+                column: "ApprovedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NickNameChange_ChangedForId",
+                table: "NickNameChange",
+                column: "ChangedForId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QualificationChanges_ChangedForId",
                 table: "QualificationChanges",
                 column: "ChangedForId");
@@ -626,6 +665,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "DisciplinaryActionTrooper");
+
+            migrationBuilder.DropTable(
+                name: "NickNameChange");
 
             migrationBuilder.DropTable(
                 name: "QualificationChangeTrooper");

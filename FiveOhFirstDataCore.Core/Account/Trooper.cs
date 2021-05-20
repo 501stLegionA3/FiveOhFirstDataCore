@@ -64,6 +64,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<QualificationChange> QualificationChanges { get; set; } = new();
         public List<QualificationChange> SubmittedQualificationChanges { get; set; } = new();
         public List<RecruitmentChange> Recruitments { get; set; } = new();
+        public List<NickNameChange> NickNameChanges { get; set; } = new();
+        public List<NickNameChange> ApprovedNickNameChanges { get; set; } = new();
         public RecruitmentChange RecruitedByData { get; set; }
         #endregion
 

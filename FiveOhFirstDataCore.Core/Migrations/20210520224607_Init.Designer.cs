@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210519000408_Init")]
+    [Migration("20210520224607_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -351,6 +351,41 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasIndex("ChangedForId");
 
                     b.ToTable("CShopChanges");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameChange", b =>
+                {
+                    b.Property<Guid>("ChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ApprovedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("NewNickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldNickname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ChangeId");
+
+                    b.HasIndex("ApprovedById");
+
+                    b.HasIndex("ChangedForId");
+
+                    b.ToTable("NickNameChange");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", b =>
@@ -716,6 +751,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameChange", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ApprovedBy")
+                        .WithMany("ApprovedNickNameChanges")
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("NickNameChanges")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApprovedBy");
+
+                    b.Navigation("ChangedFor");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
@@ -859,6 +913,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
                 {
+                    b.Navigation("ApprovedNickNameChanges");
+
                     b.Navigation("CShopChanges");
 
                     b.Navigation("CreatedFlags");
@@ -870,6 +926,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("FiledDisciplinaryActions");
 
                     b.Navigation("Flags");
+
+                    b.Navigation("NickNameChanges");
 
                     b.Navigation("QualificationChanges");
 

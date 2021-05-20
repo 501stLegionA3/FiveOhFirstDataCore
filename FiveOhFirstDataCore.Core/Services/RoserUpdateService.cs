@@ -6,6 +6,7 @@ using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Org.BouncyCastle.Crypto.Agreement;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -359,6 +360,82 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             return new(true, null);
+        }
+
+        public async Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers)
+        {
+            var oldSet = await GetAllowedNameChangersAsync();
+
+            List<string> errors = new();
+            foreach(var t in allowedTroopers)
+            {
+                if(!oldSet.Any(x => x.Id == t.Id))
+                {
+                    var actual = await _userManager.FindByIdAsync(t.Id.ToString());
+                    var identResult = await _userManager.AddClaimAsync(actual, new("Change", "Name"));
+
+                    if (!identResult.Succeeded)
+                    {
+                        foreach (var err in identResult.Errors)
+                            errors.Add($"[{err.Code}] {err.Description}");
+                    }
+                }
+            }
+
+            foreach(var t in oldSet)
+            {
+                if(!allowedTroopers.Any(x => x.Id == t.Id))
+                {
+                    var actual = await _userManager.FindByIdAsync(t.Id.ToString());
+                    var identResult = await _userManager.RemoveClaimAsync(actual, new("Change", "Name"));
+
+                    if (!identResult.Succeeded)
+                    {
+                        foreach (var err in identResult.Errors)
+                            errors.Add($"[{err.Code}] {err.Description}");
+                    }
+                }
+            }
+
+            if (errors.Count > 0)
+                return new(false, errors);
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver)
+        {
+            var actual = await _dbContext.FindAsync<Trooper>(trooper.Id);
+            
+            if(actual is null)
+            {
+                return new(false, new() { "The Trooper for that ID was not found." });
+            }
+
+            var old = actual.NickName;
+            actual.NickName = trooper.NickName;
+
+            var update = new NickNameChange()
+            {
+                ApprovedById = approver,
+                ChangedOn = DateTime.UtcNow,
+                OldNickname = old,
+                NewNickname = actual.NickName,
+            };
+
+            actual.NickNameChanges.Add(update);
+
+            try
+            {
+                _dbContext.Update(actual);
+                await _dbContext.SaveChangesAsync();
+
+                return new(true, null);
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
         }
     }
 }

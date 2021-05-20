@@ -99,6 +99,15 @@ namespace FiveOhFirstDataCore.Core.Database
             recruit.HasOne(e => e.RecruitedBy)
                 .WithMany(p => p.Recruitments)
                 .HasForeignKey(e => e.RecruitedById);
+
+            var nickname = builder.Entity<NickNameChange>();
+            nickname.HasKey(e => e.ChangeId);
+            nickname.HasOne(e => e.ChangedFor)
+                .WithMany(p => p.NickNameChanges)
+                .HasForeignKey(e => e.ChangedForId);
+            nickname.HasOne(e => e.ApprovedBy)
+                .WithMany(p => p.ApprovedNickNameChanges)
+                .HasForeignKey(e => e.ApprovedById);
         }
     }
 }

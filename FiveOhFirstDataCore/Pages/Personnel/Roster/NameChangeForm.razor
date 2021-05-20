@@ -1,0 +1,194 @@
+﻿@page "/c1/roster/names/change"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+@inject NavigationManager _nav
+@inject IRefreshRequestService _refresh
+
+<AuthorizeView Policy="RequireNameChange">
+    <Authorized>
+        <BreadcrumbsList Url="Urls" />
+        <EditForm Context="nameChangeContext" Model="Trooper">
+            @if(Message is not null)
+            {
+            <div class="row">
+                <div class="col p-3">
+                    <div class="alert alert-success alert-dismissible w-100">
+                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearMessage"></button>
+                        <strong>@Message</strong>
+                    </div>
+                </div>
+            </div>
+            }
+            @if(Errors.Count > 0)
+            {
+            <div class="row">
+                <div class="col p-3">
+                    <div class="alert alert-danger alert-dismissible w-100">
+                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+                        <strong>Something went wrong!</strong>
+                        <ul>
+                        @foreach(var i in Errors)
+                        {
+                            <li>@i</li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            }
+            <div class="row">
+                <div class="col form-group">
+                <label for="trooperSelection">Trooper To Edit</label>
+                <InputSelectSingleTrooper Troopers="AllTroopers" disabled="@IsEditing" class="form-control w-100" id="trooperSelection" @bind-Value="Trooper" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <button class="btn btn-primary btn-block" disabled="@IsEditing" @onclick="StartEdit">Change Name</button>
+                </div>
+            </div>
+            @if(IsEditing)
+            {
+            <hr />
+            <div class="row">
+                <div class="col text-center form-group">
+                    <h4>Old Name: @OldName</h4>
+                    <hr />
+                    <label for="newNick">New Trooper Name</label>
+                    <InputText id="newNick" @bind-Value="Trooper.NickName" class="form-control" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col text-center form-group">
+                    <button class="btn btn-block btn-primary" type="button" @onclick="SaveChanges">Save Name Change</button>
+                </div>
+            </div>
+            }
+        </EditForm>
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<(string, string)> Urls { get; set; } = new()
+    {
+        ("/", "Home"),
+        ("/c1", "C-1 PERSONNEL"),
+        ("/c1/roster", "Roster Staff Home"),
+        ("/c1/roster/names", "Name Change Home"),
+        ("/c1/roster/names/change", "Name Change Form")
+    };
+
+    public List<Trooper> AllTroopers { get; set; } = new();
+    public Trooper Trooper { get; set; } = new();
+
+    protected int ToEdit { get; set; } = 0;
+    public Trooper CurrentUser { get; set; }
+
+    private bool IsEditing { get; set; } = false;
+    private List<string> Errors {get;set;} = new();
+
+    public string? Message { get; set; } = null;
+
+    private string OldName { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        var user = (await AuthStateTask).User;
+
+        if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
+        {
+            CurrentUser = (await _roster.GetTrooperFromClaimsPrincipalAsync(user)) ?? new();
+
+            if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
+                .TryGetValue("edit", out var edit))
+            {
+                if(int.TryParse(edit, out int val))
+                {
+                    IsEditing = true;
+                    ToEdit = val;
+                }
+            }
+        }
+
+        _refresh.RefreshRequested += RefreshMe;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        AllTroopers = await _roster.GetAllTroopersAsync();
+
+        if(IsEditing)
+        {
+            var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
+            if(first is not null)
+            {
+                Trooper = first;
+            }
+        }
+
+        if (Trooper is null)
+            IsEditing = false;
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    private void ClearErrors(EventArgs e)
+    {
+        Errors.Clear();
+        _refresh.CallRequestRefresh();
+    }
+
+    private void ClearMessage(EventArgs e)
+    {
+        Message = null;
+        _refresh.CallRequestRefresh();
+    }
+
+    protected async Task StartEdit(EventArgs e)
+    {
+        if(Trooper is not null && Trooper.Id != 0)
+        {
+            IsEditing = true;
+            OldName = Trooper.NickName;
+        }
+    }
+
+    protected async Task SaveChanges(EventArgs e)
+    {
+        Errors.Clear();
+
+        if(CurrentUser is not null && CurrentUser.Id != 0)
+        {
+            var res = await _roster.UpdateNickNameAsync(Trooper, CurrentUser.Id);
+
+            if(!res.GetResult(out var errors))
+            {
+                Errors = errors;
+            }
+            
+            IsEditing = false;
+            Trooper = new();
+            Message = "Name changed successfully.";
+        }
+        else
+        {
+            Errors.Add("The current user is invalid");
+        }
+
+        _refresh.CallRequestRefresh();
+    }
+}
