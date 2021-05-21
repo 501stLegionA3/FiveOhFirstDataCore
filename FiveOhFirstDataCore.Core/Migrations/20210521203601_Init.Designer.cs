@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210520224607_Init")]
+    [Migration("20210521203601_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -212,7 +212,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("RTORank")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rank")
+                    b.Property<int?>("Rank")
                         .HasColumnType("integer");
 
                     b.Property<int>("Role")

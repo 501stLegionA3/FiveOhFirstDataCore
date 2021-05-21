@@ -131,7 +131,7 @@
                 }
                 else
                 {
-                    return x.Rank.AsShorthand().StartsWith(Search.DesignationFilter);
+                    return x.Rank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
                 }
             }).ToList();
         }

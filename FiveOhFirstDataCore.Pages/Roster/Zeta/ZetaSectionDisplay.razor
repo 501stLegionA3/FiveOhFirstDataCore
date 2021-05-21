@@ -16,7 +16,7 @@
         Section Commander
     </th>
     <td class="text-left">
-        @(Section.Commander?.WarrantRank is null ? Section.Commander?.Rank.AsFull() + " " ?? "" : Section.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Section.Commander?.NickName ?? "TBD")
+        @(Section.Commander?.WarrantRank is null ? Section.Commander?.Rank?.AsFull() + " " ?? "" : Section.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Section.Commander?.NickName ?? "TBD")
     </td>
 </tr>
 <tr class="table-warning">
@@ -24,7 +24,7 @@
         Section Subordinate
     </th>
     <td class="text-left">
-        @(Section.Subordinate?.WarrantRank is null ? Section.Subordinate?.Rank.AsFull() + " " ?? "" : Section.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(Section.Subordinate?.NickName ?? "TBD")
+        @(Section.Subordinate?.WarrantRank is null ? Section.Subordinate?.Rank?.AsFull() + " " ?? "" : Section.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(Section.Subordinate?.NickName ?? "TBD")
     </td>
 </tr>
 

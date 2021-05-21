@@ -65,7 +65,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         PilotRank = null,
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.RTO,
-                        Slot = Slot.AvalancheThreeThree,
+                        Slot = Slot.AvalancheThreeThree | Slot.AvalancheThreeTwo,
                         Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,

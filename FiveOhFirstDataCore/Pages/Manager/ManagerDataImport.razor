@@ -1,7 +1,28 @@
 ﻿@page "/manager/import"
+@inject IRefreshRequestService _refresh
 
 <AuthorizeView Policy="RequireManager">
     <Authorized>
+
+        <ul class="nav nav-tabs row">
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ImportType.OrbatRoster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.OrbatRoster)">ORBAT</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ImportType.SupportingElements ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.SupportingElements)">ORBAT</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case ImportType.OrbatRoster:
+                    <ImportOrbatDataDisplay />
+                    break;
+                case ImportType.SupportingElements:
+                    
+                    break;
+            }
+        </div>
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />
@@ -9,5 +30,29 @@
 </AuthorizeView>
 
 @code {
+    public enum ImportType
+    {
+        OrbatRoster,
+        SupportingElements,
+    }
 
+    public ImportType Active { get; set; } = ImportType.OrbatRoster;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        _refresh.RefreshRequested += RefreshMe;
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    protected void OnTypeChange(ImportType newType)
+    {
+        Active = newType;
+        _refresh.CallRequestRefresh();
+    }
 }

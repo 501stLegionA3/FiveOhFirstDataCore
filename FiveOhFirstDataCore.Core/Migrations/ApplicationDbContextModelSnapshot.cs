@@ -210,7 +210,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("RTORank")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Rank")
+                    b.Property<int?>("Rank")
                         .HasColumnType("integer");
 
                     b.Property<int>("Role")

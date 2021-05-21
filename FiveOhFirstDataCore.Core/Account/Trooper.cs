@@ -14,7 +14,7 @@ namespace FiveOhFirstDataCore.Core.Account
     {
         public string NickName { get; set; } = "";
 
-        public TrooperRank Rank { get; set; }
+        public TrooperRank? Rank { get; set; }
         public RTORank? RTORank { get; set; }
         public MedicRank? MedicRank { get; set; }
         public PilotRank? PilotRank { get; set; }

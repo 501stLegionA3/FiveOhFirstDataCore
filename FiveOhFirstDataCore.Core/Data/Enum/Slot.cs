@@ -5,6 +5,7 @@ using System.Reflection;
 
 namespace FiveOhFirstDataCore.Core.Data
 {
+    [Flags]
     public enum Slot : int
     {
         // Command

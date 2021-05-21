@@ -31,7 +31,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     NickName = table.Column<string>(type: "text", nullable: false),
-                    Rank = table.Column<int>(type: "integer", nullable: false),
+                    Rank = table.Column<int>(type: "integer", nullable: true),
                     RTORank = table.Column<int>(type: "integer", nullable: true),
                     MedicRank = table.Column<int>(type: "integer", nullable: true),
                     PilotRank = table.Column<int>(type: "integer", nullable: true),

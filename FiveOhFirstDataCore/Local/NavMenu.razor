@@ -107,6 +107,15 @@
                 </li>
             </Authorized>
         </AuthorizeView>
+        <AuthorizeView Policy="RequireManager">
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/manager" Match="NavLinkMatch.All">
+                        <span class="oi oi-dashboard" aria-hidden="true"></span> Manager Home
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
     </ul>
 </div>
 

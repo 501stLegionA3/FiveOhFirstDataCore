@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Org.BouncyCastle.Utilities.Collections;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -35,13 +37,13 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Senior Sergeant")]
         Seniorsergeant,
         [RankDisplay("CS-M")]
-        [Description("Sergeant Major")]
+        [Description("Sergeant-Major")]
         SergeantMajor,
         [RankDisplay("CS-M")]
-        [Description("Company Sergeant Major")]
+        [Description("Company Sergeant-Major")]
         CompanySergeantMajor,
         [RankDisplay("CS-M")]
-        [Description("Battalion Command Sergeant Major")]
+        [Description("Battalion Command Sergeant-Major")]
         BattalionSergeantMajor,
         [RankDisplay("CC")]
         [Description("Second Lieutenant")]
@@ -76,7 +78,7 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Medical Sergeant")]
         Sergeant,
         [RankDisplay("CM-O")]
-        [Description("Batallion Medical Sergeant Major")]
+        [Description("Batallion Medical Sergeant-Major")]
         BattalionSergeantMajor
     }
 
@@ -231,6 +233,27 @@ namespace FiveOhFirstDataCore.Core.Data
             {
                 if ((int)val == value)
                     return (Enum)val;
+            }
+
+            return null;
+        }
+
+        public static Enum? GetRank(this string value)
+        {
+            Type[] types = new Type[] { typeof(TrooperRank), typeof(MedicRank), typeof(RTORank), typeof(PilotRank),
+                typeof(WardenRank), typeof(WarrantRank)};
+
+            foreach (var type in types)
+            {
+                foreach (Enum enumValue in Enum.GetValues(type))
+                {
+                    var compare = value.Replace("Sr.", "Senior");
+                    compare = compare.Replace("Vt.", "Veteran");
+
+                    if (enumValue.AsShorthand() == compare
+                        || enumValue.AsFull() == compare)
+                        return enumValue;
+                }
             }
 
             return null;
