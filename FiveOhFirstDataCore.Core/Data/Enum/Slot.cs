@@ -177,5 +177,11 @@ namespace FiveOhFirstDataCore.Core.Data
 
             return null;
         }
+
+        public static Slot GetRazorSlot(this int squad, int wing)
+        {
+            var slot = 500 + (10 * squad) + wing;
+            return (Slot)slot;
+        }
     }
 }

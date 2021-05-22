@@ -25,7 +25,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                 Acklay.Assign(t);
             else if (t.Slot < Slot.Razor && t.Slot >= Slot.Mynock)
                 Mynock.Assign(t);
-            else if (t.Slot < Slot.ZetaCompany && t.Slot < Slot.Razor)
+            else if (t.Slot < Slot.ZetaCompany && t.Slot >= Slot.Razor)
                 Razor.Assign(t);
         }
     }

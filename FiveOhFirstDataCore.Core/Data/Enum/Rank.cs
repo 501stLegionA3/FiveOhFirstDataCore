@@ -158,9 +158,6 @@ namespace FiveOhFirstDataCore.Core.Data
         [RankDisplay("CX")]
         [Description("Captian")]
         Captian,
-        [RankDisplay("CX-W")]
-        [Description("Warden")]
-        Warden
     }
 
     public enum WardenRank : int

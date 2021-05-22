@@ -19,7 +19,7 @@ namespace FiveOhFirstDataCore.Core.Data
         ARC,
         [Description("Commander")]
         Commander,
-        [Description("Sergeant Major")]
+        [Description("Sergeant-Major")]
         SergeantMajor,
         [Description("XO")]
         XO,
@@ -35,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Data
         SubCommander,
         [Description("Master Warden")]
         MasterWarden,
-        [Description("Cheif Warden")]
+        [Description("Chief Warden")]
         CheifWarden,
         [Description("Warden")]
         Warden,
@@ -43,5 +43,22 @@ namespace FiveOhFirstDataCore.Core.Data
         Pilot,
         [Description("Subordinate")]
         Subordiante
+    }
+
+    public static class RoleExtensions
+    {
+        public static Role? GetRole(this string value)
+        {
+            // RT and RTO are used interchangeably, so we want to check for the use of RTO.
+            if (value.Equals("RTO")) return Role.RTO;
+
+            foreach (Role enumValue in Enum.GetValues(typeof(Role)))
+            {
+                if (enumValue.AsFull() == value)
+                    return enumValue;
+            }
+
+            return null;
+        }
     }
 }

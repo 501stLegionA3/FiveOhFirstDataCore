@@ -11,7 +11,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
         public void Assign(Trooper t)
         {
-            var val = (int)t.Slot % 10;
+            var val = (int)t.Slot / 10 % 10;
             if (val == 0)
             {
                 switch (t.Role)

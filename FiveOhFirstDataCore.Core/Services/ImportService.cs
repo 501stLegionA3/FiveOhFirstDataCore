@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Org.BouncyCastle.Asn1.Esf;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -127,6 +128,11 @@ namespace FiveOhFirstDataCore.Core.Services
                 string group = "";
                 int c = 0;
                 List<string> warnings = new();
+                Team? currentTeam = null;
+                // Start this at the back, the first run will reset it to Alpha.
+                Flight flight = Flight.Delta;
+                int flightNum = 0;
+                int wingNum = 0;
                 while ((line = await sr.ReadLineAsync()) is not null)
                 {
                     // Skip the header rows.
@@ -139,8 +145,59 @@ namespace FiveOhFirstDataCore.Core.Services
                     if (string.IsNullOrWhiteSpace(parts[1])
                         && string.IsNullOrWhiteSpace(parts[2]))
                     {
-                        group = parts[0];
+                        var p = parts[0];
+                        if(group.Equals("Aviators"))
+                        {
+                            if(!int.TryParse(p[0..1], out flightNum))
+                            {
+                                flightNum = 0;
+                                if(!p.Equals("HQ"))
+                                    group = p;
+                            }
+                        }
+                        else
+                        {
+                            group = p;
+                        }
                         continue;
+                    }
+
+                    if (parts[5].Equals("Pilot"))
+                    {
+                        switch (flight)
+                        {
+                            case Flight.Alpha:
+                                flight = Flight.Bravo;
+                                break;
+                            case Flight.Bravo:
+                                flight = Flight.Charlie;
+                                break;
+                            case Flight.Charlie:
+                                flight = Flight.Delta;
+                                break;
+                            case Flight.Delta:
+                                flight = Flight.Alpha;
+                                wingNum++;
+                                if (wingNum > 2) wingNum = 1;
+                                break;
+                        }
+                    }
+
+                    if(parts[5].Equals("Squad Leader")
+                        || parts[5].Equals("Team Leader"))
+                    {
+                        switch (currentTeam)
+                        {
+                            case null:
+                                currentTeam = Team.Alpha;
+                                break;
+                            case Team.Alpha:
+                                currentTeam = Team.Bravo;
+                                break;
+                            case Team.Bravo:
+                                currentTeam = null;
+                                break;
+                        }
                     }
 
                     if (!int.TryParse(parts[1], out var id))
@@ -186,11 +243,13 @@ namespace FiveOhFirstDataCore.Core.Services
                         {
                             case TrooperRank r:
                                 trooper.Rank = r;
+                                trooper.Team = currentTeam;
                                 setRank = false;
                                 break;
                             case MedicRank m:
                                 trooper.MedicRank = m;
                                 trooper.Role = Role.Medic;
+                                trooper.Team = currentTeam;
                                 setRole = false;
                                 break;
                             case RTORank r:
@@ -209,13 +268,14 @@ namespace FiveOhFirstDataCore.Core.Services
                                 break;
                             case WarrantRank w:
                                 trooper.WarrantRank = w;
+                                trooper.Team = currentTeam;
                                 break;
                         }
                     }
 
                     if (setRank)
                     {
-                        rank = parts[2].GetRank();
+                        rank = parts[3].GetRank();
                         if (rank is TrooperRank t)
                         {
                             trooper.Rank = t;
@@ -226,15 +286,97 @@ namespace FiveOhFirstDataCore.Core.Services
                         }
                     }
 
-                    var slot = parts[4].GetSlot();
-                    if (slot is not null)
+                    bool slotSet = false;
+                    if(setRole)
                     {
-                        trooper.Slot = slot.Value;
+                        var roleString = parts[5];
+                        if (flightNum != 0)
+                        {
+                            if(roleString.Equals("Flight Commander"))
+                            {
+                                trooper.Role = Role.Commander;
+                                trooper.Slot = flightNum.GetRazorSlot(0);
+                            }
+                            else
+                            {
+                                trooper.Flight = flight;
+                                trooper.Role = Role.Pilot;
+                                trooper.Slot = flightNum.GetRazorSlot(wingNum);
+                                if (wingNum == 1)
+                                    trooper.Team = Team.Alpha;
+                                else trooper.Team = Team.Bravo;
+                            }
+
+                            slotSet = true;
+                        }
+                        else if (roleString.Equals("Squadron Commander"))
+                        {
+                            trooper.Slot = Slot.Razor;
+                            trooper.Role = Role.Commander;
+                        }
+                        else if (roleString.Equals("Squadron Sub-Commander"))
+                        {
+                            trooper.Slot = Slot.Razor;
+                            trooper.Role = Role.SubCommander;
+                        }
+                        else
+                        {
+                            Role? role = roleString.GetRole();
+                            if(role is null)
+                            {
+                                role = roleString.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.GetRole();
+                            }
+                            
+                            if(role is not null)
+                            {
+                                trooper.Role = role.Value;
+                                if(role == Role.Warden
+                                    || role == Role.CheifWarden
+                                    || role == Role.MasterWarden)
+                                {
+                                    trooper.Slot = Slot.Warden;
+                                    slotSet = true;
+                                }
+                            }
+                            else
+                            {
+                                warnings.Add($"Failed to find a role for {id}");
+                            }
+                        }
                     }
-                    else
+
+                    if (!slotSet)
                     {
-                        warnings.Add($"Unable to parse a Slot for {id}");
+                        var slot = parts[4].GetSlot();
+                        if (slot is not null)
+                        {
+                            trooper.Slot = slot.Value;
+                        }
+                        else
+                        {
+                            warnings.Add($"Unable to parse a Slot for {id}");
+                        }
                     }
+
+                    var customCulture = new CultureInfo("en-US", true);
+                    customCulture.DateTimeFormat.ShortDatePattern = "yyyymmdd";
+
+                    // last promotion = 8
+                    // start of service = 9
+                    var lastPromoString = parts[8];
+                    if(DateTime.TryParseExact(lastPromoString, "yyyymmdd", customCulture, 
+                        DateTimeStyles.AdjustToUniversal, out DateTime lastPromo))
+                    {
+                        trooper.LastPromotion = lastPromo;
+                    }
+
+                    var serviceStartString = parts[9];
+                    if(DateTime.TryParseExact(serviceStartString, "yyyymmdd", customCulture,
+                        DateTimeStyles.AdjustToUniversal, out DateTime serviceStart))
+                    {
+                        trooper.StartOfService = serviceStart;
+                    }
+
 
                     await _userManager.UpdateAsync(trooper);
                 }
