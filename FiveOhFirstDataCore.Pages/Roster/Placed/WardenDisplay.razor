@@ -10,7 +10,7 @@
     <th scope="row" colspan="2" class="text-right">
         Master Warden
     </th>
-    <td>
+    <td scope="row" colspan="2">
         @(Warden.Master?.WarrantRank is null ? Warden.Master?.WardenRank?.AsFull() + " " ?? "" : Warden.Master?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Master?.NickName ?? "TBD")
     </td>
 </tr>
@@ -18,7 +18,7 @@
     <th scope="row" colspan="2" class="text-right">
         Chief Warden
     </th>
-    <td>
+    <td scope="row" colspan="2">
         @(Warden.Chief?.WarrantRank is null ? Warden.Chief?.WardenRank?.AsFull() + " " ?? "" : Warden.Chief?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Chief?.NickName ?? "TBD")
     </td>
 </tr>
@@ -29,7 +29,7 @@
         <th scope="row" colspan="2" class="text-right">
             Warden
         </th>
-        <td>
+        <td scope="row" colspan="2">
             @(Warden.Wardens[i]?.WarrantRank is null ? Warden.Wardens[i]?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i]?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i]?.NickName ?? "TBD")
         </td>
     </tr>
