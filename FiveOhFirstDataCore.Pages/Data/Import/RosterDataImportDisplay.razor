@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Hosting
+@inject IImportService _import
+@inject IAuthorizationService _auth
+@inject IRefreshRequestService _refresh
+@inject IWebHostEnvironment _env
+
+<EditForm Context="importOrbatDataContext" Model="Import">
+    <div class="row">
+        <div class="col-lg col-md-12">
+            <div class="form-group">
+                <label for="importOrbat" class="form-label mt-4">Import Roster .csv</label>
+                <InputFile class="form-control" id="importOrbat" OnChange="LoadRoster" accept=".csv" />
+            </div>
+        </div>
+        <div class="col-lg col-md-12">
+            <div class="form-group">
+                <label for="importOrbat" class="form-label mt-4">Import Zeta Roster .csv</label>
+                <InputFile class="form-control" id="importOrbat" OnChange="LoadZeta" accept=".csv" />
+            </div>
+        </div>
+        <div class="col-lg col-md-12">
+            <div class="form-group">
+                <label for="importOrbat" class="form-label mt-4">Import C-Shop .csv</label>
+                <InputFile class="form-control" id="importOrbat"  OnChange="LoadCShop" accept=".csv" />
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-block btn-primary" @onclick="ImportDataAsync">Import Data</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    public OrbatImport Import { get; set; } = new();
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public IBrowserFile? RosterFile { get; set; }
+    public IBrowserFile? ZetaFile { get; set; }
+    public IBrowserFile? CShopFile { get; set; }
+
+    private async Task ImportDataAsync(EventArgs e)
+    {
+        var claims = (await AuthStateTask).User;
+
+        if((await _auth.AuthorizeAsync(claims, "RequireManager")).Succeeded)
+        {
+            await _import.VerifyUnsafeFolderAsync();
+
+            if(RosterFile is not null)
+            {
+                var storageName = Path.GetRandomFileName();
+                var path = Path.Combine(_env.ContentRootPath,
+                    _env.EnvironmentName, "unsafe_uploads",
+                    storageName);
+                Import.RosterStream = new(path, FileMode.Create);
+                await RosterFile.OpenReadStream().CopyToAsync(Import.RosterStream);
+            }
+
+            if(ZetaFile is not null)
+            {
+                var storageName = Path.GetRandomFileName();
+                var path = Path.Combine(_env.ContentRootPath,
+                    _env.EnvironmentName, "unsafe_uploads",
+                    storageName);
+                Import.ZetaRosterStream = new(path, FileMode.Create);
+                await ZetaFile.OpenReadStream().CopyToAsync(Import.ZetaRosterStream);
+            }
+
+            if(CShopFile is not null)
+            {
+                var storageName = Path.GetRandomFileName();
+                var path = Path.Combine(_env.ContentRootPath,
+                    _env.EnvironmentName, "unsafe_uploads",
+                    storageName);
+                Import.CShopStream = new(path, FileMode.Create);
+                await CShopFile.OpenReadStream().CopyToAsync(Import.CShopStream);
+            }
+
+            var res = await _import.ImportOrbatDataAsync(Import);
+        }
+        else
+        {
+            
+        }
+    }
+
+    private void LoadRoster(InputFileChangeEventArgs e)
+    {
+        foreach(IBrowserFile file in e.GetMultipleFiles(1))
+        {
+            RosterFile = file;
+        }
+    }
+
+    private void LoadZeta(InputFileChangeEventArgs e)
+    {
+        foreach(IBrowserFile file in e.GetMultipleFiles(1))
+        {
+            ZetaFile = file;
+        }
+    }
+
+    private void LoadCShop(InputFileChangeEventArgs e)
+    {
+        foreach(IBrowserFile file in e.GetMultipleFiles(1))
+        {
+            CShopFile = file;
+        }
+    }
+}

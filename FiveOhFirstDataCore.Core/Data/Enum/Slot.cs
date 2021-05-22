@@ -164,4 +164,18 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Archived")]
         Archived = 1000
     }
+
+    public static class SlotExtensions
+    {
+        public static Slot? GetSlot(this string value)
+        {
+            foreach (Slot enumValue in Enum.GetValues(typeof(Slot)))
+            {
+                if (enumValue.AsFull() == value)
+                    return enumValue;
+            }
+
+            return null;
+        }
+    }
 }

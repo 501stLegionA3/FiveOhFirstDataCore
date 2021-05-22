@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Development\unsafe_uploads\" />
     <Folder Include="Pages\Logistics\" />
     <Folder Include="Pages\Communications\" />
     <Folder Include="Pages\Civil.Affairs\" />

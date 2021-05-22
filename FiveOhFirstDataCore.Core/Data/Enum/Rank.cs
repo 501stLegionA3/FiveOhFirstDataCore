@@ -245,13 +245,13 @@ namespace FiveOhFirstDataCore.Core.Data
 
             foreach (var type in types)
             {
-                foreach (Enum enumValue in Enum.GetValues(type))
+                foreach (dynamic enumValue in Enum.GetValues(type))
                 {
                     var compare = value.Replace("Sr.", "Senior");
                     compare = compare.Replace("Vt.", "Veteran");
 
-                    if (enumValue.AsShorthand() == compare
-                        || enumValue.AsFull() == compare)
+                    if (AsShorthand(enumValue) == compare
+                        || AsFull(enumValue) == compare)
                         return enumValue;
                 }
             }
@@ -259,7 +259,7 @@ namespace FiveOhFirstDataCore.Core.Data
             return null;
         }
 
-        public static string AsShorthand<T>(this T value) where T : System.Enum
+        public static string AsShorthand<T>(this T value) where T : Enum
         {
             var type = typeof(T);
             var name = Enum.GetName(type, value);
@@ -272,7 +272,7 @@ namespace FiveOhFirstDataCore.Core.Data
                 ?.Shorthand ?? "";
         }
 
-        public static string AsFull<T>(this T value) where T : System.Enum
+        public static string AsFull<T>(this T value) where T : Enum
         {
             if (value is null) return "";
 
