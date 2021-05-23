@@ -1,4 +1,15 @@
-﻿@using Microsoft.AspNetCore.Hosting
+﻿@*Visual studio said fuck you and wont recgonize imports for this file.
+The file still builds without the imports below, as they are in _Imports.razor,
+but the file gets populated with intellisense errors.*@
+
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.AspNetCore.Authorization
+@using System.IO
+@using FiveOhFirstDataCore.Core.Services
+@using FiveOhFirstDataCore.Core.Structures
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Authorization
+@using FiveOhFirstDataCore.Core.Data.Import
 @inject IImportService _import
 @inject IAuthorizationService _auth
 @inject IRefreshRequestService _refresh
@@ -49,7 +60,7 @@
 
         if((await _auth.AuthorizeAsync(claims, "RequireManager")).Succeeded)
         {
-            await _import.VerifyUnsafeFolderAsync();
+            _import.VerifyUnsafeFolder();
 
             if(RosterFile is not null)
             {

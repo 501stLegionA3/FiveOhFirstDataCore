@@ -52,7 +52,7 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("First Lieutenant")]
         FirstLieutenant,
         [RankDisplay("CC")]
-        [Description("Captian")]
+        [Description("Captain")]
         Captian,
         [RankDisplay("BC")]
         [Description("Major")]

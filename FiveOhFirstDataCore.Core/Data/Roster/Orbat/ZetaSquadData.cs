@@ -56,7 +56,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
         public void Assign(Trooper item)
         {
-            if (item.Team is null)
+            if (item.Role == Role.Lead)
             {
                 SquadLeader = item;
             }

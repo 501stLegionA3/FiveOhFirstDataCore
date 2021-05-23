@@ -5,6 +5,7 @@ using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Esf;
 using Org.BouncyCastle.Math.EC;
 using System;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -98,10 +100,6 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         private async Task<ImportResult> ImportRosterAsync(FileStream stream)
         {
-            // TODO: Fix parse error for Acklay sergenat major slot.
-            // TODO: Ensure import works with Zeta roster
-            // TODO: Ensure batallion level CSHOP spots are parsing correctly.
-
             // Birth number && name empty, take first item in that row - determines where troopers will go.
 
             // Convert CI, CM, etc. into respective MOS rank. Use Rank column for Trooper ranks.
@@ -329,6 +327,18 @@ namespace FiveOhFirstDataCore.Core.Services
                             trooper.Role = Role.SubCommander;
                             slotSet = true;
                         }
+                        else if (roleString.Equals("Airborne Sergeant"))
+                        {
+                            trooper.Role = Role.SergeantMajor;
+                        }
+                        else if (roleString.Equals("Battalion SC"))
+                        {
+                            trooper.Role = Role.CShopCommander;
+                        }
+                        else if (roleString.Equals("Shop Commander XO"))
+                        {
+                            trooper.Role = Role.CShopXO;
+                        }
                         else
                         {
                             Role? role = roleString.GetRole();
@@ -384,24 +394,47 @@ namespace FiveOhFirstDataCore.Core.Services
                     }
 
                     var customCulture = new CultureInfo("en-US", true);
-                    customCulture.DateTimeFormat.ShortDatePattern = "yyyymmdd";
+                    customCulture.DateTimeFormat.ShortDatePattern = "yyyyMMdd";
 
                     // last promotion = 8
                     // start of service = 9
                     var lastPromoString = parts[8];
-                    if(DateTime.TryParseExact(lastPromoString, "yyyymmdd", customCulture, 
+                    if(DateTime.TryParseExact(lastPromoString, "yyyyMMdd", customCulture, 
                         DateTimeStyles.AdjustToUniversal, out DateTime lastPromo))
                     {
                         trooper.LastPromotion = lastPromo;
                     }
 
                     var serviceStartString = parts[9];
-                    if(DateTime.TryParseExact(serviceStartString, "yyyymmdd", customCulture,
+                    if(DateTime.TryParseExact(serviceStartString, "yyyyMMdd", customCulture,
                         DateTimeStyles.AdjustToUniversal, out DateTime serviceStart))
                     {
                         trooper.StartOfService = serviceStart;
                     }
 
+                    #region Grants
+                    if(trooper.Rank >= TrooperRank.Corporal)
+                    {
+                        await _userManager.AddToRoleAsync(trooper, "NCO");
+                    }
+
+                    if(trooper.Role == Role.RTO)
+                    {
+                        await _userManager.AddToRoleAsync(trooper, "RTO");
+                    }
+
+                    if(trooper.Role == Role.Medic)
+                    {
+                        await _userManager.AddToRoleAsync(trooper, "Medic");
+                    }
+
+                    if(trooper.Role == Role.ARC)
+                    {
+                        await _userManager.AddToRoleAsync(trooper, "ARC");
+                    }
+
+                    await _userManager.AddToRoleAsync(trooper, "Trooper");
+                    #endregion
 
                     await _userManager.UpdateAsync(trooper);
                 }
@@ -421,7 +454,190 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         private async Task<ImportResult> ImportCShopAsync(FileStream stream)
         {
-            throw new NotImplementedException();
+            try
+            {
+                List<string> warnings = new();
+
+                stream.Seek(0, SeekOrigin.Begin);
+                using StreamReader sr = new(stream);
+
+                Dictionary<int, List<string[]>> departments = new()
+                {
+                    { 1, new() },
+                    { 3, new() },
+                    { 4, new() },
+                    { 5, new() },
+                    { 6, new() },
+                    { 7, new() },
+                    { 8, new() },
+                };
+
+                string? line = null;
+                int c = 0;
+                while((line = await sr.ReadLineAsync()) is not null)
+                {
+                    // Line = Department
+                    // 0-1 = C1
+                    // 2-3 = C!
+                    // 4-5 = N/A
+                    // 6-7 = C3
+                    // 8-9 = C4
+                    // 10-11 = C5
+                    // 12-13 = C6
+                    // 14-15 = C6
+                    // 16-17 = C7
+                    // 18-19 = C8
+
+                    // Skip the header row.
+                    if (c++ < 1) continue;
+
+                    var parts = line.Split(',');
+                    int key = 0;
+                    for (int i = 0; i < parts.Length; i += 2)
+                    {
+                        // Get the Dict key for this section
+                        switch(i)
+                        {
+                            case 0:
+                            case 2:
+                                key = 1;
+                                break;
+                            case 4:
+                                // Nothing in this section.
+                                continue;
+                            case 6:
+                                key = 3;
+                                break;
+                            case 8:
+                                key = 4;
+                                break;
+                            case 10:
+                                key = 5;
+                                break;
+                            case 12:
+                            case 14:
+                                key = 6;
+                                break;
+                            case 16:
+                                key = 7;
+                                break;
+                            case 18:
+                                key = 8;
+                                break;
+                        }
+
+                        if (c == 2)
+                        {
+                            var smallerParts = parts[i].Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+                            departments[key].Add(smallerParts);
+                        }
+                        else
+                        {
+                            departments[key].Add(parts[i..(i+2)]);
+                        }
+                    }
+
+                    // Simple Parse
+                    // C1, C4, C5, C7, C8
+                    // Not So Simple Parse
+                    // C3, C6
+
+                    List<Trooper> allTroopers = await _dbContext.Users
+                        .ToListAsync();
+
+                    foreach(var pair in departments)
+                    {
+                        var departmentList = pair.Value;
+                        CShop? group = null;
+                        foreach(var segment in departmentList)
+                        {
+                            try
+                            {
+                                if (string.IsNullOrWhiteSpace(segment[1]))
+                                {
+                                    group = segment[0].GetCShop();
+                                    continue;
+                                }
+
+                                if(group is not null)
+                                {
+                                    var match = GetClosestTrooperMatch(segment[1], allTroopers);
+                                    if (match is null)
+                                    {
+                                        warnings.Add($"Failed to find a trooper value for {segment[0]}");
+                                        continue;
+                                    }
+
+                                    if (segment[0].Equals("Department Lead"))
+                                    {
+                                        await _userManager.AddClaimAsync(match, new("Department Lead", $"C{pair.Key}"));
+                                    }
+                                    else
+                                    {
+                                        if (group == CShop.CampaignManagement
+                                            || group == CShop.QualTrainingStaff
+                                            || group == CShop.MediaOutreach)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            string innerGroup = group.Value.AsFull();
+                                            var innerTree = CShopExtensions.ClaimsTree[group.Value][innerGroup];
+                                            var segmentParts = segment[0].Split(' ');
+
+                                            string? claimValue;
+
+                                            if(innerTree.Contains(segment[0]))
+                                            {
+                                                claimValue = segment[0];
+                                            }   
+                                            else if(innerTree.Contains(segmentParts[0]))
+                                            {
+                                                claimValue = segmentParts[0];
+                                            }
+                                            else if (innerTree.Contains(segmentParts.LastOrDefault() ?? ""))
+                                            {
+                                                claimValue = segmentParts.Last();
+                                            }
+                                            else
+                                            {
+                                                warnings.Add($"Failed to get a proper claim for {innerGroup} and {match.Id}");
+                                                claimValue = null;
+                                            }
+
+                                            if(claimValue is not null)
+                                            {
+                                                await _userManager.AddClaimAsync(match, new(innerGroup, claimValue));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            catch (IndexOutOfRangeException ex)
+                            {
+                                warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}");
+                                continue;
+                            }
+                        }
+                    }
+                }
+
+                return new(true, null, warnings);
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message }, new());
+            }
+        }
+
+        private static Trooper? GetClosestTrooperMatch(string trooperName, List<Trooper> troopers)
+        {
+            var possible = troopers.Where(x => x.NickName.Equals(trooperName.Trim(), StringComparison.OrdinalIgnoreCase)).ToList();
+            if (possible.Count > 1)
+                possible.Sort((x, y) => x.Slot.CompareTo(y.Slot));
+            return possible.FirstOrDefault();
         }
 
         public Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import)
@@ -429,10 +645,9 @@ namespace FiveOhFirstDataCore.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task VerifyUnsafeFolderAsync()
+        public void VerifyUnsafeFolder()
         {
             Directory.CreateDirectory(Path.Combine(_env.ContentRootPath, _env.EnvironmentName, "unsafe_uploads"));
-            return Task.CompletedTask;
         }
     }
 }

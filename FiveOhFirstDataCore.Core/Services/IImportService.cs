@@ -17,8 +17,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Verifys the unsafe import folder for the application is created. if it is not, it will create the folder.
         /// </summary>
-        /// <returns>The task containig this operation.</returns>
-        public Task VerifyUnsafeFolderAsync();
+        public void VerifyUnsafeFolder();
         /// <summary>
         /// Import ORBAT data for the updating and/or creation of new accounts.
         /// </summary>

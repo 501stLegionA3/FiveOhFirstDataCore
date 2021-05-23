@@ -85,8 +85,20 @@ namespace FiveOhFirstDataCore.Core.Data
 
     public static class CShopExtensions
     {
+        public static CShop? GetCShop(this string value)
+        {
+            foreach (CShop enumValue in Enum.GetValues(typeof(CShop)))
+            {
+                if (enumValue.AsFull() == value)
+                    return enumValue;
+            }
+
+            return null;
+        }
+
         public static Dictionary<CShop, Dictionary<string, HashSet<string>>> ClaimsTree { get; private set; } = new()
         {
+            { CShop.None, new() { { "Department Lead", new() { "C1", "C3", "C4", "C5", "C6", "C7", "C8" } } } },
             // C1
             { CShop.RosterStaff, new() { { CShop.RosterStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Clerk", "Jr" } } } },
             { CShop.DocMainCom, new() { { CShop.DocMainCom.AsFull(), new() { "Lead", "Assistant", "Curator", "Proofreader", "Distribution Overseer", "Assistant" } } } },
