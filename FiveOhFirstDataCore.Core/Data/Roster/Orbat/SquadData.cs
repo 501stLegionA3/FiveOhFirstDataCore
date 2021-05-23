@@ -11,27 +11,32 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
         public void Assign(Trooper t)
         {
-            switch (t.Team)
+            switch(t.Role)
             {
-                case null:
-                    switch (t.Role)
+                case Role.RTO:
+                    RT = t;
+                    break;
+                case Role.ARC:
+                    ARC = t;
+                    break;
+                default:
+                    switch (t.Team)
                     {
-                        case Role.Lead:
-                            Lead = t;
+                        case null:
+                            switch (t.Role)
+                            {
+                                case Role.Lead:
+                                    Lead = t;
+                                    break;
+                            }
                             break;
-                        case Role.RTO:
-                            RT = t;
+                        case Team.Alpha:
+                            Teams[0].Assign(t);
                             break;
-                        case Role.ARC:
-                            ARC = t;
+                        case Team.Bravo:
+                            Teams[1].Assign(t);
                             break;
                     }
-                    break;
-                case Team.Alpha:
-                    Teams[0].Assign(t);
-                    break;
-                case Team.Bravo:
-                    Teams[1].Assign(t);
                     break;
             }
         }

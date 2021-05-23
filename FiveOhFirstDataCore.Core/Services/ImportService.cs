@@ -6,6 +6,7 @@ using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Org.BouncyCastle.Asn1.Esf;
+using Org.BouncyCastle.Math.EC;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -63,7 +64,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 if (import.CShopStream is not null)
                 {
                     toDelete.Add(import.CShopStream.Name);
-                    var res = await ImportRosterAsync(import.CShopStream);
+                    var res = await ImportCShopAsync(import.CShopStream);
                     if (!res.GetResultWithWarnings(out var warn, out _))
                         return res;
                     else if (warn is not null)
@@ -97,6 +98,10 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         private async Task<ImportResult> ImportRosterAsync(FileStream stream)
         {
+            // TODO: Fix parse error for Acklay sergenat major slot.
+            // TODO: Ensure import works with Zeta roster
+            // TODO: Ensure batallion level CSHOP spots are parsing correctly.
+
             // Birth number && name empty, take first item in that row - determines where troopers will go.
 
             // Convert CI, CM, etc. into respective MOS rank. Use Rank column for Trooper ranks.
@@ -128,7 +133,8 @@ namespace FiveOhFirstDataCore.Core.Services
                 string group = "";
                 int c = 0;
                 List<string> warnings = new();
-                Team? currentTeam = null;
+                // Start this at the back, the first run returns it to no team.
+                Team? currentTeam = Team.Bravo;
                 // Start this at the back, the first run will reset it to Alpha.
                 Flight flight = Flight.Delta;
                 int flightNum = 0;
@@ -183,19 +189,22 @@ namespace FiveOhFirstDataCore.Core.Services
                         }
                     }
 
-                    if(parts[5].Equals("Squad Leader")
-                        || parts[5].Equals("Team Leader"))
+                    var roleString = parts[5];
+                    if(roleString.Equals("Squad Leader")
+                        || roleString.Equals("Section Leader"))
                     {
-                        switch (currentTeam)
+                        currentTeam = null;
+                    }
+
+                    if(roleString.Equals("Team Leader"))
+                    {
+                        switch(currentTeam)
                         {
                             case null:
                                 currentTeam = Team.Alpha;
                                 break;
                             case Team.Alpha:
                                 currentTeam = Team.Bravo;
-                                break;
-                            case Team.Bravo:
-                                currentTeam = null;
                                 break;
                         }
                     }
@@ -244,7 +253,6 @@ namespace FiveOhFirstDataCore.Core.Services
                             case TrooperRank r:
                                 trooper.Rank = r;
                                 trooper.Team = currentTeam;
-                                setRank = false;
                                 break;
                             case MedicRank m:
                                 trooper.MedicRank = m;
@@ -269,6 +277,7 @@ namespace FiveOhFirstDataCore.Core.Services
                             case WarrantRank w:
                                 trooper.WarrantRank = w;
                                 trooper.Team = currentTeam;
+                                setRank = false;
                                 break;
                         }
                     }
@@ -289,7 +298,6 @@ namespace FiveOhFirstDataCore.Core.Services
                     bool slotSet = false;
                     if(setRole)
                     {
-                        var roleString = parts[5];
                         if (flightNum != 0)
                         {
                             if(roleString.Equals("Flight Commander"))
@@ -313,11 +321,13 @@ namespace FiveOhFirstDataCore.Core.Services
                         {
                             trooper.Slot = Slot.Razor;
                             trooper.Role = Role.Commander;
+                            slotSet = true;
                         }
                         else if (roleString.Equals("Squadron Sub-Commander"))
                         {
                             trooper.Slot = Slot.Razor;
                             trooper.Role = Role.SubCommander;
+                            slotSet = true;
                         }
                         else
                         {
@@ -326,8 +336,8 @@ namespace FiveOhFirstDataCore.Core.Services
                             {
                                 role = roleString.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.GetRole();
                             }
-                            
-                            if(role is not null)
+
+                            if (role is not null)
                             {
                                 trooper.Role = role.Value;
                                 if(role == Role.Warden
@@ -336,6 +346,10 @@ namespace FiveOhFirstDataCore.Core.Services
                                 {
                                     trooper.Slot = Slot.Warden;
                                     slotSet = true;
+                                }
+                                else if (role == Role.ARC)
+                                {
+                                    trooper.Team = null;
                                 }
                             }
                             else
@@ -347,10 +361,21 @@ namespace FiveOhFirstDataCore.Core.Services
 
                     if (!slotSet)
                     {
-                        var slot = parts[4].GetSlot();
+                        var slot = parts[4].Replace("st", string.Empty)
+                            .Replace("nd", string.Empty)
+                            .Replace("rd", string.Empty)
+                            .GetSlot();
                         if (slot is not null)
                         {
                             trooper.Slot = slot.Value;
+                        }
+                        else if ((slot = group.GetSlot()) is not null)
+                        {
+                            trooper.Slot = slot.Value;
+                        }
+                        else if(group.Equals("HQ") && parts[4].Equals("Bastion Detachment"))
+                        {
+                            trooper.Slot = Slot.Mynock;
                         }
                         else
                         {
@@ -387,16 +412,6 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 return new(false, new() { ex.Message }, new());
             }
-        }
-
-        /// <summary>
-        /// Imports the Zeta Roster data, creating and updating accounts where needed.
-        /// </summary>
-        /// <param name="stream">The <see cref="FileStream"/> that contains Zeta Roster data.</param>
-        /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
-        private async Task<ImportResult> ImportZetaRosterAsync(FileStream stream)
-        {
-            throw new NotImplementedException();
         }
 
         /// <summary>

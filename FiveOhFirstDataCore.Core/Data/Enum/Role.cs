@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace FiveOhFirstDataCore.Core.Data
         Trooper,
         [Description("Medic")]
         Medic,
-        [Description("ARC Trooper")]
+        [Description("ARC")]
         ARC,
         [Description("Commander")]
         Commander,
@@ -51,6 +52,8 @@ namespace FiveOhFirstDataCore.Core.Data
         {
             // RT and RTO are used interchangeably, so we want to check for the use of RTO.
             if (value.Equals("RTO")) return Role.RTO;
+            // ARC and ARC Trooper are used interchangeably, so we want to check for the use of ARC Trooper.
+            if (value.Equals("ARC Trooper")) return Role.ARC;
 
             foreach (Role enumValue in Enum.GetValues(typeof(Role)))
             {
