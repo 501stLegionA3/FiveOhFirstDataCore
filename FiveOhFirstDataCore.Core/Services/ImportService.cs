@@ -292,7 +292,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
                     if (!int.TryParse(parts[1], out var id))
                     {
-                        warnings.Add($"{parts[1]} was unable to be parsed as an ID");
+                        if(!string.IsNullOrWhiteSpace(parts[1]))
+                            warnings.Add($"{parts[1]} was unable to be parsed as an ID");
                         continue;
                     }
 
@@ -634,12 +635,14 @@ namespace FiveOhFirstDataCore.Core.Services
 
                             if(group is not null)
                             {
-                                if (segment[1].Equals("TBD")) continue;
+                                if (segment[1].Equals("TBD", StringComparison.OrdinalIgnoreCase)
+                                    || segment[1].Equals("Closed", StringComparison.OrdinalIgnoreCase)) 
+                                    continue;
 
                                 var match = GetClosestTrooperMatch(segment[1], allTroopers);
                                 if (match is null)
                                 {
-                                    warnings.Add($"Failed to find a trooper value for {segment[0]}");
+                                    warnings.Add($"Failed to find a trooper value for {segment[1]} in {segment[0]}");
                                     continue;
                                 }
 
