@@ -29,6 +29,89 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly UserManager<Trooper> _userManager;
         private readonly IWebHostEnvironment _env;
 
+        private static readonly Dictionary<string, (string, string)> CShopClaimMatches = new()
+        {
+            { "committee lead", ("", "Lead") },
+            { "section leader", ("", "Lead") },
+            { "medals staff lead", ("", "Lead") },
+            { "lead event manager", ("", "Lead") },
+            { "teamspeak head", ("", "Lead") },
+            { "lead admin", ("", "Lead") },
+            { "commandant", ("", "Lead") },
+            { "server lead", ("", "Lead") },
+            { "editor in chief", ("", "Lead") },
+            { "section assistant", ("", "Assistant") },
+            { "assit. committee lead", ("", "Assistant") },
+            { "medals staff sub lead", ("", "Assistant") },
+            { "sub-lead event manager", ("", "Assistant") },
+            { "teamspeak assistant", ("", "Assistant") },
+            { "assistant commandant", ("", "Assistant") },
+            { "server assistant", ("", "Assistant") },
+            { "sr. roster clerk", ("", "Sr") },
+            { "sr. recruiter", ("", "Sr") },
+            { "sr. instructor", ("", "Sr") },
+            { "senior instructor", ("", "Sr") },
+            { "roster clerk", ("", "Clerk") },
+            { "jr. roster clerk", ("", "Jr") },
+            { "jr. instructor", ("", "Jr") },
+            { "junior instructor", ("", "Jr") },
+            { "lead curator", ("", "Curator") },
+            { "section asst./game master", ("", "DeptAssistant") },
+            { "head of documentation", ("", "Documentation") },
+            { "event host", ("", "Host") },
+            { "event helper", ("", "Helper") },
+            { "permissions staff", ("", "Staff") },
+            { "support", ("", "Staff") },
+            { "admin", ("", "Staff") },
+            { "spaceengineers", ("", "Space Engineers") },
+            { "texture/helmet team lead", ("", "Texture Lead") },
+            { "arma 3 units", ("", "Units") },
+            { "tcw negotiator", ("", "TCW") },
+            { "steam group rep", ("", "Steam") },
+            { "moderator", ("", "Mod") },
+            { "photo/graphics editor", ("", "Graphics Editor") },
+            { "lead story writer", ("Story Writer", "Lead") },
+            { "sub-lead story writer", ("Story Writer", "Assistant") },
+            { "story writer", ("Story Writer", "Writer") },
+            { "lead zeus operator", ("Zeus", "Lead") },
+            { "sub-lead zeus operator", ("Zeus", "Assistant") },
+            { "sr. zeus operator", ("Zeus", "Zeus") },
+            { "lead mission builder", ("Mission Builder", "Lead") },
+            { "sub-lead mission builder", ("Mission Builder", "Assistant") },
+            { "sr. mission builder", ("Mission Builder", "Sr") },
+            { "mission builder", ("Mission Builder", "Builder") },
+            { "jr. mission builder", ("Mission Builder", "Jr") },
+            { "campaign artisan lead", ("Artisan", "Lead") },
+            { "campaign artisan sub-lead", ("Artisan", "Assistant") },
+            { "campaign artisan", ("Artisan", "Artisan") },
+            { "logistics", ("Logistics", "Staff") },
+            { "lead rto mos instructor", ("RTO", "Lead") },
+            { "rto mos instructor", ("RTO", "Instructor") },
+            { "lead medical mos instructor", ("Medical", "Lead") },
+            { "medical mos instructor", ("Medical", "Instructor") },
+            { "medical mos cadre", ("Medical", "Cadre") },
+            { "lead assault mos instructor", ("Assault", "Lead") },
+            { "assault mos instructor", ("Assault", "Instructor") },
+            { "lead support mos instructor", ("Support", "Lead") },
+            { "support mos instructor", ("Support", "Instructor") },
+            { "lead marksman mos instructor", ("Marksman", "Lead") },
+            { "marksman mos instructor", ("Marksman", "Instructor") },
+            { "lead grenadier mos instructor", ("Grenadier", "Lead") },
+            { "grenadier mos instructor", ("Grenadier", "Instructor") },
+            { "lead jump-master mos instructor", ("Jump-Master", "Lead") },
+            { "jump-master mos instructor", ("Jump-Master", "Instructor") },
+            { "lead combat engineer mos instructor", ("Combat Engineer", "Lead") },
+            { "combat engineer mos instructor", ("Combat Engineer", "Instructor") },
+            { "youtube lead", ("YouTube", "Lead") },
+            { "youtube assistant", ("YouTube", "Lead") },
+            { "youtube staff", ("YouTube", "Staff") },
+            { "facebook manager", ("Facebook", "Staff") },
+            { "reddit manager", ("Reddit", "Staff") },
+            { "twitter manager", ("Twitter", "Staff") },
+            { "tiktok lead", ("TikTok", "Lead") },
+            { "tiktok staff", ("TikTok", "Staff") },
+        };
+
         public ImportService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
             IWebHostEnvironment env)
         {
@@ -437,6 +520,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     #endregion
 
                     await _userManager.UpdateAsync(trooper);
+                    await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
                 }
 
                 return new(true, null, warnings);
@@ -463,22 +547,24 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 Dictionary<int, List<string[]>> departments = new()
                 {
-                    { 1, new() },
-                    { 3, new() },
-                    { 4, new() },
-                    { 5, new() },
+                    { 0, new() },
+                    { 2, new() },
                     { 6, new() },
-                    { 7, new() },
                     { 8, new() },
+                    { 10, new() },
+                    { 12, new() },
+                    { 14, new() },
+                    { 16, new() },
+                    { 18, new() },
                 };
 
                 string? line = null;
                 int c = 0;
-                while((line = await sr.ReadLineAsync()) is not null)
+                while ((line = await sr.ReadLineAsync()) is not null)
                 {
                     // Line = Department
                     // 0-1 = C1
-                    // 2-3 = C!
+                    // 2-3 = C1
                     // 4-5 = N/A
                     // 6-7 = C3
                     // 8-9 = C4
@@ -492,135 +578,117 @@ namespace FiveOhFirstDataCore.Core.Services
                     if (c++ < 1) continue;
 
                     var parts = line.Split(',');
-                    int key = 0;
                     for (int i = 0; i < parts.Length; i += 2)
                     {
-                        // Get the Dict key for this section
-                        switch(i)
-                        {
-                            case 0:
-                            case 2:
-                                key = 1;
-                                break;
-                            case 4:
-                                // Nothing in this section.
-                                continue;
-                            case 6:
-                                key = 3;
-                                break;
-                            case 8:
-                                key = 4;
-                                break;
-                            case 10:
-                                key = 5;
-                                break;
-                            case 12:
-                            case 14:
-                                key = 6;
-                                break;
-                            case 16:
-                                key = 7;
-                                break;
-                            case 18:
-                                key = 8;
-                                break;
-                        }
+                        if (i == 4) continue;
 
-                        if (c == 2)
+                        if (!string.IsNullOrWhiteSpace(parts[i]))
                         {
-                            var smallerParts = parts[i].Split(':', StringSplitOptions.RemoveEmptyEntries);
+                            if (c == 2)
+                            {
+                                var smallerParts = parts[i].Split(':', StringSplitOptions.RemoveEmptyEntries);
 
-                            departments[key].Add(smallerParts);
-                        }
-                        else
-                        {
-                            departments[key].Add(parts[i..(i+2)]);
+                                departments[i].Add(smallerParts);
+                            }
+                            else
+                            {
+                                departments[i].Add(parts[i..(i + 2)]);
+                            }
                         }
                     }
+                }
 
-                    // Simple Parse
-                    // C1, C4, C5, C7, C8
-                    // Not So Simple Parse
-                    // C3, C6
+                // Simple Parse
+                // C1, C4, C5, C7, C8
+                // Not So Simple Parse
+                // C3, C6
 
-                    List<Trooper> allTroopers = await _dbContext.Users
-                        .ToListAsync();
+                List<Trooper> allTroopers = await _dbContext.Users
+                    .ToListAsync();
 
-                    foreach(var pair in departments)
+                foreach(var pair in departments)
+                {
+                    var departmentList = pair.Value;
+                    CShop? group = null;
+                    foreach(var segment in departmentList)
                     {
-                        var departmentList = pair.Value;
-                        CShop? group = null;
-                        foreach(var segment in departmentList)
+                        try
                         {
-                            try
+                            if (string.IsNullOrWhiteSpace(segment[1]))
                             {
-                                if (string.IsNullOrWhiteSpace(segment[1]))
+                                // Line = Department
+                                // 0-1 = C1
+                                // 2-3 = C1
+                                // 4-5 = N/A
+                                // 6-7 = C3
+                                // 8-9 = C4
+                                // 10-11 = C5
+                                // 12-13 = C6
+                                // 14-15 = C6
+                                // 16-17 = C7
+                                // 18-19 = C8
+
+                                group = segment[0].GetCShop();
+                                continue;
+                            }
+
+                            if(group is not null)
+                            {
+                                if (segment[1].Equals("TBD")) continue;
+
+                                var match = GetClosestTrooperMatch(segment[1], allTroopers);
+                                if (match is null)
                                 {
-                                    group = segment[0].GetCShop();
+                                    warnings.Add($"Failed to find a trooper value for {segment[0]}");
                                     continue;
                                 }
 
-                                if(group is not null)
+                                var edited = segment[0];
+
+                                Claim? claim;
+                                if (edited.Equals("department lead"))
                                 {
-                                    var match = GetClosestTrooperMatch(segment[1], allTroopers);
-                                    if (match is null)
+                                    // 0-1 = C1
+                                    // 2-3 = C1
+                                    // 4-5 = N/A
+                                    // 6-7 = C3
+                                    // 8-9 = C4
+                                    // 10-11 = C5
+                                    // 12-13 = C6
+                                    // 14-15 = C6
+                                    // 16-17 = C7
+                                    // 18-19 = C8
+                                    int key = pair.Key switch
                                     {
-                                        warnings.Add($"Failed to find a trooper value for {segment[0]}");
-                                        continue;
-                                    }
+                                        6 => 3,
+                                        8 => 4,
+                                        10 => 5,
+                                        12 => 6,
+                                        14 => 6,
+                                        16 => 7,
+                                        18 => 8,
+                                        _ => 1,
+                                    };
 
-                                    if (segment[0].Equals("Department Lead"))
-                                    {
-                                        await _userManager.AddClaimAsync(match, new("Department Lead", $"C{pair.Key}"));
-                                    }
-                                    else
-                                    {
-                                        if (group == CShop.CampaignManagement
-                                            || group == CShop.QualTrainingStaff
-                                            || group == CShop.MediaOutreach)
-                                        {
-
-                                        }
-                                        else
-                                        {
-                                            string innerGroup = group.Value.AsFull();
-                                            var innerTree = CShopExtensions.ClaimsTree[group.Value][innerGroup];
-                                            var segmentParts = segment[0].Split(' ');
-
-                                            string? claimValue;
-
-                                            if(innerTree.Contains(segment[0]))
-                                            {
-                                                claimValue = segment[0];
-                                            }   
-                                            else if(innerTree.Contains(segmentParts[0]))
-                                            {
-                                                claimValue = segmentParts[0];
-                                            }
-                                            else if (innerTree.Contains(segmentParts.LastOrDefault() ?? ""))
-                                            {
-                                                claimValue = segmentParts.Last();
-                                            }
-                                            else
-                                            {
-                                                warnings.Add($"Failed to get a proper claim for {innerGroup} and {match.Id}");
-                                                claimValue = null;
-                                            }
-
-                                            if(claimValue is not null)
-                                            {
-                                                await _userManager.AddClaimAsync(match, new(innerGroup, claimValue));
-                                            }
-                                        }
-                                    }
+                                    claim = new("Department Lead", $"C{key}");
                                 }
-                            }
-                            catch (IndexOutOfRangeException ex)
-                            {
-                                warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}");
-                                continue;
+                                else
+                                {
+                                    claim = GetclaimForCShop(segment[0].Trim().ToLower(), group.Value);
+                                }
+
+                                if (claim is not null)
+                                    await _userManager.AddClaimAsync(match, claim);
+                                else 
+                                    warnings.Add($"Unabled to assign claim for {match.Id} in {group.Value.AsFull()}");
                             }
                         }
+                        catch (IndexOutOfRangeException ex)
+                        {
+                            warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}");
+                            continue;
+                        }
+                        
                     }
                 }
 
@@ -640,6 +708,24 @@ namespace FiveOhFirstDataCore.Core.Services
             return possible.FirstOrDefault();
         }
 
+        private static Claim? GetclaimForCShop(string role, CShop group)
+        {
+            if (CShopClaimMatches.TryGetValue(role, out var pair))
+            {
+                if (string.IsNullOrWhiteSpace(pair.Item1)) return new(group.AsFull(), pair.Item2);
+                else return new(pair.Item1, pair.Item2);
+            }
+
+            // Nothing custom matched, so lets look directly.
+            if(CShopExtensions.ClaimsTree.TryGetValue(group, out var item))
+                foreach (var sets in item)
+                    foreach (var value in sets.Value)
+                        if (value.Equals(role, StringComparison.OrdinalIgnoreCase))
+                            return new(sets.Key, role);
+
+            return null;
+        }
+
         public Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import)
         {
             throw new NotImplementedException();
@@ -651,3 +737,254 @@ namespace FiveOhFirstDataCore.Core.Services
         }
     }
 }
+
+// Was used as a basis for the first part of geting claims in CShops
+//#region Claim Switch
+//switch (segment[0].Trim().ToLower())
+//{
+//    case "department lead":
+//        claim = new("Department Lead", $"C{pair.Key}");
+//        break;
+//    case "committee lead":
+//    case "section leader":
+//    case "medals staff lead":
+//    case "lead event manager":
+//    case "teamspeak head":
+//    case "lead admin":
+//    case "commandant":
+//    case "server lead":
+//    case "editor in chief":
+//        claim = new(innerTitleBase, "Lead");
+//        break;
+//    case "section assistant":
+//    case "assit. committee lead":
+//    case "medals staff sub lead":
+//    case "sub-lead event manager":
+//    case "teamspeak assistant":
+//    case "assistant commandant":
+//    case "server assistant":
+//        claim = new(innerTitleBase, "Assistant");
+//        break;
+//    case "sr. roster clerk":
+//    case "sr. recruiter":
+//    case "sr. instructor":
+//    case "senior instructor":
+//        claim = new(innerTitleBase, "Sr");
+//        break;
+
+//    case "roster clerk":
+//        claim = new(innerTitleBase, "Clerk");
+//        break;
+//    case "jr. roster clerk":
+//    case "jr. instructor":
+//    case "junior instructor":
+//        claim = new(innerTitleBase, "Jr");
+//        break;
+
+//    case "lead curator":
+//        claim = new(innerTitleBase, "Curator");
+//        break;
+//    case "section asst./game master":
+//        claim = new(innerTitleBase, "DeptAssistant");
+//        break;
+
+//    case "head of documentation":
+//        claim = new(innerTitleBase, "Documentation");
+//        break;
+//    case "event host":
+//        claim = new(innerTitleBase, "Host");
+//        break;
+//    case "event helper":
+//        claim = new(innerTitleBase, "Helper");
+//        break;
+
+//    case "permissions staff":
+//    case "support":
+//    case "admin":
+//        claim = new(innerTitleBase, "Staff");
+//        break;
+
+//    case "spaceengineers":
+//        claim = new(innerTitleBase, "Space Engineers");
+//        break;
+
+//    case "texture/helmet team lead":
+//        claim = new(innerTitleBase, "Texture Lead");
+//        break;
+
+//    case "arma 3 units":
+//        claim = new(innerTitleBase, "Units");
+//        break;
+//    case "tcw negotiator":
+//        claim = new(innerTitleBase, "TCW");
+//        break;
+//    case "steam group rep":
+//        claim = new(innerTitleBase, "Steam");
+//        break;
+
+//    case "moderator":
+//        claim = new(innerTitleBase, "Mod");
+//        break;
+
+//    case "photo/graphics editor":
+//        claim = new(innerTitleBase, "Graphics Editor");
+//        break;
+
+//    #region Campaign Management
+//    case "lead story writer":
+//        claim = new("Story Writer", "Lead");
+//        break;
+//    case "sub-lead story writer":
+//        claim = new("Story Writer", "Assistant");
+//        break;
+//    case "story writer":
+//        claim = new("Story Writer", "Writer");
+//        break;
+
+//    case "lead zeus operator":
+//        claim = new("Zeus", "Lead");
+//        break;
+//    case "sub-lead zeus operator":
+//        claim = new("Zeus", "Assistant");
+//        break;
+//    case "sr. zeus operator":
+//        claim = new("Zeus", "Zeus");
+//        break;
+
+//    case "lead mission builder":
+//        claim = new("Mission Builder", "Lead");
+//        break;
+//    case "sub-lead mission builder":
+//        claim = new("Mission Builder", "Assistant");
+//        break;
+//    case "sr. mission builder":
+//        claim = new("Mission Builder", "Sr");
+//        break;
+//    case "mission builder":
+//        claim = new("Mission Builder", "Builder");
+//        break;
+//    case "jr. mission builder":
+//        claim = new("Mission Builder", "Jr");
+//        break;
+
+//    case "campaign artisan lead":
+//        claim = new("Artisan", "Lead");
+//        break;
+//    case "campaign artisan sub-lead":
+//        claim = new("Artisan", "Assistant");
+//        break;
+//    case "campaign artisan":
+//        claim = new("Artisan", "Artisan");
+//        break;
+
+//    case "logistics":
+//        claim = new("Logistics", "Staff");
+//        break;
+//    #endregion
+
+//    #region Qualification/MOS Training Staff
+//    case "lead rto mos instructor":
+//        claim = new("RTO", "Lead");
+//        break;
+//    case "rto mos instructor":
+//        claim = new("RTO", "Instructor");
+//        break;
+
+//    case "lead medical mos instructor":
+//        claim = new("Medical", "Lead");
+//        break;
+//    case "medical mos instructor":
+//        claim = new("Medical", "Instructor");
+//        break;
+//    case "medical mos cadre":
+//        claim = new("Medical", "Cadre");
+//        break;
+
+//    case "lead assault mos instructor":
+//        claim = new("Assault", "Lead");
+//        break;
+//    case "assault mos instructor":
+//        claim = new("Assault", "Instructor");
+//        break;
+
+//    case "lead support mos instructor":
+//        claim = new("Support", "Lead");
+//        break;
+//    case "support mos instructor":
+//        claim = new("Support", "Instructor");
+//        break;
+
+//    case "lead marksman mos instructor":
+//        claim = new("Marksman", "Lead");
+//        break;
+//    case "marksman mos instructor":
+//        claim = new("Marksman", "Instructor");
+//        break;
+
+//    case "lead grenadier mos instructor":
+//        claim = new("Grenadier", "Lead");
+//        break;
+//    case "grenadier mos instructor":
+//        claim = new("Grenadier", "Instructor");
+//        break;
+
+//    case "lead jump-master mos instructor":
+//        claim = new("Jump-Master", "Lead");
+//        break;
+//    case "jump-master mos instructor":
+//        claim = new("Jump-Master", "Instructor");
+//        break;
+
+//    case "lead combat engineer mos instructor":
+//        claim = new("Combat Engineer", "Lead");
+//        break;
+//    case "combat engineer mos instructor":
+//        claim = new("Combat Engineer", "Instructor");
+//        break;
+//    #endregion
+
+//    #region Media Outreach
+//    case "youtube lead":
+//        claim = new("YouTube", "Lead");
+//        break;
+//    case "youtube assistant":
+//        claim = new("YouTube", "Lead");
+//        break;
+//    case "youtube staff":
+//        claim = new("YouTube", "Staff");
+//        break;
+
+//    case "facebook manager":
+//        claim = new("Facebook", "Staff");
+//        break;
+//    case "reddit manager":
+//        claim = new("Reddit", "Staff");
+//        break;
+//    case "twitter manager":
+//        claim = new("Twitter", "Staff");
+//        break;
+
+//    case "tiktok lead":
+//        claim = new("TikTok", "Lead");
+//        break;
+//    case "tiktok staff":
+//        claim = new("TikTok", "Staff");
+//        break;
+//    #endregion
+
+//    default:
+//        foreach (var item in CShopExtensions.ClaimsTree)
+//            foreach (var sets in item.Value)
+//                foreach (var value in sets.Value)
+//                    if (value.Equals(segment[0], StringComparison.OrdinalIgnoreCase)
+//                        && group.Value == item.Key)
+//                        claim = new(sets.Key, segment[0]);
+
+//        if (claim is null)
+//        {
+//            warnings.Add($"Failed to find a claim for {match.Id} in {innerTitleBase}");
+//            continue;
+//        }
+//        break;
+//}
+//#endregion

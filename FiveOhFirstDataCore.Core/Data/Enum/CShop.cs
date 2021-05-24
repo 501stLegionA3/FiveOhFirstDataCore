@@ -101,7 +101,7 @@ namespace FiveOhFirstDataCore.Core.Data
             { CShop.None, new() { { "Department Lead", new() { "C1", "C3", "C4", "C5", "C6", "C7", "C8" } } } },
             // C1
             { CShop.RosterStaff, new() { { CShop.RosterStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Clerk", "Jr" } } } },
-            { CShop.DocMainCom, new() { { CShop.DocMainCom.AsFull(), new() { "Lead", "Assistant", "Curator", "Proofreader", "Distribution Overseer", "Assistant" } } } },
+            { CShop.DocMainCom, new() { { CShop.DocMainCom.AsFull(), new() { "Lead", "Assistant", "Curator", "Proofreader", "Distribution Overseer", "Project Assistant" } } } },
             { CShop.RecruitingStaff, new() { { CShop.RecruitingStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Recruiter" } } } },
             { CShop.ReturningMemberStaff, new() { { CShop.ReturningMemberStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
             { CShop.MedalsStaff, new() { { CShop.MedalsStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
@@ -151,6 +151,7 @@ namespace FiveOhFirstDataCore.Core.Data
             { CShop.MediaOutreach, new() { 
                 { CShop.MediaOutreach.AsFull(), new() { "Lead", "Assistatn", "Mod" } },
                 { "YouTube", new() { "Lead", "Assistant", "Staff" } },
+                { "Reddit", new() { "Staff" } },
                 { "Facebook", new() { "Staff" } },
                 { "Twitter", new() { "Staff" } },
                 { "TikTok", new() { "Lead", "Staff" } }
