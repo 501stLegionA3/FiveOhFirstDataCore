@@ -42,10 +42,45 @@ but the file gets populated with intellisense errors.*@
             <button type="button" class="btn btn-block btn-primary" @onclick="ImportDataAsync">Import Data</button>
         </div>
     </div>
+    @if(Errors.Count > 0)
+    {
+    <hr />
+    <div class="row" id="errors">
+        <div class="col">
+            <button class="btn btn-warning float-end" @onclick="ClearErrors">Clear Errors</button>
+            <hr />
+            <ul>
+            @foreach(var err in Errors)
+            {
+                <li class="alert alert-danger">@err</li>
+            }
+            </ul>
+        </div>
+    </div>
+    }
+    @if(Warnings.Count > 0)
+    {
+    <hr />
+    <div class="row" id="errors">
+        <div class="col">
+            <button class="btn btn-warning float-end" @onclick="ClearWarnings">Clear Warnings</button>
+            <hr />
+            <ul>
+            @foreach(var warn in Warnings)
+            {
+                <li class="alert alert-warning">@warn</li>
+            }
+            </ul>
+        </div>
+    </div>
+    }
 </EditForm>
 
 @code {
     public OrbatImport Import { get; set; } = new();
+
+    public List<string> Errors { get; set; } = new();
+    public List<string> Warnings { get; set; } = new();
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -56,6 +91,9 @@ but the file gets populated with intellisense errors.*@
 
     private async Task ImportDataAsync(EventArgs e)
     {
+        Errors.Clear();
+        Warnings.Clear();
+
         var claims = (await AuthStateTask).User;
 
         if((await _auth.AuthorizeAsync(claims, "RequireManager")).Succeeded)
@@ -69,7 +107,8 @@ but the file gets populated with intellisense errors.*@
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
                 Import.RosterStream = new(path, FileMode.Create);
-                await RosterFile.OpenReadStream().CopyToAsync(Import.RosterStream);
+                await using var read = RosterFile.OpenReadStream();
+                await read.CopyToAsync(Import.RosterStream);
             }
 
             if(ZetaFile is not null)
@@ -79,7 +118,8 @@ but the file gets populated with intellisense errors.*@
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
                 Import.ZetaRosterStream = new(path, FileMode.Create);
-                await ZetaFile.OpenReadStream().CopyToAsync(Import.ZetaRosterStream);
+                using var read = ZetaFile.OpenReadStream();
+                await read.CopyToAsync(Import.ZetaRosterStream);
             }
 
             if(CShopFile is not null)
@@ -89,15 +129,45 @@ but the file gets populated with intellisense errors.*@
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
                 Import.CShopStream = new(path, FileMode.Create);
-                await CShopFile.OpenReadStream().CopyToAsync(Import.CShopStream);
+                await using var read = CShopFile.OpenReadStream();
+                await read.CopyToAsync(Import.CShopStream);
             }
 
             var res = await _import.ImportOrbatDataAsync(Import);
+
+            if(!res.GetResultWithWarnings(out var warnings, out var errors))
+            {
+                Warnings.AddRange(warnings);
+                Errors.AddRange(errors);
+            } 
+            else
+            {
+                RosterFile = null;
+                ZetaFile = null;
+                CShopFile = null;
+
+                if (warnings is not null)
+                {
+                    Warnings.AddRange(warnings);
+                }
+            }
         }
         else
         {
-            
+            Errors.Add("Unable to atuneticate user.");
         }
+
+        _refresh.CallRequestRefresh();
+    }
+
+    private void ClearErrors(EventArgs e)
+    {
+        Errors.Clear();
+    }
+
+    private void ClearWarnings(EventArgs e)
+    {
+        Warnings.Clear();
     }
 
     private void LoadRoster(InputFileChangeEventArgs e)
