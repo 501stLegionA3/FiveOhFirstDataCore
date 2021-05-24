@@ -678,14 +678,18 @@ namespace FiveOhFirstDataCore.Core.Services
                                 }
 
                                 if (claim is not null)
+                                {
+                                    match.CShops |= group.Value;
                                     await _userManager.AddClaimAsync(match, claim);
+                                    await _dbContext.SaveChangesAsync();
+                                }
                                 else 
                                     warnings.Add($"Unabled to assign claim for {match.Id} in {group.Value.AsFull()}");
                             }
                         }
                         catch (IndexOutOfRangeException ex)
                         {
-                            warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}");
+                            warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}\nwith error: {ex}");
                             continue;
                         }
                         
