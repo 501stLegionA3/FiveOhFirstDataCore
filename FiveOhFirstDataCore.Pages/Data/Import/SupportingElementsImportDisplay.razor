@@ -1,16 +1,4 @@
-﻿@*Visual studio said fuck you and wont recgonize imports for this file.
-The file still builds without the imports below, as they are in _Imports.razor,
-but the file gets populated with intellisense errors.*@
-
-@using Microsoft.AspNetCore.Hosting
-@using Microsoft.AspNetCore.Authorization
-@using System.IO
-@using FiveOhFirstDataCore.Core.Services
-@using FiveOhFirstDataCore.Core.Structures
-@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.AspNetCore.Components.Authorization
-@using FiveOhFirstDataCore.Core.Data.Import
-@inject IImportService _import
+﻿@inject IImportService _import
 @inject IAuthorizationService _auth
 @inject IRefreshRequestService _refresh
 @inject IWebHostEnvironment _env
@@ -20,21 +8,15 @@ but the file gets populated with intellisense errors.*@
         <div class="col-lg col-md-12">
             <div class="form-group">
                 <label for="importOrbat" class="form-label mt-4">Import Roster .csv</label>
-                <InputFile class="form-control" id="importOrbat" OnChange="LoadRoster" accept=".csv" />
+                <InputFile class="form-control" id="importOrbat" OnChange="LoadTraining" accept=".csv" />
             </div>
         </div>
         <div class="col-lg col-md-12">
             <div class="form-group">
                 <label for="importOrbat" class="form-label mt-4">Import Zeta Roster .csv</label>
-                <InputFile class="form-control" id="importOrbat" OnChange="LoadZeta" accept=".csv" />
+                <InputFile class="form-control" id="importOrbat" OnChange="LoadTraining" accept=".csv" />
             </div>
-        </div>
-        <div class="col-lg col-md-12">
-            <div class="form-group">
-                <label for="importOrbat" class="form-label mt-4">Import C-Shop .csv</label>
-                <InputFile class="form-control" id="importOrbat"  OnChange="LoadCShop" accept=".csv" />
-            </div>
-        </div>
+        </div>/
     </div>
     <hr />
     <div class="row">
@@ -77,7 +59,7 @@ but the file gets populated with intellisense errors.*@
 </EditForm>
 
 @code {
-    public OrbatImport Import { get; set; } = new();
+    public SupportingElementsImport Import { get; set; } = new();
     public bool Running { get; set; } = false;
 
     public List<string> Errors { get; set; } = new();
@@ -86,9 +68,8 @@ but the file gets populated with intellisense errors.*@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    public IBrowserFile? RosterFile { get; set; }
-    public IBrowserFile? ZetaFile { get; set; }
-    public IBrowserFile? CShopFile { get; set; }
+    public IBrowserFile? InactiveFile { get; set; }
+    public IBrowserFile? TrainingFile { get; set; }
 
     private async Task ImportDataAsync(EventArgs e)
     {
@@ -102,40 +83,29 @@ but the file gets populated with intellisense errors.*@
             Running = true;
             _import.VerifyUnsafeFolder();
 
-            if(RosterFile is not null)
+            if(InactiveFile is not null)
             {
                 var storageName = Path.GetRandomFileName();
                 var path = Path.Combine(_env.ContentRootPath,
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
-                Import.RosterStream = new(path, FileMode.Create);
-                await using var read = RosterFile.OpenReadStream();
-                await read.CopyToAsync(Import.RosterStream);
+                Import.InactiveReservesStream = new(path, FileMode.Create);
+                await using var read = InactiveFile.OpenReadStream();
+                await read.CopyToAsync(Import.InactiveReservesStream);
             }
 
-            if(ZetaFile is not null)
+            if(TrainingFile is not null)
             {
                 var storageName = Path.GetRandomFileName();
                 var path = Path.Combine(_env.ContentRootPath,
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
-                Import.ZetaRosterStream = new(path, FileMode.Create);
-                using var read = ZetaFile.OpenReadStream();
-                await read.CopyToAsync(Import.ZetaRosterStream);
+                Import.TrainingStream = new(path, FileMode.Create);
+                using var read = TrainingFile.OpenReadStream();
+                await read.CopyToAsync(Import.TrainingStream);
             }
 
-            if(CShopFile is not null)
-            {
-                var storageName = Path.GetRandomFileName();
-                var path = Path.Combine(_env.ContentRootPath,
-                    _env.EnvironmentName, "unsafe_uploads",
-                    storageName);
-                Import.CShopStream = new(path, FileMode.Create);
-                await using var read = CShopFile.OpenReadStream();
-                await read.CopyToAsync(Import.CShopStream);
-            }
-
-            var res = await _import.ImportOrbatDataAsync(Import);
+            var res = await _import.ImportSupportingElementsDataAsync(Import);
 
             if(!res.GetResultWithWarnings(out var warnings, out var errors))
             {
@@ -144,9 +114,8 @@ but the file gets populated with intellisense errors.*@
             } 
             else
             {
-                RosterFile = null;
-                ZetaFile = null;
-                CShopFile = null;
+                InactiveFile = null;
+                TrainingFile = null;
 
                 if (warnings is not null)
                 {
@@ -173,27 +142,19 @@ but the file gets populated with intellisense errors.*@
         Warnings.Clear();
     }
 
-    private void LoadRoster(InputFileChangeEventArgs e)
+    private void LoadInactive(InputFileChangeEventArgs e)
     {
         foreach(IBrowserFile file in e.GetMultipleFiles(1))
         {
-            RosterFile = file;
+            InactiveFile = file;
         }
     }
 
-    private void LoadZeta(InputFileChangeEventArgs e)
+    private void LoadTraining(InputFileChangeEventArgs e)
     {
         foreach(IBrowserFile file in e.GetMultipleFiles(1))
         {
-            ZetaFile = file;
-        }
-    }
-
-    private void LoadCShop(InputFileChangeEventArgs e)
-    {
-        foreach(IBrowserFile file in e.GetMultipleFiles(1))
-        {
-            CShopFile = file;
+            TrainingFile = file;
         }
     }
 }

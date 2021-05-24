@@ -9,7 +9,7 @@
                 <button class="nav-link w-100 h-100 @(Active == ImportType.OrbatRoster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.OrbatRoster)">ORBAT</button>
             </li>
             <li class="nav-item col">
-                <button class="nav-link w-100 h-100 @(Active == ImportType.SupportingElements ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.SupportingElements)">ORBAT</button>
+                <button class="nav-link w-100 h-100 @(Active == ImportType.SupportingElements ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.SupportingElements)">Supporting Elements</button>
             </li>
         </ul>
         <div class="tab-content">
@@ -19,7 +19,7 @@
                     <RosterDataImportDisplay />
                     break;
                 case ImportType.SupportingElements:
-                    
+                    <SupportingElementsImportDisplay />
                     break;
             }
         </div>
