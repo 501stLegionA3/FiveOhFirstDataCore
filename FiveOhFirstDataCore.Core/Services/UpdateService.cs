@@ -45,53 +45,42 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
         {
-            ConcurrentBag<UpdateBase> data = new();
-
-            await _dbContext
+            var one = await _dbContext
                 .RankChanges
+                .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ChangedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ForEachAsync(x =>
-                {
-                    if(x.SubmittedByRosterClerk)
-                        data.Add(x);
-                });
+                .ToListAsync<UpdateBase>();
 
-            await _dbContext
+            var two = await _dbContext
                 .CShopChanges
+                .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ChangedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ForEachAsync(x =>
-                {
-                    if(x.SubmittedByRosterClerk)
-                        data.Add(x);
-                });
+                .ToListAsync<UpdateBase>();
 
-            await _dbContext
+            var three = await _dbContext
                 .QualificationChanges
+                .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.Instructors)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ForEachAsync(x =>
-                {
-                    if(x.SubmittedByRosterClerk)
-                        data.Add(x);
-                });
+                .ToListAsync<UpdateBase>();
 
-            await _dbContext
+            var four = await _dbContext
                 .SlotChanges
+                .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ApprovedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ForEachAsync(x =>
-                {
-                    if(x.SubmittedByRosterClerk)
-                        data.Add(x);
-                });
+                .ToListAsync<UpdateBase>();
 
-            var dataList = data.AsEnumerable();
+            one.AddRange(two);
+            one.AddRange(three);
+            one.AddRange(four);
+            var dataList = one.AsEnumerable();
 
             return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
         }
