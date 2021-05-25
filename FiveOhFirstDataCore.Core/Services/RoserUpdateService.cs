@@ -437,5 +437,45 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, new() { ex.Message });
             }
         }
+
+        public async Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim)
+        {
+            List<string> errors = new();
+            var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            var identResult = await _userManager.AddClaimAsync(user, claim);
+
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim)
+        {
+            List<string> errors = new();
+            var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            var identResult = await _userManager.RemoveClaimAsync(user, claim);
+
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            return new(true, null);
+        }
+
+        public async Task<List<Claim>> GetAllClaimsFromTrooperAsync(Trooper trooper)
+        {
+            var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            return (await _userManager.GetClaimsAsync(user)).ToList();
+        }
     }
 }

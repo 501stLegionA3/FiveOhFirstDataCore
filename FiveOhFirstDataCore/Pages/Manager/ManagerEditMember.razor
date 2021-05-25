@@ -76,6 +76,39 @@
         </div>
         <hr />
         <div class="form-group">
+            <h3 class="text-center">Claim Management</h3>
+            <div class="row">
+                <div class="col">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <td><InputText @bind-Value="NewClaimType" class="form-control" placeholder="Claim Type" /></td>
+                                <td><InputText @bind-Value="NewClaimValue" class="form-control" placeholder="Claim Value" /></td>
+                                <td><button class="btn btn-success" type="button" @onclick="AddClaimAsync">Add Claim</button></td>
+                            </tr>
+                            <tr>
+                                <th scope="colgroup">Type</th>
+                                <th scope="colgroup">Value</th>
+                                <th scope="colgroup"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var c in Claims)
+                            {
+                                var claim = c;
+                                <tr>
+                                    <td>@c.Type</td>
+                                    <td>@c.Value</td>
+                                    <td><button class="btn btn-danger" type="button" @onclick="async (x) => await RemoveClaimAsync(claim)">Delete</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="form-group">
             <h3 class="text-center">Account Management</h3>
             <div class="row">
                 <div class="col">
@@ -138,6 +171,10 @@
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
     public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/modify", "Modify Trooper Data") };
+
+    public List<Claim> Claims { get; set; } = new();
+    private string NewClaimType { get; set; } = "";
+    private string NewClaimValue { get; set; } = "";
 
     public Trooper Trooper { get; set; } = new();
     public Trooper CurrentUser { get; set; } = new();
@@ -228,6 +265,7 @@
             var res = await _roster.GetAdminAndManagerValuesAsync(Trooper.Id.ToString());
             Admin = res.Item1;
             Manager = res.Item2;
+            Claims = await _roster.GetAllClaimsFromTrooperAsync(Trooper);
             
             var user = (await AuthStateTask).User;
             bool currentManager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
@@ -322,6 +360,51 @@
             }
         }
         
+        _refresh.CallRequestRefresh();
+    }
+    #endregion
+
+    #region Claim Management
+    private async Task AddClaimAsync(EventArgs e)
+    {
+        Errors.Clear();
+        if(string.IsNullOrWhiteSpace(NewClaimType)
+            || string.IsNullOrWhiteSpace(NewClaimValue))
+        {
+            Errors.Add("Claim must have a Type and a Value.");
+            return;
+        }
+
+        var c = new Claim(NewClaimType, NewClaimValue);
+        var res = await _roster.AddClaimAsync(Trooper, c);
+
+        if(!res.GetResult(out var errors))
+        {
+            Errors = errors;
+        }
+        else
+        {
+            Claims.Add(c);
+            NewClaimType = "";
+            NewClaimValue = "";
+        }
+
+        _refresh.CallRequestRefresh();
+    }
+
+    private async Task RemoveClaimAsync(Claim claim)
+    {
+        var res = await _roster.RemoveClaimAsync(Trooper, claim);
+
+        if(!res.GetResult(out var errors))
+        {
+            Errors = errors;
+        }
+        else
+        {
+            Claims.Remove(claim);
+        }
+
         _refresh.CallRequestRefresh();
     }
     #endregion
