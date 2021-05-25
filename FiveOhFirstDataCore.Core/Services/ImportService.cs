@@ -559,6 +559,11 @@ namespace FiveOhFirstDataCore.Core.Services
                     #endregion
 
                     await _userManager.UpdateAsync(trooper);
+
+                    var claims = await _userManager.GetClaimsAsync(trooper);
+                    var displays = claims.Where(x => x.Type == "Display");
+                    await _userManager.RemoveClaimsAsync(trooper, displays);
+
                     await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
                 }
 
@@ -721,6 +726,7 @@ namespace FiveOhFirstDataCore.Core.Services
                                 if (claim is not null)
                                 {
                                     match.CShops |= group.Value;
+                                    await _userManager.RemoveClaimAsync(match, claim);
                                     await _userManager.AddClaimAsync(match, claim);
                                     await _dbContext.SaveChangesAsync();
                                 }
