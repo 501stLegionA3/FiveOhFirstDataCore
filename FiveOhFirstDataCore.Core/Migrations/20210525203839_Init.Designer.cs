@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210521203601_Init")]
+    [Migration("20210525203839_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,13 +156,19 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("Flight")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("GraduatedBCTOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("GraduatedUTCOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("InitalTraining")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastPromotion")
+                    b.Property<DateTime>("LastBilletChange")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("LastSlotChange")
+                    b.Property<DateTime>("LastPromotion")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("LockoutEnabled")

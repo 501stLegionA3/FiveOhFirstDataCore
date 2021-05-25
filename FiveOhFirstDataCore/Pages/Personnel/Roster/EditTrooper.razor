@@ -167,6 +167,36 @@
                 }
             }
             <hr />
+            <div class="form-group align-content-center text-center">
+                <h4>Trooper Timekeeping</h4>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="startOfService">Start of Service</label><br />
+                        <InputDate @bind-Value="Trooper.StartOfService" class="from-control" id="startOfService" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="startOfService">Last Promotion</label><br />
+                        <InputDate @bind-Value="Trooper.LastPromotion" class="from-control" id="startOfService" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="startOfService">Last Billet Change</label><br />
+                        <InputDate @bind-Value="Trooper.LastBilletChange" class="from-control" id="startOfService" />
+                    </div>
+                    <div class="col-lg-6 col-md-12 p-2">
+                        <label for="startOfService">BCT Graduation Date</label><br />
+                        <InputDate @bind-Value="Trooper.GraduatedBCTOn" class="from-control" id="startOfService" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col p-2">
+                        <label for="startOfService">UTC Graduation Date</label><br />
+                        <InputDate @bind-Value="Trooper.GraduatedUTCOn" class="from-control" id="startOfService" />
+                    </div>
+                </div>
+            </div>
+            <hr />
             <div class="form-group">
                 <h4>Additional Information</h4>
                 <div class="row">

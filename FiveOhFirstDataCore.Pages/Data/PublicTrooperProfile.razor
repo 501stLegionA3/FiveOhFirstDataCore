@@ -226,8 +226,8 @@ else
         ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
         ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
         ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
-        ServiceStrings[4] = Trooper.LastSlotChange.ToShortDateString();
-        ServiceStrings[5] = DateTime.UtcNow.Subtract(Trooper.LastSlotChange).TotalDays.ToString("F0");
+        ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
+        ServiceStrings[5] = DateTime.UtcNow.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
 
         if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
         {

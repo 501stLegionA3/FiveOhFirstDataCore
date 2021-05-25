@@ -3,9 +3,7 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
-using Org.BouncyCastle.Bcpg.OpenPgp;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace FiveOhFirstDataCore.Core.Account
@@ -31,7 +29,9 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public DateTime LastPromotion { get; set; }
         public DateTime StartOfService { get; set; }
-        public DateTime LastSlotChange { get; set; }
+        public DateTime LastBilletChange { get; set; }
+        public DateTime GraduatedBCTOn { get; set; }
+        public DateTime GraduatedUTCOn { get; set; }
 
         public string? InitalTraining { get; set; }
         public string? UTC { get; set; }

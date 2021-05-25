@@ -154,13 +154,19 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("Flight")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("GraduatedBCTOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("GraduatedUTCOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("InitalTraining")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("LastPromotion")
+                    b.Property<DateTime>("LastBilletChange")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("LastSlotChange")
+                    b.Property<DateTime>("LastPromotion")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("LockoutEnabled")
