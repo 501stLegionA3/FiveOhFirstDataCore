@@ -30,5 +30,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="import">Data to import.</param>
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         public Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import);
+        /// <summary>
+        /// Import Qualification data for updating exsisting users qualification data.
+        /// </summary>
+        /// <param name="import">The <see cref="QualificationImport"/> class that holds qualification data.</param>
+        /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
+        public Task<ImportResult> ImportQualificationDataAsync(QualificationImport import);
     }
 }

@@ -114,6 +114,20 @@ namespace FiveOhFirstDataCore.Core.Services
             { "medals staff", ("", "Staff") }
         };
 
+        private static readonly Dictionary<int, Qualification> RowQualBindings = new()
+        {
+            { 2, Qualification.Assault },
+            { 3, Qualification.RAMR },
+            { 4, Qualification.Support },
+            { 5, Qualification.Z1000 },
+            { 6, Qualification.Grenadier },
+            { 7, Qualification.Marksman },
+            { 8, Qualification.Jumpmaster },
+            { 9, Qualification.CombatEngineer },
+            { 10, Qualification.RTOBasic },
+            { 11, Qualification.RTOQualified }
+        };
+
         public ImportService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
             IWebHostEnvironment env)
         {
@@ -131,7 +145,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 if (import.RosterStream is not null)
                 {
                     toDelete.Add(import.RosterStream.Name);
-                    var res = await ImportRosterAsync(import.RosterStream);
+                    var res = await ImportRosterAsync(import.RosterStream, (false, false));
                     if (!res.GetResultWithWarnings(out var warn, out _))
                         return res;
                     else if (warn is not null)
@@ -141,7 +155,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 if (import.ZetaRosterStream is not null)
                 {
                     toDelete.Add(import.ZetaRosterStream.Name);
-                    var res = await ImportRosterAsync(import.ZetaRosterStream);
+                    var res = await ImportRosterAsync(import.ZetaRosterStream, (false, false));
                     if (!res.GetResultWithWarnings(out var warn, out _))
                         return res;
                     else if (warn is not null)
@@ -182,8 +196,10 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Imports Active Roster data, creating and updating accountgs where needed.
         /// </summary>
         /// <param name="stream">The <see cref="FileStream"/> that contains Roster data.</param>
+        /// <param name="supportingElements">Two boolean values determining if this import is for the supporting elements rosters. Item1 
+        /// represents if this is for supporting elements. Item2 to determines if this is specifcally for the training form.</param>
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
-        private async Task<ImportResult> ImportRosterAsync(FileStream stream)
+        private async Task<ImportResult> ImportRosterAsync(FileStream stream, (bool, bool) supportingElements)
         {
             // Birth number && name empty, take first item in that row - determines where troopers will go.
 
@@ -231,64 +247,69 @@ namespace FiveOhFirstDataCore.Core.Services
 
                     // Check the Birth # and Nickname fields. If both are empty,
                     // set the group header.
-                    if (string.IsNullOrWhiteSpace(parts[1])
-                        && string.IsNullOrWhiteSpace(parts[2]))
+
+                    // If its supporting elements, ignore this.
+                    var roleString = parts[5];
+                    if (!supportingElements.Item1)
                     {
-                        var p = parts[0];
-                        if(group.Equals("Aviators"))
+                        if (string.IsNullOrWhiteSpace(parts[1])
+                            && string.IsNullOrWhiteSpace(parts[2]))
                         {
-                            if(!int.TryParse(p[0..1], out flightNum))
+                            var p = parts[0];
+                            if (group.Equals("Aviators"))
                             {
-                                flightNum = 0;
-                                if(!p.Equals("HQ"))
-                                    group = p;
+                                if (!int.TryParse(p[0..1], out flightNum))
+                                {
+                                    flightNum = 0;
+                                    if (!p.Equals("HQ"))
+                                        group = p;
+                                }
+                            }
+                            else
+                            {
+                                group = p;
+                            }
+                            continue;
+                        }
+
+                        if (parts[5].Equals("Pilot"))
+                        {
+                            switch (flight)
+                            {
+                                case Flight.Alpha:
+                                    flight = Flight.Bravo;
+                                    break;
+                                case Flight.Bravo:
+                                    flight = Flight.Charlie;
+                                    break;
+                                case Flight.Charlie:
+                                    flight = Flight.Delta;
+                                    break;
+                                case Flight.Delta:
+                                    flight = Flight.Alpha;
+                                    wingNum++;
+                                    if (wingNum > 2) wingNum = 1;
+                                    break;
                             }
                         }
-                        else
+
+                        if (roleString.Equals("Squad Leader")
+                            || roleString.Equals("Section Leader"))
                         {
-                            group = p;
+                            currentTeam = null;
                         }
-                        continue;
-                    }
 
-                    if (parts[5].Equals("Pilot"))
-                    {
-                        switch (flight)
+                        if (roleString.Equals("Team Leader"))
                         {
-                            case Flight.Alpha:
-                                flight = Flight.Bravo;
-                                break;
-                            case Flight.Bravo:
-                                flight = Flight.Charlie;
-                                break;
-                            case Flight.Charlie:
-                                flight = Flight.Delta;
-                                break;
-                            case Flight.Delta:
-                                flight = Flight.Alpha;
-                                wingNum++;
-                                if (wingNum > 2) wingNum = 1;
-                                break;
-                        }
-                    }
-
-                    var roleString = parts[5];
-                    if(roleString.Equals("Squad Leader")
-                        || roleString.Equals("Section Leader"))
-                    {
-                        currentTeam = null;
-                    }
-
-                    if(roleString.Equals("Team Leader"))
-                    {
-                        switch(currentTeam)
-                        {
-                            case null:
-                                currentTeam = Team.Alpha;
-                                break;
-                            case Team.Alpha:
-                                currentTeam = Team.Bravo;
-                                break;
+                            switch (currentTeam)
+                            {
+                                case null:
+                                    currentTeam = Team.Alpha;
+                                    break;
+                                case Team.Alpha:
+                                    currentTeam = Team.Bravo;
+                                    break;
+                            }
                         }
                     }
 
@@ -323,9 +344,16 @@ namespace FiveOhFirstDataCore.Core.Services
                     }
 
                     trooper.NickName = parts[2].Replace("*A*", string.Empty).Trim();
-                    trooper.InitalTraining = parts[11];
-                    trooper.UTC = parts[12];
-                    trooper.Notes = string.Join(", ", parts[13..(parts.Length - 1)]);
+                    if (!supportingElements.Item2)
+                    {
+                        trooper.InitalTraining = parts[11];
+                        trooper.UTC = parts[12];
+                        trooper.Notes = string.Join(", ", parts[13..(parts.Length - 1)]);
+                    }
+                    else
+                    {
+                        trooper.Notes = string.Join(", ", parts[11..(parts.Length - 1)]);
+                    }
 
                     Enum? rank;
                     bool setRank = true;
@@ -380,7 +408,11 @@ namespace FiveOhFirstDataCore.Core.Services
                     }
 
                     bool slotSet = false;
-                    if(setRole)
+                    if (supportingElements.Item2)
+                    {
+                        trooper.Role = Role.Trooper;
+                    }
+                    else if(setRole)
                     {
                         if (flightNum != 0)
                         {
@@ -455,7 +487,11 @@ namespace FiveOhFirstDataCore.Core.Services
                         }
                     }
 
-                    if (!slotSet)
+                    if(supportingElements.Item1)
+                    {
+                        trooper.Slot = Slot.InactiveReserve;
+                    }
+                    else if (!slotSet)
                     {
                         var slot = parts[4].Replace("st", string.Empty)
                             .Replace("nd", string.Empty)
@@ -744,7 +780,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 if (import.InactiveReservesStream is not null)
                 {
                     toDelete.Add(import.InactiveReservesStream.Name);
-                    var res = await ImportInactiveReservesAsync(import.InactiveReservesStream);
+                    var res = await ImportRosterAsync(import.InactiveReservesStream, (true, false));
                     if (!res.GetResultWithWarnings(out var warn, out _))
                         return res;
                     else if (warn is not null)
@@ -754,7 +790,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 if (import.TrainingStream is not null)
                 {
                     toDelete.Add(import.TrainingStream.Name);
-                    var res = await ImportTrainingAsync(import.TrainingStream);
+                    var res = await ImportRosterAsync(import.TrainingStream, (true, true));
                     if (!res.GetResultWithWarnings(out var warn, out _))
                         return res;
                     else if (warn is not null)
@@ -781,14 +817,84 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        private async Task<ImportResult> ImportInactiveReservesAsync(FileStream stream)
+        public async Task<ImportResult> ImportQualificationDataAsync(QualificationImport import)
         {
-            throw new NotImplementedException();
+            List<string> toDelete = new();
+            try
+            {
+                List<string> warnings = new();
+                if (import.UnifiedQualStream is not null)
+                {
+                    toDelete.Add(import.UnifiedQualStream.Name);
+                    var res = await ImportQualificationUnificationSheetAsync(import.UnifiedQualStream);
+                    if (!res.GetResultWithWarnings(out var warn, out _))
+                        return res;
+                    else if (warn is not null)
+                        warnings.AddRange(warn);
+                }
+
+                return new(true, null, warnings);
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message }, new());
+            }
+            finally
+            {
+                await import.DisposeAsync();
+                foreach (var s in toDelete)
+                {
+                    try
+                    {
+                        File.Delete(s);
+                    }
+                    catch { continue; }
+                }
+            }
         }
 
-        private async Task<ImportResult> ImportTrainingAsync(FileStream stream)
+        private async Task<ImportResult> ImportQualificationUnificationSheetAsync(FileStream stream)
         {
-            throw new NotImplementedException();
+            try
+            {
+                stream.Seek(0, SeekOrigin.Begin);
+                using StreamReader sr = new(stream);
+
+                string? line = "";
+                List<string> warnings = new();
+                while ((line = await sr.ReadLineAsync()) is not null)
+                {
+                    var parts = line.Split(',', StringSplitOptions.TrimEntries);
+
+                    if (!int.TryParse(parts[1], out var id))
+                    {
+                        if (!string.IsNullOrWhiteSpace(parts[1]))
+                            warnings.Add($"{parts[1]} was unable to be parsed as an ID");
+                        continue;
+                    }
+
+                    var trooper = await _userManager.FindByIdAsync(parts[1]);
+
+                    if (trooper is null)
+                    {
+                        warnings.Add($"Unable to find a trooper by the ID of {parts[1]}");
+                        continue;
+                    }
+
+                    for(int i = 2; i < parts.Length; i++)
+                    {
+                        if (parts[i].Equals("pass", StringComparison.OrdinalIgnoreCase))
+                            if (RowQualBindings.TryGetValue(i, out var qual))
+                                trooper.Qualifications |= qual;
+                    }
+                }
+
+                return new(true, warnings, new());
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message }, new());
+            }
         }
 
         public void VerifyUnsafeFolder()

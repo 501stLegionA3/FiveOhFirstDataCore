@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Import
 {
-    public class SupportingElementsImport : IDisposable, IAsyncDisposable
+    public class QualificationImport : IDisposable, IAsyncDisposable
     {
         private bool disposedValue;
 
-        public FileStream? InactiveReservesStream { get; set; }
-        public FileStream? TrainingStream { get; set; }
+        public FileStream? UnifiedQualStream { get; set; }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -20,12 +19,10 @@ namespace FiveOhFirstDataCore.Core.Data.Import
             {
                 if (disposing)
                 {
-                    InactiveReservesStream?.Dispose();
-                    TrainingStream?.Dispose();
+                    UnifiedQualStream?.Dispose();
                 }
 
-                InactiveReservesStream = null;
-                TrainingStream = null;
+                UnifiedQualStream = null;
 
                 disposedValue = true;
             }
@@ -40,11 +37,8 @@ namespace FiveOhFirstDataCore.Core.Data.Import
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            if (InactiveReservesStream is not null)
-                await InactiveReservesStream.DisposeAsync();
-
-            if (TrainingStream is not null)
-                await TrainingStream.DisposeAsync();
+            if (UnifiedQualStream is not null)
+                await UnifiedQualStream.DisposeAsync();
         }
 
         public async ValueTask DisposeAsync()

@@ -11,6 +11,9 @@
             <li class="nav-item col">
                 <button class="nav-link w-100 h-100 @(Active == ImportType.SupportingElements ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.SupportingElements)">Supporting Elements</button>
             </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ImportType.Qualifications ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ImportType.Qualifications)">Qualifications</button>
+            </li>
         </ul>
         <div class="tab-content">
             @switch(Active)
@@ -20,6 +23,9 @@
                     break;
                 case ImportType.SupportingElements:
                     <SupportingElementsImportDisplay />
+                    break;
+                case ImportType.Qualifications:
+                    <QalificationImportDisplay />
                     break;
             }
         </div>
@@ -34,6 +40,7 @@
     {
         OrbatRoster,
         SupportingElements,
+        Qualifications
     }
 
     public ImportType Active { get; set; } = ImportType.OrbatRoster;

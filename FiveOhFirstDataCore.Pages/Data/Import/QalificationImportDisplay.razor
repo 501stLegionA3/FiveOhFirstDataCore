@@ -16,18 +16,12 @@ but the file gets populated with intellisense errors.*@
 @inject IRefreshRequestService _refresh
 @inject IWebHostEnvironment _env
 
-<EditForm Context="importSupportingElemntsDataContext" Model="Import">
+<EditForm Context="importQualificationDataContext" Model="Import">
     <div class="row">
         <div class="col-lg col-md-12">
             <div class="form-group">
-                <label for="importOrbat" class="form-label mt-4">Import Inactive Reserves .csv</label>
-                <InputFile class="form-control" id="importOrbat" OnChange="LoadTraining" accept=".csv" />
-            </div>
-        </div>
-        <div class="col-lg col-md-12">
-            <div class="form-group">
-                <label for="importOrbat" class="form-label mt-4">Import Training Form .csv</label>
-                <InputFile class="form-control" id="importOrbat" OnChange="LoadTraining" accept=".csv" />
+                <label for="importOrbat" class="form-label mt-4">Import Qualification Unification .csv</label>
+                <InputFile class="form-control" id="importOrbat" OnChange="LoadQuals" accept=".csv" />
             </div>
         </div>
     </div>
@@ -72,7 +66,7 @@ but the file gets populated with intellisense errors.*@
 </EditForm>
 
 @code {
-    public SupportingElementsImport Import { get; set; } = new();
+    public QualificationImport Import { get; set; } = new();
     public bool Running { get; set; } = false;
 
     public List<string> Errors { get; set; } = new();
@@ -81,8 +75,7 @@ but the file gets populated with intellisense errors.*@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    public IBrowserFile? InactiveFile { get; set; }
-    public IBrowserFile? TrainingFile { get; set; }
+    public IBrowserFile? QualFile { get; set; }
 
     private async Task ImportDataAsync(EventArgs e)
     {
@@ -96,29 +89,18 @@ but the file gets populated with intellisense errors.*@
             Running = true;
             _import.VerifyUnsafeFolder();
 
-            if(InactiveFile is not null)
+            if(QualFile is not null)
             {
                 var storageName = Path.GetRandomFileName();
                 var path = Path.Combine(_env.ContentRootPath,
                     _env.EnvironmentName, "unsafe_uploads",
                     storageName);
-                Import.InactiveReservesStream = new(path, FileMode.Create);
-                await using var read = InactiveFile.OpenReadStream();
-                await read.CopyToAsync(Import.InactiveReservesStream);
+                Import.UnifiedQualStream = new(path, FileMode.Create);
+                await using var read = QualFile.OpenReadStream();
+                await read.CopyToAsync(Import.UnifiedQualStream);
             }
 
-            if(TrainingFile is not null)
-            {
-                var storageName = Path.GetRandomFileName();
-                var path = Path.Combine(_env.ContentRootPath,
-                    _env.EnvironmentName, "unsafe_uploads",
-                    storageName);
-                Import.TrainingStream = new(path, FileMode.Create);
-                using var read = TrainingFile.OpenReadStream();
-                await read.CopyToAsync(Import.TrainingStream);
-            }
-
-            var res = await _import.ImportSupportingElementsDataAsync(Import);
+            var res = await _import.ImportQualificationDataAsync(Import);
 
             if(!res.GetResultWithWarnings(out var warnings, out var errors))
             {
@@ -127,8 +109,7 @@ but the file gets populated with intellisense errors.*@
             } 
             else
             {
-                InactiveFile = null;
-                TrainingFile = null;
+                QualFile = null;
 
                 if (warnings is not null)
                 {
@@ -155,19 +136,11 @@ but the file gets populated with intellisense errors.*@
         Warnings.Clear();
     }
 
-    private void LoadInactive(InputFileChangeEventArgs e)
+    private void LoadQuals(InputFileChangeEventArgs e)
     {
         foreach(IBrowserFile file in e.GetMultipleFiles(1))
         {
-            InactiveFile = file;
-        }
-    }
-
-    private void LoadTraining(InputFileChangeEventArgs e)
-    {
-        foreach(IBrowserFile file in e.GetMultipleFiles(1))
-        {
-            TrainingFile = file;
+            QualFile = file;
         }
     }
 }
