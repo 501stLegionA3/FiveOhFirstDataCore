@@ -41,7 +41,7 @@ namespace FiveOhFirstDataCore.Core.Services
             { "server lead", ("", "Lead") },
             { "editor in chief", ("", "Lead") },
             { "section assistant", ("", "Assistant") },
-            { "assit. committee lead", ("", "Assistant") },
+            { "assist. committee lead", ("", "Assistant") },
             { "medals staff sub lead", ("", "Assistant") },
             { "sub-lead event manager", ("", "Assistant") },
             { "teamspeak assistant", ("", "Assistant") },
@@ -90,18 +90,18 @@ namespace FiveOhFirstDataCore.Core.Services
             { "lead medical mos instructor", ("Medical", "Lead") },
             { "medical mos instructor", ("Medical", "Instructor") },
             { "medical mos cadre", ("Medical", "Cadre") },
-            { "lead assault mos instructor", ("Assault", "Lead") },
-            { "assault mos instructor", ("Assault", "Instructor") },
-            { "lead support mos instructor", ("Support", "Lead") },
-            { "support mos instructor", ("Support", "Instructor") },
-            { "lead marksman mos instructor", ("Marksman", "Lead") },
-            { "marksman mos instructor", ("Marksman", "Instructor") },
-            { "lead grenadier mos instructor", ("Grenadier", "Lead") },
-            { "grenadier mos instructor", ("Grenadier", "Instructor") },
-            { "lead jump-master mos instructor", ("Jump-Master", "Lead") },
-            { "jump-master mos instructor", ("Jump-Master", "Instructor") },
-            { "lead combat engineer mos instructor", ("Combat Engineer", "Lead") },
-            { "combat engineer mos instructor", ("Combat Engineer", "Instructor") },
+            { "lead assault instructor", ("Assault", "Lead") },
+            { "assault instructor", ("Assault", "Instructor") },
+            { "lead support instructor", ("Support", "Lead") },
+            { "support instructor", ("Support", "Instructor") },
+            { "lead marksman instructor", ("Marksman", "Lead") },
+            { "marksman instructor", ("Marksman", "Instructor") },
+            { "lead grenadier instructor", ("Grenadier", "Lead") },
+            { "grenadier instructor", ("Grenadier", "Instructor") },
+            { "lead jump-master instructor", ("Jump-Master", "Lead") },
+            { "jump-master instructor", ("Jump-Master", "Instructor") },
+            { "lead combat engineer instructor", ("Combat Engineer", "Lead") },
+            { "combat engineer instructor", ("Combat Engineer", "Instructor") },
             { "youtube lead", ("YouTube", "Lead") },
             { "youtube assistant", ("YouTube", "Lead") },
             { "youtube staff", ("YouTube", "Staff") },
@@ -110,6 +110,8 @@ namespace FiveOhFirstDataCore.Core.Services
             { "twitter manager", ("Twitter", "Staff") },
             { "tiktok lead", ("TikTok", "Lead") },
             { "tiktok staff", ("TikTok", "Staff") },
+            { "chief instructor", ("", "Chief") },
+            { "medals staff", ("", "Staff") }
         };
 
         public ImportService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
@@ -687,7 +689,7 @@ namespace FiveOhFirstDataCore.Core.Services
                                     await _dbContext.SaveChangesAsync();
                                 }
                                 else 
-                                    warnings.Add($"Unabled to assign claim for {match.Id} in {group.Value.AsFull()}");
+                                    warnings.Add($"Unabled to assign claim for {match.Id} in {group.Value.AsFull()} for {segment[0]}");
                             }
                         }
                         catch (IndexOutOfRangeException ex)
@@ -733,7 +735,58 @@ namespace FiveOhFirstDataCore.Core.Services
             return null;
         }
 
-        public Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import)
+        public async Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import)
+        {
+            List<string> toDelete = new();
+            try
+            {
+                List<string> warnings = new();
+                if (import.InactiveReservesStream is not null)
+                {
+                    toDelete.Add(import.InactiveReservesStream.Name);
+                    var res = await ImportInactiveReservesAsync(import.InactiveReservesStream);
+                    if (!res.GetResultWithWarnings(out var warn, out _))
+                        return res;
+                    else if (warn is not null)
+                        warnings.AddRange(warn);
+                }
+
+                if (import.TrainingStream is not null)
+                {
+                    toDelete.Add(import.TrainingStream.Name);
+                    var res = await ImportTrainingAsync(import.TrainingStream);
+                    if (!res.GetResultWithWarnings(out var warn, out _))
+                        return res;
+                    else if (warn is not null)
+                        warnings.AddRange(warn);
+                }
+
+                return new(true, null, warnings);
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message }, new());
+            }
+            finally
+            {
+                await import.DisposeAsync();
+                foreach (var s in toDelete)
+                {
+                    try
+                    {
+                        File.Delete(s);
+                    }
+                    catch { continue; }
+                }
+            }
+        }
+
+        private async Task<ImportResult> ImportInactiveReservesAsync(FileStream stream)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<ImportResult> ImportTrainingAsync(FileStream stream)
         {
             throw new NotImplementedException();
         }
