@@ -55,6 +55,7 @@
         int i = 0;
         foreach (var notice in Board.Notices)
         {
+            var c = i++;
             var n = notice;
             <div class="row">
                 <div class="col p-2">
@@ -64,7 +65,7 @@
                     @if(IsEditor)
                     {
                         <div class="form-group align-content-right float-right">
-                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="(x) => StartEdit(i++)"></button>
+                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="(x) => StartEdit(c)"></button>
                             <button class="oi oi-trash m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
                         </div>
                     }
