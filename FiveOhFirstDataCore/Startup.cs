@@ -93,7 +93,7 @@ namespace FiveOhFirstDataCore
                     options.CallbackPath = new PathString("/authorization-code/discord-callback"); // local auth endpoint
                     options.AccessDeniedPath = new PathString("/api/link/denied");
 
-                    options.ClientId = Configuration["Config:Discord:ClientId"];
+                    options.ClientId = Secrets["Discord:ClientId"];
                     options.ClientSecret = Secrets["Discord:ClientSecret"];
                     options.TokenEndpoint = $"{Configuration["Config:Discord:TokenEndpoint"]}";
 
@@ -386,8 +386,8 @@ namespace FiveOhFirstDataCore
                 .AddScoped<INoticeService, NoticeService>();
 
             #region Discord Setup
-            var cshop = Configuration.GetSection("Config:Discord:CShopRoleBindings");
-            var roles = Configuration.GetSection("Config:Discord:RoleBindings");
+            var cshop = Secrets.GetSection("Discord:CShopRoleBindings");
+            var roles = Secrets.GetSection("Discord:RoleBindings");
             services.AddSingleton<DiscordConfiguration>(x => new()
             {
                 Token = Secrets["Discord:Token"],
@@ -397,7 +397,7 @@ namespace FiveOhFirstDataCore
                 .AddSingleton<DiscordRestClient>()
                 .AddSingleton<DiscordBotConfiguration>(x => new()
                 {
-                    HomeGuild = ulong.Parse(Configuration["Config:Discord:HomeGuild"]),
+                    HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"]),
                     CShopRoleBindings = cshop.Get<Dictionary<CShop, Dictionary<string, Dictionary<string, ulong[]>>>>(),
                     RoleBindings = roles.Get<Dictionary<string, Dictionary<string, DiscordRoleDetails>>>()
                 })
