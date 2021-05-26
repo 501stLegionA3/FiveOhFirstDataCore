@@ -76,6 +76,17 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "NoticeBoards",
+                columns: table => new
+                {
+                    Loaction = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NoticeBoards", x => x.Loaction);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -439,6 +450,35 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Notices",
+                columns: table => new
+                {
+                    NoticeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    NoticeBoardName = table.Column<string>(type: "text", nullable: false),
+                    PostedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Sticky = table.Column<bool>(type: "boolean", nullable: false),
+                    Contents = table.Column<string>(type: "text", nullable: false),
+                    Level = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notices", x => x.NoticeId);
+                    table.ForeignKey(
+                        name: "FK_Notices_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notices_NoticeBoards_NoticeBoardName",
+                        column: x => x.NoticeBoardName,
+                        principalTable: "NoticeBoards",
+                        principalColumn: "Loaction",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DisciplinaryActionTrooper",
                 columns: table => new
                 {
@@ -588,6 +628,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Notices_AuthorId",
+                table: "Notices",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notices_NoticeBoardName",
+                table: "Notices",
+                column: "NoticeBoardName");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_QualificationChanges_ChangedForId",
                 table: "QualificationChanges",
                 column: "ChangedForId");
@@ -672,6 +722,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "NickNameChange");
 
             migrationBuilder.DropTable(
+                name: "Notices");
+
+            migrationBuilder.DropTable(
                 name: "QualificationChangeTrooper");
 
             migrationBuilder.DropTable(
@@ -694,6 +747,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "DisciplinaryActions");
+
+            migrationBuilder.DropTable(
+                name: "NoticeBoards");
 
             migrationBuilder.DropTable(
                 name: "QualificationChanges");

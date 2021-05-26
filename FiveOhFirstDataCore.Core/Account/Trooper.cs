@@ -1,5 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
@@ -87,6 +88,8 @@ namespace FiveOhFirstDataCore.Core.Account
         /// </summary>
         public List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
         #endregion
+
+        public List<Notice> NoticesWriten { get; set; } = new();
 
         public string GetRoleName()
         {

@@ -1,5 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Components;
+using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -17,6 +19,8 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
         public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
         public DbSet<RecruitmentChange> RecruitmentChanges { get; internal set; }
+        public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
+        public DbSet<Notice> Notices { get; internal set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -108,6 +112,19 @@ namespace FiveOhFirstDataCore.Core.Database
             nickname.HasOne(e => e.ApprovedBy)
                 .WithMany(p => p.ApprovedNickNameChanges)
                 .HasForeignKey(e => e.ApprovedById);
+
+            var noticeBoard = builder.Entity<NoticeBoardData>();
+            noticeBoard.HasKey(e => e.Loaction);
+
+            var notices = builder.Entity<Notice>();
+            notices.HasKey(e => e.NoticeId);
+            notices.HasOne(e => e.NoticeBoard)
+                .WithMany(p => p.Notices)
+                .HasForeignKey(e => e.NoticeBoardName);
+            notices.HasOne(e => e.Author)
+                .WithMany(p => p.NoticesWriten)
+                .HasForeignKey(e => e.AuthorId);
+            notices.Ignore(e => e.Display);
         }
     }
 }

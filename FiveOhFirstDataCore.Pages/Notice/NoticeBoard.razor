@@ -1,0 +1,185 @@
+﻿@inject INoticeService _notice
+@inject IRefreshRequestService _refresh
+@inject IRosterService _roster
+
+<div id="@Name" class="text-center">
+    <h3>@Name Notice Board</h3>
+    @if (IsEditor)
+    {
+        <EditForm Model="ToEdit">
+            <div class="row">
+                <div class="col">
+                    @if (IsEditing)
+                    {
+                        <div class="form-group">
+                            <label for="noticeType">Notice Type</label>
+                            <InputEnumSelect class="form-select" id="noticeType" @bind-Value="ToEdit.Level" />
+                        </div>
+                        <div class="form-group">
+                            <label for="noticeContent">Notice Contnet</label>
+                            <InputTextArea class="form-control" id="noticeContent"  @bind-Value="ToEdit.Contents" @oninput="ContentEdited" />
+                        </div>
+                        <dvi class="form-group">
+                            <div class="form-check">
+                                <InputCheckbox class="form-check-input" id="noticeSticky" @bind-Value="ToEdit.Sticky" />
+                                <label class="form-check-label" for="noticeSticky">Is Notice Sticky?</label>
+                            </div>
+                        </dvi>
+                        <div class="form-group">
+                            <button type="button" class="btn btn-danger p-3" @onclick="DiscardChanges">Discard Changes</button>
+                            <button type="button" class="btn btn-success p-3" @onclick="SaveChanges">Save Changes</button>
+                        </div>
+                        <hr />
+                        <strong>Preview</strong>
+                        <hr />
+                        <div class="row">
+                            <div class="col p-2">
+                                <div class="@ToEdit.Level.GetAlertClasses()">
+                                    @ToEdit.Display
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-block btn-primary m-3" @onclick="(x) => StartEdit()">Create New Notice</button>
+                        <hr />
+                    }
+                </div>
+            </div>
+        </EditForm>
+    }
+    @if (Board is not null)
+    {
+        int i = 0;
+        foreach (var notice in Board.Notices)
+        {
+            var n = notice;
+            <div class="row">
+                <div class="col p-2">
+                    <div class="@n.Level.GetAlertClasses()">
+                        @n.Display
+                    </div>
+                    @if(IsEditor)
+                    {
+                        <div class="form-group align-content-right float-right">
+                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="(x) => StartEdit(i++)"></button>
+                            <button class="oi oi-trash m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+    [Parameter]
+    public string Name { get; set; } = "";
+
+    private bool IsEditor { get; set; } = false;
+    private bool IsEditing { get; set; } = false;
+    private Notice ToEdit { get; set; } = new();
+    private int EditIndex { get; set; } = -1;
+
+    private Trooper CurrentUser { get; set; } = new();
+
+    private NoticeBoardData Board { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var claims = (await AuthStateTask).User;
+
+        CurrentUser = await _roster.GetTrooperFromClaimsPrincipalAsync(claims);
+
+        IsEditor = claims.IsInRole("Admin")
+            || claims.IsInRole("Manager")
+            || claims.HasClaim("Notice Board", Name);
+
+        Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
+
+        SortNotices();
+
+        _refresh.RefreshRequested += RefreshRequested;
+    }
+
+    private void SortNotices()
+    {
+        Board.Notices.Sort((x, y) =>
+        {
+            if ((x.Sticky && y.Sticky)
+                || (!x.Sticky && !y.Sticky))
+            {
+                return y.PostedOn.CompareTo(x.PostedOn);
+            }
+
+            return y.Sticky.CompareTo(x.Sticky);
+        });
+    }
+
+    private void DiscardChanges(EventArgs e)
+    {
+        ToEdit = new();
+        IsEditing = false;
+        EditIndex = -1;
+        _refresh.CallRequestRefresh();
+    }
+
+    private async Task SaveChanges(EventArgs e)
+    {
+        if (CurrentUser is not null)
+        {
+            if (EditIndex >= 0 && EditIndex < Board.Notices.Count)
+            {
+                await _notice.SaveChangesAsync();
+            }
+            else
+            {
+                await _notice.PostNoticeAsync(ToEdit, Name, CurrentUser);
+            }
+        }
+
+        DiscardChanges(e);
+        SortNotices();
+        _refresh.CallRequestRefresh();
+    }
+
+    private void StartEdit(int toEdit = -1)
+    {
+        if (toEdit >= 0 && toEdit < Board.Notices.Count)
+        {
+            ToEdit = Board.Notices[toEdit];
+            EditIndex = toEdit;
+        }
+        else
+        {
+            ToEdit = new();
+        }
+
+        IsEditing = true;
+        _refresh.CallRequestRefresh();
+    }
+
+    private void ContentEdited(ChangeEventArgs e)
+    {
+        ToEdit.Contents = (string?)e.Value ?? "";
+    }
+
+    private async Task DeleteAsync(Notice n)
+    {
+        await _notice.DelteNoticeAsync(n, Name);
+        Board.Notices.Remove(n);
+
+        _refresh.CallRequestRefresh();
+    }
+
+    private void RefreshRequested()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+}

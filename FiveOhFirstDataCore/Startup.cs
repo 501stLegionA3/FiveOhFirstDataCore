@@ -369,7 +369,8 @@ namespace FiveOhFirstDataCore
                 })
                 .AddScoped<SmtpClient>()
                 .AddScoped<ICustomMailSender, MailSender>()
-                .AddScoped<IImportService, ImportService>();
+                .AddScoped<IImportService, ImportService>()
+                .AddScoped<INoticeService, NoticeService>();
 
             #region Discord Setup
             var cshop = Configuration.GetSection("Config:Discord:CShopRoleBindings");

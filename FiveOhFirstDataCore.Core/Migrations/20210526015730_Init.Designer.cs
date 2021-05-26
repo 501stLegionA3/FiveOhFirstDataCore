@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210525203839_Init")]
+    [Migration("20210526015730_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -293,6 +293,51 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
+                {
+                    b.Property<Guid>("NoticeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Contents")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("NoticeBoardName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("PostedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Sticky")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("NoticeId");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("NoticeBoardName");
+
+                    b.ToTable("Notices");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
+                {
+                    b.Property<string>("Loaction")
+                        .HasColumnType("text");
+
+                    b.HasKey("Loaction");
+
+                    b.ToTable("NoticeBoards");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
@@ -719,6 +764,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("Trooper");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                        .WithMany("NoticesWriten")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", "NoticeBoard")
+                        .WithMany("Notices")
+                        .HasForeignKey("NoticeBoardName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("NoticeBoard");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
@@ -935,6 +999,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("NickNameChanges");
 
+                    b.Navigation("NoticesWriten");
+
                     b.Navigation("QualificationChanges");
 
                     b.Navigation("RankChanges");
@@ -952,6 +1018,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("SubmittedCShopChanges");
 
                     b.Navigation("SubmittedRankChanges");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
+                {
+                    b.Navigation("Notices");
                 });
 #pragma warning restore 612, 618
         }
