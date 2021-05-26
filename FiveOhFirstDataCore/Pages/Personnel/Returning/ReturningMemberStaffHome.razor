@@ -14,11 +14,12 @@
                         <a href="/c1/roster/edit" class="btn btn-block btn-primary">Roster Edit Form</a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <h3>Notices</h3>
-                    </div>
-                </div>
+                @if (!Loading)
+                {
+                <NoticeBoard Name="Returning Member Staff"
+                                CSHopOverride="CShop.ReturningMemberStaff"
+                                AllowedAccess="AllowedAccess" />
+                }
             </div>
             <div class="col-md-4 col-sm-12">
                 <h3 class="text-center">Recent Activity</h3>
@@ -47,7 +48,8 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/returning", "Returning Member Staff Home") };
-
+    public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
+    public bool Loading { get; set; } = true;
     public IEnumerable<SlotChange>? Changes { get; set; } = null;
     public int Count { get; set; } = 0;
 
@@ -56,5 +58,7 @@
         await base.OnParametersSetAsync();
 
         Changes = await _update.GetReturningMemberChangesAsync();
+
+        Loading = false;
     }
 }

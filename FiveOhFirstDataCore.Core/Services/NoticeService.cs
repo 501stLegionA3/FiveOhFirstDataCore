@@ -1,6 +1,8 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Database;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +50,25 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.Entry(board).Collection(e => e.Notices).LoadAsync();
 
             return board;
+        }
+
+        public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed)
+        {
+            foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+            {
+                if((shop & cshops) == shop)
+                {
+                    foreach(var groupName in CShopExtensions.ClaimsTree[shop])
+                    {
+                        if (claims.HasClaim(x => x.Type.Equals(groupName.Key)
+                            && groupName.Value.Contains(x.Value)
+                            && allowed.Contains(x.Value)))
+                            return Task.FromResult(true);
+                    }
+                }
+            }
+
+            return Task.FromResult(false);
         }
 
         public async Task PostNoticeAsync(Notice newNotice, string board, Trooper user)

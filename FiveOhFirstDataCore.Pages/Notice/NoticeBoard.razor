@@ -79,6 +79,10 @@
     public Task<AuthenticationState> AuthStateTask { get; set; }
     [Parameter]
     public string Name { get; set; } = "";
+    [Parameter]
+    public CShop CSHopOverride { get; set; } = CShop.None;
+    [Parameter]
+    public List<string> AllowedAccess { get; set; } = new();
 
     private bool IsEditor { get; set; } = false;
     private bool IsEditing { get; set; } = false;
@@ -98,8 +102,15 @@
         CurrentUser = await _roster.GetTrooperFromClaimsPrincipalAsync(claims);
 
         IsEditor = claims.IsInRole("Admin")
-            || claims.IsInRole("Manager")
-            || claims.HasClaim("Notice Board", Name);
+        || claims.IsInRole("Manager")
+        || claims.HasClaim("Notice Board", Name);
+
+        if (CSHopOverride != CShop.None
+            && AllowedAccess.Count > 0
+            && !IsEditor)
+        {
+            IsEditor = await _notice.IsAllowedCShopEditor(claims, CSHopOverride, AllowedAccess);
+        }
 
         Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
 

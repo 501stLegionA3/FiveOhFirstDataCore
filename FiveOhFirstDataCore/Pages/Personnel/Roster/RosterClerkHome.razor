@@ -19,11 +19,12 @@
                         <a href="/c1/roster/names" class="btn btn-block btn-info">Name Change Home</a>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col text-center">
-                        <h3>Notices</h3>
-                    </div>
-                </div>
+                @if (!Loading)
+                {
+                    <NoticeBoard Name="Roster Clerk"
+                                 CSHopOverride="CShop.RosterStaff"
+                                 AllowedAccess="AllowedAccess" />
+                }
             </div>
             <div class="col-md-4 col-sm-12">
                 <h3 class="text-center">Recent Activity</h3>
@@ -154,13 +155,15 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home") };
+    public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
+    public bool Loading { get; set; } = true;
     private IEnumerable<UpdateBase>? Updates { get; set; } = null;
     private int Counter { get; set; } = 0;
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-
         Updates = await _update.GetRosterUpdatesAsync();
+        Loading = false;
     }
 }

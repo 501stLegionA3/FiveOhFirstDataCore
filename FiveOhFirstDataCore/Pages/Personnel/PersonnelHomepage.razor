@@ -34,6 +34,12 @@
                     <a href="/c1/medals" class="btn btn-block btn-primary @(Access[4] ? "" : "disabled")">Medals Staff Home</a>
                 </div>
             </div>
+            @if (!Loading)
+            {
+            <NoticeBoard Name="Personnel" 
+                         CSHopOverride="CShop.RosterStaff | CShop.DocMainCom | CShop.RecruitingStaff | CShop.ReturningMemberStaff | CShop.MedalsStaff"
+                         AllowedAccess="AllowedAccess" />
+            }
         </div>
     </Authorized>
     <NotAuthorized>
@@ -43,7 +49,8 @@
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL") };
-
+    public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
+    public bool Loading { get; set; } = false;
     public bool[] Access { get; set; } = new bool[] { false, false, false, false, false };
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -55,5 +62,7 @@
         var user = (await AuthStateTask).User;
 
         Access = await _roster.GetC1PermissionsAsync(user);
+
+        Loading = true;
     }
 }

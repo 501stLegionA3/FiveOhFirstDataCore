@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using System;
 using System.Collections.Generic;
@@ -37,5 +38,13 @@ namespace FiveOhFirstDataCore.Core.Services
         /// </summary>
         /// <returns></returns>
         public Task SaveChangesAsync();
+        /// <summary>
+        /// Determines if this person is one of the provided allowed roles in the selected C-Shops.
+        /// </summary>
+        /// <param name="claims"><see cref="ClaimsPrincipal"/> for the signed in user.</param>
+        /// <param name="cshops">The <see cref="CShop"/> to check agains.</param>
+        /// <param name="allowed">A list of grant values needed to be allowed to edit the notices.</param>
+        /// <returns>A <see cref="bool"/> that determines if they can edit notices.</returns>
+        public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed);
     }
 }
