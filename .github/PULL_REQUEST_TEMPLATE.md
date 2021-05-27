@@ -1,12 +1,3 @@
----
-name: Pull Request
-about: Got a feature you made or a bug you fixed? Submit a PR!
-title: ''
-labels: ''
-assignees: ''
-
----
-
 Make sure you familiarize yourself with our contributing guidelines.
 
 **Describe the PR**
