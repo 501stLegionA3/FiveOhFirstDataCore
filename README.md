@@ -98,7 +98,7 @@ To explain this:
 - `CShopRoleBindings` - A list of CShops and the Discord roles a user should be given when they are apart of that CShop. This is not displayed here as it is long, so please download the file below to fill this in. Each section has a list of Discord Role IDs, which you get much the same as the server ID, for granting to users. Copy and paste any IDs where the `0` is, separating values with commas. If there is no grant, leave it as `0`.
 - `RoleBindings` - A list of Roles and the Discord roles a user should be given when they get this role. This is not displayed here as it is long, so please download the file below to fill this in. The Role Bindings have two lists, one for grants and one for Replacements. A grant is giving the role, and a replacement is a role to replace. For example, RTO qualified grants the RTO qualified role and replaces the RTO Basic role. If there is no grant or replace, leave it as `0`.
 
-### [Download the Example Config]()
+### [Example Config File](https://github.com/Soyvolon/FiveOhFirstDataCore/blob/aab6abe0067275f48df5dd9e05294266e5e838d6/example_website_config.json)
 
 ## Final Notes
 To make sure everything is running, just start the startup project from Visual Studio (or your code editor).
