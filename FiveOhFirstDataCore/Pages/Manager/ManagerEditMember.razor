@@ -177,7 +177,8 @@
     private string NewClaimValue { get; set; } = "";
 
     public Trooper Trooper { get; set; } = new();
-    public Trooper CurrentUser { get; set; } = new();
+    [CascadingParameter]
+    public Trooper? CurrentUser { get; set; } = new();
     public List<Trooper> AllTroopers { get; set; } = new();
 
     protected int ToEdit { get; set; } = 0;
@@ -213,8 +214,6 @@
 
         if((await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded)
         {
-            CurrentUser = (await _roster.GetTrooperFromClaimsPrincipalAsync(user)) ?? new();
-
             var querys = _nav.ToAbsoluteUri(_nav.Uri).Query;
             if(QueryHelpers.ParseQuery(querys)
                 .TryGetValue("edit", out var edit))

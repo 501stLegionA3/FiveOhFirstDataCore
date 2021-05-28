@@ -1,17 +1,51 @@
 ﻿@inherits LayoutComponentBase
+@inject FiveOhFirstDataCore.Core.Services.IRosterService _roster
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4 auth">
-            <LoginDisplay />
+    @if (Loaded)
+    {
+    <CascadingValue Value="CurrentUser">
+        <div class="sidebar">
+            <NavMenu />
         </div>
 
-        <div class="content px-4">
-            @Body
+        <div class="main">
+            <div class="top-row px-4 auth">
+                <LoginDisplay />
+            </div>
+
+            <div class="content px-4">
+                @Body
+            </div>
         </div>
-    </div>
+    </CascadingValue>
+    }
+    else
+    {
+        <em>Loading...</em>
+    }
 </div>
+
+@code {
+    public Trooper? CurrentUser {get;set;} = null;
+    public bool Loaded { get; set; } = false;
+
+    private Task<Trooper?>? GetTrooperFromClaimTask { get; set; } = null;
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var claims = (await AuthStateTask).User;
+
+        if(GetTrooperFromClaimTask is null)
+            GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims);
+
+        CurrentUser = await GetTrooperFromClaimTask;
+
+        Loaded = true;
+    }
+}

@@ -211,8 +211,9 @@ else
 
     private TrooperFlag Flag { get; set; } = new();
     private bool LoadedAdditional { get; set; } = false;
-    
-    private Trooper LoggedIn { get; set; }
+
+    [CascadingParameter]
+    private Trooper? LoggedIn { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -232,7 +233,6 @@ else
         if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
         {
             await _roster.LoadPublicProfileDataAsync(Trooper);
-            LoggedIn = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
             Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
             LoadedAdditional = true;
         }

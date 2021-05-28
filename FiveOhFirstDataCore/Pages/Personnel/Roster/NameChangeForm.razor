@@ -89,7 +89,8 @@
     public Trooper Trooper { get; set; } = new();
 
     protected int ToEdit { get; set; } = 0;
-    public Trooper CurrentUser { get; set; }
+    [CascadingParameter]
+    public Trooper? CurrentUser { get; set; } = new();
 
     private bool IsEditing { get; set; } = false;
     private List<string> Errors {get;set;} = new();
@@ -106,8 +107,6 @@
 
         if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
         {
-            CurrentUser = (await _roster.GetTrooperFromClaimsPrincipalAsync(user)) ?? new();
-
             if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                 .TryGetValue("edit", out var edit))
             {

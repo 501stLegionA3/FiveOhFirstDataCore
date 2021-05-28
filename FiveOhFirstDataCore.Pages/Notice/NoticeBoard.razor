@@ -90,7 +90,8 @@
     private Notice ToEdit { get; set; } = new();
     private int EditIndex { get; set; } = -1;
 
-    private Trooper CurrentUser { get; set; } = new();
+    [CascadingParameter]
+    private Trooper? CurrentUser { get; set; } = new();
 
     private NoticeBoardData Board { get; set; }
 
@@ -99,8 +100,6 @@
         await base.OnParametersSetAsync();
 
         var claims = (await AuthStateTask).User;
-
-        CurrentUser = await _roster.GetTrooperFromClaimsPrincipalAsync(claims);
 
         IsEditor = claims.IsInRole("Admin")
         || claims.IsInRole("Manager")
