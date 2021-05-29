@@ -58,8 +58,7 @@ Clone the repo from github using your favorite code editor (or other method). On
 ```json
 {
   "ConnectionStrings": {
-    "database": "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=FiveOhFirstMock;"
-  ,
+    "database": "Host=localhost;Port=5432;Username=postgres;Password=admin;Database=FiveOhFirstMock;",
   "Email": {
     "Client": "localhost",
     "Port": 587,
