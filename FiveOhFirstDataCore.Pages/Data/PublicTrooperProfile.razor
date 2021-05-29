@@ -111,15 +111,20 @@
             </div>
             <div class="col-lg-6 col-md-12 text-center">
                 <h5>Qualifications</h5>
-                <ul class="list-group">
-                    @foreach(Qualification qual in Enum.GetValues(typeof(Qualification)))
+                    @for(int i = 0; i < QualValues.Count; )
                     {
-                        if (qual != Qualification.None && (Trooper.Qualifications & qual) == qual)
+                        <div class="row justify-content-center">
+                        @if ((i + 1) < QualValues.Count)
                         {
-                            <li class="list-group-item bg-success text-light">@qual.AsFull()</li>
+                            <div class="p-1 border bg-success text-light col-lg-6 col-md-12">@QualValues[i++].AsFull()</div>
+                            <div class="p-1 border bg-success text-light col-lg-6 col-md-12">@QualValues[i++].AsFull()</div>
                         }
+                        else
+                        {
+                            <div class="p-1 border bg-success text-light col">@QualValues[i++].AsFull()</div>
+                        }
+                        </div>
                     }
-                </ul>
             </div>
         </div>
         <AuthorizeView Policy="RequireNCO">
@@ -215,9 +220,14 @@ else
     [CascadingParameter]
     private Trooper? LoggedIn { get; set; } = new();
 
+    private List<Qualification> QualValues = new();
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
+
+        QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
+        .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
 
         var user = (await AuthStateTask).User;
 
