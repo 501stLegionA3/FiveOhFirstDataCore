@@ -114,9 +114,9 @@
                 <ul class="list-group">
                     @foreach(Qualification qual in Enum.GetValues(typeof(Qualification)))
                     {
-                        if (qual != Qualification.None)
+                        if (qual != Qualification.None && (Trooper.Qualifications & qual) == qual)
                         {
-                            <li class="list-group-item @((Trooper.Qualifications & qual) == qual ? "bg-success text-light" : "disabled")">@qual.AsFull()</li>
+                            <li class="list-group-item bg-success text-light">@qual.AsFull()</li>
                         }
                     }
                 </ul>
