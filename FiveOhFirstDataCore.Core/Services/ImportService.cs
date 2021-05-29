@@ -559,12 +559,6 @@ namespace FiveOhFirstDataCore.Core.Services
                     #endregion
 
                     await _userManager.UpdateAsync(trooper);
-
-                    var claims = await _userManager.GetClaimsAsync(trooper);
-                    var displays = claims.Where(x => x.Type == "Display");
-                    await _userManager.RemoveClaimsAsync(trooper, displays);
-
-                    await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
                 }
 
                 return new(true, null, warnings);
