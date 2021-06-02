@@ -1,0 +1,24 @@
+﻿@page "/manager/logging"
+@inject IUpdateService _update
+
+<AuthorizeView Policy="RequireManager">
+    <Authorized>
+        <BreadcrumbsList Url="Urls" />
+        <UpdateDisplayTable Updates="Updates" />
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/logging", "Action Logs") };
+    public IEnumerable<UpdateBase> Updates { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        Updates = await _update.GetRosterUpdatesAsync();
+    }
+}
