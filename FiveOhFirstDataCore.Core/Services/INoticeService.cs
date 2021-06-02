@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// </summary>
         /// <param name="name">The name of the notice board.</param>
         /// <returns>A <see cref="NoticeBoardData"/> with a list of <see cref="Notice"/> inside.</returns>
-        public Task<NoticeBoardData> GetOrCreateNoticeBoardAsync(string name);
+        public Task<NoticeBoardData?> GetOrCreateNoticeBoardAsync(string name);
         /// <summary>
         /// Saves a new notice to the given board.
         /// </summary>

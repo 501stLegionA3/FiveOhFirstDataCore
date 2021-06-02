@@ -30,6 +30,9 @@
     <Folder Include="Pages\Communications\" />
     <Folder Include="Pages\Civil.Affairs\" />
     <Folder Include="Pages\Resource.Management\" />
+    <Folder Include="Pages\Roster\Company\" />
+    <Folder Include="Pages\Roster\Platoon\" />
+    <Folder Include="Pages\Roster\Squad\" />
     <Folder Include="Pages\Training\" />
     <Folder Include="Pages\Operations\" />
   </ItemGroup>

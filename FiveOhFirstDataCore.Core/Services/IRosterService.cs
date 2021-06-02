@@ -26,6 +26,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
+        public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
         #endregion
 
         #region Roster Registration

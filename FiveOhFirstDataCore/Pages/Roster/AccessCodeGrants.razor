@@ -1,0 +1,52 @@
+﻿@page "/trooper/me/accessgrants"
+@inject IRosterService _roster
+
+<AuthorizeView Policy="RequireTrooper">
+    <Authorized>
+        @if(Trooper is not null)
+        {
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nickname</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Access Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach(var t in DirectSubordinates)
+                {
+                    <tr>
+                        <td>@t.Id</td>
+                        <td>@t.NickName</td>
+                        <td>@t.Role.AsFull()</td>
+                        <td>@t.AccessCode</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <em>Loading...</em>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    public Trooper? Trooper { get; set; }
+
+    public List<Trooper> DirectSubordinates { get; set; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        DirectSubordinates = await _roster.GetDirectSubordinates(Trooper ?? new());
+    }
+}

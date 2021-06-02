@@ -121,6 +121,8 @@
 
     private void SortNotices()
     {
+        if (Board is null) return;
+
         Board.Notices.Sort((x, y) =>
         {
             if ((x.Sticky && y.Sticky)

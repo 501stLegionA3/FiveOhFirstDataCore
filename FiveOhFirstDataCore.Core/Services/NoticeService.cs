@@ -27,29 +27,38 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (item is null) item = await GetOrCreateNoticeBoardAsync(board);
 
+            if (item is null) return;
+
             item.Notices.Remove(toRemove);
 
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<NoticeBoardData> GetOrCreateNoticeBoardAsync(string name)
+        public async Task<NoticeBoardData?> GetOrCreateNoticeBoardAsync(string name)
         {
-            var board = await _dbContext.FindAsync<NoticeBoardData>(name);
-
-            if(board is null)
+            try
             {
-                board = new()
+                var board = await _dbContext.FindAsync<NoticeBoardData>(name);
+
+                if (board is null)
                 {
-                    Loaction = name
-                };
+                    board = new()
+                    {
+                        Loaction = name
+                    };
 
-                await _dbContext.AddAsync(board);
-                await _dbContext.SaveChangesAsync();
+                    await _dbContext.AddAsync(board);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                await _dbContext.Entry(board).Collection(e => e.Notices).LoadAsync();
+
+                return board;
             }
-
-            await _dbContext.Entry(board).Collection(e => e.Notices).LoadAsync();
-
-            return board;
+            catch
+            {
+                return null;
+            }
         }
 
         public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed)
@@ -76,6 +85,8 @@ namespace FiveOhFirstDataCore.Core.Services
             var item = await _dbContext.FindAsync<NoticeBoardData>(board);
 
             if (item is null) item = await GetOrCreateNoticeBoardAsync(board);
+
+            if (item is null) return;
 
             newNotice.AuthorId = user.Id;
             newNotice.PostedOn = DateTime.UtcNow;

@@ -267,5 +267,79 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Collection(e => e.Flags)
                 .LoadAsync();
         }
+
+        public async Task<List<Trooper>> GetDirectSubordinates(Trooper t)
+        {
+            List<Trooper> sub = new();
+
+            await _dbContext.Users
+                .AsNoTracking()
+                .ForEachAsync(x =>
+            {
+                if (x.Id == t.Id) return;
+                if (x.AccessCode is null) return;
+
+                int slot = (int)t.Slot;
+                int thisSlot = (int)x.Slot;
+
+                if (slot == 0)
+                {
+                    if ((slot / 10 % 10) == 0) sub.Add(x);
+                }
+                // This is a company
+                else if ((slot / 10 % 10) == 0)
+                {
+                    if (t.Role == Data.Role.Commander)
+                    {
+                        int slotDif = thisSlot - slot;
+                        if (slotDif >= 0 && slotDif < 100)
+                        {
+                            if ((slotDif % 10) == 0)
+                            {
+                                // In the company staff
+                                if (slotDif == 0) 
+                                    sub.Add(x);
+                                // Plt. Commander
+                                if (x.Role == Data.Role.Commander)
+                                    sub.Add(x);
+                            }
+                        }
+                    }
+                }
+                // This is a Plt.
+                else if ((slot % 10) == 0)
+                {
+                    if (t.Role == Data.Role.Commander)
+                    {
+                        int slotDif = thisSlot - slot;
+                        if (slotDif >= 0 && slotDif < 10)
+                        {
+                            // In the platoon staff
+                            if (slotDif == 0) 
+                                sub.Add(x);
+                            // This is a squad leader
+                            if (x.Role == Data.Role.Lead && x.Team is null) 
+                                sub.Add(x);
+                        }
+                    }
+                }
+                // This is a squad
+                else
+                {
+                    if(t.Role == Data.Role.Lead)
+                    {
+                        if (thisSlot == slot)
+                        {
+                            if (t.Team is null)
+                                sub.Add(x);
+                            else if (t.Team == x.Team)
+                                sub.Add(x);
+                        }
+                    }
+                }
+            });
+
+            return sub;
+        }
     }
 }

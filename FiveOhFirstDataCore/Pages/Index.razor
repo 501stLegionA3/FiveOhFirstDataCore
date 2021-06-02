@@ -6,4 +6,27 @@ General Kenobi.
 
 <hr />
 
-<NoticeBoard Name="Index" />
+@if(Loaded)
+{
+    <NoticeBoard Name="Index" />
+}
+
+@code {
+    private bool Loaded { get; set; } = false;
+    private bool LCheck { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        Loaded = !firstRender;
+
+        if (firstRender)
+            StateHasChanged();
+        else if(!LCheck)
+        {
+            LCheck = true;
+            StateHasChanged();
+        }
+    }
+}
