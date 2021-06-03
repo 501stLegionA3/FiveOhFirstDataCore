@@ -43,10 +43,11 @@
 
     public List<Trooper> DirectSubordinates { get; set; } = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
-        DirectSubordinates = await _roster.GetDirectSubordinates(Trooper ?? new());
+        if(Trooper is not null)
+            DirectSubordinates = await _roster.GetDirectSubordinates(Trooper);
     }
 }
