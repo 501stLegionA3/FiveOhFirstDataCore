@@ -284,7 +284,11 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 if (slot == 0)
                 {
-                    if ((slot / 10 % 10) == 0) sub.Add(x);
+                    if ((slot / 10 % 10) == 0)
+                    {
+                        sub.Add(x);
+                        return;
+                    }
                 }
                 // This is a company
                 else if ((slot / 10 % 10) == 0)
@@ -297,19 +301,31 @@ namespace FiveOhFirstDataCore.Core.Services
                             if ((slotDif % 10) == 0)
                             {
                                 // In the company staff
-                                if (slotDif == 0) 
+                                if (slotDif == 0
+                                    || x.Role == Data.Role.Commander)
+                                {
                                     sub.Add(x);
-                                // Plt. Commander
-                                if (x.Role == Data.Role.Commander)
-                                    sub.Add(x);
+                                    return;
+                                }
+                            }
+                            else if (x.Role == Data.Role.Lead
+                                    && x.Team is null
+                                    && x.Slot >= Data.Slot.Mynock
+                                    && x.Slot < Data.Slot.Razor)
+                            {
+                                sub.Add(x);
+                                return;
                             }
                         }
                     }
                 }
+
                 // This is a Plt.
-                else if ((slot % 10) == 0)
+                if ((slot % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander)
+                    if (t.Role == Data.Role.Commander 
+                        || t.Role == Data.Role.MasterWarden 
+                        || t.Role == Data.Role.CheifWarden)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 10)
@@ -318,7 +334,10 @@ namespace FiveOhFirstDataCore.Core.Services
                             if (slotDif == 0) 
                                 sub.Add(x);
                             // This is a squad leader
-                            if (x.Role == Data.Role.Lead && x.Team is null) 
+                            else if (x.Role == Data.Role.Lead && x.Team is null) 
+                                sub.Add(x);
+
+                            else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
                                 sub.Add(x);
                         }
                     }

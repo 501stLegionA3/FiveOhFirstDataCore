@@ -3,6 +3,7 @@
 
 <AuthorizeView Policy="RequireTrooper">
     <Authorized>
+        <h2>Access Grants for Direct Subordinates</h2>
         @if(Trooper is not null)
         {
             <table class="table table-hover">
@@ -43,11 +44,14 @@
 
     public List<Trooper> DirectSubordinates { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        if(Trooper is not null)
+        if (firstRender && Trooper is not null)
+        {
             DirectSubordinates = await _roster.GetDirectSubordinates(Trooper);
+            StateHasChanged();
+        }
     }
 }
