@@ -9,10 +9,10 @@
                 <thead>
                     <tr>
                         <td colspan="3">
-                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" @onchange="IdChanged"/>
+                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" @oninput="IdChanged"/>
                         </td>
                         <td colspan="2">
-                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" @onchange="NickChanged"/>
+                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" @oninput="NickChanged"/>
                         </td>
                     </tr>
                     <tr>
@@ -103,6 +103,8 @@
         {
             Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch)).ToList();
         }
+
+        StateHasChanged();
 
         return Task.CompletedTask;
     }
