@@ -127,6 +127,7 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithMany(p => p.AuthorizedClaimUpdates)
                 .HasForeignKey(e => e.ChangedById);
 
+
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);
 

@@ -407,7 +407,7 @@
         }
 
         var c = new Claim(NewClaimType, NewClaimValue);
-        var res = await _roster.AddClaimAsync(Trooper, c);
+        var res = await _roster.AddClaimAsync(Trooper, c, CurrentUser.Id);
 
         if(!res.GetResult(out var errors))
         {
@@ -425,7 +425,7 @@
 
     private async Task RemoveClaimAsync(Claim claim)
     {
-        var res = await _roster.RemoveClaimAsync(Trooper, claim);
+        var res = await _roster.RemoveClaimAsync(Trooper, claim, CurrentUser.Id);
 
         if(!res.GetResult(out var errors))
         {

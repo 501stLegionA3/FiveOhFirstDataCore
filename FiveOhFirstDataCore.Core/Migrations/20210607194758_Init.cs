@@ -201,7 +201,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -231,7 +232,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -302,7 +304,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     NewNickname = table.Column<string>(type: "text", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,7 +335,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     OldQualifications = table.Column<long>(type: "bigint", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -355,7 +359,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -382,7 +387,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     RecruitedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -437,7 +443,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     OldFlight = table.Column<int>(type: "integer", nullable: true),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

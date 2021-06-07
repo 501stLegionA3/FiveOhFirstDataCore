@@ -390,6 +390,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<long>("Removed")
                         .HasColumnType("bigint");
 
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");
 
@@ -419,6 +422,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<DateTime>("ChangedOn")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");
@@ -484,6 +490,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");
 
@@ -516,6 +525,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<long>("Removed")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Revoked")
                         .HasColumnType("boolean");
@@ -551,6 +563,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("ChangedTo")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");
 
@@ -577,6 +592,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int>("RecruitedById")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");
@@ -626,6 +644,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int?>("OldTeam")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("SubmittedByRosterClerk")
                         .HasColumnType("boolean");

@@ -438,7 +438,7 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        public async Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim)
+        public async Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim, int manager)
         {
             List<string> errors = new();
             var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
@@ -452,15 +452,47 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, errors);
             }
 
+            user.ClaimUpdates.Add(new()
+            {
+                Additions = new() { new(claim.Type, claim.Value) },
+                ChangedById = manager,
+                ChangedOn = DateTime.UtcNow
+            });
+
+            identResult = await _userManager.UpdateAsync(user);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
             return new(true, null);
         }
 
-        public async Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim)
+        public async Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim, int manager)
         {
             List<string> errors = new();
             var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
             var identResult = await _userManager.RemoveClaimAsync(user, claim);
 
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            user.ClaimUpdates.Add(new()
+            {
+                Removals = new() { new(claim.Type, claim.Value) },
+                ChangedById = manager,
+                ChangedOn = DateTime.UtcNow
+            });
+
+            identResult = await _userManager.UpdateAsync(user);
             if (!identResult.Succeeded)
             {
                 foreach (var err in identResult.Errors)
