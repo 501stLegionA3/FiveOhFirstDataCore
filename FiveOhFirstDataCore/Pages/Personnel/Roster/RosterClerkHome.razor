@@ -1,8 +1,5 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
-@implements IDisposable
-@inject ComponentApplicationState _state
-@inject NavigationManager _nav
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
@@ -163,29 +160,19 @@
     private IEnumerable<UpdateBase>? Updates { get; set; } = null;
     private int Counter { get; set; } = 0;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        _state.OnPersisting += OnPersisting;
-        if(_state.TryTakeAsJson<IEnumerable<UpdateBase>?>(_nav.Uri.ToString(), out var data))
-        {
-            Updates = data;
-        }
-        else
+        if(firstRender)
         {
             Updates = await _update.GetRosterUpdatesAsync();
+            StateHasChanged();
         }
-
-        Loading = false;
+        else if (Loading)
+        {
+            Loading = false;
+            StateHasChanged();
+        }
     }
-
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson(_nav.Uri.ToString(), Updates);
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-        => _state.OnPersisting -= OnPersisting;
 }
