@@ -1,4 +1,7 @@
 ﻿@page "/manager/logging"
+@implements IDisposable
+@inject ComponentApplicationState _state
+@inject NavigationManager _nav
 @inject IUpdateService _update
 
 <AuthorizeView Policy="RequireManager">
@@ -15,10 +18,27 @@
     public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/logging", "Action Logs") };
     public IEnumerable<UpdateBase> Updates { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
-        Updates = await _update.GetRosterUpdatesAsync();
+        _state.OnPersisting += OnPersisting;
+        if(_state.TryTakeAsJson<IEnumerable<UpdateBase>?>(_nav.Uri.ToString(), out var data))
+        {
+            Updates = data;
+        }
+        else
+        {
+            Updates = await _update.GetRosterUpdatesAsync();
+        }
     }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson(_nav.Uri.ToString(), Updates);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+        => _state.OnPersisting -= OnPersisting;
 }

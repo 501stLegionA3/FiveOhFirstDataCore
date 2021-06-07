@@ -1,4 +1,6 @@
 ﻿@using FiveOhFirstDataCore.Core.Structures.Updates
+@implements IDisposable
+@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
@@ -222,32 +224,66 @@ else
 
     private List<Qualification> QualValues = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
+        _state.OnPersisting += OnPersisting;
 
         QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
         .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
 
         var user = (await AuthStateTask).User;
-
-        ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
-
-        ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
-        ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
-        ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
-        ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
-        ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
-        ServiceStrings[5] = DateTime.UtcNow.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
-
-        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
+        if(_state.TryTakeAsJson<Dictionary<CShop, List<ClaimUpdate>>>("shop_positions", out var shopPositions))
         {
-            await _roster.LoadPublicProfileDataAsync(Trooper);
-            Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
-            LoadedAdditional = true;
+            ShopPositions = shopPositions ?? new();
+        }
+        else
+        {
+            ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
         }
 
-        _refresh.RefreshRequested += () => InvokeAsync(StateHasChanged);
+        if(_state.TryTakeAsJson<string[]>("service_strings", out var serviceStrings))
+        {
+            ServiceStrings = serviceStrings ?? new string[6];
+        }
+        else
+        {
+            ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
+            ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
+            ServiceStrings[2] = DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
+            ServiceStrings[3] = DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+            ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
+            ServiceStrings[5] = DateTime.UtcNow.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
+        }
+
+        if(_state.TryTakeAsJson<bool>("loaded_additional", out var loadAdd))
+        {
+            LoadedAdditional = loadAdd;
+        }
+        else
+        {
+            if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
+            {
+                await _roster.LoadPublicProfileDataAsync(Trooper);
+                Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+                LoadedAdditional = true;
+            }  
+        }
+
+        _refresh.RefreshRequested += RefreshMe;
+    }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson("shop_positions", ShopPositions);
+        _state.PersistAsJson("service_strings", ServiceStrings);
+        _state.PersistAsJson("loaded_additional", LoadedAdditional);
+        return Task.CompletedTask;
+    }
+
+    private void RefreshMe()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task SaveFlag(EventArgs e)
@@ -262,5 +298,11 @@ else
             Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
             _refresh.CallRequestRefresh();
         }
+    }
+
+    void IDisposable.Dispose()
+    {
+        _state.OnPersisting -= OnPersisting;
+        _refresh.RefreshRequested -= RefreshMe;
     }
 }

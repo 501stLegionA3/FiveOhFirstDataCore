@@ -1,4 +1,7 @@
 ﻿@page "/c1/roster/names"
+@implements IDisposable
+@inject ComponentApplicationState _state
+@inject NavigationManager _nav
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 
@@ -76,14 +79,44 @@
     private bool Editing { get; set; } = false;
     private List<string> Errors {get;set;} = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await  base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        AllTroopers = await _roster.GetAllTroopersAsync();
-        AllowedNameChanges = await _roster.GetAllowedNameChangersAsync();
+        if(firstRender && AllTroopers.Count <= 0)
+        {
+            AllTroopers = await _roster.GetAllTroopersAsync();
+            _refresh.CallRequestRefresh();
+        }
+    }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
         _refresh.RefreshRequested += RefreshMe;
+        _state.OnPersisting += OnPersisting;
+
+        if(_state.TryTakeAsJson<List<Trooper>>($"allowed_name_changes", out var data))
+        {
+            AllowedNameChanges = data ?? new();
+            AllTroopers = await _roster.GetAllTroopersAsync();
+        }
+        else
+        {
+           AllowedNameChanges = await _roster.GetAllowedNameChangersAsync();
+        }
+    }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson($"allowed_name_changes", AllowedNameChanges);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        _state.OnPersisting -= OnPersisting;
+        _refresh.RefreshRequested -= RefreshMe;
     }
 
     private void RefreshMe()

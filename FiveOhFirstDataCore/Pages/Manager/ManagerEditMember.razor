@@ -1,4 +1,6 @@
 ﻿@page "/manager/modify"
+@implements IDisposable
+@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
 @inject NavigationManager _nav
@@ -70,7 +72,7 @@
                 <div class="col-lg-6 col-md-12 form-group">
                     <label for="nicknameEdit" class="form-label mt-4">Nickname</label>
                     <InputText @bind-Value="Trooper.NickName" class="form-control" disabled />
-                    <a href="/c1/roster/names/change" class="btn btn-info btn-block">Name Change Form</a>
+                    <a href="/c1/roster/names/change?edit=@Trooper.Id" class="btn btn-info btn-block">Name Change Form</a>
                 </div>
             </div>
         </div>
@@ -211,49 +213,79 @@
         await base.OnInitializedAsync();
 
         var user = (await AuthStateTask).User;
+        _state.OnPersisting += OnPersisting;
 
-        if((await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded)
+        if(_state.TryTakeAsJson<bool>("editing", out var isEditing)
+            && _state.TryTakeAsJson<int>("to_edit", out var toEdit))
+        {
+            IsEditing = isEditing;
+            ToEdit = toEdit;
+        }
+        else
+        {
+           if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+            {
+                if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
+                    .TryGetValue("edit", out var edit))
+                {
+                    if(int.TryParse(edit, out int val))
+                    {
+                        IsEditing = true;
+                        ToEdit = val;
+                    }
+                }
+            } 
+        }
+
+        if(_state.TryTakeAsJson<string>("message", out var message))
+        {
+            Message = message;
+        }
+        else
         {
             var querys = _nav.ToAbsoluteUri(_nav.Uri).Query;
             if(QueryHelpers.ParseQuery(querys)
-                .TryGetValue("edit", out var edit))
+                .TryGetValue("message", out var msg))
             {
-                if(int.TryParse(edit, out int val))
-                {
-                    IsEditing = true;
-                    ToEdit = val;
-                }
-            }
-
-            if(QueryHelpers.ParseQuery(querys)
-                .TryGetValue("message", out var message))
-            {
-                Message = message;
+                Message = msg;
             }
         }
 
         _refresh.RefreshRequested += RefreshMe;
     }
 
-    protected override async Task OnParametersSetAsync()
+    private Task OnPersisting()
     {
-        await base.OnParametersSetAsync();
+        _state.PersistAsJson("editing", IsEditing);
+        _state.PersistAsJson("to_edit", ToEdit);
+        _state.PersistAsJson("message", Message);
+        return Task.CompletedTask;
+    }
 
-        AllTroopers = await _roster.GetAllTroopersAsync();
-        AllTroopers.ForEach(x => CurrentUserNames.Add(x.NormalizedUserName));
-        
-        if(IsEditing)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
         {
-            var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
-            if(first is not null)
-            {
-                Trooper = first;
-                IdRep = Trooper.Id.ToString();
-            }
-        }
+            AllTroopers = await _roster.GetAllTroopersAsync();
+            AllTroopers.ForEach(x => CurrentUserNames.Add(x.NormalizedUserName));
 
-        if (Trooper is null)
-            IsEditing = false;
+            if (IsEditing)
+            {
+                var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
+                if (first is not null)
+                {
+                    Trooper = first;
+                    IdRep = Trooper.Id.ToString();
+                }
+            }
+
+            if (Trooper is null)
+                IsEditing = false;
+
+            _refresh.CallRequestRefresh();
+        }
     }
 
     protected async Task StartEdit(EventArgs e)
@@ -483,4 +515,10 @@
         }
     }
     #endregion
+
+    void IDisposable.Dispose()
+    {
+        _state.OnPersisting -= OnPersisting;
+        _refresh.RefreshRequested -= RefreshMe;
+    }
 }

@@ -19,10 +19,14 @@ else
 @code {
     public OrbatData Data { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        Data = await _roster.GetOrbatDataAsync();
+        if (firstRender)
+        {
+            Data = await _roster.GetOrbatDataAsync();
+            StateHasChanged();
+        }
     }
 }

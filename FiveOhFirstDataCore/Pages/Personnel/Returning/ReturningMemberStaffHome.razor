@@ -1,4 +1,7 @@
 ﻿@page "/c1/returning"
+@implements IDisposable
+@inject ComponentApplicationState _state
+@inject NavigationManager _nav
 @inject IUpdateService _update
 
 <AuthorizeView>
@@ -53,12 +56,29 @@
     public IEnumerable<SlotChange>? Changes { get; set; } = null;
     public int Count { get; set; } = 0;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
-        Changes = await _update.GetReturningMemberChangesAsync();
+        _state.OnPersisting += OnPersisting;
+        if(_state.TryTakeAsJson<IEnumerable<SlotChange>?>(_nav.Uri.ToString(), out var data))
+        {
+            Changes = data;
+        }
+        else
+        {
+            Changes = await _update.GetReturningMemberChangesAsync();
+        }
 
         Loading = false;
     }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson(_nav.Uri.ToString(), Changes);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+        => _state.OnPersisting -= OnPersisting;
 }

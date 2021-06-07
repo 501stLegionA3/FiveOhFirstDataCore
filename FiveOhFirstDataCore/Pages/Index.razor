@@ -1,4 +1,6 @@
 ﻿@page "/"
+@implements IDisposable
+@inject ComponentApplicationState ApplicationState
 
 <h1>Hello there!</h1>
 
@@ -13,20 +15,28 @@ General Kenobi.
 
 @code {
     private bool Loaded { get; set; } = false;
-    private bool LCheck { get; set; } = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnAfterRenderAsync(firstRender);
+        await base.OnInitializedAsync();
 
-        Loaded = !firstRender;
+        ApplicationState.OnPersisting += PersistLoaded;
 
-        if (firstRender)
-            StateHasChanged();
-        else if(!LCheck)
+        if (!ApplicationState.TryTakeAsJson("index_loaded", out bool l))
         {
-            LCheck = true;
-            StateHasChanged();
+            Loaded = true;
         }
+        else Loaded = l;
+    }
+
+    public Task PersistLoaded()
+    {
+        ApplicationState.PersistAsJson("index_loaded", Loaded);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        ApplicationState.OnPersisting -= PersistLoaded;
     }
 }

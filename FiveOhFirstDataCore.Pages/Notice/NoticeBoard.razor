@@ -1,7 +1,11 @@
-﻿@inject INoticeService _notice
+﻿@implements IDisposable
+@inject ComponentApplicationState _state
+@inject INoticeService _notice
 @inject IRefreshRequestService _refresh
 @inject IRosterService _roster
 
+@if(Board is not null)
+{
 <div id="@Name" class="text-center">
     <h3>@Name Notice Board</h3>
     @if (IsEditor)
@@ -74,6 +78,12 @@
         }
     }
 </div>
+}
+else
+{
+    <em>Loading @Name Notice Board...</em>
+}
+    
 
 @code {
     [CascadingParameter]
@@ -95,28 +105,52 @@
 
     private NoticeBoardData Board { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        var claims = (await AuthStateTask).User;
-
-        IsEditor = claims.IsInRole("Admin")
-        || claims.IsInRole("Manager")
-        || claims.HasClaim("Notice Board", Name);
-
-        if (CSHopOverride != CShop.None
-            && AllowedAccess.Count > 0
-            && !IsEditor)
+        if(firstRender)
         {
-            IsEditor = await _notice.IsAllowedCShopEditor(claims, CSHopOverride, AllowedAccess);
+            Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
+            _refresh.CallRequestRefresh();
         }
+    }
 
-        Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        _state.OnPersisting += OnPersisting;
+
+        if(_state.TryTakeAsJson<bool>("editor", out var editor))
+        {
+            IsEditor = editor;
+        }
+        else
+        {
+            var claims = (await AuthStateTask).User;
+
+            IsEditor = claims.IsInRole("Admin")
+            || claims.IsInRole("Manager")
+            || claims.HasClaim("Notice Board", Name);
+
+            if (CSHopOverride != CShop.None
+                && AllowedAccess.Count > 0
+                && !IsEditor)
+            {
+                IsEditor = await _notice.IsAllowedCShopEditor(claims, CSHopOverride, AllowedAccess);
+            }
+        }
 
         SortNotices();
 
         _refresh.RefreshRequested += RefreshRequested;
+    }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson("editor", IsEditor);
+        return Task.CompletedTask;
     }
 
     private void SortNotices()
@@ -194,5 +228,11 @@
     private void RefreshRequested()
     {
         InvokeAsync(StateHasChanged);
+    }
+
+    void IDisposable.Dispose()
+    {
+        _state.OnPersisting -= OnPersisting;
+        _refresh.RefreshRequested -= RefreshRequested;
     }
 }

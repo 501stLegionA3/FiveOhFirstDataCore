@@ -1,4 +1,7 @@
 ﻿@page "/c1/recruiter"
+@implements IDisposable
+@inject ComponentApplicationState _state
+@inject NavigationManager _nav
 @inject IUpdateService _update
 
 <AuthorizeView Policy="RequireRecruiter">
@@ -57,12 +60,29 @@
     public IEnumerable<RecruitmentChange>? Changes { get; set; } = null;
     public int Counter { get; set; } = 0;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
-        Changes = await _update.GetRecruitmentChangesAsync();
+        _state.OnPersisting += OnPersisting;
+        if(_state.TryTakeAsJson<IEnumerable<RecruitmentChange>?>(_nav.Uri.ToString(), out var data))
+        {
+            Changes = data;
+        }
+        else
+        {
+            Changes = await _update.GetRecruitmentChangesAsync();
+        }
 
         Loading = false;
     }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson(_nav.Uri.ToString(), Changes);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+        => _state.OnPersisting -= OnPersisting;
 }

@@ -12,10 +12,14 @@ else
 @code {
     public List<Trooper> Roster { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        Roster = await _roster.GetPlacedRosterAsync();
+        if (firstRender)
+        {
+            Roster = await _roster.GetPlacedRosterAsync();
+            StateHasChanged();
+        }
     }
 }

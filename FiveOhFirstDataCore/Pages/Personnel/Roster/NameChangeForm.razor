@@ -1,4 +1,6 @@
 ﻿@page "/c1/roster/names/change"
+@implements IDisposable
+@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
 @inject NavigationManager _nav
@@ -104,40 +106,62 @@
         await base.OnInitializedAsync();
 
         var user = (await AuthStateTask).User;
+        _state.OnPersisting += OnPersisting;
 
-        if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
+        if(_state.TryTakeAsJson<bool>("editing", out var isEditing)
+            && _state.TryTakeAsJson<int>("to_edit", out var toEdit))
         {
-            if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
-                .TryGetValue("edit", out var edit))
+            IsEditing = isEditing;
+            ToEdit = toEdit;
+        }
+        else
+        {
+           if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
             {
-                if(int.TryParse(edit, out int val))
+                if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
+                    .TryGetValue("edit", out var edit))
                 {
-                    IsEditing = true;
-                    ToEdit = val;
+                    if(int.TryParse(edit, out int val))
+                    {
+                        IsEditing = true;
+                        ToEdit = val;
+                    }
                 }
-            }
+            } 
         }
 
         _refresh.RefreshRequested += RefreshMe;
     }
 
-    protected override async Task OnParametersSetAsync()
+    private Task OnPersisting()
     {
-        await base.OnParametersSetAsync();
+        _state.PersistAsJson("editing", IsEditing);
+        _state.PersistAsJson("to_edit", ToEdit);
+        return Task.CompletedTask;
+    }
 
-        AllTroopers = await _roster.GetAllTroopersAsync();
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
 
-        if(IsEditing)
+        if (firstRender)
         {
-            var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
-            if(first is not null)
-            {
-                Trooper = first;
-            }
-        }
+            AllTroopers = await _roster.GetAllTroopersAsync();
 
-        if (Trooper is null)
-            IsEditing = false;
+            if (IsEditing)
+            {
+                var first = AllTroopers.FirstOrDefault(x => x.Id == ToEdit);
+                if (first is not null)
+                {
+                    Trooper = first;
+                }
+            }
+
+            if (Trooper is null)
+                IsEditing = false;
+
+            _refresh.CallRequestRefresh();
+        }
     }
 
     private void RefreshMe()
@@ -189,5 +213,11 @@
         }
 
         _refresh.CallRequestRefresh();
+    }
+
+    void IDisposable.Dispose()
+    {
+        _state.OnPersisting -= OnPersisting;
+        _refresh.RefreshRequested -= RefreshMe;
     }
 }

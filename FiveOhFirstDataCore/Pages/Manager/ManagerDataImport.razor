@@ -1,4 +1,5 @@
 ﻿@page "/manager/import"
+@implements IDisposable
 @inject IRefreshRequestService _refresh
 
 <AuthorizeView Policy="RequireManager">
@@ -62,4 +63,7 @@
         Active = newType;
         _refresh.CallRequestRefresh();
     }
+
+    void IDisposable.Dispose()
+        => _refresh.RefreshRequested -= RefreshMe;
 }

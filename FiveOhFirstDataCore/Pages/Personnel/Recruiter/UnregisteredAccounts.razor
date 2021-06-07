@@ -55,19 +55,24 @@
     public List<Trooper> Unregistered { get; set; } = new();
     public List<Trooper> Filtered { get; set; } = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        var claim = (await AuthStateTask).User;
-
-        if(claim.IsInRole("Admin")
-            || claim.IsInRole("Manager")
-            || claim.HasClaim("C1", "Recruiter"))
+        if (firstRender)
         {
-            Unregistered = await _roster.GetUnregisteredTroopersAsync();
+            var claim = (await AuthStateTask).User;
 
-            await BuildFilteredList();
+            if (claim.IsInRole("Admin")
+                || claim.IsInRole("Manager")
+                || claim.HasClaim("C1", "Recruiter"))
+            {
+                Unregistered = await _roster.GetUnregisteredTroopersAsync();
+
+                await BuildFilteredList();
+            }
+
+            StateHasChanged();
         }
     }
 

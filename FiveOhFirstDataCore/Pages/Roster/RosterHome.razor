@@ -1,5 +1,6 @@
 ﻿@page "/roster"
 @inject IRefreshRequestService _refresh
+@implements IDisposable
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -76,4 +77,7 @@
         Active = newType;
         _refresh.CallRequestRefresh();
     }
+
+    void IDisposable.Dispose()
+        => _refresh.RefreshRequested -= RefreshMe;
 }

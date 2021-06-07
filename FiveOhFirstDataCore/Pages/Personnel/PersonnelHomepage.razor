@@ -1,5 +1,8 @@
 ﻿@page "/c1"
 @inject IRosterService _roster
+@implements IDisposable
+@inject ComponentApplicationState _state
+@inject NavigationManager _nav
 
 <AuthorizeView Policy="RequireC1">
     <Authorized>
@@ -34,7 +37,7 @@
                     <a href="/c1/medals" class="btn btn-block btn-primary @(Access[4] ? "" : "disabled")">Medals Staff Home</a>
                 </div>
             </div>
-            @if (!Loading)
+            @if (!Loaded)
             {
             <NoticeBoard Name="Personnel" 
                          CSHopOverride="CShop.RosterStaff | CShop.DocMainCom | CShop.RecruitingStaff | CShop.ReturningMemberStaff | CShop.MedalsStaff"
@@ -50,19 +53,36 @@
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
-    public bool Loading { get; set; } = false;
+    public bool Loaded { get; set; } = false;
     public bool[] Access { get; set; } = new bool[] { false, false, false, false, false };
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
-        var user = (await AuthStateTask).User;
+        _state.OnPersisting += OnPersisting;
+        if(_state.TryTakeAsJson<bool[]>(_nav.Uri.ToString(), out var data))
+        {
+            Access = data ?? new bool[] { false, false, false, false, false };
+        }
+        else
+        {
+            var user = (await AuthStateTask).User;
 
-        Access = await _roster.GetC1PermissionsAsync(user);
-
-        Loading = true;
+            Access = await _roster.GetC1PermissionsAsync(user);
+        }
+        
+        Loaded = true;
     }
+
+    private Task OnPersisting()
+    {
+        _state.PersistAsJson(_nav.Uri.ToString(), Access);
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+        => _state.OnPersisting -= OnPersisting;
 }
