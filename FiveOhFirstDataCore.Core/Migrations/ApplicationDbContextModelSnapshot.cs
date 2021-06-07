@@ -366,7 +366,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("TrooperFlags");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -399,10 +399,69 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("CShopChanges");
+                    b.ToTable("CShopUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+                {
+                    b.Property<Guid>("ChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AutomaticChange")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ChangedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ChangeId");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("ChangedForId");
+
+                    b.ToTable("ClaimUpdates");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdateData", b =>
+                {
+                    b.Property<Guid>("UpdateKey")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ClaimUpdateChangeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ClaimUpdateChangeId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("UpdateKey");
+
+                    b.HasIndex("ClaimUpdateChangeId");
+
+                    b.HasIndex("ClaimUpdateChangeId1");
+
+                    b.ToTable("ClaimUpdateData");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -434,10 +493,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("NickNameChange");
+                    b.ToTable("NickNameUpdate");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -468,10 +527,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("QualificationChanges");
+                    b.ToTable("QualificationUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -501,10 +560,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("RankChanges");
+                    b.ToTable("RankUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -529,10 +588,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("RecruitedById");
 
-                    b.ToTable("RecruitmentChanges");
+                    b.ToTable("RecruitmentUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -575,7 +634,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("SlotChanges");
+                    b.ToTable("SlotUpdates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -679,34 +738,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("QualificationChangeTrooper", b =>
+            modelBuilder.Entity("QualificationUpdateTrooper", b =>
                 {
                     b.Property<int>("InstructorsId")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("SubmittedQualificationChangesChangeId")
+                    b.Property<Guid>("SubmittedQualificationUpdatesChangeId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("InstructorsId", "SubmittedQualificationChangesChangeId");
+                    b.HasKey("InstructorsId", "SubmittedQualificationUpdatesChangeId");
 
-                    b.HasIndex("SubmittedQualificationChangesChangeId");
+                    b.HasIndex("SubmittedQualificationUpdatesChangeId");
 
-                    b.ToTable("QualificationChangeTrooper");
+                    b.ToTable("QualificationUpdateTrooper");
                 });
 
-            modelBuilder.Entity("SlotChangeTrooper", b =>
+            modelBuilder.Entity("SlotUpdateTrooper", b =>
                 {
                     b.Property<int>("ApprovedById")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("ApprovedSlotChangesChangeId")
+                    b.Property<Guid>("ApprovedSlotUpdatesChangeId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("ApprovedById", "ApprovedSlotChangesChangeId");
+                    b.HasKey("ApprovedById", "ApprovedSlotUpdatesChangeId");
 
-                    b.HasIndex("ApprovedSlotChangesChangeId");
+                    b.HasIndex("ApprovedSlotUpdatesChangeId");
 
-                    b.ToTable("SlotChangeTrooper");
+                    b.ToTable("SlotUpdateTrooper");
                 });
 
             modelBuilder.Entity("DisciplinaryActionTrooper", b =>
@@ -800,16 +859,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("FlagFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
-                        .WithMany("SubmittedCShopChanges")
+                        .WithMany("SubmittedCShopUpdates")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
-                        .WithMany("CShopChanges")
+                        .WithMany("CShopUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -819,16 +878,46 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
+                        .WithMany("AuthorizedClaimUpdates")
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("ClaimUpdates")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("ChangedFor");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdateData", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", null)
+                        .WithMany("Additions")
+                        .HasForeignKey("ClaimUpdateChangeId");
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", null)
+                        .WithMany("Removals")
+                        .HasForeignKey("ClaimUpdateChangeId1");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ApprovedBy")
-                        .WithMany("ApprovedNickNameChanges")
+                        .WithMany("ApprovedNickNameUpdates")
                         .HasForeignKey("ApprovedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
-                        .WithMany("NickNameChanges")
+                        .WithMany("NickNameUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -838,10 +927,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
-                        .WithMany("QualificationChanges")
+                        .WithMany("QualificationUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -849,10 +938,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
-                        .WithMany("SubmittedRankChanges")
+                        .WithMany("SubmittedRankUpdates")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -868,11 +957,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithOne("RecruitedByData")
-                        .HasForeignKey("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentChange", "ChangedForId")
+                        .HasForeignKey("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", "ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -887,10 +976,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("RecruitedBy");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
-                        .WithMany("SlotChanges")
+                        .WithMany("SlotUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -949,7 +1038,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("QualificationChangeTrooper", b =>
+            modelBuilder.Entity("QualificationUpdateTrooper", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
                         .WithMany()
@@ -957,14 +1046,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.QualificationChange", null)
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", null)
                         .WithMany()
-                        .HasForeignKey("SubmittedQualificationChangesChangeId")
+                        .HasForeignKey("SubmittedQualificationUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SlotChangeTrooper", b =>
+            modelBuilder.Entity("SlotUpdateTrooper", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
                         .WithMany()
@@ -972,18 +1061,22 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.SlotChange", null)
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", null)
                         .WithMany()
-                        .HasForeignKey("ApprovedSlotChangesChangeId")
+                        .HasForeignKey("ApprovedSlotUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
                 {
-                    b.Navigation("ApprovedNickNameChanges");
+                    b.Navigation("ApprovedNickNameUpdates");
 
-                    b.Navigation("CShopChanges");
+                    b.Navigation("AuthorizedClaimUpdates");
+
+                    b.Navigation("CShopUpdates");
+
+                    b.Navigation("ClaimUpdates");
 
                     b.Navigation("CreatedFlags");
 
@@ -995,11 +1088,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("Flags");
 
-                    b.Navigation("NickNameChanges");
+                    b.Navigation("NickNameUpdates");
 
                     b.Navigation("NoticesWriten");
 
-                    b.Navigation("QualificationChanges");
+                    b.Navigation("QualificationUpdates");
 
                     b.Navigation("RankChanges");
 
@@ -1011,16 +1104,23 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("Recruitments");
 
-                    b.Navigation("SlotChanges");
+                    b.Navigation("SlotUpdates");
 
-                    b.Navigation("SubmittedCShopChanges");
+                    b.Navigation("SubmittedCShopUpdates");
 
-                    b.Navigation("SubmittedRankChanges");
+                    b.Navigation("SubmittedRankUpdates");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
                 {
                     b.Navigation("Notices");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+                {
+                    b.Navigation("Additions");
+
+                    b.Navigation("Removals");
                 });
 #pragma warning restore 612, 618
         }

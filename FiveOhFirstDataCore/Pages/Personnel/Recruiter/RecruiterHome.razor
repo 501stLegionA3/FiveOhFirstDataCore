@@ -57,7 +57,7 @@
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
     public bool Loading { get; set; } = true;
-    public IEnumerable<RecruitmentChange>? Changes { get; set; } = null;
+    public IEnumerable<RecruitmentUpdate>? Changes { get; set; } = null;
     public int Counter { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
@@ -65,7 +65,7 @@
         await base.OnInitializedAsync();
 
         _state.OnPersisting += OnPersisting;
-        if(_state.TryTakeAsJson<IEnumerable<RecruitmentChange>?>(_nav.Uri.ToString(), out var data))
+        if(_state.TryTakeAsJson<IEnumerable<RecruitmentUpdate>?>(_nav.Uri.ToString(), out var data))
         {
             Changes = data;
         }

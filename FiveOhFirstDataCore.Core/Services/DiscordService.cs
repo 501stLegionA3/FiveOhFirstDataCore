@@ -97,7 +97,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return null;
         }
 
-        public Task UpdateQualificationChangeAsync(QualificationChange change, ulong changeFor)
+        public Task UpdateQualificationChangeAsync(QualificationUpdate change, ulong changeFor)
         {
             if (changeFor == 0) return Task.CompletedTask;
             HashSet<ulong> add = new();
@@ -133,7 +133,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return Task.CompletedTask;
         }
 
-        public Task UpdateRankChangeAsync(RankChange change, ulong changeFor)
+        public Task UpdateRankChangeAsync(RankUpdate change, ulong changeFor)
         {
             if (changeFor == 0 
                 || change.ChangedFrom == 0 
@@ -168,7 +168,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return Task.CompletedTask;
         }
 
-        public Task UpdateSlotChangeAsync(SlotChange change, ulong changeFor)
+        public Task UpdateSlotChangeAsync(SlotUpdate change, ulong changeFor)
         {
             if (changeFor == 0) return Task.CompletedTask;
             HashSet<ulong> add = new();

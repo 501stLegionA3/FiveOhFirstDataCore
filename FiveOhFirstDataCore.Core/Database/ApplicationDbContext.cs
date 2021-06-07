@@ -12,13 +12,18 @@ namespace FiveOhFirstDataCore.Core.Database
     public class ApplicationDbContext : IdentityDbContext<Trooper, TrooperRole, int>
     {
         public DbSet<RecruitStatus> RecruitStatuses { get; internal set; }
-        public DbSet<RankChange> RankChanges { get; internal set; }
-        public DbSet<SlotChange> SlotChanges { get; internal set; }
-        public DbSet<CShopChange> CShopChanges { get; internal set; }
-        public DbSet<QualificationChange> QualificationChanges { get; internal set; }
+
+        public DbSet<RankUpdate> RankUpdates { get; internal set; }
+        public DbSet<SlotUpdate> SlotUpdates { get; internal set; }
+        public DbSet<CShopUpdate> CShopUpdates { get; internal set; }
+        public DbSet<QualificationUpdate> QualificationUpdates { get; internal set; }
+        public DbSet<RecruitmentUpdate> RecruitmentUpdates { get; internal set; }
+        public DbSet<ClaimUpdate> ClaimUpdates { get; internal set; }
+
+        public DbSet<ClaimUpdateData> ClaimUpdateData { get; internal set; }
+
         public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
         public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
-        public DbSet<RecruitmentChange> RecruitmentChanges { get; internal set; }
         public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
         public DbSet<Notice> Notices { get; internal set; }
 
@@ -38,39 +43,39 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithOne(p => p.RecruitStatus)
                 .HasForeignKey<RecruitStatus>(e => e.TrooperId);
 
-            var rankChange = builder.Entity<RankChange>();
+            var rankChange = builder.Entity<RankUpdate>();
             rankChange.HasKey(e => e.ChangeId);
             rankChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.RankChanges)
                 .HasForeignKey(e => e.ChangedForId);
             rankChange.HasOne(e => e.ChangedBy)
-                .WithMany(p => p.SubmittedRankChanges)
+                .WithMany(p => p.SubmittedRankUpdates)
                 .HasForeignKey(e => e.ChangedById);
 
-            var slotChange = builder.Entity<SlotChange>();
+            var slotChange = builder.Entity<SlotUpdate>();
             slotChange.HasKey(e => e.ChangeId);
             slotChange.HasOne(e => e.ChangedFor)
-                .WithMany(p => p.SlotChanges)
+                .WithMany(p => p.SlotUpdates)
                 .HasForeignKey(e => e.ChangedForId);
             slotChange.HasMany(e => e.ApprovedBy)
-                .WithMany(p => p.ApprovedSlotChanges);
+                .WithMany(p => p.ApprovedSlotUpdates);
 
-            var shopChange = builder.Entity<CShopChange>();
+            var shopChange = builder.Entity<CShopUpdate>();
             shopChange.HasKey(e => e.ChangeId);
             shopChange.HasOne(e => e.ChangedFor)
-                .WithMany(p => p.CShopChanges)
+                .WithMany(p => p.CShopUpdates)
                 .HasForeignKey(e => e.ChangedForId);
             shopChange.HasOne(e => e.ChangedBy)
-                .WithMany(p => p.SubmittedCShopChanges)
+                .WithMany(p => p.SubmittedCShopUpdates)
                 .HasForeignKey(e => e.ChangedById);
 
-            var qualChange = builder.Entity<QualificationChange>();
+            var qualChange = builder.Entity<QualificationUpdate>();
             qualChange.HasKey(e => e.ChangeId);
             qualChange.HasOne(e => e.ChangedFor)
-                .WithMany(p => p.QualificationChanges)
+                .WithMany(p => p.QualificationUpdates)
                 .HasForeignKey(e => e.ChangedForId);
             qualChange.HasMany(e => e.Instructors)
-                .WithMany(p => p.SubmittedQualificationChanges);
+                .WithMany(p => p.SubmittedQualificationUpdates);
 
             var da = builder.Entity<DisciplinaryAction>();
             da.HasKey(e => e.DAID);
@@ -95,23 +100,35 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithMany(p => p.CreatedFlags)
                 .HasForeignKey(e => e.AuthorId);
 
-            var recruit = builder.Entity<RecruitmentChange>();
+            var recruit = builder.Entity<RecruitmentUpdate>();
             recruit.HasKey(e => e.ChangeId);
             recruit.HasOne(e => e.ChangedFor)
                 .WithOne(p => p.RecruitedByData)
-                .HasForeignKey<RecruitmentChange>(e => e.ChangedForId);
+                .HasForeignKey<RecruitmentUpdate>(e => e.ChangedForId);
             recruit.HasOne(e => e.RecruitedBy)
                 .WithMany(p => p.Recruitments)
                 .HasForeignKey(e => e.RecruitedById);
 
-            var nickname = builder.Entity<NickNameChange>();
+            var nickname = builder.Entity<NickNameUpdate>();
             nickname.HasKey(e => e.ChangeId);
             nickname.HasOne(e => e.ChangedFor)
-                .WithMany(p => p.NickNameChanges)
+                .WithMany(p => p.NickNameUpdates)
                 .HasForeignKey(e => e.ChangedForId);
             nickname.HasOne(e => e.ApprovedBy)
-                .WithMany(p => p.ApprovedNickNameChanges)
+                .WithMany(p => p.ApprovedNickNameUpdates)
                 .HasForeignKey(e => e.ApprovedById);
+
+            var claims = builder.Entity<ClaimUpdate>();
+            claims.HasKey(e => e.ChangeId);
+            claims.HasOne(e => e.ChangedFor)
+                .WithMany(p => p.ClaimUpdates)
+                .HasForeignKey(e => e.ChangedForId);
+            claims.HasOne(e => e.ChangedBy)
+                .WithMany(p => p.AuthorizedClaimUpdates)
+                .HasForeignKey(e => e.ChangedById);
+
+            var claimData = builder.Entity<ClaimUpdateData>();
+            claimData.HasKey(e => e.UpdateKey);
 
             var noticeBoard = builder.Entity<NoticeBoardData>();
             noticeBoard.HasKey(e => e.Loaction);

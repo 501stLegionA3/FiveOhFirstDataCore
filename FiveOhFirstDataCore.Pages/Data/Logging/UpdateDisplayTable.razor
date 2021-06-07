@@ -21,7 +21,7 @@
 
             @switch (u)
             {
-                case CShopChange c:
+                case CShopUpdate c:
                     List<string> added = new();
                     List<string> removed = new();
                     foreach (CShop shop in Enum.GetValues(typeof(CShop)))
@@ -87,7 +87,7 @@
                     }
 
                     break;
-                case NickNameChange c:
+                case NickNameUpdate c:
                     @if (ActiveDisplay != i)
                     {
 
@@ -134,7 +134,7 @@
                         </div>
                     }
                 break;
-                case QualificationChange c:
+                case QualificationUpdate c:
                     added = new();
                     removed = new();
                     List<string> instructors = new();
@@ -204,7 +204,7 @@
                         </div>
                     }
                     break;
-                case RankChange c:
+                case RankUpdate c:
                     @if (ActiveDisplay != i)
                     {
 
@@ -251,13 +251,13 @@
                         </div>
                     }
                     break;
-                case RecruitmentChange c:
+                case RecruitmentUpdate c:
                     <div class="col"><b>Recruitment Information</b></div>
                     <div class="col"></div>
                     <div class="col"></div>
                     <div class="col">[@c.RecruitedById] @c.RecruitedBy?.NickName</div>
     break;
-                case SlotChange c:
+                case SlotUpdate c:
                     List<string> approved = new();
 
                     foreach(var app in c.ApprovedBy)

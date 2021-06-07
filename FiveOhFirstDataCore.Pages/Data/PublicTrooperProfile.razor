@@ -212,7 +212,7 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    private Dictionary<CShop, List<ClaimUpdate>> ShopPositions { get; set; } = new();
+    private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
 
     public string[] ServiceStrings = new string[6];
 
@@ -233,7 +233,7 @@ else
         .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
 
         var user = (await AuthStateTask).User;
-        if(_state.TryTakeAsJson<Dictionary<CShop, List<ClaimUpdate>>>("shop_positions", out var shopPositions))
+        if(_state.TryTakeAsJson<Dictionary<CShop, List<ClaimUpdateData>>>("shop_positions", out var shopPositions))
         {
             ShopPositions = shopPositions ?? new();
         }

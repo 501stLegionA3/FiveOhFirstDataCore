@@ -20,9 +20,9 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        public async Task<Dictionary<CShop, List<ClaimUpdate>>> GetCShopClaimsAsync(Trooper trooper)
+        public async Task<Dictionary<CShop, List<ClaimUpdateData>>> GetCShopClaimsAsync(Trooper trooper)
         {
-            Dictionary<CShop, List<ClaimUpdate>> claimUpdates = new();
+            Dictionary<CShop, List<ClaimUpdateData>> claimUpdates = new();
 
             var rawSet = await _userManager.GetClaimsAsync(trooper);
 
@@ -42,8 +42,8 @@ namespace FiveOhFirstDataCore.Core.Services
             return claimUpdates;
         }
 
-        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdate> claimsToAdd, 
-            List<ClaimUpdate> claimsToRemove, ClaimsPrincipal submitterClaim)
+        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, 
+            List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
             var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
             var submitter = await _userManager.GetUserAsync(submitterClaim);
@@ -178,11 +178,11 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         protected static bool UpdateRank(int? primary, int? edit, ref Trooper p, ref Trooper s, 
-            [NotNullWhen(true)] out RankChange? update)
+            [NotNullWhen(true)] out RankUpdate? update)
         {
             if(primary != edit)
             {
-                update = new RankChange()
+                update = new RankUpdate()
                 {
                     ChangedFrom = primary ?? -1,
                     ChangedTo = edit ?? -1,
@@ -191,7 +191,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 };
 
                 p.RankChanges.Add(update);
-                s.SubmittedRankChanges.Add(update);
+                s.SubmittedRankUpdates.Add(update);
 
                 if(primary < edit)
                 {
@@ -206,14 +206,14 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         protected static bool UpdateRosterPosition(Trooper edit, ref Trooper primary, ref Trooper submitter,
-            [NotNullWhen(true)] out SlotChange? update)
+            [NotNullWhen(true)] out SlotUpdate? update)
         {
             if (primary.Slot != edit.Slot
                 || primary.Role != edit.Role
                 || primary.Team != edit.Team
                 || primary.Flight != edit.Flight)
             {
-                update = new SlotChange()
+                update = new SlotUpdate()
                 {
                     NewSlot = edit.Slot,
                     NewRole = edit.Role,
@@ -234,8 +234,8 @@ namespace FiveOhFirstDataCore.Core.Services
                 primary.Team = edit.Team;
                 primary.Flight = edit.Flight;
 
-                primary.SlotChanges.Add(update);
-                submitter.ApprovedSlotChanges.Add(update);
+                primary.SlotUpdates.Add(update);
+                submitter.ApprovedSlotUpdates.Add(update);
 
                 return true;
             }
@@ -245,7 +245,7 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         protected static bool UpdateCShop(Trooper edit, ref Trooper primary, ref Trooper submitter,
-            [NotNullWhen(true)] out CShopChange? update)
+            [NotNullWhen(true)] out CShopUpdate? update)
         {
             if(primary.CShops != edit.CShops)
             {
@@ -253,7 +253,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 var additions = edit.CShops & changes;
                 var removals = primary.CShops & changes;
 
-                update = new CShopChange()
+                update = new CShopUpdate()
                 {
                     Added = additions,
                     Removed = removals,
@@ -265,8 +265,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 primary.CShops = edit.CShops;
 
-                primary.CShopChanges.Add(update);
-                submitter.SubmittedCShopChanges.Add(update);
+                primary.CShopUpdates.Add(update);
+                submitter.SubmittedCShopUpdates.Add(update);
 
                 return true;
             }
@@ -276,7 +276,7 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         protected static bool UpdateQuals(Trooper edit, ref Trooper primary, ref Trooper submitter,
-            [NotNullWhen(true)] out QualificationChange? update)
+            [NotNullWhen(true)] out QualificationUpdate? update)
         {
             if (primary.Qualifications != edit.Qualifications)
             {
@@ -284,7 +284,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 var additions = edit.Qualifications & changes;
                 var removals = primary.Qualifications & changes;
 
-                update = new QualificationChange()
+                update = new QualificationUpdate()
                 {
                     Added = additions,
                     Removed = removals,
@@ -297,8 +297,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 primary.Qualifications = edit.Qualifications;
 
-                primary.QualificationChanges.Add(update);
-                submitter.SubmittedQualificationChanges.Add(update);
+                primary.QualificationUpdates.Add(update);
+                submitter.SubmittedQualificationUpdates.Add(update);
 
                 return true;
             }
@@ -415,7 +415,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var old = actual.NickName;
             actual.NickName = trooper.NickName;
 
-            var update = new NickNameChange()
+            var update = new NickNameUpdate()
             {
                 ApprovedById = approver,
                 ChangedOn = DateTime.UtcNow,
@@ -423,7 +423,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 NewNickname = actual.NickName,
             };
 
-            actual.NickNameChanges.Add(update);
+            actual.NickNameUpdates.Add(update);
 
             try
             {

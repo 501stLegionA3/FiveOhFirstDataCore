@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
-    public class SlotChange : UpdateBase
+    public class SlotUpdate : UpdateBase
     {
         public Slot NewSlot { get; set; }
         public Team? NewTeam { get; set; }

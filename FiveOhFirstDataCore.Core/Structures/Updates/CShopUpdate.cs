@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
-    public class CShopChange : UpdateBase
+    public class CShopUpdate : UpdateBase
     {
         public CShop Added { get; set; }
         public CShop Removed { get; set; }

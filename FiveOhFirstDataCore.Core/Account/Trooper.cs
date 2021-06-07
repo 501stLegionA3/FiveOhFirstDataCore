@@ -53,21 +53,23 @@ namespace FiveOhFirstDataCore.Core.Account
         /// <summary>
         /// Rank changes applied to this account.
         /// </summary>
-        public List<RankChange> RankChanges { get; set; } = new();
+        public List<RankUpdate> RankChanges { get; set; } = new();
         /// <summary>
         /// Rank changes submitted by this account for other accounts.
         /// </summary>
-        public List<RankChange> SubmittedRankChanges { get; set; } = new();
-        public List<SlotChange> SlotChanges { get; set; } = new();
-        public List<SlotChange> ApprovedSlotChanges { get; set; } = new();
-        public List<CShopChange> CShopChanges { get; set; } = new();
-        public List<CShopChange> SubmittedCShopChanges { get; set; } = new();
-        public List<QualificationChange> QualificationChanges { get; set; } = new();
-        public List<QualificationChange> SubmittedQualificationChanges { get; set; } = new();
-        public List<RecruitmentChange> Recruitments { get; set; } = new();
-        public List<NickNameChange> NickNameChanges { get; set; } = new();
-        public List<NickNameChange> ApprovedNickNameChanges { get; set; } = new();
-        public RecruitmentChange RecruitedByData { get; set; }
+        public List<RankUpdate> SubmittedRankUpdates { get; set; } = new();
+        public List<SlotUpdate> SlotUpdates { get; set; } = new();
+        public List<SlotUpdate> ApprovedSlotUpdates { get; set; } = new();
+        public List<CShopUpdate> CShopUpdates { get; set; } = new();
+        public List<CShopUpdate> SubmittedCShopUpdates { get; set; } = new();
+        public List<QualificationUpdate> QualificationUpdates { get; set; } = new();
+        public List<QualificationUpdate> SubmittedQualificationUpdates { get; set; } = new();
+        public List<RecruitmentUpdate> Recruitments { get; set; } = new();
+        public List<NickNameUpdate> NickNameUpdates { get; set; } = new();
+        public List<NickNameUpdate> ApprovedNickNameUpdates { get; set; } = new();
+        public List<ClaimUpdate> ClaimUpdates { get; set; } = new();
+        public List<ClaimUpdate> AuthorizedClaimUpdates { get; set; } = new();
+        public RecruitmentUpdate RecruitedByData { get; set; }
         #endregion
 
         #region Disciplinary Actions

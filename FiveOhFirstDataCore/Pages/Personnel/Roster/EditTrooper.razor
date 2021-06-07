@@ -246,8 +246,8 @@
 
     private Trooper Trooper { get; set; } = new();
 
-    private Dictionary<CShop, List<ClaimUpdate>> CShopClaims { get; set; } = new();
-    private List<ClaimUpdate> RemovedClaims { get; set; } = new();
+    private Dictionary<CShop, List<ClaimUpdateData>> CShopClaims { get; set; } = new();
+    private List<ClaimUpdateData> RemovedClaims { get; set; } = new();
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -359,8 +359,8 @@
 
         if ((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
         {
-            List<ClaimUpdate> additions = new();
-            List<ClaimUpdate> removals = RemovedClaims;
+            List<ClaimUpdateData> additions = new();
+            List<ClaimUpdateData> removals = RemovedClaims;
 
             foreach(var pair in CShopClaims)
             {

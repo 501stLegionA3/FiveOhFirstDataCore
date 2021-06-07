@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
-    public class RankChange : UpdateBase
+    public class RankUpdate : UpdateBase
     {
         public int ChangedFrom { get; set; }
         public int ChangedTo { get; set; }

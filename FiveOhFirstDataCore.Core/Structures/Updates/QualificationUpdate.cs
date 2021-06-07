@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
-    public class QualificationChange : UpdateBase
+    public class QualificationUpdate : UpdateBase
     {
         public Qualification Added { get; set; }
         public Qualification Removed { get; set; }

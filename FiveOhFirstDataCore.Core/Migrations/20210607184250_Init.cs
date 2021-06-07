@@ -193,7 +193,35 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CShopChanges",
+                name: "ClaimUpdates",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    AutomaticChange = table.Column<bool>(type: "boolean", nullable: false),
+                    ChangedById = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimUpdates", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_ClaimUpdates_AspNetUsers_ChangedById",
+                        column: x => x.ChangedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClaimUpdates_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CShopUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -207,15 +235,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CShopChanges", x => x.ChangeId);
+                    table.PrimaryKey("PK_CShopUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_CShopChanges_AspNetUsers_ChangedById",
+                        name: "FK_CShopUpdates_AspNetUsers_ChangedById",
                         column: x => x.ChangedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CShopChanges_AspNetUsers_ChangedForId",
+                        name: "FK_CShopUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -265,7 +293,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NickNameChange",
+                name: "NickNameUpdate",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -278,15 +306,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NickNameChange", x => x.ChangeId);
+                    table.PrimaryKey("PK_NickNameUpdate", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_NickNameChange_AspNetUsers_ApprovedById",
+                        name: "FK_NickNameUpdate_AspNetUsers_ApprovedById",
                         column: x => x.ApprovedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NickNameChange_AspNetUsers_ChangedForId",
+                        name: "FK_NickNameUpdate_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -294,7 +322,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QualificationChanges",
+                name: "QualificationUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -308,9 +336,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QualificationChanges", x => x.ChangeId);
+                    table.PrimaryKey("PK_QualificationUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_QualificationChanges_AspNetUsers_ChangedForId",
+                        name: "FK_QualificationUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -318,7 +346,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RankChanges",
+                name: "RankUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -331,15 +359,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RankChanges", x => x.ChangeId);
+                    table.PrimaryKey("PK_RankUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_RankChanges_AspNetUsers_ChangedById",
+                        name: "FK_RankUpdates_AspNetUsers_ChangedById",
                         column: x => x.ChangedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RankChanges_AspNetUsers_ChangedForId",
+                        name: "FK_RankUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -347,7 +375,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RecruitmentChanges",
+                name: "RecruitmentUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -358,15 +386,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecruitmentChanges", x => x.ChangeId);
+                    table.PrimaryKey("PK_RecruitmentUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_RecruitmentChanges_AspNetUsers_ChangedForId",
+                        name: "FK_RecruitmentUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RecruitmentChanges_AspNetUsers_RecruitedById",
+                        name: "FK_RecruitmentUpdates_AspNetUsers_RecruitedById",
                         column: x => x.RecruitedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -395,7 +423,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SlotChanges",
+                name: "SlotUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -413,9 +441,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SlotChanges", x => x.ChangeId);
+                    table.PrimaryKey("PK_SlotUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_SlotChanges_AspNetUsers_ChangedForId",
+                        name: "FK_SlotUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -479,6 +507,33 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClaimUpdateData",
+                columns: table => new
+                {
+                    UpdateKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: false),
+                    ClaimUpdateChangeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ClaimUpdateChangeId1 = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimUpdateData", x => x.UpdateKey);
+                    table.ForeignKey(
+                        name: "FK_ClaimUpdateData_ClaimUpdates_ClaimUpdateChangeId",
+                        column: x => x.ClaimUpdateChangeId,
+                        principalTable: "ClaimUpdates",
+                        principalColumn: "ChangeId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ClaimUpdateData_ClaimUpdates_ClaimUpdateChangeId1",
+                        column: x => x.ClaimUpdateChangeId1,
+                        principalTable: "ClaimUpdates",
+                        principalColumn: "ChangeId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "DisciplinaryActionTrooper",
                 columns: table => new
                 {
@@ -503,49 +558,49 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QualificationChangeTrooper",
+                name: "QualificationUpdateTrooper",
                 columns: table => new
                 {
                     InstructorsId = table.Column<int>(type: "integer", nullable: false),
-                    SubmittedQualificationChangesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
+                    SubmittedQualificationUpdatesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QualificationChangeTrooper", x => new { x.InstructorsId, x.SubmittedQualificationChangesChangeId });
+                    table.PrimaryKey("PK_QualificationUpdateTrooper", x => new { x.InstructorsId, x.SubmittedQualificationUpdatesChangeId });
                     table.ForeignKey(
-                        name: "FK_QualificationChangeTrooper_AspNetUsers_InstructorsId",
+                        name: "FK_QualificationUpdateTrooper_AspNetUsers_InstructorsId",
                         column: x => x.InstructorsId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QualificationChangeTrooper_QualificationChanges_SubmittedQu~",
-                        column: x => x.SubmittedQualificationChangesChangeId,
-                        principalTable: "QualificationChanges",
+                        name: "FK_QualificationUpdateTrooper_QualificationUpdates_SubmittedQu~",
+                        column: x => x.SubmittedQualificationUpdatesChangeId,
+                        principalTable: "QualificationUpdates",
                         principalColumn: "ChangeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "SlotChangeTrooper",
+                name: "SlotUpdateTrooper",
                 columns: table => new
                 {
                     ApprovedById = table.Column<int>(type: "integer", nullable: false),
-                    ApprovedSlotChangesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
+                    ApprovedSlotUpdatesChangeId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SlotChangeTrooper", x => new { x.ApprovedById, x.ApprovedSlotChangesChangeId });
+                    table.PrimaryKey("PK_SlotUpdateTrooper", x => new { x.ApprovedById, x.ApprovedSlotUpdatesChangeId });
                     table.ForeignKey(
-                        name: "FK_SlotChangeTrooper_AspNetUsers_ApprovedById",
+                        name: "FK_SlotUpdateTrooper_AspNetUsers_ApprovedById",
                         column: x => x.ApprovedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SlotChangeTrooper_SlotChanges_ApprovedSlotChangesChangeId",
-                        column: x => x.ApprovedSlotChangesChangeId,
-                        principalTable: "SlotChanges",
+                        name: "FK_SlotUpdateTrooper_SlotUpdates_ApprovedSlotUpdatesChangeId",
+                        column: x => x.ApprovedSlotUpdatesChangeId,
+                        principalTable: "SlotUpdates",
                         principalColumn: "ChangeId",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -588,13 +643,33 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_CShopChanges_ChangedById",
-                table: "CShopChanges",
+                name: "IX_ClaimUpdateData_ClaimUpdateChangeId",
+                table: "ClaimUpdateData",
+                column: "ClaimUpdateChangeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClaimUpdateData_ClaimUpdateChangeId1",
+                table: "ClaimUpdateData",
+                column: "ClaimUpdateChangeId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClaimUpdates_ChangedById",
+                table: "ClaimUpdates",
                 column: "ChangedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CShopChanges_ChangedForId",
-                table: "CShopChanges",
+                name: "IX_ClaimUpdates_ChangedForId",
+                table: "ClaimUpdates",
+                column: "ChangedForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CShopUpdates_ChangedById",
+                table: "CShopUpdates",
+                column: "ChangedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CShopUpdates_ChangedForId",
+                table: "CShopUpdates",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
@@ -618,13 +693,13 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "WitnessesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NickNameChange_ApprovedById",
-                table: "NickNameChange",
+                name: "IX_NickNameUpdate_ApprovedById",
+                table: "NickNameUpdate",
                 column: "ApprovedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NickNameChange_ChangedForId",
-                table: "NickNameChange",
+                name: "IX_NickNameUpdate_ChangedForId",
+                table: "NickNameUpdate",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
@@ -638,34 +713,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "NoticeBoardName");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QualificationChanges_ChangedForId",
-                table: "QualificationChanges",
+                name: "IX_QualificationUpdates_ChangedForId",
+                table: "QualificationUpdates",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QualificationChangeTrooper_SubmittedQualificationChangesCha~",
-                table: "QualificationChangeTrooper",
-                column: "SubmittedQualificationChangesChangeId");
+                name: "IX_QualificationUpdateTrooper_SubmittedQualificationUpdatesCha~",
+                table: "QualificationUpdateTrooper",
+                column: "SubmittedQualificationUpdatesChangeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RankChanges_ChangedById",
-                table: "RankChanges",
+                name: "IX_RankUpdates_ChangedById",
+                table: "RankUpdates",
                 column: "ChangedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RankChanges_ChangedForId",
-                table: "RankChanges",
+                name: "IX_RankUpdates_ChangedForId",
+                table: "RankUpdates",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecruitmentChanges_ChangedForId",
-                table: "RecruitmentChanges",
+                name: "IX_RecruitmentUpdates_ChangedForId",
+                table: "RecruitmentUpdates",
                 column: "ChangedForId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_RecruitmentChanges_RecruitedById",
-                table: "RecruitmentChanges",
+                name: "IX_RecruitmentUpdates_RecruitedById",
+                table: "RecruitmentUpdates",
                 column: "RecruitedById");
 
             migrationBuilder.CreateIndex(
@@ -675,14 +750,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_SlotChanges_ChangedForId",
-                table: "SlotChanges",
+                name: "IX_SlotUpdates_ChangedForId",
+                table: "SlotUpdates",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SlotChangeTrooper_ApprovedSlotChangesChangeId",
-                table: "SlotChangeTrooper",
-                column: "ApprovedSlotChangesChangeId");
+                name: "IX_SlotUpdateTrooper_ApprovedSlotUpdatesChangeId",
+                table: "SlotUpdateTrooper",
+                column: "ApprovedSlotUpdatesChangeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TrooperFlags_AuthorId",
@@ -713,31 +788,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "CShopChanges");
+                name: "ClaimUpdateData");
+
+            migrationBuilder.DropTable(
+                name: "CShopUpdates");
 
             migrationBuilder.DropTable(
                 name: "DisciplinaryActionTrooper");
 
             migrationBuilder.DropTable(
-                name: "NickNameChange");
+                name: "NickNameUpdate");
 
             migrationBuilder.DropTable(
                 name: "Notices");
 
             migrationBuilder.DropTable(
-                name: "QualificationChangeTrooper");
+                name: "QualificationUpdateTrooper");
 
             migrationBuilder.DropTable(
-                name: "RankChanges");
+                name: "RankUpdates");
 
             migrationBuilder.DropTable(
-                name: "RecruitmentChanges");
+                name: "RecruitmentUpdates");
 
             migrationBuilder.DropTable(
                 name: "RecruitStatuses");
 
             migrationBuilder.DropTable(
-                name: "SlotChangeTrooper");
+                name: "SlotUpdateTrooper");
 
             migrationBuilder.DropTable(
                 name: "TrooperFlags");
@@ -746,16 +824,19 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "ClaimUpdates");
+
+            migrationBuilder.DropTable(
                 name: "DisciplinaryActions");
 
             migrationBuilder.DropTable(
                 name: "NoticeBoards");
 
             migrationBuilder.DropTable(
-                name: "QualificationChanges");
+                name: "QualificationUpdates");
 
             migrationBuilder.DropTable(
-                name: "SlotChanges");
+                name: "SlotUpdates");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

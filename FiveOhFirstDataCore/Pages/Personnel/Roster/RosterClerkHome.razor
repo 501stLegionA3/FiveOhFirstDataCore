@@ -40,7 +40,7 @@
 
                         switch (update)
                         {
-                            case CShopChange c:
+                            case CShopUpdate c:
                             <div class="alert alert-warning">
                                 <b class="mb-0">[@c.ChangedById] @c.ChangedBy?.NickName updated C-Shops for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
                                 @if(c.Added != CShop.None)
@@ -75,7 +75,7 @@
                                 <small>@c.ChangedOn.ToString("f")</small>
                             </div>
                             break;
-                            case RankChange c:
+                            case RankUpdate c:
                             <div class="alert alert-success">
                                 <b class="mb-0">[@c.ChangedById] @c.ChangedBy?.NickName updated the Rank for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
                                 <p class="mb-0">
@@ -85,7 +85,7 @@
                                 <small>@c.ChangedOn.ToString("f")</small>
                             </div>
                             break;
-                            case SlotChange c:
+                            case SlotUpdate c:
                             <div class="alert alert-success">
                                 <b class="mb-0">[@c.ApprovedBy.FirstOrDefault()?.Id] @c.ApprovedBy.FirstOrDefault()?.NickName updated the Slot for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
                                 <ul class="mb-0">
@@ -110,7 +110,7 @@
                                 <small>@c.ChangedOn.ToString("f")</small>
                             </div>
                             break;
-                            case QualificationChange c:
+                            case QualificationUpdate c:
                             <div class="alert alert-warning">
                                 <b class="mb-0">[@c.Instructors.FirstOrDefault()?.Id] @c.Instructors.FirstOrDefault()?.NickName updated Qualifications for [@c.ChangedForId] @c.ChangedFor?.NickName</b>
                                 @if(c.Added != Qualification.None)

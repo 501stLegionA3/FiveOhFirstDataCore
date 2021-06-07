@@ -20,10 +20,10 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext = dbContext;
         }
 
-        public Task<IEnumerable<RecruitmentChange>> GetRecruitmentChangesAsync()
+        public Task<IEnumerable<RecruitmentUpdate>> GetRecruitmentChangesAsync()
         {
             return Task.FromResult(_dbContext
-                .RecruitmentChanges
+                .RecruitmentUpdates
                 .Include(p => p.ChangedFor)
                 .Include(p => p.RecruitedBy)
                 .AsSplitQuery()
@@ -31,10 +31,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .AsEnumerable());
         }
 
-        public Task<IEnumerable<SlotChange>> GetReturningMemberChangesAsync()
+        public Task<IEnumerable<SlotUpdate>> GetReturningMemberChangesAsync()
         {
             return Task.FromResult(_dbContext
-                .SlotChanges
+                .SlotUpdates
                 .Where(x => x.OldSlot == Data.Slot.Archived)
                 .Include(p => p.ChangedFor)
                 .Include(p => p.ApprovedBy)
@@ -46,7 +46,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
         {
             var one = await _dbContext
-                .RankChanges
+                .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ChangedBy)
                 .Include(p => p.ChangedFor)
@@ -54,7 +54,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync<UpdateBase>();
 
             var two = await _dbContext
-                .CShopChanges
+                .CShopUpdates
                 .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ChangedBy)
                 .Include(p => p.ChangedFor)
@@ -62,7 +62,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync<UpdateBase>();
 
             var three = await _dbContext
-                .QualificationChanges
+                .QualificationUpdates
                 .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.Instructors)
                 .Include(p => p.ChangedFor)
@@ -70,7 +70,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync<UpdateBase>();
 
             var four = await _dbContext
-                .SlotChanges
+                .SlotUpdates
                 .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.ApprovedBy)
                 .Include(p => p.ChangedFor)
@@ -83,6 +83,54 @@ namespace FiveOhFirstDataCore.Core.Services
             var dataList = one.AsEnumerable();
 
             return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
+        }
+
+        public Task<bool> RevertUpdateAsync(UpdateBase update) 
+            => update switch
+        {
+            ClaimUpdate u => RevertClaimUpdateAsync(u),
+            CShopUpdate u => RevertCShopUpdateAsync(u),
+            NickNameUpdate u => RevertNickNameUpdateAsync(u),
+            QualificationUpdate u => RevertQualificationUpdateAsync(u),
+            RankUpdate u => RevertRankUpdateAsync(u),
+            RecruitmentUpdate u => RevertRecruitmentUpdateAsync(u),
+            SlotUpdate u => RevertSlotUpdateAsync(u),
+            _ => Task.FromResult(false),
+        };
+
+        private async Task<bool> RevertClaimUpdateAsync(ClaimUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertCShopUpdateAsync(CShopUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertNickNameUpdateAsync(NickNameUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertQualificationUpdateAsync(QualificationUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertRankUpdateAsync(RankUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertRecruitmentUpdateAsync(RecruitmentUpdate update)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<bool> RevertSlotUpdateAsync(SlotUpdate update)
+        {
+            throw new NotImplementedException();
         }
     }
 }

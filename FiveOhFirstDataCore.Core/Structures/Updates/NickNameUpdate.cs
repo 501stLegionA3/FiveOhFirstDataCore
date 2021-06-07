@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
-    public class NickNameChange : UpdateBase
+    public class NickNameUpdate : UpdateBase
     {
         public Trooper ApprovedBy { get; set; }
         public int ApprovedById { get; set; }
