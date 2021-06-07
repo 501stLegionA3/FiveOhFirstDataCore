@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
@@ -213,38 +214,148 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, errors);
             }
 
-            return new(true, null);
+            return new(true);
         }
 
         private async Task<ResultBase> RevertCShopUpdateAsync(Trooper manager, CShopUpdate update)
         {
-
-            throw new NotImplementedException();
+            return new(false, new() { "C-Shop changes are unabled to be reverted at this time." });
         }
 
         private async Task<ResultBase> RevertNickNameUpdateAsync(Trooper manager, NickNameUpdate update)
         {
-            throw new NotImplementedException();
+            update.ChangedFor.NickName = update.OldNickname;
+            update.ChangedFor.NickNameUpdates.Add(new()
+            {
+                OldNickname = update.NewNickname,
+                NewNickname = update.OldNickname,
+                ApprovedById = manager.Id,
+                ChangedOn = DateTime.UtcNow,
+                RevertChange = true
+            });
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
+
+            return new(true);
         }
 
         private async Task<ResultBase> RevertQualificationUpdateAsync(Trooper manager, QualificationUpdate update)
         {
-            throw new NotImplementedException();
+            var oldQuals = update.ChangedFor.Qualifications;
+            update.ChangedFor.Qualifications = update.OldQualifications;
+            update.ChangedFor.QualificationUpdates.Add(new()
+            {
+                OldQualifications = oldQuals,
+                Added = update.Removed,
+                Removed = update.Added,
+                Instructors = new() { manager },
+                ChangedOn = DateTime.UtcNow,
+                RevertChange = true,
+            });
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
+
+            return new(true);
         }
 
         private async Task<ResultBase> RevertRankUpdateAsync(Trooper manager, RankUpdate update)
         {
-            throw new NotImplementedException();
+            var rank = update.ChangedFrom.GetRank();
+            switch(rank)
+            {
+                case TrooperRank r:
+                    update.ChangedFor.Rank = r;
+                    break;
+                case RTORank r:
+                    update.ChangedFor.RTORank = r;
+                    break;
+                case MedicRank r:
+                    update.ChangedFor.MedicRank = r;
+                    break;
+                case WardenRank r:
+                    update.ChangedFor.WardenRank = r;
+                    break;
+                case WarrantRank r:
+                    update.ChangedFor.WarrantRank = r;
+                    break;
+                case PilotRank r:
+                    update.ChangedFor.PilotRank = r;
+                    break;
+            }
+
+            update.ChangedFor.RankChanges.Add(new()
+            {
+                ChangedFrom = update.ChangedTo,
+                ChangedTo = update.ChangedFrom,
+                ChangedById = manager.Id,
+                ChangedOn = DateTime.UtcNow,
+                RevertChange = true
+            });
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
+
+            return new(true);
         }
 
         private async Task<ResultBase> RevertRecruitmentUpdateAsync(Trooper manager, RecruitmentUpdate update)
         {
-            throw new NotImplementedException();
+            return new(false, new() { "Recruitment data is unable to be changed. To remove a recruit, archive or delete the account." });
         }
 
         private async Task<ResultBase> RevertSlotUpdateAsync(Trooper manager, SlotUpdate update)
         {
-            throw new NotImplementedException();
+            update.ChangedFor.Slot = update.OldSlot;
+            update.ChangedFor.Team = update.OldTeam;
+            update.ChangedFor.Role = update.OldRole ?? update.ChangedFor.Role;
+            update.ChangedFor.Flight = update.OldFlight;
+            update.ChangedFor.SlotUpdates.Add(new()
+            {
+                NewSlot = update.OldSlot,
+                NewRole = update.OldRole,
+                NewFlight = update.OldFlight,
+                NewTeam = update.NewTeam,
+
+                OldSlot = update.NewSlot,
+                OldRole = update.NewRole,
+                OldFlight = update.NewFlight,
+                OldTeam = update.NewTeam,
+
+                ApprovedBy = new() { manager },
+                ChangedOn = DateTime.UtcNow,
+                RevertChange = true
+            });
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
+
+            return new(true);
         }
     }
 }

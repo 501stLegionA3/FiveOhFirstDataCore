@@ -1,6 +1,28 @@
-﻿@if (Updates is not null)
+﻿@inject IUpdateService _update
+@inject NavigationManager _nav
+
+@if (Updates is not null)
 {
     Counter = 0;
+
+    @if(Errors.Count > 0)
+    {
+    <div class="row">
+        <div class="col p-3">
+            <div class="alert alert-danger alert-dismissible w-100">
+                <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+                <strong>Something went wrong!</strong>
+                <ul>
+                @foreach(var i in Errors)
+                {
+                    <li>@i</li>
+                }
+                </ul>
+            </div>
+        </div>
+    </div>
+    }
+
     <div class="row">
         <div class="col"><h4>Change For</h4></div>
         <div class="col"></div>
@@ -13,6 +35,8 @@
     @foreach (var u in Updates)
     {
         var i = Counter;
+        var update = u;
+
         <div class="row border border-bottom p-2">
             @if (ActiveDisplay != i)
             {
@@ -78,7 +102,7 @@
                                     <label class="float-left text-muted">Changed By: [@c.ChangedById] @c.ChangedBy?.NickName</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
-                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)">Revert Changes</button>
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
                                     </div>
                                     <button class="btn btn-primary" @onclick="ResetActive">Close</button>
                                 </div>
@@ -126,7 +150,7 @@
                                     <label class="float-left text-muted">Approved By: [@c.ApprovedById] @c.ApprovedBy?.NickName</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
-                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)">Revert Changes</button>
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
                                     </div>
                                     <button class="btn btn-primary" @onclick="ResetActive">Close</button>
                                 </div>
@@ -196,7 +220,7 @@
                                     <label class="float-left text-muted">Instructors: @string.Join(", ", instructors)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
-                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)">Revert Changes</button>
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
                                     </div>
                                     <button class="btn btn-primary" @onclick="ResetActive">Close</button>
                                 </div>
@@ -243,7 +267,7 @@
                                     <label class="float-left text-muted">Changed By: [@c.ChangedById] @c.ChangedBy?.NickName</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
-                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)">Revert Changes</button>
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
                                     </div>
                                     <button class="btn btn-primary" @onclick="ResetActive">Close</button>
                                 </div>
@@ -339,7 +363,7 @@
                                     <label class="float-left text-muted">Approved By: @string.Join(", ", approved)</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
-                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)">Revert Changes</button>
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
                                     </div>
                                     <button class="btn btn-primary" @onclick="ResetActive">Close</button>
                                 </div>
@@ -364,14 +388,41 @@
 @code {
     [Parameter]
     public IEnumerable<UpdateBase> Updates { get; set; }
+
+    [CascadingParameter]
+    public Trooper? CurrentManager { get; set; }
+
     public int Counter { get; set; } = 0;
 
     public int ActiveDisplay { get; set; } = -1;
     public bool ConfirmRevert { get; set; } = false;
 
+    public List<string> Errors {get;set;} = new();
+
     private void ResetActive(EventArgs e)
     {
         ActiveDisplay = -1;
         ConfirmRevert = false;
+    }
+
+    private void ClearErrors(EventArgs e)
+    {
+        Errors.Clear();
+        StateHasChanged();
+    }
+
+    private async Task OnRevertChanges(UpdateBase update)
+    {
+        Errors.Clear();
+
+        var res = await _update.RevertUpdateAsync(CurrentManager, update);
+
+        if(!res.GetResult(out var errors))
+        {
+            Errors = errors;
+        }
+        
+        ResetActive(null);
+        _nav.NavigateTo(_nav.Uri, true);
     }
 }
