@@ -25,10 +25,10 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Document Maintenance Committee")]
         DocMainCom = 0x0000000002,
         // 1 << 3
-        [Description("Recruting Staff")]
+        [Description("Recruiting Staff")]
         RecruitingStaff = 0x0000000004,
         // 1 << 4
-        [Description("Returing Member Staff")]
+        [Description("Returning Member Staff")]
         ReturningMemberStaff = 0x0000000008,
         // 1 << 5
         [Description("Medals Staff")]
