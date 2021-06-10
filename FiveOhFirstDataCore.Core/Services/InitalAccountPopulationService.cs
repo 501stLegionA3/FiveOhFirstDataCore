@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
-    public class TestDataService
+    public class InitalAccountPopulationService
     {
         private readonly UserManager<Trooper> _manager;
 
-        public TestDataService(UserManager<Trooper> manager)
+        public InitalAccountPopulationService(UserManager<Trooper> manager)
         {
             _manager = manager;
         }
 
         public async Task InitializeAsync()
         {
+#if DEBUG
             var data = TestData;
             foreach (var set in data)
             {
@@ -26,6 +27,23 @@ namespace FiveOhFirstDataCore.Core.Services
                 await _manager.AddClaimsAsync(trooper, set.Item2);
                 await _manager.AddToRolesAsync(trooper, set.Item3);
             }
+#else
+            var access = Guid.NewGuid().ToString();
+            var t = new Trooper()
+            {
+                Id = -1,
+                UserName = "Admin",
+                NickName = "Admin",
+                AccessCode = access,
+                Rank = TrooperRank.Trooper,
+                Slot = Slot.Archived,
+                DiscordId = "abcdefghijklmnopqrstuvwxyz",
+                SteamLink = "abcdefghijklmnopqrstuvwxyz"
+            };
+
+            var trooper = await EnsureUser(t, access);
+            await _manager.AddToRolesAsync(trooper, new string[] { "Admin" });
+#endif
         }
 
         private async Task<Trooper> EnsureUser(Trooper trooper, string password)

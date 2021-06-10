@@ -403,11 +403,11 @@ namespace FiveOhFirstDataCore
                 })
                 .AddScoped<IDiscordService, DiscordService>();
             #endregion
-#if DEBUG
-            #region Example Tools
-            services.AddScoped<TestDataService>();
+
+            #region Account Tools
+            services.AddScoped<InitalAccountPopulationService>();
             #endregion
-#endif            
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -432,10 +432,9 @@ namespace FiveOhFirstDataCore
             var roleManager = scope.ServiceProvider.GetRequiredService<TrooperRoleManager>();
             roleManager.SeedRoles<WebsiteRoles>().GetAwaiter().GetResult();
 
-#if DEBUG
-            var data = scope.ServiceProvider.GetRequiredService<TestDataService>();
+            var data = scope.ServiceProvider.GetRequiredService<InitalAccountPopulationService>();
             data.InitializeAsync().GetAwaiter().GetResult();
-#endif
+
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
