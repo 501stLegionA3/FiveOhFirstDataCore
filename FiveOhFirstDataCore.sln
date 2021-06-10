@@ -12,7 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{EFCCD6
 		.dockerignore = .dockerignore
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
 		Dockerfile = Dockerfile
+		example_website_config.json = example_website_config.json
+		LICENSE = LICENSE
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Pages", "FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Pages.csproj", "{A5267496-D2BC-4EC4-A32A-86DA98747DE9}"

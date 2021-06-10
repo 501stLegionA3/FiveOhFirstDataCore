@@ -13,8 +13,8 @@
   "Discord": {
     "ClientId": "837347779545792603",
     "HomeGuild": 843853804059099197,
-    "ClientSecret": "X_qDGc8fK_r8lxATGiWyn_Xy405UzK95",
-    "Token": "ODM3MzQ3Nzc5NTQ1NzkyNjAz.YIrO4w.oppk3qeSb1n3qvaxq5XV0VI1_AY",
+    "ClientSecret": "X_qDGvasd_xATGiWyn_Xy405UzK95",
+    "Token": "ODM3MzQ3Nzc5dTQ1Nzkasd.YIrO4w.oppk3qaadaddfasc3qvaxq5XV0VI1_AY",
     "CShopRoleBindings": {
       "None": {
         "Department Lead": {
@@ -83,7 +83,7 @@
         }
       },
       "RecruitingStaff": {
-        "Recruting Staff": {
+        "Recruiting Staff": {
           "Lead": [
             0
           ],
@@ -99,7 +99,7 @@
         }
       },
       "ReturningMemberStaff": {
-        "Returing Member Staff": {
+        "Returning Member Staff": {
           "Lead": [
             0
           ],
@@ -624,7 +624,7 @@
             0
           ]
         },
-        "CheifWarden": {
+        "ChiefWarden": {
           "RoleGrants": [
             0
           ],
@@ -648,7 +648,7 @@
             0
           ]
         },
-        "Subordiante": {
+        "Subordinate": {
           "RoleGrants": [
             0
           ],
@@ -756,7 +756,7 @@
         },
         "AvalancheThreeTwo": {
           "RoleGrants": [
-            843853915061747732
+            0
           ],
           "RoleReplaces": [
             0
@@ -764,7 +764,7 @@
         },
         "AvalancheThreeThree": {
           "RoleGrants": [
-            843853877840576542
+            0
           ],
           "RoleReplaces": [
             0
@@ -1360,7 +1360,7 @@
             0
           ]
         },
-        "Seniorsergeant": {
+        "SeniorSergeant": {
           "RoleGrants": [
             0
           ],
@@ -1408,7 +1408,7 @@
             0
           ]
         },
-        "Captian": {
+        "Captain": {
           "RoleGrants": [
             0
           ],
@@ -1598,7 +1598,7 @@
             0
           ]
         },
-        "Captian": {
+        "Captain": {
           "RoleGrants": [
             0
           ],
@@ -1734,7 +1734,7 @@
         },
         "RTOBasic": {
           "RoleGrants": [
-            843853991725105185
+            0
           ],
           "RoleReplaces": [
             0
@@ -1742,10 +1742,10 @@
         },
         "RTOQualified": {
           "RoleGrants": [
-            843853968190603285
+            0
           ],
           "RoleReplaces": [
-            843853991725105185
+            0
           ]
         },
         "Assault": {
