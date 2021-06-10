@@ -121,7 +121,7 @@
                 }
                 else if (x.Role == Role.Warden
                     || x.Role == Role.MasterWarden
-                    || x.Role == Role.CheifWarden)
+                    || x.Role == Role.ChiefWarden)
                 {
                     return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
                 }

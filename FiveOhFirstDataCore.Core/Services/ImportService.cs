@@ -193,7 +193,7 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         /// <summary>
-        /// Imports Active Roster data, creating and updating accountgs where needed.
+        /// Imports Active Roster data, creating and updating accounts where needed.
         /// </summary>
         /// <param name="stream">The <see cref="FileStream"/> that contains Roster data.</param>
         /// <param name="supportingElements">Two boolean values determining if this import is for the supporting elements rosters. Item1 
@@ -208,7 +208,7 @@ namespace FiveOhFirstDataCore.Core.Services
             // Use Role column for the troopers role, where first team leader designates alpha and second
             // team leader designates bravo.
 
-            // Other values are not needed to be edited, but *A* for acting needs to be pruned from nicnames.
+            // Other values are not needed to be edited, but *A* for acting needs to be pruned from nicknames.
 
             // Recruitment import will need to be a seprate import, as it requires all account data to populate the recruitment info.
 
@@ -220,7 +220,7 @@ namespace FiveOhFirstDataCore.Core.Services
             // Role = 5,
             // Promotion = 8,
             // Start of Service = 9,
-            // Inital = 11,
+            // Initial = 11,
             // UTC = 12,
             // Notes = All remaining rows.
             try
@@ -346,7 +346,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     trooper.NickName = parts[2].Replace("*A*", string.Empty).Trim();
                     if (!supportingElements.Item2)
                     {
-                        trooper.InitalTraining = parts[11];
+                        trooper.InitialTraining = parts[11];
                         trooper.UTC = parts[12];
                         trooper.Notes = string.Join(", ", parts[13..(parts.Length - 1)]);
                     }
@@ -469,7 +469,7 @@ namespace FiveOhFirstDataCore.Core.Services
                             {
                                 trooper.Role = role.Value;
                                 if(role == Role.Warden
-                                    || role == Role.CheifWarden
+                                    || role == Role.ChiefWarden
                                     || role == Role.MasterWarden)
                                 {
                                     trooper.Slot = Slot.Warden;

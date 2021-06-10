@@ -8,7 +8,7 @@ namespace FiveOhFirstDataCore.Core.Data.Notice
 {
     public class NoticeBoardData
     {
-        public string Loaction { get; set; }
+        public string Location { get; set; }
         public List<Notice> Notices { get; set; } = new();
     }
 }

@@ -120,7 +120,7 @@ namespace FiveOhFirstDataCore
                                 try
                                 {
                                     // verify the user information grabbed matches the user info
-                                    // saved from the inital command
+                                    // saved from the Initial command
                                     await link.BindDiscordAsync(token, user.Id, user.Email);
                                 }
                                 catch (Exception ex)
@@ -434,7 +434,7 @@ namespace FiveOhFirstDataCore
 
 #if DEBUG
             var data = scope.ServiceProvider.GetRequiredService<TestDataService>();
-            data.InitalizeAsync().GetAwaiter().GetResult();
+            data.InitializeAsync().GetAwaiter().GetResult();
 #endif
 
             app.UseHttpsRedirection();
@@ -466,7 +466,7 @@ namespace FiveOhFirstDataCore
     }
 }
 
-// For use in generating the inital dataset for discord role grants.
+// For use in generating the Initial dataset for discord role grants.
 // 
 //var types = new Type[] {typeof(Role), typeof(Slot), typeof(Team), typeof(Flight), typeof(TrooperRank),
 //typeof(RTORank), typeof(MedicRank), typeof(PilotRank), typeof(WardenRank), typeof(WarrantRank), typeof(Qualification)};

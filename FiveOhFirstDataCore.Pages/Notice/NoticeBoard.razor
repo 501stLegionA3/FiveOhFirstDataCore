@@ -82,7 +82,8 @@
 else
 {
     <em>Loading @Name Notice Board...</em>
-}
+}
+
     
 
 @code {
@@ -219,7 +220,7 @@ else
 
     private async Task DeleteAsync(Notice n)
     {
-        await _notice.DelteNoticeAsync(n, Name);
+        await _notice.DeleteNoticeAsync(n, Name);
         Board.Notices.Remove(n);
 
         _refresh.CallRequestRefresh();

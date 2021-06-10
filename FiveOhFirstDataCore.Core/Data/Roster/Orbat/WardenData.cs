@@ -16,7 +16,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                 case Role.MasterWarden:
                     Master = t;
                     break;
-                case Role.CheifWarden:
+                case Role.ChiefWarden:
                     Chief = t;
                     break;
                 case Role.Warden:

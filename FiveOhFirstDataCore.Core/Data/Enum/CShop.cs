@@ -149,7 +149,7 @@ namespace FiveOhFirstDataCore.Core.Data
             // C8
             { CShop.PublicAffairs, new() { { CShop.PublicAffairs.AsFull(), new() { "Units", "TCW", "Steam" } } } },
             { CShop.MediaOutreach, new() { 
-                { CShop.MediaOutreach.AsFull(), new() { "Lead", "Assistatn", "Mod" } },
+                { CShop.MediaOutreach.AsFull(), new() { "Lead", "Assistant", "Mod" } },
                 { "YouTube", new() { "Lead", "Assistant", "Staff" } },
                 { "Reddit", new() { "Staff" } },
                 { "Facebook", new() { "Staff" } },

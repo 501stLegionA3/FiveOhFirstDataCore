@@ -1,4 +1,4 @@
-﻿@*Visual studio said fuck you and wont recgonize imports for this file.
+﻿@*Visual studio said fuck you and wont recognize imports for this file.
 The file still builds without the imports below, as they are in _Imports.razor,
 but the file gets populated with intellisense errors.*@
 
@@ -16,7 +16,7 @@ but the file gets populated with intellisense errors.*@
 @inject IRefreshRequestService _refresh
 @inject IWebHostEnvironment _env
 
-<EditForm Context="importSupportingElemntsDataContext" Model="Import">
+<EditForm Context="importSupportingElementsDataContext" Model="Import">
     <div class="row">
         <div class="col-lg col-md-12">
             <div class="form-group">
@@ -138,7 +138,7 @@ but the file gets populated with intellisense errors.*@
         }
         else
         {
-            Errors.Add("Unable to atuneticate user.");
+            Errors.Add("Unable to authenticate user.");
         }
 
         Running = false;

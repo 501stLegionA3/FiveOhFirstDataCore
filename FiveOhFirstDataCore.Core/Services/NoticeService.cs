@@ -21,7 +21,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext = dbContext;
         }
 
-        public async Task DelteNoticeAsync(Notice toRemove, string board)
+        public async Task DeleteNoticeAsync(Notice toRemove, string board)
         {
             var item = await _dbContext.FindAsync<NoticeBoardData>(board);
 
@@ -44,7 +44,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     board = new()
                     {
-                        Loaction = name
+                        Location = name
                     };
 
                     await _dbContext.AddAsync(board);

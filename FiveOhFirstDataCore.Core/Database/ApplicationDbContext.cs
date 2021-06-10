@@ -132,7 +132,7 @@ namespace FiveOhFirstDataCore.Core.Database
             claimData.HasKey(e => e.UpdateKey);
 
             var noticeBoard = builder.Entity<NoticeBoardData>();
-            noticeBoard.HasKey(e => e.Loaction);
+            noticeBoard.HasKey(e => e.Location);
 
             var notices = builder.Entity<Notice>();
             notices.HasKey(e => e.NoticeId);
@@ -140,7 +140,7 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithMany(p => p.Notices)
                 .HasForeignKey(e => e.NoticeBoardName);
             notices.HasOne(e => e.Author)
-                .WithMany(p => p.NoticesWriten)
+                .WithMany(p => p.NoticesWritten)
                 .HasForeignKey(e => e.AuthorId);
             notices.Ignore(e => e.Display);
         }

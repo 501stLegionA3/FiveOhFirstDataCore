@@ -23,7 +23,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                     case Role.Commander:
                         Commander = item;
                         break;
-                    case Role.Subordiante:
+                    case Role.Subordinate:
                         Subordinate = item;
                         break;
                 }
@@ -51,7 +51,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                     case Role.Commander:
                         Commander = item;
                         break;
-                    case Role.Subordiante:
+                    case Role.Subordinate:
                         Subordinate = item;
                         break;
                 }

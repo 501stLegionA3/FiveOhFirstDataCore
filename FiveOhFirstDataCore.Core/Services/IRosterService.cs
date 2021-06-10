@@ -35,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         #region Data Updates
         public Task<Dictionary<CShop, List<ClaimUpdateData>>> GetCShopClaimsAsync(Trooper trooper);
-        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal subitter);
+        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitter);
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
         public Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers);
         public Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver);

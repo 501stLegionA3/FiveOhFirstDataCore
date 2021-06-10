@@ -16,7 +16,7 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
         public Trooper FiledAgainst { get; set; }
         public int FiledAgainstId { get; set; }
         public DateTime FiledOn { get; set; }
-        public DateTime OccouredOn { get; set; }
+        public DateTime OccurredOn { get; set; }
         public string Location { get; set; }
         public string Situation { get; set; }
         public List<Trooper> Witnesses { get; set; }

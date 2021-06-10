@@ -70,7 +70,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("OccouredOn")
+                    b.Property<DateTime>("OccurredOn")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Recommendation")
@@ -162,7 +162,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<DateTime>("GraduatedUTCOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("InitalTraining")
+                    b.Property<string>("InitialTraining")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LastBilletChange")
@@ -332,10 +332,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
                 {
-                    b.Property<string>("Loaction")
+                    b.Property<string>("Location")
                         .HasColumnType("text");
 
-                    b.HasKey("Loaction");
+                    b.HasKey("Location");
 
                     b.ToTable("NoticeBoards");
                 });
@@ -847,7 +847,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
-                        .WithMany("NoticesWriten")
+                        .WithMany("NoticesWritten")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1113,7 +1113,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("NickNameUpdates");
 
-                    b.Navigation("NoticesWriten");
+                    b.Navigation("NoticesWritten");
 
                     b.Navigation("QualificationUpdates");
 

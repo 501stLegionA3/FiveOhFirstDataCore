@@ -48,7 +48,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     LastBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     GraduatedBCTOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     GraduatedUTCOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    InitalTraining = table.Column<string>(type: "text", nullable: true),
+                    InitialTraining = table.Column<string>(type: "text", nullable: true),
                     UTC = table.Column<string>(type: "text", nullable: true),
                     Notes = table.Column<string>(type: "text", nullable: false),
                     DiscordId = table.Column<string>(type: "text", nullable: true),
@@ -79,11 +79,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "NoticeBoards",
                 columns: table => new
                 {
-                    Loaction = table.Column<string>(type: "text", nullable: false)
+                    Location = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NoticeBoards", x => x.Loaction);
+                    table.PrimaryKey("PK_NoticeBoards", x => x.Location);
                 });
 
             migrationBuilder.CreateTable(
@@ -261,7 +261,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     FiledToId = table.Column<int>(type: "integer", nullable: false),
                     FiledAgainstId = table.Column<int>(type: "integer", nullable: false),
                     FiledOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OccouredOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OccurredOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Location = table.Column<string>(type: "text", nullable: false),
                     Situation = table.Column<string>(type: "text", nullable: false),
                     IncidentReport = table.Column<string>(type: "text", nullable: false),
@@ -509,7 +509,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         name: "FK_Notices_NoticeBoards_NoticeBoardName",
                         column: x => x.NoticeBoardName,
                         principalTable: "NoticeBoards",
-                        principalColumn: "Loaction",
+                        principalColumn: "Location",
                         onDelete: ReferentialAction.Cascade);
                 });
 

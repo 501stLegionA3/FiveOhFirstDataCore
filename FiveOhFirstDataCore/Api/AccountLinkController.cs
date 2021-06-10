@@ -23,7 +23,7 @@ namespace FiveOhFirstDataCore.Api
         [HttpGet("token/{token}")]
         public async Task<IActionResult> GetTokenEndpoint(string token)
         {
-            // Use the proivded token from the URL to check against the status of that tokens link
+            // Use the provided token from the URL to check against the status of that tokens link
             var t = HttpUtility.HtmlDecode(token);
             switch (_linkService.GetLinkStatus(t))
             {
@@ -50,7 +50,7 @@ namespace FiveOhFirstDataCore.Api
                     return BadRequest("Token is invalid or not found.");
 
                 default:
-                    return BadRequest("Token is invalid, not found, or an unkown error occoured.");
+                    return BadRequest("Token is invalid, not found, or an unkown error occurred.");
             }
         }
 
@@ -65,7 +65,7 @@ namespace FiveOhFirstDataCore.Api
             if (Request.Cookies.TryGetValue("error", out var error))
             {
                 if (Request.Cookies.TryGetValue("token", out var token))
-                { // If the token exsists, abort the link.
+                { // If the token exists, abort the link.
                     await _linkService.AbortLinkAsync(token);
                 }
 
@@ -73,7 +73,7 @@ namespace FiveOhFirstDataCore.Api
                 Response.Cookies.Delete("error");
                 return BadRequest(error);
             }
-            // otherwise, redirect to the FAF OAtuh2 endpoint.
+            // otherwise, redirect to the FAF OAuth2 endpoint.
             return Redirect("/api/link/auth");
         }
 
@@ -84,7 +84,7 @@ namespace FiveOhFirstDataCore.Api
         [HttpGet("auth")]
         [Authorize(AuthenticationSchemes = "Steam")]
         public async Task<IActionResult> GetAuthEndpoint()
-        { // make sure the token exsists ...
+        { // make sure the token exists ...
             if (Request.Cookies.TryGetValue("token", out var token))
             {
                 if (Request.Cookies.TryGetValue("error", out var error))

@@ -37,13 +37,13 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Master Warden")]
         MasterWarden,
         [Description("Chief Warden")]
-        CheifWarden,
+        ChiefWarden,
         [Description("Warden")]
         Warden,
         [Description("Pilot")]
         Pilot,
         [Description("Subordinate")]
-        Subordiante
+        Subordinate
     }
 
     public static class RoleExtensions

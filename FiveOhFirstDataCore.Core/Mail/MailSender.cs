@@ -69,7 +69,7 @@ namespace FiveOhFirstDataCore.Core.Mail
             }
             else
             {
-                throw new Exception("The configured email is inavlid.");
+                throw new Exception("The configured email is invalid.");
             }
             
         }

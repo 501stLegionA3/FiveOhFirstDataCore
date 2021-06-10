@@ -135,7 +135,7 @@
         }
         else
         {
-            await _nicks.InitalizeAsync();
+            await _nicks.InitializeAsync();
             var inUse = await _roster.GetInUseUserDataAsync();
 
             TakenIds = inUse.Item1;

@@ -110,7 +110,7 @@ namespace FiveOhFirstDataCore.Core.Services
             if (UpdateQuals(edit, ref primary, ref submitter, out var qualChange))
                 await _discord.UpdateQualificationChangeAsync(qualChange, pid);
 
-            primary.InitalTraining = edit.InitalTraining;
+            primary.InitialTraining = edit.InitialTraining;
             primary.UTC = edit.UTC;
 
             primary.Notes = edit.Notes;
@@ -130,14 +130,14 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, errors);
             }
 
-            var exsistingClaims = (await GetCShopClaimsAsync(primary)).ToList();
+            var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
 
             List<Claim> add = new();
             claimsToAdd.ForEach(x =>
             {
-                var exsisting = exsistingClaims.Any(z => z.Value.Any(y => y.Key == x.Key && y.Value == x.Value));
+                var existing = existingClaims.Any(z => z.Value.Any(y => y.Key == x.Key && y.Value == x.Value));
 
-                if (!exsisting)
+                if (!existing)
                 {
                     add.Add(new(x.Key, x.Value));
                 }
@@ -345,7 +345,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if(!validPassword)
             {
-                return new(false, new() { "The proivded password is invalid for your account." });
+                return new(false, new() { "The provided password is invalid for your account." });
             }
 
             var identResult = await _userManager.DeleteAsync(actual);

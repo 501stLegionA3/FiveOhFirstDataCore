@@ -325,7 +325,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     if (t.Role == Data.Role.Commander 
                         || t.Role == Data.Role.MasterWarden 
-                        || t.Role == Data.Role.CheifWarden)
+                        || t.Role == Data.Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 10)

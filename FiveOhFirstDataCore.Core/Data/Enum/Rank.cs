@@ -35,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Data
         Sergeant,
         [RankDisplay("CS")]
         [Description("Senior Sergeant")]
-        Seniorsergeant,
+        SeniorSergeant,
         [RankDisplay("CS-M")]
         [Description("Sergeant-Major")]
         SergeantMajor,
@@ -53,7 +53,7 @@ namespace FiveOhFirstDataCore.Core.Data
         FirstLieutenant,
         [RankDisplay("CC")]
         [Description("Captain")]
-        Captian,
+        Captain,
         [RankDisplay("BC")]
         [Description("Major")]
         Major
@@ -156,8 +156,8 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("First Lieutenant")]
         FirstLieutenant,
         [RankDisplay("CX")]
-        [Description("Captian")]
-        Captian,
+        [Description("Captain")]
+        Captain,
     }
 
     public enum WardenRank : int

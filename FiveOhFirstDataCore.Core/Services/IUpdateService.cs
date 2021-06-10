@@ -20,7 +20,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Reverts a change.
         /// </summary>
         /// <param name="update">The update details for the change to revert.</param>
-        /// <returns>A <see cref="ResultBase"/> for if the operation succeded.</returns>
+        /// <returns>A <see cref="ResultBase"/> for if the operation succeeded.</returns>
         public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update);
     }
 }

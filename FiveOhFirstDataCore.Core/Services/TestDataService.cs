@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _manager = manager;
         }
 
-        public async Task InitalizeAsync()
+        public async Task InitializeAsync()
         {
             var data = TestData;
             foreach (var set in data)
@@ -39,7 +39,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (user is null)
             {
-                throw new Exception("The password is probaly not strong enough!");
+                throw new Exception("The password is probably not strong enough!");
             }
 
             return user;
@@ -395,7 +395,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     {
                         Id = 123456,
                         UserName = "Reserve",
-                        NickName = "Reserveist",
+                        NickName = "Reservist",
                         Rank = TrooperRank.SeniorTrooper,
                         RTORank = null,
                         MedicRank = null,

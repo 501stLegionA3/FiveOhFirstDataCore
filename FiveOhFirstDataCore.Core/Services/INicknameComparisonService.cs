@@ -8,7 +8,7 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface INicknameComparisonService
     {
-        public Task InitalizeAsync();
+        public Task InitializeAsync();
         public Task<List<string>> GetPhoneticMatches(string nickname);
     }
 }

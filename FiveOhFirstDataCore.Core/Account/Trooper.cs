@@ -34,7 +34,7 @@ namespace FiveOhFirstDataCore.Core.Account
         public DateTime GraduatedBCTOn { get; set; }
         public DateTime GraduatedUTCOn { get; set; }
 
-        public string? InitalTraining { get; set; }
+        public string? InitialTraining { get; set; }
         public string? UTC { get; set; }
 
         public string Notes { get; set; } = "";
@@ -91,7 +91,7 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
         #endregion
 
-        public List<Notice> NoticesWriten { get; set; } = new();
+        public List<Notice> NoticesWritten { get; set; } = new();
 
         public string GetRoleName()
         {

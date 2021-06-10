@@ -15,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Services
     public interface IImportService
     {
         /// <summary>
-        /// Verifys the unsafe import folder for the application is created. if it is not, it will create the folder.
+        /// Verifies the unsafe import folder for the application is created. if it is not, it will create the folder.
         /// </summary>
         public void VerifyUnsafeFolder();
         /// <summary>
@@ -25,13 +25,13 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         public Task<ImportResult> ImportOrbatDataAsync(OrbatImport import);
         /// <summary>
-        /// Import Supporting Elemnts data for updating and/or creating new accounts.
+        /// Import Supporting Elements data for updating and/or creating new accounts.
         /// </summary>
         /// <param name="import">Data to import.</param>
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>
         public Task<ImportResult> ImportSupportingElementsDataAsync(SupportingElementsImport import);
         /// <summary>
-        /// Import Qualification data for updating exsisting users qualification data.
+        /// Import Qualification data for updating existing users qualification data.
         /// </summary>
         /// <param name="import">The <see cref="QualificationImport"/> class that holds qualification data.</param>
         /// <returns>A <see cref="Task"/> with the <see cref="ImportResult"/> for this action.</returns>

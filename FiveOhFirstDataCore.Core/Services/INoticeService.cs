@@ -24,7 +24,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="newNotice">The new <see cref="Notice"/> to save.</param>
         /// <param name="board">The board name</param>
         /// <param name="user">The user who is posting the new notice.</param>
-        /// <returns>The <see cref="Task"/> reprsenting this operation.</returns>
+        /// <returns>The <see cref="Task"/> representing this operation.</returns>
         public Task PostNoticeAsync(Notice newNotice, string board, Trooper user);
         /// <summary>
         /// Deletes a notice from the given board.
@@ -32,9 +32,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="toRemove">The <see cref="Notice"/> to remove.</param>
         /// <param name="board">The board name.</param>
         /// <returns>A <see cref="Task"/> representing this operation.</returns>
-        public Task DelteNoticeAsync(Notice toRemove, string board);
+        public Task DeleteNoticeAsync(Notice toRemove, string board);
         /// <summary>
-        /// Initates a database save operation.
+        /// Initiates a database save operation.
         /// </summary>
         /// <returns></returns>
         public Task SaveChangesAsync();
