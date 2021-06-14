@@ -76,7 +76,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         #region Account Management
         public Task<ResultBase> UpdateUserNameAsync(Trooper trooper);
-        public Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password);
+        public Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password, ClaimsPrincipal claims);
         public Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim, int manager);
         public Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim, int manager);
         public Task<List<Claim>> GetAllClaimsFromTrooperAsync(Trooper trooper);

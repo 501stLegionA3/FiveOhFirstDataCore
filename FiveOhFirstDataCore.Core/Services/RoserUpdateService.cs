@@ -338,10 +338,11 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public async Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password)
+        public async Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password, ClaimsPrincipal claims)
         {
             var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
-            var validPassword = await _userManager.CheckPasswordAsync(actual, password);
+            var actualCurrent = await _userManager.GetUserAsync(claims);
+            var validPassword = await _userManager.CheckPasswordAsync(actualCurrent, password);
 
             if(!validPassword)
             {

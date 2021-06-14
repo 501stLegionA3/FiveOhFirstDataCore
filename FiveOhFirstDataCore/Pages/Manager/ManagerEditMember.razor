@@ -497,10 +497,11 @@
     {
         Errors.Clear();
 
-        if(Trooper.Id != CurrentUser.Id
+        if(Trooper.Id != (CurrentUser?.Id ?? 0)
             && CanDelete)
         {
-            var res = await _roster.DeleteAccountAsync(Trooper, Password);
+            var claims = (await AuthStateTask).User;
+            var res = await _roster.DeleteAccountAsync(Trooper, Password, claims);
             if(!res.GetResult(out var errors))
             {
                 Errors = errors;
