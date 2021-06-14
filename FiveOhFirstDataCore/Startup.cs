@@ -80,7 +80,10 @@ namespace FiveOhFirstDataCore
 
                                     var link = context.HttpContext.RequestServices.GetRequiredService<AccountLinkService>();
 
-                                    await link.BindSteamUserAsync(token, query);
+                                    string id = query;
+                                    id = id[(id.LastIndexOf("/") + 1)..(id.Length)];
+
+                                    await link.BindSteamUserAsync(token, id);
                                 }
                             }
                         }
