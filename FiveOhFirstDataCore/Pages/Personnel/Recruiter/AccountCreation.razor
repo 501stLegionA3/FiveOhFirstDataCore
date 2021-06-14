@@ -1,6 +1,7 @@
 ﻿@page "/c1/recruiter/addmember"
 @implements IDisposable
 @inject ComponentApplicationState _state
+@inject IAuthorizationService _auth
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 @inject INicknameComparisonService _nicks
@@ -227,9 +228,7 @@
 
         Errors.Clear();
 
-        if(claim.IsInRole("Admin")
-            || claim.IsInRole("Manager")
-            || claim.HasClaim("C1", "Recruiter"))
+        if((await _auth.AuthorizeAsync(claim, "RequireRecruiter")).Succeeded)
         {
             var res = await _roster.RegisterTrooper(TrooperData, claim);
 
