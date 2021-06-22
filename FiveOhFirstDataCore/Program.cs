@@ -15,6 +15,7 @@ namespace FiveOhFirstDataCore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseWindowsService();
     }
 }
