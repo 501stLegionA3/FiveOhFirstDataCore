@@ -44,7 +44,7 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 _ = LinkingController.TryRemove(token, out _);
             },
-            null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), username, password, rememberMe);
+            null, TimeSpan.FromMinutes(1.5), Timeout.InfiniteTimeSpan), username, password, rememberMe);
 
             return token;
         }
@@ -68,7 +68,7 @@ namespace FiveOhFirstDataCore.Core.Account
                 LinkingController[token] = new(token, old.TrooperId, accountId.ToString(), email, new Timer((x) =>
                 {
                     _ = LinkingController.TryRemove(token, out _);
-                }, null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
+                }, null, TimeSpan.FromMinutes(1.5), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
             }
             else
                 throw new TokenNotFoundException("An expired or invalid token was provided.");
@@ -98,7 +98,7 @@ namespace FiveOhFirstDataCore.Core.Account
                     {
                         _ = LinkingController.TryRemove(token, out _);
                     },
-                    null, TimeSpan.FromSeconds(30), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
+                    null, TimeSpan.FromMinutes(1.5), Timeout.InfiniteTimeSpan), old.Username, old.Password, old.RememberMe);
             }
             else
                 throw new TokenNotFoundException("An expired or invalid token was provided.");
