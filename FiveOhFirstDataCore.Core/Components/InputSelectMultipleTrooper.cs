@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Core.Components
         [Parameter]
         public List<Trooper> Troopers { get; set; } = new();
 
-        private string DisplayValue { get; set; } = ""; 
+        private bool ResetDisplay { get; set; } = false; 
         private List<string> InvalidSearches { get; set; } = new();
         private bool Valid { get; set; } = false;
         private List<Trooper> Suggestions { get; set; } = new();
@@ -36,39 +36,44 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddAttribute(3, "class", $"{CssClass} {(Valid ? "is-valid" : "is-invalid")}");
             builder.AddAttribute(4, "autocomplete", "off");
             builder.AddAttribute(5, "type", "text");
-            builder.AddAttribute(6, "value", DisplayValue);
+            if (ResetDisplay)
+            {
+                builder.AddAttribute(6, "value", "");
+            }
             builder.AddAttribute(7, "oninput", EventCallback.Factory.Create(this, (y) =>
             {
-                DisplayValue = ((string?)y.Value) ?? "";
+                string display = ((string?)y.Value) ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString().Equals(DisplayValue, StringComparison.OrdinalIgnoreCase)
-                    || x.NickName.Equals(DisplayValue, StringComparison.OrdinalIgnoreCase));
+                var item = Troopers.FirstOrDefault(x => x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
+                    || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase));
 
                 Suggestions.Clear();
 
-                if (item is not null || !string.IsNullOrWhiteSpace(DisplayValue))
+                if (CurrentValue is null) CurrentValue = new();
+
+                if (item is not null || !string.IsNullOrWhiteSpace(display))
                 {
-                    Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(DisplayValue) || x.NickName.StartsWith(DisplayValue))
-                        && !(CurrentValue?.Contains(x) ?? false)));
+                    Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display))
+                        && !(CurrentValue.Contains(x))));
                 }
                 else
                 {
                     Valid = false;
                 }
 
-                if (DisplayValue?.EndsWith(' ') ?? false)
+                if (display?.EndsWith(' ') ?? false)
                 {
-                    if (item is not null)
+                    if (item is not null && !CurrentValue.Contains(item))
                     {
                         if (CurrentValue is null) CurrentValue = new();
                         CurrentValue.Add(item);
                     }
                     else
                     {
-                        InvalidSearches.Add(DisplayValue);
+                        InvalidSearches.Add(display);
                     }
 
-                    DisplayValue = "";
+                    ResetDisplay = !ResetDisplay;
                 }
             }));
             builder.CloseElement();
@@ -96,7 +101,7 @@ namespace FiveOhFirstDataCore.Core.Components
                         if (CurrentValue.FirstOrDefault(x => x.Id == value.Id) is null)
                             CurrentValue.Add(value);
                         Valid = true;
-                        DisplayValue = "";
+                        ResetDisplay = !ResetDisplay;
                         Suggestions.Clear();
                     }));
                     builder.AddContent(17, $"{suggest.NickName} - {suggest.Id}");

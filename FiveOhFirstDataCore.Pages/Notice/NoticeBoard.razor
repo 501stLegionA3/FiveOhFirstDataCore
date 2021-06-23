@@ -21,7 +21,7 @@
                         </div>
                         <div class="form-group">
                             <label for="noticeContent">Notice Content</label>
-                            <InputTextArea class="form-control" id="noticeContent"  @bind-Value="ToEdit.Contents" @oninput="ContentEdited" />
+                            <InputTextArea class="form-control" id="noticeContent"  @bind-Value="DummyContents" @oninput="ContentEdited" />
                         </div>
                         <dvi class="form-group">
                             <div class="form-check">
@@ -100,6 +100,8 @@ else
     private bool IsEditing { get; set; } = false;
     private Notice ToEdit { get; set; } = new();
     private int EditIndex { get; set; } = -1;
+
+    private string DummyContents { get; set; } = "";
 
     [CascadingParameter]
     private Trooper? CurrentUser { get; set; } = new();

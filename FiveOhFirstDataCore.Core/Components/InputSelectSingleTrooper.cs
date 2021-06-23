@@ -38,21 +38,21 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddAttribute(6, "value", DisplayValue);
             builder.AddAttribute(7, "oninput", EventCallback.Factory.Create(this, (x) =>
             {
-                DisplayValue = ((string?)x.Value) ?? "";
+                var display = (string?)x.Value ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString() == DisplayValue || x.NickName == DisplayValue);
+                var item = Troopers.FirstOrDefault(x => x.Id.ToString() == display || x.NickName == display);
 
                 if(item is not null)
                 {
                     Valid = true;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(DisplayValue) || x.NickName.StartsWith(DisplayValue)));
+                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display)));
                 }
-                else if(!string.IsNullOrWhiteSpace(DisplayValue))
+                else if(!string.IsNullOrWhiteSpace(display))
                 {
                     Valid = false;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(DisplayValue) || x.NickName.StartsWith(DisplayValue)));
+                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display)));
                 }
                 else
                 {
