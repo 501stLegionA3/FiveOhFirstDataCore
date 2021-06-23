@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using FiveOhFirstDataCore.Core.Mail;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 {
@@ -18,9 +19,9 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<Trooper> _userManager;
-        private readonly IEmailSender _emailSender;
+        private readonly ICustomMailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<Trooper> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<Trooper> userManager, ICustomMailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;

@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using FiveOhFirstDataCore.Core.Mail;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 {
@@ -18,12 +19,12 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<Trooper> _userManager;
         private readonly SignInManager<Trooper> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly ICustomMailSender _emailSender;
 
         public EmailModel(
             UserManager<Trooper> userManager,
             SignInManager<Trooper> signInManager,
-            IEmailSender emailSender)
+            ICustomMailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
