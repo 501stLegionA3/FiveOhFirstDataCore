@@ -44,4 +44,13 @@ jobs:
         host: ${{ secrets.RELEASE_HOST }}
         username: ${{ secrets.RELEASE_USER }}
         password: ${{ secrets.RELEASE_PASS }}
+    - name: Publish Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # Artifact name
+        name: "501st Data Core Release"
+        # A file, directory or wildcard pattern that describes what to upload
+        path: artifact/build/DataCore/
+        # The desired behavior if no files are found using the provided path.
+        error: "No files found to publish an artifact for"
     
