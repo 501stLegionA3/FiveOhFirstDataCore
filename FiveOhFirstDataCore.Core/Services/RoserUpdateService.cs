@@ -101,6 +101,34 @@ namespace FiveOhFirstDataCore.Core.Services
                 await _discord.UpdateRankChangeAsync(rankChange, pid);
             }
 
+            // Time Updates
+
+
+            if(!primary.GraduatedBCTOn.Equals(edit.GraduatedBCTOn))
+            {
+                primary.GraduatedBCTOn = edit.GraduatedBCTOn;
+            }
+
+            if(!primary.GraduatedUTCOn.Equals(edit.GraduatedUTCOn))
+            {
+                primary.GraduatedBCTOn = edit.GraduatedBCTOn;
+            }
+
+            if(!primary.LastBilletChange.Equals(edit.LastBilletChange))
+            {
+                primary.LastBilletChange = edit.LastBilletChange;
+            }
+
+            if(!primary.LastPromotion.Equals(edit.LastPromotion))
+            {
+                primary.LastPromotion = edit.LastPromotion;
+            }
+
+            if(!primary.StartOfService.Equals(edit.StartOfService))
+            {
+                primary.StartOfService = edit.StartOfService;
+            }
+
             // Slot updates.
             if (UpdateRosterPosition(edit, ref primary, ref submitter, out var slotChange))
                 await _discord.UpdateSlotChangeAsync(slotChange, pid);
