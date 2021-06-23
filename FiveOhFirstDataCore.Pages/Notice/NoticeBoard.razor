@@ -205,10 +205,12 @@ else
         {
             ToEdit = Board.Notices[toEdit];
             EditIndex = toEdit;
+            DummyContents = ToEdit.Contents;
         }
         else
         {
             ToEdit = new();
+            DummyContents = "";
         }
 
         IsEditing = true;
