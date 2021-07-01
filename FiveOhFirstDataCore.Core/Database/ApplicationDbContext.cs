@@ -127,6 +127,15 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithMany(p => p.AuthorizedClaimUpdates)
                 .HasForeignKey(e => e.ChangedById);
 
+            var times = builder.Entity<TimeUpdate>();
+            times.HasKey(e => e.ChangeId);
+            times.HasOne(e => e.ChangedFor)
+                .WithMany(p => p.TimeUpdates)
+                .HasForeignKey(e => e.ChangedForId);
+            times.HasOne(e => e.ChangedBy)
+                .WithMany(p => p.ApprovedTimeUpdates)
+                .HasForeignKey(e => e.ChangedById);
+
 
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);

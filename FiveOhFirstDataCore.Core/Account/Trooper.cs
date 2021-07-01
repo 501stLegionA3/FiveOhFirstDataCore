@@ -69,6 +69,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<NickNameUpdate> ApprovedNickNameUpdates { get; set; } = new();
         public List<ClaimUpdate> ClaimUpdates { get; set; } = new();
         public List<ClaimUpdate> AuthorizedClaimUpdates { get; set; } = new();
+        public List<TimeUpdate> TimeUpdates { get; set; } = new();
+        public List<TimeUpdate> ApprovedTimeUpdates { get; set; } = new();
         public RecruitmentUpdate RecruitedByData { get; set; }
         #endregion
 

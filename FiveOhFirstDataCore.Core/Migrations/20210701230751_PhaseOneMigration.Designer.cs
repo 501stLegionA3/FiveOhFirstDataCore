@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210610153600_Init")]
-    partial class Init
+    [Migration("20210701230751_PhaseOneMigration")]
+    partial class PhaseOneMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -660,6 +660,66 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("SlotUpdates");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.TimeUpdate", b =>
+                {
+                    b.Property<Guid>("ChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("ChangedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NewBilletChange")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NewGraduatedBCT")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NewGraduatedUTC")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NewPromotion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("NewStartOfService")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("OldBilletChange")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("OldGraduatedBCT")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("OldGraduatedUTC")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("OldPromotion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("OldStartOfService")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("ChangeId");
+
+                    b.HasIndex("ChangedById");
+
+                    b.HasIndex("ChangedForId");
+
+                    b.ToTable("TimeUpdate");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1010,6 +1070,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.TimeUpdate", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
+                        .WithMany("ApprovedTimeUpdates")
+                        .HasForeignKey("ChangedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("TimeUpdates")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChangedBy");
+
+                    b.Navigation("ChangedFor");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.TrooperRole", null)
@@ -1095,6 +1174,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 {
                     b.Navigation("ApprovedNickNameUpdates");
 
+                    b.Navigation("ApprovedTimeUpdates");
+
                     b.Navigation("AuthorizedClaimUpdates");
 
                     b.Navigation("CShopUpdates");
@@ -1132,6 +1213,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("SubmittedCShopUpdates");
 
                     b.Navigation("SubmittedRankUpdates");
+
+                    b.Navigation("TimeUpdates");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>

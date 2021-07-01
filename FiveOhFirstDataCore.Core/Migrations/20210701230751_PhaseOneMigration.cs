@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class Init : Migration
+    public partial class PhaseOneMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -458,6 +458,44 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TimeUpdate",
+                columns: table => new
+                {
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    NewGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OldGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    NewGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OldGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    NewBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OldBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    NewPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OldPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    NewStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    OldStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedById = table.Column<int>(type: "integer", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimeUpdate", x => x.ChangeId);
+                    table.ForeignKey(
+                        name: "FK_TimeUpdate_AspNetUsers_ChangedById",
+                        column: x => x.ChangedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TimeUpdate_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TrooperFlags",
                 columns: table => new
                 {
@@ -767,6 +805,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ApprovedSlotUpdatesChangeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TimeUpdate_ChangedById",
+                table: "TimeUpdate",
+                column: "ChangedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TimeUpdate_ChangedForId",
+                table: "TimeUpdate",
+                column: "ChangedForId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TrooperFlags_AuthorId",
                 table: "TrooperFlags",
                 column: "AuthorId");
@@ -823,6 +871,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "SlotUpdateTrooper");
+
+            migrationBuilder.DropTable(
+                name: "TimeUpdate");
 
             migrationBuilder.DropTable(
                 name: "TrooperFlags");

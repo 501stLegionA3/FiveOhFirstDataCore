@@ -42,7 +42,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return claimUpdates;
         }
 
-        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, 
+        public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd,
             List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
             var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
@@ -50,13 +50,13 @@ namespace FiveOhFirstDataCore.Core.Services
 
             List<string> errors = new();
 
-            if(primary is null)
+            if (primary is null)
             {
                 errors.Add("No trooper was found.");
                 return new(false, errors);
             }
 
-            if(submitter is null)
+            if (submitter is null)
             {
                 errors.Add("No subbiter found.");
                 return new(false, errors);
@@ -102,31 +102,70 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             // Time Updates
+            TimeUpdate? timeUpdate = null;
 
-
-            if(!primary.GraduatedBCTOn.Equals(edit.GraduatedBCTOn))
+            if (!primary.GraduatedBCTOn.Equals(edit.GraduatedBCTOn))
             {
+                if (timeUpdate is null)
+                    timeUpdate = new();
+
+                timeUpdate.OldGraduatedBCT = primary.GraduatedBCTOn;
+                timeUpdate.NewGraduatedBCT = edit.GraduatedBCTOn;
+
                 primary.GraduatedBCTOn = edit.GraduatedBCTOn;
             }
 
-            if(!primary.GraduatedUTCOn.Equals(edit.GraduatedUTCOn))
+            if (!primary.GraduatedUTCOn.Equals(edit.GraduatedUTCOn))
             {
-                primary.GraduatedBCTOn = edit.GraduatedBCTOn;
+                if (timeUpdate is null)
+                    timeUpdate = new();
+
+                timeUpdate.OldGraduatedUTC = primary.GraduatedUTCOn;
+                timeUpdate.NewGraduatedUTC = edit.GraduatedUTCOn;
+
+                primary.GraduatedUTCOn = edit.GraduatedUTCOn;
             }
 
-            if(!primary.LastBilletChange.Equals(edit.LastBilletChange))
+            if (!primary.LastBilletChange.Equals(edit.LastBilletChange))
             {
+                if (timeUpdate is null)
+                    timeUpdate = new();
+
+                timeUpdate.OldBilletChange = primary.LastBilletChange;
+                timeUpdate.NewBilletChange = edit.LastBilletChange;
                 primary.LastBilletChange = edit.LastBilletChange;
+
             }
 
-            if(!primary.LastPromotion.Equals(edit.LastPromotion))
+            if (!primary.LastPromotion.Equals(edit.LastPromotion))
             {
+                if (timeUpdate is null)
+                    timeUpdate = new();
+
+                timeUpdate.OldPromotion = primary.LastPromotion;
+                timeUpdate.NewPromotion = edit.LastPromotion;
+
                 primary.LastPromotion = edit.LastPromotion;
             }
 
-            if(!primary.StartOfService.Equals(edit.StartOfService))
+            if (!primary.StartOfService.Equals(edit.StartOfService))
             {
+                if (timeUpdate is null)
+                    timeUpdate = new();
+
+                timeUpdate.OldStartOfService = primary.StartOfService;
+                timeUpdate.NewStartOfService = edit.StartOfService;
+
                 primary.StartOfService = edit.StartOfService;
+            }
+
+            // Save time update
+            if (timeUpdate is not null)
+            {
+                timeUpdate.ChangedById = submitter.Id;
+                timeUpdate.ChangedOn = DateTime.UtcNow;
+
+                primary.TimeUpdates.Add(timeUpdate);
             }
 
             // Slot updates.
