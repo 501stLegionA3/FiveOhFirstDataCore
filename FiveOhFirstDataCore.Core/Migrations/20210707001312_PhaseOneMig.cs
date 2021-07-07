@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class PhaseOneMigration : Migration
+    public partial class PhaseOneMig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -462,16 +462,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
-                    NewGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OldGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    NewGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OldGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    NewBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OldBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    NewPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OldPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    NewStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    OldStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    NewGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OldGraduatedBCT = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    NewGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OldGraduatedUTC = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    NewBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OldBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    NewPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OldPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    NewStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    OldStartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     ChangedById = table.Column<int>(type: "integer", nullable: false),
                     ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ChangedForId = table.Column<int>(type: "integer", nullable: false),

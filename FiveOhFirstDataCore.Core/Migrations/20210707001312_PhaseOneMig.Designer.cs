@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210701230751_PhaseOneMigration")]
-    partial class PhaseOneMigration
+    [Migration("20210707001312_PhaseOneMig")]
+    partial class PhaseOneMig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -675,34 +675,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<DateTime>("ChangedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("NewBilletChange")
+                    b.Property<DateTime?>("NewBilletChange")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("NewGraduatedBCT")
+                    b.Property<DateTime?>("NewGraduatedBCT")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("NewGraduatedUTC")
+                    b.Property<DateTime?>("NewGraduatedUTC")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("NewPromotion")
+                    b.Property<DateTime?>("NewPromotion")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("NewStartOfService")
+                    b.Property<DateTime?>("NewStartOfService")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("OldBilletChange")
+                    b.Property<DateTime?>("OldBilletChange")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("OldGraduatedBCT")
+                    b.Property<DateTime?>("OldGraduatedBCT")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("OldGraduatedUTC")
+                    b.Property<DateTime?>("OldGraduatedUTC")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("OldPromotion")
+                    b.Property<DateTime?>("OldPromotion")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<DateTime>("OldStartOfService")
+                    b.Property<DateTime?>("OldStartOfService")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("RevertChange")
