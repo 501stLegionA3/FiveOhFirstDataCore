@@ -371,6 +371,99 @@
                         </div>
                     }
                     break;
+                    case TimeUpdate c:
+
+                    changed = new bool[]
+                    {
+                        c.NewGraduatedBCT is not null,
+                        c.NewGraduatedUTC is not null,
+                        c.NewBilletChange is not null,
+                        c.NewPromotion is not null,
+                        c.NewStartOfService is not null
+                    };
+                    
+                    if(ActiveDisplay != i)
+                    {
+                        <div class="col"><b>Times</b></div>
+                        <div class="col"><b>Changed:</b> @changed.Where(x => x).Count()</div>
+                        <div class="col"><b>Unchanged:</b> @changed.Where(x => !x).Count()</div>
+                        <div class="col"><b>Changed By:</b> [@c.ChangedById] @c.ChangedBy?.NickName</div>
+                    }
+                    else
+                    {
+                        <div class="col">
+                            <div class="card mb-3 w-100 m-3">
+                                <div class="card-header btn-toolbar justify-content-between">
+                                    <h5 class="modal-title">Time Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
+                                        <span aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="card-body text-center">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td scope="col" class="table-primary">Type</td>
+                                                <th scope="col" class="table-success">New Time</th>
+                                                <th scope="col" class="table-danger">Old Time</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if(changed[0])
+                                            {
+                                                <tr>
+                                                    <th scope="col" class="table-primary">BCT</th>
+                                                    <td class="table-success">@c.NewGraduatedBCT.Value.ToString("f")</td>
+                                                    <td class="table-danger">@c.OldGraduatedBCT.Value.ToString("f")</td>
+                                                </tr>
+                                            }
+                                            @if(changed[1])
+                                            {
+                                                <tr>
+                                                    <th scope="col" class="table-primary">UTC</th>
+                                                    <td class="table-success">@c.NewGraduatedUTC.Value.ToString("f")</td>
+                                                    <td class="table-danger">@c.OldGraduatedUTC.Value.ToString("f")</td>
+                                                </tr>
+                                            }
+                                            @if(changed[2])
+                                            {
+                                                <tr>
+                                                    <th scope="col" class="table-primary">Billet</th>
+                                                    <td class="table-success">@c.NewBilletChange.Value.ToString("f")</td>
+                                                    <td class="table-danger">@c.OldBilletChange.Value.ToString("f")</td>
+                                                </tr>
+                                            }
+                                            @if(changed[3])
+                                            {
+                                                <tr>
+                                                    <th scope="col" class="table-primary">Last Promotion</th>
+                                                    <td class="table-success">@c.NewPromotion.Value.ToString("f")</td>
+                                                    <td class="table-danger">@c.OldPromotion.Value.ToString("f")</td>
+                                                </tr>
+                                            }
+                                            @if(changed[4])
+                                            {
+                                                <tr>
+                                                    <th scope="col" class="table-primary">Start of Service</th>
+                                                    <td class="table-success">@c.NewStartOfService.Value.ToString("f")</td>
+                                                    <td class="table-danger">@c.OldStartOfService.Value.ToString("f")</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer btn-toolbar justify-content-between">
+                                    <label class="float-left text-muted">Changed By: [@c.ChangedById] @c.ChangedBy?.NickName</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
+                                        <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>
+                                    </div>
+                                    <button class="btn btn-primary" @onclick="ResetActive">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    break;
                 default:
                     break;
             }
@@ -397,7 +490,7 @@
     public int ActiveDisplay { get; set; } = -1;
     public bool ConfirmRevert { get; set; } = false;
 
-    public List<string> Errors {get;set;} = new();
+    public List<string> Errors { get; set; } = new();
 
     private void ResetActive(EventArgs e)
     {

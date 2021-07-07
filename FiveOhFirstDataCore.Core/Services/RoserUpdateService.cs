@@ -164,6 +164,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 timeUpdate.ChangedById = submitter.Id;
                 timeUpdate.ChangedOn = DateTime.UtcNow;
+                timeUpdate.SubmittedByRosterClerk = true;
 
                 primary.TimeUpdates.Add(timeUpdate);
             }

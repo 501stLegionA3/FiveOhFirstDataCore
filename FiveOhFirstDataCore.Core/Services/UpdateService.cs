@@ -84,9 +84,18 @@ namespace FiveOhFirstDataCore.Core.Services
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
 
+            var five = await _dbContext
+                .TimeUpdates
+                .Where(x => x.SubmittedByRosterClerk)
+                .Include(p => p.ChangedBy)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
+                .ToListAsync<UpdateBase>();
+
             one.AddRange(two);
             one.AddRange(three);
             one.AddRange(four);
+            one.AddRange(five);
             var dataList = one.AsEnumerable();
 
             return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
@@ -131,10 +140,18 @@ namespace FiveOhFirstDataCore.Core.Services
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
 
+            var six = await _dbContext
+                .TimeUpdates
+                .Include(p => p.ChangedBy)
+                .Include(p => p.ChangedFor)
+                .AsSplitQuery()
+                .ToListAsync<UpdateBase>();
+
             one.AddRange(two);
             one.AddRange(three);
             one.AddRange(four);
             one.AddRange(five);
+            one.AddRange(six);
             var dataList = one.AsEnumerable();
 
             return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
@@ -150,6 +167,7 @@ namespace FiveOhFirstDataCore.Core.Services
             RankUpdate u => RevertRankUpdateAsync(manager, u),
             RecruitmentUpdate u => RevertRecruitmentUpdateAsync(manager, u),
             SlotUpdate u => RevertSlotUpdateAsync(manager, u),
+            TimeUpdate u => RevertTimeUpdateAsync(manager, u),
             _ => Task.FromResult(new ResultBase(false, new() { "No Update of this type has an implemented reversion process." }))
         };
 
@@ -343,6 +361,68 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 ApprovedBy = new() { manager },
                 ChangedOn = DateTime.UtcNow,
+                RevertChange = true
+            });
+
+            try
+            {
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new(false, new() { ex.Message });
+            }
+
+            return new(true);
+        }
+
+        private async Task<ResultBase> RevertTimeUpdateAsync(Trooper manager, TimeUpdate update)
+        {
+            if(update.OldGraduatedBCT is not null)
+            {
+                update.ChangedFor.GraduatedBCTOn = update.OldGraduatedBCT.Value;
+            }
+
+            if(update.OldGraduatedUTC is not null)
+            {
+                update.ChangedFor.GraduatedUTCOn = update.OldGraduatedUTC.Value;
+            }
+
+            if (update.OldBilletChange is not null)
+            {
+                update.ChangedFor.LastBilletChange = update.OldBilletChange.Value;
+            }
+
+            if (update.OldPromotion is not null)
+            {
+                update.ChangedFor.LastPromotion = update.OldPromotion.Value;
+            }
+
+            if(update.OldStartOfService is not null)
+            {
+                update.ChangedFor.StartOfService = update.OldStartOfService.Value;
+            }
+
+            update.ChangedFor.TimeUpdates.Add(new()
+            {
+                NewGraduatedBCT = update.OldGraduatedBCT,
+                OldGraduatedBCT = update.NewGraduatedBCT,
+
+                NewGraduatedUTC = update.OldGraduatedUTC,
+                OldGraduatedUTC = update.NewGraduatedUTC,
+
+                NewBilletChange = update.OldBilletChange,
+                OldBilletChange = update.NewBilletChange,
+
+                NewPromotion = update.OldPromotion,
+                OldPromotion = update.NewPromotion,
+
+                NewStartOfService = update.OldStartOfService,
+                OldStartOfService = update.NewStartOfService,
+
+                ChangedOn = DateTime.UtcNow,
+                ChangedById = manager.Id,
+                SubmittedByRosterClerk = update.SubmittedByRosterClerk,
                 RevertChange = true
             });
 
