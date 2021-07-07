@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210707001312_PhaseOneMig")]
-    partial class PhaseOneMig
+    [Migration("20210707172121_PhaseOneInit")]
+    partial class PhaseOneInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -717,7 +717,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("TimeUpdate");
+                    b.ToTable("TimeUpdates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

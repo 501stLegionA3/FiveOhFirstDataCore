@@ -715,7 +715,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("TimeUpdate");
+                    b.ToTable("TimeUpdates");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

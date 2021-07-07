@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class PhaseOneMig : Migration
+    public partial class PhaseOneInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -458,7 +458,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TimeUpdate",
+                name: "TimeUpdates",
                 columns: table => new
                 {
                     ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
@@ -480,15 +480,15 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TimeUpdate", x => x.ChangeId);
+                    table.PrimaryKey("PK_TimeUpdates", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_TimeUpdate_AspNetUsers_ChangedById",
+                        name: "FK_TimeUpdates_AspNetUsers_ChangedById",
                         column: x => x.ChangedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TimeUpdate_AspNetUsers_ChangedForId",
+                        name: "FK_TimeUpdates_AspNetUsers_ChangedForId",
                         column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -805,13 +805,13 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 column: "ApprovedSlotUpdatesChangeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TimeUpdate_ChangedById",
-                table: "TimeUpdate",
+                name: "IX_TimeUpdates_ChangedById",
+                table: "TimeUpdates",
                 column: "ChangedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TimeUpdate_ChangedForId",
-                table: "TimeUpdate",
+                name: "IX_TimeUpdates_ChangedForId",
+                table: "TimeUpdates",
                 column: "ChangedForId");
 
             migrationBuilder.CreateIndex(
@@ -873,7 +873,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "SlotUpdateTrooper");
 
             migrationBuilder.DropTable(
-                name: "TimeUpdate");
+                name: "TimeUpdates");
 
             migrationBuilder.DropTable(
                 name: "TrooperFlags");

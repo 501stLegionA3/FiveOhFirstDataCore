@@ -19,6 +19,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<QualificationUpdate> QualificationUpdates { get; internal set; }
         public DbSet<RecruitmentUpdate> RecruitmentUpdates { get; internal set; }
         public DbSet<ClaimUpdate> ClaimUpdates { get; internal set; }
+        public DbSet<TimeUpdate> TimeUpdates { get; internal set; }
 
         public DbSet<ClaimUpdateData> ClaimUpdateData { get; internal set; }
 
