@@ -109,29 +109,29 @@
             {
                 if(x.Role == Role.RTO)
                 {
-                    return x.RTORank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.RTORank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
                 else if(x.Role == Role.Pilot)
                 {
-                    return x.PilotRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.PilotRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
                 else if(x.Role == Role.Medic)
                 {
-                    return x.MedicRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.MedicRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
                 else if (x.Role == Role.Warden
                     || x.Role == Role.MasterWarden
                     || x.Role == Role.ChiefWarden)
                 {
-                    return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
                 else if(x.WarrantRank is not null)
                 {
-                    return x.WarrantRank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.WarrantRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
                 else
                 {
-                    return x.Rank?.AsShorthand().StartsWith(Search.DesignationFilter) ?? false;
+                    return x.Rank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
             }).ToList();
         }
