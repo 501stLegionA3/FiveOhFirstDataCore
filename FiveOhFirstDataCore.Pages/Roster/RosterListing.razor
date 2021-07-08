@@ -180,28 +180,28 @@
 
     public Task OnDesgChange(ChangeEventArgs e)
     {
-        Search.DesignationFilter = (string)e.Value;
+        Search.DesignationFilter = (string?)e.Value ?? "";
 
         return BuildFilteredList();
     }
 
     public Task OnIdChange(ChangeEventArgs e)
     {
-        Search.IdFilter = (string)e.Value;
+        Search.IdFilter = (string?)e.Value ?? "";
 
         return BuildFilteredList();
     }
 
     public Task OnNickChange(ChangeEventArgs e)
     {
-        Search.NickNameFilter = (string)e.Value;
+        Search.NickNameFilter = (string?)e.Value ?? "";
 
         return BuildFilteredList();
     }
 
     public Task OnRankChange(ChangeEventArgs e)
     {
-        var val = ((string)e.Value);
+        var val = ((string?)e.Value) ?? "";
 
         if(val == "null") Search.RankFilter = null;
         else Search.RankFilter = val.ValueFromString<TrooperRank>();
@@ -211,7 +211,7 @@
 
     public Task OnUnitChange(ChangeEventArgs e)
     {
-        var val = ((string)e.Value);
+        var val = ((string?)e.Value) ?? "";
 
         if(val == "null") Search.UnitFilter = null;
         else Search.UnitFilter = val.ValueFromString<Slot>();
@@ -221,7 +221,7 @@
 
     public Task OnRoleChange(ChangeEventArgs e)
     {
-        var val = ((string)e.Value);
+        var val = ((string?)e.Value) ?? "";
 
         if(val == "null") Search.RoleFilter = null;
         else Search.RoleFilter = val.ValueFromString<Role>();
