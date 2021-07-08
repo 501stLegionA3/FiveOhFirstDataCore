@@ -24,6 +24,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task InitializeAsync()
         {
+            Keys = new();
             var encoder = new DoubleMetaphone();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {

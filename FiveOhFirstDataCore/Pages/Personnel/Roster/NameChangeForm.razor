@@ -3,6 +3,7 @@
 @inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
+@inject INicknameComparisonService _nicks
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 
@@ -56,8 +57,23 @@
                 <div class="col text-center form-group">
                     <h4>Old Name: @OldName</h4>
                     <hr />
-                    <label for="newNick">New Trooper Name</label>
-                    <InputText id="newNick" @bind-Value="Trooper.NickName" class="form-control" />
+                    <div class="row">
+                    <div class="col-md-8 col-sm-12 @(ValidNewNickname ? "has-success" : "has-danger")">
+                            <label for="nicknameSetter">Nickname</label>
+                            <InputTextValid class="form-control" id="nicknameSetter" @oninput="NicknameChanged" @bind-Value="Trooper.NickName" Valid="ValidNewNickname" />
+                            <div class="valid-feedback">That Nickname is avalible!</div>
+                            <div class="invalid-feedback">That Nickname has been taken or is invalid.</div>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <label for="similarNames">Similar Nicknames</label>
+                            <select multiple class="form-control" id="similarNames">
+                            @foreach(var nick in SimilarNicknames)
+                            {
+                                <option value="@nick">@nick</option>
+                            }
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <hr />
@@ -77,6 +93,12 @@
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private bool ValidNewNickname { get; set; } = false;
+    private HashSet<string> TakenNicknames { get; set; } = new();
+
+    private List<string> SimilarNicknames { get; set; } = new();
+    private Timer SimNickTimer { get; set; }
 
     public List<(string, string)> Urls { get; set; } = new()
     {
@@ -116,7 +138,7 @@
         }
         else
         {
-           if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
+            if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))
@@ -127,10 +149,32 @@
                         ToEdit = val;
                     }
                 }
-            } 
+            }
         }
+        
+        SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
 
         _refresh.RefreshRequested += RefreshMe;
+    }
+
+    protected void NicknameChanged(ChangeEventArgs e)
+    {
+        string? str = (string?)e.Value;
+
+        if (string.IsNullOrWhiteSpace(str)
+            || !str.IsAlphabetical()
+            || TakenNicknames.Contains(str))
+        {
+            ValidNewNickname = false;
+        }
+        else
+        {
+            Trooper.NickName = str;
+            ValidNewNickname = true;
+        }
+
+        SimNickTimer.Change(TimeSpan.FromSeconds(0.5), Timeout.InfiniteTimeSpan);
+        _refresh.CallRequestRefresh();
     }
 
     private Task OnPersisting()
@@ -162,6 +206,13 @@
 
             _refresh.CallRequestRefresh();
         }
+    }    
+
+    protected async Task GetNickSimList()
+    {
+        SimilarNicknames = await _nicks.GetPhoneticMatches(Trooper.NickName);
+
+        _refresh.CallRequestRefresh();
     }
 
     private void RefreshMe()
@@ -188,6 +239,11 @@
             IsEditing = true;
             OldName = Trooper.NickName;
         }
+
+        var inUse = await _roster.GetInUseUserDataAsync();
+        TakenNicknames = inUse.Item2;
+
+        await _nicks.InitializeAsync();
     }
 
     protected async Task SaveChanges(EventArgs e)
