@@ -11,6 +11,7 @@ namespace FiveOhFirstDataCore.Core.Structures
     {
         public string DesignationFilter { get; set; } = "";
         public bool Ascending { get; set; } = true;
+        public int SortByColumn { get; set; } = 1;
         public string IdFilter { get; set; } = "";
         public string NickNameFilter { get; set; } = "";
         public TrooperRank? RankFilter { get; set; } = null;

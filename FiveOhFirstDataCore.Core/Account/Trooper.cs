@@ -95,6 +95,36 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public List<Notice> NoticesWritten { get; set; } = new();
 
+        public string GetRankDesignation()
+        {
+            if(Role == Role.RTO)
+            {
+                return RTORank?.AsShorthand() ?? "";
+            }
+            else if (Role == Role.Pilot)
+            {
+                return PilotRank?.AsShorthand() ?? "";
+            }
+            else if (Role == Role.Medic)
+            {
+                return MedicRank?.AsShorthand() ?? "";
+            }
+            else if (Role == Role.Warden
+                || Role == Role.MasterWarden
+                || Role == Role.ChiefWarden)
+            {
+                return WardenRank?.AsShorthand() ?? "";
+            }
+            else if (WarrantRank is not null)
+            {
+                return WarrantRank?.AsShorthand() ?? "";
+            }
+            else
+            {
+                return Rank?.AsShorthand() ?? "";
+            }
+        }
+
         public string GetRoleName()
         {
             if (Slot == Slot.InactiveReserve)

@@ -1,31 +1,6 @@
 ﻿@if(Trooper is not null)
 {
-    @if(Trooper.Role == Role.RTO)
-    {
-        @Trooper.RTORank?.AsShorthand()
-    }
-    else if(Trooper.Role == Role.Pilot)
-    {
-        @Trooper.PilotRank?.AsShorthand()
-    }
-    else if(Trooper.Role == Role.Medic)
-    {
-        @Trooper.MedicRank?.AsShorthand()
-    }
-    else if (Trooper.Role == Role.Warden
-        || Trooper.Role == Role.MasterWarden
-        || Trooper.Role == Role.ChiefWarden)
-    {
-        @Trooper.WardenRank?.AsShorthand()
-    }
-    else if(Trooper.WarrantRank is not null)
-    {
-        @Trooper.WarrantRank?.AsShorthand()
-    }
-    else
-    {
-        @Trooper.Rank?.AsShorthand()
-    }
+    @Trooper.GetRankDesignation();
 }
 
 @code {
