@@ -65,7 +65,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _ = ulong.TryParse(primary.DiscordId, out ulong pid);
 
             // Rank updates.
-            if (UpdateRank((int)primary.Rank, (int)edit.Rank, ref primary, ref submitter, out var rankChange))
+            if (UpdateRank((int?)primary.Rank, (int?)edit.Rank, ref primary, ref submitter, out var rankChange))
             {
                 primary.Rank = edit.Rank;
                 await _discord.UpdateRankChangeAsync(rankChange, pid);
@@ -260,11 +260,6 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 p.RankChanges.Add(update);
                 s.SubmittedRankUpdates.Add(update);
-
-                if(primary < edit)
-                {
-                    p.LastPromotion = DateTime.UtcNow;
-                }
 
                 return true;
             }
