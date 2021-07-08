@@ -84,8 +84,21 @@ namespace FiveOhFirstDataCore
                                     string id = query;
                                     id = id[(id.LastIndexOf("/") + 1)..(id.Length)];
 
-                                    await link.BindSteamUserAsync(token, id);
+                                    try
+                                    {
+                                        await link.BindSteamUserAsync(token, id);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        context.Response.Cookies.Append("error", ex.Message);
+                                    }
+
+                                    context.Success();
                                 }
+                            }
+                            else
+                            {
+                                context.Response.Cookies.Append("error", "No token was found.");
                             }
                         }
                     };
