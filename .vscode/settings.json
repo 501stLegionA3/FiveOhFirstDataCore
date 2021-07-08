@@ -23,6 +23,7 @@
         "Recruitments",
         "aspnetcore",
         "colspan",
+        "coverpage",
         "crossorigin",
         "cshops",
         "jquery",
@@ -34,6 +35,6 @@
         "stylesheet",
         "thead",
         "toggleable",
-        "typeof"
+        "typeof",
     ]
 }
