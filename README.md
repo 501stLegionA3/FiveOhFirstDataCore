@@ -3,7 +3,9 @@ A web application designed to manage roster upkeep for the 501st Legion StarSim 
 
 [![CI](https://github.com/Soyvolon/FiveOhFirstDataCore/actions/workflows/dotnet-ci.yml/badge.svg?branch=master)](https://github.com/Soyvolon/FiveOhFirstDataCore/actions/workflows/dotnet-ci.yml)
 
-[501st StarSim Website](https://www.501stlegion-a3.com/)
+[501st Data Core](https://s4.501stlegion-a3.com/)
+
+[501st StarSim Website](https://www.501stlegion-a3.com/) 
 
 # Contributing
 Want to request a new page, feature, or report a bug? Submit an [Issue](https://github.com/soyvolon/FiveOhFirstDataCore/issues) to get started!
