@@ -34,7 +34,6 @@
 							'indent',
 							'alignment',
 							'|',
-							'imageUpload',
 							'imageInsert',
 							'blockQuote',
 							'insertTable',

@@ -2,11 +2,12 @@
 @inject IJSRuntime JSRuntime
 
 <div @attributes="AdditionalAttributes"
-    class="@CssClass ckeditor"
-    value="@CurrentValue"></div>
+    class="@CssClass ckeditor">@Display</div>
 
 @code {
     protected string uid = Guid.NewGuid().ToString().ToLower().Replace("-", string.Empty);
+
+    protected MarkupString Display { get => new(CurrentValue); }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

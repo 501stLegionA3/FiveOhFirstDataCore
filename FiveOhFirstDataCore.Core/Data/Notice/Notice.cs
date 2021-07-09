@@ -20,7 +20,7 @@ namespace FiveOhFirstDataCore.Core.Data.Notice
         public DateTime PostedOn { get; set; }
         public bool Sticky { get; set; }
         public string Contents { get; set; } = "";
-        public MarkupString Display => new(Markdown.ToHtml(Contents));
+        public MarkupString Display => new(Contents);
         public NoticeLevel Level { get; set; } = NoticeLevel.PrimaryOutline;
     }
 }

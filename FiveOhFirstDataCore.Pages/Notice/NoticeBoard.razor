@@ -8,7 +8,7 @@
 
 @if(Board is not null)
 {
-<div id="@Name" class="text-center">
+<div id="@Name">
     <h3>@Name Notice Board</h3>
     @if (IsEditor)
     {
@@ -55,7 +55,7 @@
             var n = notice;
             <div class="row">
                 <div class="col p-2">
-                    <div class="@n.Level.GetAlertClasses()">
+                    <div class="@n.Level.GetAlertClasses() ck ck-content">
                         @n.Display
                     </div>
                     @if(IsEditor)
