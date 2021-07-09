@@ -1,8 +1,10 @@
-﻿@implements IDisposable
+﻿@using Microsoft.JSInterop
+@implements IDisposable
 @inject ComponentApplicationState _state
 @inject INoticeService _notice
 @inject IRefreshRequestService _refresh
 @inject IRosterService _roster
+@inject IJSRuntime JS
 
 @if(Board is not null)
 {
@@ -21,7 +23,7 @@
                         </div>
                         <div class="form-group">
                             <label for="noticeContent">Notice Content</label>
-                            <InputTextArea class="form-control" id="noticeContent"  @bind-Value="DummyContents" @oninput="ContentEdited" />
+                            <InputRichText class="form-control" id="noticeContent"  @bind-Value="DummyContents" />
                         </div>
                         <dvi class="form-group">
                             <div class="form-check">
@@ -34,20 +36,10 @@
                             <button type="button" class="btn btn-success p-3" @onclick="SaveChanges">Save Changes</button>
                         </div>
                         <hr />
-                        <strong>Preview</strong>
-                        <hr />
-                        <div class="row">
-                            <div class="col p-2">
-                                <div class="@ToEdit.Level.GetAlertClasses()">
-                                    @ToEdit.Display
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
                     }
                     else
                     {
-                        <button type="button" class="btn btn-block btn-primary m-3" @onclick="(x) => StartEdit()">Create New Notice</button>
+                        <button type="button" class="btn btn-block btn-primary m-3" @onclick="async (x) => await StartEdit()">Create New Notice</button>
                         <hr />
                     }
                 </div>
@@ -69,7 +61,7 @@
                     @if(IsEditor)
                     {
                         <div class="form-group align-content-right float-right">
-                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="(x) => StartEdit(c)"></button>
+                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await StartEdit(c)"></button>
                             <button class="oi oi-trash m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
                         </div>
                     }
@@ -174,6 +166,7 @@ else
 
     private void DiscardChanges(EventArgs e)
     {
+        DummyContents = "";
         ToEdit = new();
         IsEditing = false;
         EditIndex = -1;
@@ -184,6 +177,7 @@ else
     {
         if (CurrentUser is not null)
         {
+            ToEdit.Contents = DummyContents;
             if (EditIndex >= 0 && EditIndex < Board.Notices.Count)
             {
                 await _notice.SaveChangesAsync();
@@ -199,7 +193,7 @@ else
         _refresh.CallRequestRefresh();
     }
 
-    private void StartEdit(int toEdit = -1)
+    private async Task StartEdit(int toEdit = -1)
     {
         if (toEdit >= 0 && toEdit < Board.Notices.Count)
         {
@@ -232,7 +226,12 @@ else
 
     private void RefreshRequested()
     {
-        InvokeAsync(StateHasChanged);
+        InvokeAsync(async () =>
+        {
+            StateHasChanged();
+            if (IsEditing)
+                _ = await JS.InvokeAsync<object>("useCkEditor", "noticeContent");
+        });
     }
 
     void IDisposable.Dispose()

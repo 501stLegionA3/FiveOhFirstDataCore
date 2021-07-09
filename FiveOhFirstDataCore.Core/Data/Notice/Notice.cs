@@ -21,6 +21,6 @@ namespace FiveOhFirstDataCore.Core.Data.Notice
         public bool Sticky { get; set; }
         public string Contents { get; set; } = "";
         public MarkupString Display => new(Markdown.ToHtml(Contents));
-        public NoticeLevel Level { get; set; } = NoticeLevel.Primary;
+        public NoticeLevel Level { get; set; } = NoticeLevel.PrimaryOutline;
     }
 }
