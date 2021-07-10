@@ -40,19 +40,22 @@ namespace FiveOhFirstDataCore.Core.Components
             {
                 var display = (string?)x.Value ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString() == display || x.NickName == display);
+                var item = Troopers.FirstOrDefault(x => x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
+                    || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase));
 
                 if(item is not null)
                 {
                     Valid = true;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display)));
+                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                        || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase)));
                 }
                 else if(!string.IsNullOrWhiteSpace(display))
                 {
                     Valid = false;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display)));
+                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                        || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase)));
                 }
                 else
                 {

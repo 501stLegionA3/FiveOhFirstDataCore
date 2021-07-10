@@ -53,7 +53,8 @@ namespace FiveOhFirstDataCore.Core.Components
 
                 if (item is not null || !string.IsNullOrWhiteSpace(display))
                 {
-                    Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(display) || x.NickName.StartsWith(display))
+                    Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                        || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase))
                         && !(CurrentValue.Contains(x))));
                 }
                 else
