@@ -21,10 +21,11 @@
                 }
                 else
                 {
-                    if(Controller.PageIndex - 2 > 1)
+                    if(Controller.PageIndex - 2 >= 1)
                     {
                         var i = Controller.PageIndex - 2;
-                        <li class="page-item"><button class="page-link" @onclick="(x) => Controller.SetPage(i)">@i</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(x) => { Controller.SetPage(i); 
+                            PrevNext = Controller.GetNextPrevSegmentChecks(); }">@i</button></li>
                     }
 
                     <li class="page-item"><button class="page-link" @onclick="(x) => Controller.PreviousPage()">@(Controller.PageIndex - 1)</button></li>
@@ -41,7 +42,8 @@
                     @if(Controller.PageIndex + 2 <= Controller.Segments)
                     {
                         var i = Controller.PageIndex + 2;
-                        <li class="page-item"><button class="page-link" @onclick="(x) => Controller.SetPage(i)">@i</button></li>
+                        <li class="page-item"><button class="page-link" @onclick="(x) => { Controller.SetPage(i); 
+                            PrevNext = Controller.GetNextPrevSegmentChecks(); }">@i</button></li>
                     }
                 }
             }
