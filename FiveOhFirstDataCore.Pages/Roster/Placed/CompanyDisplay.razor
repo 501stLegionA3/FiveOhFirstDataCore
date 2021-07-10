@@ -10,14 +10,18 @@
         </th>
     </tr>
 </thead>
-
-<CompanyStaff Company="Company" />
+@if (!Airborne)
+{
+    <CompanyStaff Company="Company" />
+}
 
 <CascadingValue Value="Name" Name="CompanyName">
-    @for(int i = 0; i < Company.Platoons.Length; i++)
-    {
-        <PlatoonDisplay Platoon="Company.Platoons[i]" Number="i + 1" Airborne="Airborne" />
-    }
+    <CascadingValue Value="Airborne" Name="Airborne">
+        @for(int i = 0; i < Company.Platoons.Length; i++)
+        {
+            <PlatoonDisplay Platoon="Company.Platoons[i]" Number="i + 1" Airborne="Airborne" />
+        }
+    </CascadingValue>
 </CascadingValue>
 
 @code {

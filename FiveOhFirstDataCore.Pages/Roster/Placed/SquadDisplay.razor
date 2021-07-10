@@ -108,15 +108,17 @@
         @(Squad.Teams[1].Medic?.WarrantRank is null ? Squad.Teams[1].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Medic?.NickName ?? "TBD") 
     </td>
 </tr>
-
-<tr class="table-warning">
-    <th scope="row" colspan="2" class="text-right">
-        Squad ARC
-    </th>
-    <td colspan="2" class="text-left">
-        @(Squad.ARC?.WarrantRank is null ? Squad.ARC?.Rank?.AsFull() + " " ?? "" : Squad.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Squad.ARC?.NickName ?? "TBD")
-    </td>
-</tr>
+@if (!Airborne)
+{
+    <tr class="table-warning">
+        <th scope="row" colspan="2" class="text-right">
+            Squad ARC
+        </th>
+        <td colspan="2" class="text-left">
+            @(Squad.ARC?.WarrantRank is null ? Squad.ARC?.Rank?.AsFull() + " " ?? "" : Squad.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Squad.ARC?.NickName ?? "TBD")
+        </td>
+    </tr>
+}
 
 @code {
     [Parameter]
@@ -127,6 +129,8 @@
     public string CompanyName { get; set; }
     [CascadingParameter(Name = "PlatoonNumber")]
     public int PlatoonNumber { get; set; }
+    [CascadingParameter(Name = "Airborne")]
+    public bool Airborne { get; set; }
 
     private Trooper? AT1 { get; set; } = null;
     private Trooper? AT2 { get; set; } = null;
