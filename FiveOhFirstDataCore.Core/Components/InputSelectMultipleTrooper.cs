@@ -84,18 +84,20 @@ namespace FiveOhFirstDataCore.Core.Components
                 builder.AddAttribute(9, "class", "position-relative bg-secondary");
                 builder.AddAttribute(10, "style", "z-index: 2000");
                 builder.OpenElement(11, "div");
-                builder.AddAttribute(12, "class", "table table-hover position-absolute top-100 start-50 bg-secondary");
+                builder.AddAttribute(12, "class", "table table-hover position-absolute end-0 start-0 bg-secondary");
 
                 foreach (var suggest in Suggestions)
                 {
-                    builder.OpenElement(13, "button");
+                    builder.OpenElement(13, "div");
+                    builder.AddAttribute(14, "class", "d-grid gap-2");
+                    builder.OpenElement(15, "button");
 
                     var suggestNick = suggest.NickName;
                     var value = suggest;
 
-                    builder.AddAttribute(14, "class", "btn btn-primary btn-block");
-                    builder.AddAttribute(15, "type", "submit");
-                    builder.AddAttribute(16, "onclick", EventCallback.Factory.Create(this, (x) =>
+                    builder.AddAttribute(16, "class", "btn btn-primary");
+                    builder.AddAttribute(17, "type", "submit");
+                    builder.AddAttribute(18, "onclick", EventCallback.Factory.Create(this, (x) =>
                     {
                         if (CurrentValue is null) CurrentValue = new();
                         if (CurrentValue.FirstOrDefault(x => x.Id == value.Id) is null)
@@ -104,8 +106,9 @@ namespace FiveOhFirstDataCore.Core.Components
                         ResetDisplay = !ResetDisplay;
                         Suggestions.Clear();
                     }));
-                    builder.AddContent(17, $"{suggest.NickName} - {suggest.Id}");
+                    builder.AddContent(19, $"{suggest.NickName} - {suggest.Id}");
 
+                    builder.CloseElement();
                     builder.CloseElement();
                 }
 
@@ -113,24 +116,24 @@ namespace FiveOhFirstDataCore.Core.Components
                 builder.CloseElement();
             }
 
-            builder.OpenElement(18, "div");
+            builder.OpenElement(20, "div");
 
             if (CurrentValue is not null)
             {
-                builder.AddAttribute(19, "class", "p-1");
+                builder.AddAttribute(21, "class", "p-1");
 
                 for (int i = 0; i < CurrentValue.Count; i++)
                 {
-                    builder.OpenElement(20, "span");
+                    builder.OpenElement(22, "span");
 
-                    builder.AddAttribute(21, "class", "btn btn-outline-success m-1");
-                    builder.AddContent(22, CurrentValue[i].NickName);
+                    builder.AddAttribute(23, "class", "btn btn-outline-success m-1");
+                    builder.AddContent(24, CurrentValue[i].NickName);
 
-                    builder.OpenElement(23, "button");
-                    builder.AddAttribute(24, "type", "button");
-                    builder.AddAttribute(25, "class", "oi oi-circle-x btn");
+                    builder.OpenElement(25, "button");
+                    builder.AddAttribute(26, "type", "button");
+                    builder.AddAttribute(27, "class", "oi oi-circle-x btn");
 
-                    builder.AddAttribute(26, "onclick", GetRemoveFromCurrentEvent(i));
+                    builder.AddAttribute(28, "onclick", GetRemoveFromCurrentEvent(i));
 
                     builder.CloseElement();
                     builder.CloseElement();
@@ -138,15 +141,15 @@ namespace FiveOhFirstDataCore.Core.Components
 
                 for (int i = 0; i < InvalidSearches.Count; i++)
                 {
-                    builder.OpenElement(27, "span");
+                    builder.OpenElement(29, "span");
 
-                    builder.AddAttribute(28, "class", "btn btn-outline-danger m-1");
-                    builder.AddContent(29, InvalidSearches[i]);
+                    builder.AddAttribute(30, "class", "btn btn-outline-danger m-1");
+                    builder.AddContent(31, InvalidSearches[i]);
 
-                    builder.OpenElement(30, "button");
-                    builder.AddAttribute(31, "type", "button");
-                    builder.AddAttribute(32, "class", "oi oi-circle-x btn");
-                    builder.AddAttribute(33, "onclick", GetRemoveFromBadEvent(i));
+                    builder.OpenElement(32, "button");
+                    builder.AddAttribute(33, "type", "button");
+                    builder.AddAttribute(34, "class", "oi oi-circle-x btn");
+                    builder.AddAttribute(35, "onclick", GetRemoveFromBadEvent(i));
 
                     builder.CloseElement();
                     builder.CloseElement();

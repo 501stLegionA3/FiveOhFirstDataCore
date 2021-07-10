@@ -34,8 +34,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col form-group">
-                    <button class="btn btn-primary btn-block" disabled="@IsEditing" @onclick="StartEdit">Edit</button>
+                <div class="col form-group d-grid gap-2">
+                    <button class="btn btn-primary" disabled="@IsEditing" @onclick="StartEdit">Edit</button>
                 </div>
             </div>
             @if (IsEditing)
@@ -160,8 +160,8 @@
                             }
                         }
                             <div class="row">
-                                <div class="col">
-                                    <button class="btn btn-primary btn-block" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-primary" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
                                 </div>
                             </div>
                         </div>
@@ -221,8 +221,8 @@
             <hr />
             <div class="form-group">
                 <div class="row">
-                    <div class="col">
-                        <button class="btn btn-primary btn-block" @onclick="async (x) => await SaveChangesAsync()">Save Changes</button>
+                    <div class="col d-grid gap-2">
+                        <button class="btn btn-primary" @onclick="async (x) => await SaveChangesAsync()">Save Changes</button>
                     </div>
                 </div>
             </div>

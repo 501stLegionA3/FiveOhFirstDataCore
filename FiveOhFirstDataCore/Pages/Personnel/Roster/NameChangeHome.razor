@@ -29,14 +29,16 @@
                     </div>
                     }
                     <div class="col-lg-3 col-md-12">
-                    @if(!Editing)
-                    {
-                        <button class="btn btn-block btn-primary" @onclick="EditPressed">Edit</button>
-                    }
-                    else
-                    {
-                        <button class="btn btn-block btn-success" @onclick="SavePressed">Save</button>
-                    }
+                    <div class="d-grid gap-2 mx-auto">
+                        @if(!Editing)
+                        {
+                            <button class="btn btn-primary" @onclick="EditPressed">Edit</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-success" @onclick="SavePressed">Save</button>
+                        }
+                    </div>
                     </div>
                     <div class="col-lg-9 col-md-12">
                         <h4>Authorized Name Changers</h4>
@@ -59,8 +61,8 @@
             </AuthorizeView>
         </div>
         <div class="row">
-            <div class="col p-4">
-                <a class="btn btn-block btn-primary" href="/c1/roster/names/change">Name Change Form</a>
+            <div class="col p-4 d-grid gap-2">
+                <a class="btn btn-primary" href="/c1/roster/names/change">Name Change Form</a>
             </div>
         </div>
     </Authorized>
