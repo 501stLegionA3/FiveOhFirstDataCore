@@ -1,4 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration _config
+<div class="top-row pl-4 navbar navbar-dark">
     <div class="container">
         <a class="navbar-brand mx-auto" href="">501st Data Core</a>
         <button class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -7,7 +9,7 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass mb-auto flex-column" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
@@ -121,10 +123,22 @@
     </ul>
 </div>
 
+<div class="position-absolute start-50 bottom-0 translate-middle-x">
+    v@(Version)
+</div>
+
 @code {
     private bool collapseNavMenu = true;
+    private string Version { get; set; } = "";
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        Version = _config["Version"];
+    }
 
     private void ToggleNavMenu()
     {
