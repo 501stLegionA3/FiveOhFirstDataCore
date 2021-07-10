@@ -31,15 +31,17 @@
                                 <label class="form-check-label" for="noticeSticky">Is Notice Sticky?</label>
                             </div>
                         </dvi>
-                        <div class="form-group">
-                            <button type="button" class="btn btn-danger p-3" @onclick="DiscardChanges">Discard Changes</button>
-                            <button type="button" class="btn btn-success p-3" @onclick="SaveChanges">Save Changes</button>
+                        <div class="form-group d-grid gap-2 d-md-block">
+                            <button type="button" class="btn btn-danger" @onclick="DiscardChanges">Discard Changes</button>
+                            <button type="button" class="btn btn-success" @onclick="SaveChanges">Save Changes</button>
                         </div>
                         <hr />
                     }
                     else
                     {
-                        <button type="button" class="btn btn-block btn-primary m-3" @onclick="async (x) => await StartEdit()">Create New Notice</button>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary m-3" @onclick="async (x) => await StartEdit()">Create New Notice</button>
+                        </div>
                         <hr />
                     }
                 </div>
@@ -57,14 +59,17 @@
                 <div class="col p-2">
                     <div class="@n.Level.GetAlertClasses() ck ck-content">
                         @n.Display
+                        
+                        @if(IsEditor)
+                        {
+                            <div class="form-group position-absolute bottom-0 end-0">
+                                <div class="mb-3 me-4 d-grid gap-2 d-md-block">
+                                    <button class="oi oi-pencil btn btn-outline-primary" aria-hidden="true" @onclick="async (x) => await StartEdit(c)"></button>
+                                    <button class="oi oi-trash btn btn-outline-danger" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
+                                </div>
+                            </div>
+                        }
                     </div>
-                    @if(IsEditor)
-                    {
-                        <div class="form-group align-content-right float-right">
-                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await StartEdit(c)"></button>
-                            <button class="oi oi-trash m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
-                        </div>
-                    }
                 </div>
             </div>
         }
