@@ -48,9 +48,9 @@
     <Content Update="Config\website_config_for_docker.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="wwwroot\**">
+    <None Include="wwwroot\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
 </Project>
