@@ -2,6 +2,8 @@
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
+
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System;
 using System.Collections.Generic;
@@ -89,7 +91,7 @@ namespace FiveOhFirstDataCore.Core.Services
             if (item is null) return;
 
             newNotice.AuthorId = user.Id;
-            newNotice.PostedOn = DateTime.UtcNow;
+            newNotice.PostedOn = DateTime.UtcNow.ToEst().ToEst();
 
             item.Notices.Add(newNotice);
 

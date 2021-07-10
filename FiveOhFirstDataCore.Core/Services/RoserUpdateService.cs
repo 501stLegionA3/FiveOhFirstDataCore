@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
@@ -163,7 +164,7 @@ namespace FiveOhFirstDataCore.Core.Services
             if (timeUpdate is not null)
             {
                 timeUpdate.ChangedById = submitter.Id;
-                timeUpdate.ChangedOn = DateTime.UtcNow;
+                timeUpdate.ChangedOn = DateTime.UtcNow.ToEst().ToEst();
                 timeUpdate.SubmittedByRosterClerk = true;
 
                 primary.TimeUpdates.Add(timeUpdate);
@@ -254,7 +255,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     ChangedFrom = primary ?? -1,
                     ChangedTo = edit ?? -1,
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = DateTime.UtcNow.ToEst().ToEst(),
                     SubmittedByRosterClerk = true
                 };
 
@@ -288,7 +289,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     OldTeam = primary.Team,
                     OldFlight = primary.Flight,
 
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = DateTime.UtcNow.ToEst(),
                     SubmittedByRosterClerk = true
                 };
 
@@ -323,7 +324,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     OldCShops = primary.CShops,
                     
                     SubmittedByRosterClerk = true,
-                    ChangedOn = DateTime.UtcNow
+                    ChangedOn = DateTime.UtcNow.ToEst()
                 };
 
                 primary.CShops = edit.CShops;
@@ -355,7 +356,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     Revoked = false,
 
                     SubmittedByRosterClerk = true,
-                    ChangedOn = DateTime.UtcNow
+                    ChangedOn = DateTime.UtcNow.ToEst()
                 };
 
                 primary.Qualifications = edit.Qualifications;
@@ -377,7 +378,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 _dbContext.Attach(trooper);
 
             flag.AuthorId = user.Id;
-            flag.CreatedOn = DateTime.UtcNow;
+            flag.CreatedOn = DateTime.UtcNow.ToEst();
 
             trooper.Flags.Add(flag);
 
@@ -482,7 +483,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var update = new NickNameUpdate()
             {
                 ApprovedById = approver,
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 OldNickname = old,
                 NewNickname = actual.NickName,
             };
@@ -520,7 +521,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 Additions = new() { new(claim.Type, claim.Value) },
                 ChangedById = manager,
-                ChangedOn = DateTime.UtcNow
+                ChangedOn = DateTime.UtcNow.ToEst()
             });
 
             identResult = await _userManager.UpdateAsync(user);
@@ -553,7 +554,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 Removals = new() { new(claim.Type, claim.Value) },
                 ChangedById = manager,
-                ChangedOn = DateTime.UtcNow
+                ChangedOn = DateTime.UtcNow.ToEst()
             });
 
             identResult = await _userManager.UpdateAsync(user);

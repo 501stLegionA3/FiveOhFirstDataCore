@@ -181,7 +181,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 var token = Guid.NewGuid().ToString();
 
-                var time = DateTime.UtcNow.ToEst();
+                var time = DateTime.UtcNow.ToEst().ToEst();
 
                 var trooper = new Trooper()
                 {
@@ -199,7 +199,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 trooper.RecruitedByData = new()
                 {
                     RecruitedById = recruiter?.Id ?? 0,
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = time,
                 };
 
                 var identRes = await _userManager.CreateAsync(trooper, token);
