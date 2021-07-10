@@ -46,8 +46,8 @@
             </div>
         </div>
         <div class="row">
-            <div class="col form-group">
-                <button class="btn btn-primary btn-block" disabled="@IsEditing" @onclick="StartEdit">View</button>
+            <div class="col form-group d-grid gap-2">
+                <button class="btn btn-primary" disabled="@IsEditing" @onclick="StartEdit">View</button>
             </div>
         </div>
         @if (IsEditing)
@@ -61,18 +61,24 @@
                     <InputTextValid Valid="ValidUserName" @oninput="OnEditUserName" id="usernameEdit" @bind-Value="Trooper.UserName" class="form-control" disabled="@(!EditingUserName)" />
                     @if (!EditingUserName)
                     {
-                        <button class="btn btn-block btn-warning" @onclick="StartUserNameEdit">Edit</button>
+                        <div class="d-grid gap-2 mx-auto">
+                            <button class="btn btn-warning" @onclick="StartUserNameEdit">Edit</button>
+                        </div>
                     }
                     else
                     {
-                        <button class="btn w-25 btn-success" @onclick="SaveUserName">Save</button>
-                        <button class="btn w-25 btn-danger" @onclick="CancelUserNameEdit">Cancel</button> 
+                        <div class="d-grid gap-2 mx-auto d-md-block">
+                            <button class="btn p-1 btn-success" @onclick="SaveUserName">Save</button>
+                            <button class="btn p-1 btn-danger" @onclick="CancelUserNameEdit">Cancel</button> 
+                        </div>
                     }
                 </div>
                 <div class="col-lg-6 col-md-12 form-group">
                     <label for="nicknameEdit" class="form-label mt-4">Nickname</label>
                     <InputText @bind-Value="Trooper.NickName" class="form-control" disabled />
-                    <a href="/c1/roster/names/change?edit=@Trooper.Id" class="btn btn-info btn-block">Name Change Form</a>
+                    <div class="d-grid gap-2 mx-auto">
+                        <a href="/c1/roster/names/change?edit=@Trooper.Id" class="btn btn-info">Name Change Form</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -135,7 +141,9 @@
                     }
                     <InputText id="emailSendTo" @bind-Value="Trooper.Email" placeholder="Email for password reset." class="form-control"/>
                     <br />
-                    <button class="btn btn-primary btn-block m-3" @onclick="SendPasswordReset">Send Password Reset</button>
+                    <div class="d-grid gap-2 mx-auto">
+                        <button class="btn btn-primary m-3" @onclick="SendPasswordReset">Send Password Reset</button>
+                    </div>
                 </div>
             </div>
             <AuthorizeView Policy="RequireAdmin" Context="adminAuthView">
@@ -144,20 +152,26 @@
                         <div class="col-lg-6 col-md-12">
                             <h5>Access Grants</h5>
                             <hr />
-                            <button class="btn btn-block @(Admin ? "btn-success" : "btn-danger")" disabled="@(CurrentUser.Id != -1 || !EditAdminManagerValues)" @onclick="OnAdminPress">Admin</button>
+                            <div class="d-grid gap-2 mx-auto">
+                                <button class="btn @(Admin ? "btn-success" : "btn-danger")" disabled="@(CurrentUser.Id != -1 || !EditAdminManagerValues)" @onclick="OnAdminPress">Admin</button>
+                            </div>
                             <hr />
-                            <button class="btn btn-block @(Manager ? "btn-success" : "btn-danger")" disabled="@(!EditAdminManagerValues)" @onclick="OnManagerPress">Manager</button>
+                            <div class="d-grid gap-2 mx-auto">
+                                <button class="btn @(Manager ? "btn-success" : "btn-danger")" disabled="@(!EditAdminManagerValues)" @onclick="OnManagerPress">Manager</button>
+                            </div>
                             <hr />
                             @if(CurrentUser.Id != Trooper.Id)
                             {
-                                if (!EditAdminManagerValues)
-                                {
-                                <button class="btn btn-block btn-warning" @onclick="EditPermStart">Edit</button>
-                                }
-                                else
-                                {
-                                <button class="btn btn-block btn-success" @onclick="EditPermSave">Save</button>
-                                }
+                                <div class="d-grid gap-2 mx-auto">
+                                    @if (!EditAdminManagerValues)
+                                    {
+                                    <button class="btn btn-warning" @onclick="EditPermStart">Edit</button>
+                                    }
+                                    else
+                                    {
+                                    <button class="btn btn-success" @onclick="EditPermSave">Save</button>
+                                    }
+                                </div>
                             }
                         </div>
                         <div class="col-lg-6 col-md-12">
@@ -168,9 +182,12 @@
                             </div>
                             <label for="pwordDelete" class="form-label">Your Password</label>
                             <InputText class="form-control" id="pwordDelete" type="password" @bind-Value="Password" disabled="@(!CanDelete)" />
-                            <button class="btn btn-block btn-danger" disabled="@(!ReadyToDelete || !CanDelete)" @onclick="OnDeleteAccount">Delete Account</button>
+                            <div class="d-grid gap-2 mx-auto">
+                                <button class="btn btn-danger" disabled="@(!ReadyToDelete || !CanDelete)" @onclick="OnDeleteAccount">Delete Account</button>
+                            </div>
                         </div>
                     </div>
+                    <br class="p-3" />
                 </Authorized>
             </AuthorizeView>
         </div>

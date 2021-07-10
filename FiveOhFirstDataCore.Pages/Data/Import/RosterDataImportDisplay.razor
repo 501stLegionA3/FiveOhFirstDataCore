@@ -38,8 +38,8 @@ but the file gets populated with intellisense errors.*@
     </div>
     <hr />
     <div class="row">
-        <div class="col">
-            <button type="button" class="btn btn-block btn-primary" disabled="@Running" @onclick="ImportDataAsync">Import Data</button>
+        <div class="col d-grid gap-2">
+            <button type="button" class="btn btn-primary" disabled="@Running" @onclick="ImportDataAsync">Import Data</button>
         </div>
     </div>
     @if(Errors.Count > 0)

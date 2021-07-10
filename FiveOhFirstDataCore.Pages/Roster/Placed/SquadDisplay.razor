@@ -1,124 +1,126 @@
-﻿<tr class="table-dark text-light text-center">
-    <th colspan="4">
-        @Number.AsOrdinal() Squad
-    </th>
-</tr>
-<tr class="table-warning">
-    <th scope="row" colspan="2" class="text-right">
-        Squad Leader
-    </th>
-    <td colspan="2" class="text-left">
-        @(Squad.Lead?.WarrantRank is null ? Squad.Lead?.Rank?.AsFull() + " " ?? "" : Squad.Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Lead?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr class="table-warning">
-    <th scope="row" colspan="2" class="text-right">
-        Squad RT
-    </th>
-    <td colspan="2" class="text-left">
-        @(Squad.RT?.WarrantRank is null ? Squad.RT?.Rank?.AsFull() + " " ?? "" : Squad.RT?.WarrantRank?.AsFull() + " " ?? "")@(Squad.RT?.NickName ?? "TBD")
-    </td>
-</tr>
+﻿<tbody>
+    <tr class="table-dark text-light text-center">
+        <th colspan="4">
+            @Number.AsOrdinal() Squad
+        </th>
+    </tr>
+    <tr class="table-warning">
+        <th scope="row" colspan="2" class="text-end">
+            Squad Leader
+        </th>
+        <td colspan="2" class="text-start">
+            @(Squad.Lead?.WarrantRank is null ? Squad.Lead?.Rank?.AsFull() + " " ?? "" : Squad.Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Lead?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr class="table-warning">
+        <th scope="row" colspan="2" class="text-end">
+            Squad RT
+        </th>
+        <td colspan="2" class="text-start">
+            @(Squad.RT?.WarrantRank is null ? Squad.RT?.Rank?.AsFull() + " " ?? "" : Squad.RT?.WarrantRank?.AsFull() + " " ?? "")@(Squad.RT?.NickName ?? "TBD")
+        </td>
+    </tr>
 
-<tr>
-    <th scope="row" class="table-danger text-right">
-        Alpha Team Leader
-    </th>
-    <td class="table-danger text-left">
-        @(Squad.Teams[0].Lead?.WarrantRank is null ? Squad.Teams[0].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Lead?.NickName ?? "TBD") 
-    </td>
-    <th scope="row" class="table-primary text-right">
-        Bravo Team Leader
-    </th>
-    <td class="table-primary text-left">
-        @(Squad.Teams[1].Lead?.WarrantRank is null ? Squad.Teams[1].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Lead?.NickName ?? "TBD") 
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="table-danger text-right">
-        Alpha Trooper 
-    </th>
-    <td class="table-danger text-left">
-        @(AT1?.WarrantRank is null ? AT1?.Rank?.AsFull() + " " ?? "" : AT1?.WarrantRank?.AsFull() + " " ?? "")@(AT1?.NickName ?? "TBD") 
-    </td>
-    <th scope="row" class="table-primary text-right">
-        Bravo Trooper
-    </th>
-    <td class="table-primary text-left">
-        @(BT1?.WarrantRank is null ? BT1?.Rank?.AsFull() + " " ?? "" : BT1?.WarrantRank?.AsFull() + " " ?? "")@(BT1?.NickName ?? "TBD") 
-    </td>
-</tr>
+    <tr>
+        <th scope="row" class="table-danger text-end mx-auto">
+            Alpha Team Leader
+        </th>
+        <td class="table-danger text-start mx-auto">
+            @(Squad.Teams[0].Lead?.WarrantRank is null ? Squad.Teams[0].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Lead?.NickName ?? "TBD") 
+        </td>
+        <th scope="row" class="table-primary text-end mx-auto">
+            Bravo Team Leader
+        </th>
+        <td class="table-primary text-start mx-auto">
+            @(Squad.Teams[1].Lead?.WarrantRank is null ? Squad.Teams[1].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Lead?.NickName ?? "TBD") 
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="table-danger text-end">
+            Alpha Trooper 
+        </th>
+        <td class="table-danger text-start">
+            @(AT1?.WarrantRank is null ? AT1?.Rank?.AsFull() + " " ?? "" : AT1?.WarrantRank?.AsFull() + " " ?? "")@(AT1?.NickName ?? "TBD") 
+        </td>
+        <th scope="row" class="table-primary text-end">
+            Bravo Trooper
+        </th>
+        <td class="table-primary text-start">
+            @(BT1?.WarrantRank is null ? BT1?.Rank?.AsFull() + " " ?? "" : BT1?.WarrantRank?.AsFull() + " " ?? "")@(BT1?.NickName ?? "TBD") 
+        </td>
+    </tr>
 
-<tr>
-    <th scope="row" class="table-danger text-right">
-        Alpha Trooper 
-    </th>
-    <td class="table-danger text-left">
-        @(AT2?.WarrantRank is null ? AT2?.Rank?.AsFull() + " " ?? "" : AT2?.WarrantRank?.AsFull() + " " ?? "")@(AT2?.NickName ?? "TBD") 
-    </td>
-    <th scope="row" class="table-primary text-right">
-        Bravo Trooper
-    </th>
-    <td class="table-primary text-left">
-        @(BT2?.WarrantRank is null ? BT2?.Rank?.AsFull() + " " ?? "" : BT2?.WarrantRank?.AsFull() + " " ?? "")@(BT2?.NickName ?? "TBD") 
-    </td>
-</tr>
+    <tr>
+        <th scope="row" class="table-danger text-end">
+            Alpha Trooper 
+        </th>
+        <td class="table-danger text-start">
+            @(AT2?.WarrantRank is null ? AT2?.Rank?.AsFull() + " " ?? "" : AT2?.WarrantRank?.AsFull() + " " ?? "")@(AT2?.NickName ?? "TBD") 
+        </td>
+        <th scope="row" class="table-primary text-end">
+            Bravo Trooper
+        </th>
+        <td class="table-primary text-start">
+            @(BT2?.WarrantRank is null ? BT2?.Rank?.AsFull() + " " ?? "" : BT2?.WarrantRank?.AsFull() + " " ?? "")@(BT2?.NickName ?? "TBD") 
+        </td>
+    </tr>
 
-@for(int i = 0; i < AAdditional.Count && i < BAdditional.Count; i++)
-{
-    Trooper AT3 = null;
-    if (AAdditional.Count < i)
+    @for(int i = 0; i < AAdditional.Count && i < BAdditional.Count; i++)
     {
-        AT3 = AAdditional[i];
-    }
+        Trooper AT3 = null;
+        if (AAdditional.Count < i)
+        {
+            AT3 = AAdditional[i];
+        }
 
-    Trooper BT3 = null;
-    if (BAdditional.Count < i)
-    {
-        BT3 = BAdditional[i];
+        Trooper BT3 = null;
+        if (BAdditional.Count < i)
+        {
+            BT3 = BAdditional[i];
+        }
+
+        <tr>
+            <th scope="row" class="table-danger text-end">
+                Alpha Trooper 
+            </th>
+            <td class="table-danger text-start">
+                @(AT3?.WarrantRank is null ? AT3?.Rank?.AsFull() + " " ?? "" : AT3?.WarrantRank?.AsFull() + " " ?? "")@(AT3?.NickName ?? "TBD") 
+            </td>
+            <th scope="row" class="table-primary text-end">
+                Bravo Trooper
+            </th>
+            <td class="table-primary text-start">
+                @(BT3?.WarrantRank is null ? BT3?.Rank?.AsFull() + " " ?? "" : BT3?.WarrantRank?.AsFull() + " " ?? "")@(BT3?.NickName ?? "TBD") 
+            </td>
+        </tr>
     }
 
     <tr>
-        <th scope="row" class="table-danger text-right">
-            Alpha Trooper 
+        <th scope="row" class="table-danger text-end">
+            Alpha Medic 
         </th>
-        <td class="table-danger text-left">
-            @(AT3?.WarrantRank is null ? AT3?.Rank?.AsFull() + " " ?? "" : AT3?.WarrantRank?.AsFull() + " " ?? "")@(AT3?.NickName ?? "TBD") 
+        <td class="table-danger text-start">
+            @(Squad.Teams[0].Medic?.WarrantRank is null ? Squad.Teams[0].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Medic?.NickName ?? "TBD") 
         </td>
-        <th scope="row" class="table-primary text-right">
-            Bravo Trooper
+        <th scope="row" class="table-primary text-end">
+            Bravo Medic
         </th>
-        <td class="table-primary text-left">
-            @(BT3?.WarrantRank is null ? BT3?.Rank?.AsFull() + " " ?? "" : BT3?.WarrantRank?.AsFull() + " " ?? "")@(BT3?.NickName ?? "TBD") 
-        </td>
-    </tr>
-}
-
-<tr>
-    <th scope="row" class="table-danger text-right">
-        Alpha Medic 
-    </th>
-    <td class="table-danger text-left">
-        @(Squad.Teams[0].Medic?.WarrantRank is null ? Squad.Teams[0].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Medic?.NickName ?? "TBD") 
-    </td>
-    <th scope="row" class="table-primary text-right">
-        Bravo Medic
-    </th>
-    <td class="table-primary text-left">
-        @(Squad.Teams[1].Medic?.WarrantRank is null ? Squad.Teams[1].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Medic?.NickName ?? "TBD") 
-    </td>
-</tr>
-@if (!Airborne)
-{
-    <tr class="table-warning">
-        <th scope="row" colspan="2" class="text-right">
-            Squad ARC
-        </th>
-        <td colspan="2" class="text-left">
-            @(Squad.ARC?.WarrantRank is null ? Squad.ARC?.Rank?.AsFull() + " " ?? "" : Squad.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Squad.ARC?.NickName ?? "TBD")
+        <td class="table-primary text-start">
+            @(Squad.Teams[1].Medic?.WarrantRank is null ? Squad.Teams[1].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Medic?.NickName ?? "TBD") 
         </td>
     </tr>
-}
+    @if (!Airborne)
+    {
+        <tr class="table-warning">
+            <th scope="row" colspan="2" class="text-end">
+                Squad ARC
+            </th>
+            <td colspan="2" class="text-start">
+                @(Squad.ARC?.WarrantRank is null ? Squad.ARC?.Rank?.AsFull() + " " ?? "" : Squad.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Squad.ARC?.NickName ?? "TBD")
+            </td>
+        </tr>
+    }
+</tbody>
 
 @code {
     [Parameter]

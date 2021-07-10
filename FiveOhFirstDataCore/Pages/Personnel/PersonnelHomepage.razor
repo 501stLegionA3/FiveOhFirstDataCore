@@ -12,29 +12,29 @@
                 <h1 class="col">C-1 PERSONNEL</h1>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12 p-2">
+                <div class="col-md-6 col-sm-12 p-2 d-grid gap-2">
                     @*Roster Staff*@
-                    <a href="/c1/roster" class="btn btn-block btn-primary @(Access[0] ? "" : "disabled")">Roster Staff Home</a>
+                    <a href="/c1/roster" class="btn btn-primary @(Access[0] ? "" : "disabled")">Roster Staff Home</a>
                 </div>
-                <div class="col-md-6 col-sm-12 p-2">
+                <div class="col-md-6 col-sm-12 p-2 d-grid gap-2">
                     @*Document Maintenance*@
-                    <a href="/c1/docs" class="btn btn-block btn-primary @(Access[1] ? "" : "disabled")">Document Maintenance Home</a>
+                    <a href="/c1/docs" class="btn btn-primary @(Access[1] ? "" : "disabled")">Document Maintenance Home</a>
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12 p-2">
+                <div class="col-md-6 col-sm-12 p-2 d-grid gap-2">
                     @*Recruiting*@
-                    <a href="/c1/recruiter" class="btn btn-block btn-primary @(Access[2] ? "" : "disabled")">Recruiting Staff Home</a>
+                    <a href="/c1/recruiter" class="btn btn-primary @(Access[2] ? "" : "disabled")">Recruiting Staff Home</a>
                 </div>
-                <div class="col-md-6 col-sm-12 p-2">
+                <div class="col-md-6 col-sm-12 p-2 d-grid gap-2">
                     @*Returning Members*@
-                    <a href="/c1/returning" class="btn btn-block btn-primary @(Access[3] ? "" : "disabled")">Returning Member Staff Home</a>
+                    <a href="/c1/returning" class="btn btn-primary @(Access[3] ? "" : "disabled")">Returning Member Staff Home</a>
                 </div>
             </div>
             <div class="row">
-                <div class="col p-2">
+                <div class="col p-2 d-grid gap-2">
                     @*Medals*@
-                    <a href="/c1/medals" class="btn btn-block btn-primary @(Access[4] ? "" : "disabled")">Medals Staff Home</a>
+                    <a href="/c1/medals" class="btn btn-primary @(Access[4] ? "" : "disabled")">Medals Staff Home</a>
                 </div>
             </div>
             @if (!Loaded)

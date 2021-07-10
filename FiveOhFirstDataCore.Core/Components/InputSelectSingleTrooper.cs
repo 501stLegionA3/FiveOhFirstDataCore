@@ -68,24 +68,27 @@ namespace FiveOhFirstDataCore.Core.Components
                 builder.AddAttribute(9, "class", "position-relative bg-secondary");
                 builder.AddAttribute(10, "style", "z-index: 2000");
                 builder.OpenElement(11, "div");
-                builder.AddAttribute(12, "class", "table table-hover position-absolute top-100 start-50 bg-secondary");
+                builder.AddAttribute(12, "class", "table table-hover position-absolute end-0 start-0 bg-secondary");
 
                 foreach (var suggest in Suggestions)
                 {
-                    builder.OpenElement(13, "button");
+                    builder.OpenElement(13, "div");
+                    builder.AddAttribute(14, "class", "d-grid gap-2");
+                    builder.OpenElement(15, "button");
 
                     var suggestNick = suggest.NickName;
                     var value = suggest;
 
-                    builder.AddAttribute(14, "class", "btn btn-primary btn-block");
-                    builder.AddAttribute(15, "onclick", EventCallback.Factory.Create(this, (x) =>
+                    builder.AddAttribute(16, "class", "btn btn-primary");
+                    builder.AddAttribute(17, "onclick", EventCallback.Factory.Create(this, (x) =>
                     {
                         CurrentValue = value;
                         Valid = true;
                         DisplayValue = suggestNick;
                     }));
-                    builder.AddContent(16, $"{suggest.NickName} - {suggest.Id}");
+                    builder.AddContent(18, $"{suggest.NickName} - {suggest.Id}");
 
+                    builder.CloseElement();
                     builder.CloseElement();
                 }
 
