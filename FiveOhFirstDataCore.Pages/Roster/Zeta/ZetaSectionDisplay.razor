@@ -10,23 +10,24 @@
         </th>
     </tr>
 </thead>
-
+<tbody>
 <tr class="table-warning">
-    <th scope="row" class="text-right">
+    <th scope="row" class="text-end">
         Section Commander
     </th>
-    <td class="text-left">
+    <td class="text-start">
         @(Section.Commander?.WarrantRank is null ? Section.Commander?.Rank?.AsFull() + " " ?? "" : Section.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Section.Commander?.NickName ?? "TBD")
     </td>
 </tr>
 <tr class="table-warning">
-    <th scope="row" class="text-right">
+    <th scope="row" class="text-end">
         Section Subordinate
     </th>
-    <td class="text-left">
+    <td class="text-start">
         @(Section.Subordinate?.WarrantRank is null ? Section.Subordinate?.Rank?.AsFull() + " " ?? "" : Section.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(Section.Subordinate?.NickName ?? "TBD")
     </td>
 </tr>
+</tbody>
 
 @for(int i = 0; i < Section.Squads.Length; i++)
 {

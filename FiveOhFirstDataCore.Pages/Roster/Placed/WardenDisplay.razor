@@ -5,9 +5,9 @@
         </th>
     </tr>
 </thead>
-
+<tbody>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="2" class="text-end">
         Master Warden
     </th>
     <td scope="row" colspan="2">
@@ -15,7 +15,7 @@
     </td>
 </tr>
 <tr>
-    <th scope="row" colspan="2" class="text-right">
+    <th scope="row" colspan="2" class="text-end">
         Chief Warden
     </th>
     <td scope="row" colspan="2">
@@ -26,7 +26,7 @@
 @for(int i = 0; i < Warden.Wardens.Length; i++)
 {
     <tr>
-        <th scope="row" colspan="2" class="text-right">
+        <th scope="row" colspan="2" class="text-end">
             Warden
         </th>
         <td scope="row" colspan="2">
@@ -34,6 +34,8 @@
         </td>
     </tr>
 }
+
+</tbody>
 
 @code {
     [Parameter]

@@ -1,43 +1,45 @@
-﻿<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Platoon Commander
-    </th>
-    <td colspan="2" class="text-left">
-        @(Platoon.Commander?.WarrantRank is null ? Platoon.Commander?.Rank?.AsFull() + " " ?? "" : Platoon.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Commander?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Platoon Sergeant Major
-    </th>
-    <td colspan="2" class="text-left">
-        @(Platoon.SergeantMajor?.WarrantRank is null ? Platoon.SergeantMajor?.Rank?.AsFull() + " " ?? "" : Platoon.SergeantMajor?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.SergeantMajor?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Platoon Medic
-    </th>
-    <td colspan="2" class="text-left">
-        @(Platoon.Medic?.WarrantRank is null ? Platoon.Medic?.Rank?.AsFull() + " " ?? "" : Platoon.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Medic?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Platoon RT
-    </th>
-    <td colspan="2" class="text-left">
-        @(Platoon.RT?.WarrantRank is null ? Platoon.RT?.Rank?.AsFull() + " " ?? "" : Platoon.RT?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.RT?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Platoon ARC
-    </th>
-    <td colspan="2" class="text-left">
-        @(Platoon.ARC?.WarrantRank is null ? Platoon.ARC?.Rank?.AsFull() + " " ?? "" : Platoon.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.ARC?.NickName ?? "TBD")
-    </td>
-</tr>
+﻿<tbody>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Platoon Commander
+        </th>
+        <td colspan="2" class="text-start">
+            @(Platoon.Commander?.WarrantRank is null ? Platoon.Commander?.Rank?.AsFull() + " " ?? "" : Platoon.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Commander?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Platoon Sergeant Major
+        </th>
+        <td colspan="2" class="text-start">
+            @(Platoon.SergeantMajor?.WarrantRank is null ? Platoon.SergeantMajor?.Rank?.AsFull() + " " ?? "" : Platoon.SergeantMajor?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.SergeantMajor?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Platoon Medic
+        </th>
+        <td colspan="2" class="text-start">
+            @(Platoon.Medic?.WarrantRank is null ? Platoon.Medic?.Rank?.AsFull() + " " ?? "" : Platoon.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Medic?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Platoon RT
+        </th>
+        <td colspan="2" class="text-start">
+            @(Platoon.RT?.WarrantRank is null ? Platoon.RT?.Rank?.AsFull() + " " ?? "" : Platoon.RT?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.RT?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Platoon ARC
+        </th>
+        <td colspan="2" class="text-start">
+            @(Platoon.ARC?.WarrantRank is null ? Platoon.ARC?.Rank?.AsFull() + " " ?? "" : Platoon.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.ARC?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 
 @code {
     [Parameter]

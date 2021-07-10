@@ -5,15 +5,16 @@
         </th>
     </tr>
 </thead>
-
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Flight Commander
-    </th>
-    <td class="text-left" colspan="2">
-        @(Flight.Commander?.WarrantRank is null ? Flight.Commander?.PilotRank?.AsFull() + " " ?? "" : Flight.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Flight.Commander?.NickName ?? "TBD")
-    </td>
-</tr>
+<tbody>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Flight Commander
+        </th>
+        <td class="text-start" colspan="2">
+            @(Flight.Commander?.WarrantRank is null ? Flight.Commander?.PilotRank?.AsFull() + " " ?? "" : Flight.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Flight.Commander?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 
 @for(int i = 0; i < Flight.Sections.Length; i++)
 {
