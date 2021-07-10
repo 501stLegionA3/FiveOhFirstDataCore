@@ -101,7 +101,7 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 return RTORank?.AsShorthand() ?? "";
             }
-            else if (Role == Role.Pilot)
+            else if (Slot >= Slot.Razor && Slot < Slot.Warden)
             {
                 return PilotRank?.AsShorthand() ?? "";
             }
@@ -109,9 +109,7 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 return MedicRank?.AsShorthand() ?? "";
             }
-            else if (Role == Role.Warden
-                || Role == Role.MasterWarden
-                || Role == Role.ChiefWarden)
+            else if (Slot >= Slot.Warden && Slot < Slot.ZetaCompany)
             {
                 return WardenRank?.AsShorthand() ?? "";
             }
@@ -160,7 +158,7 @@ namespace FiveOhFirstDataCore.Core.Account
                             }
                             else
                             {
-                                return $"Taem {Role.AsFull()}";
+                                return $"Team {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
@@ -198,7 +196,7 @@ namespace FiveOhFirstDataCore.Core.Account
                             }
                             else
                             {
-                                return $"Taem {Role.AsFull()}";
+                                return $"Team {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
@@ -214,39 +212,31 @@ namespace FiveOhFirstDataCore.Core.Account
             }
             else if (Slot >= Slot.Mynock && Slot < Slot.Razor)
             {
-                var tag = (int)Slot / 10 % 10;
+                var tag = (int)Slot % 10;
                 if (tag == 0)
                 {
-                    return $"Company {Slot.AsFull()}";
+                    return $"{Slot.AsFull()}";
                 }
                 else
                 {
-                    tag = (int)Slot % 10;
-                    if (tag == 0)
+                    if (Role == Role.Lead)
                     {
-                        return $"Platoon {Slot.AsFull()}";
-                    }
-                    else
-                    {
-                        if (Role == Role.Lead)
-                        {
-                            if (Team is null)
-                            {
-                                return $"Section {Role.AsFull()}";
-                            }
-                            else
-                            {
-                                return $"Taem {Role.AsFull()}";
-                            }
-                        }
-                        else if (Role == Role.RTO)
+                        if (Team is null)
                         {
                             return $"Section {Role.AsFull()}";
                         }
                         else
                         {
-                            return Role.AsFull();
+                            return $"Team {Role.AsFull()}";
                         }
+                    }
+                    else if (Role == Role.RTO)
+                    {
+                        return $"Section {Role.AsFull()}";
+                    }
+                    else
+                    {
+                        return Role.AsFull();
                     }
                 }
             }
@@ -255,14 +245,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"Squadron {Slot.AsFull()}";
+                    return $"{Slot.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"Flight {Slot.AsFull()}";
+                        return $"{Slot.AsFull()}";
                     }
                     else
                     {

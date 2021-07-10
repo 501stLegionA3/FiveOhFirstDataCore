@@ -9,7 +9,22 @@
         @Trooper.NickName
     </td>
     <td>
-        @Trooper.Rank?.AsFull()
+        @if(Trooper.Slot >= Slot.Razor && Trooper.Slot < Slot.Warden)
+        {
+            @Trooper.PilotRank?.AsFull()
+        }
+        else if (Trooper.Slot >= Slot.Warden && Trooper.Slot < Slot.ZetaCompany)
+        {
+            @Trooper.WardenRank?.AsFull()
+        }
+        else if (Trooper.WarrantRank is not null)
+        {
+            @Trooper.WarrantRank?.AsFull()
+        }
+        else
+        {
+            @Trooper.Rank?.AsFull()
+        }
     </td>
     <td>
         @Trooper.Slot.AsFull()
