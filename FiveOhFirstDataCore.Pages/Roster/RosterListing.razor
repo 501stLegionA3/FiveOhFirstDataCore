@@ -4,27 +4,21 @@
     <table class="w-100 justify-content-center">
         <tr>
             <td>
-            <div class="input-group p-1">
+            <div class="input-group">
                     <button class="@GetSortButtonClass(0) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(0)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control" placeholder="Designation" @bind-Value="Search.DesignationFilter" id="designation-filter" @oninput="OnDesgChange" />
-                    </div>
+                    <InputText class="form-control" placeholder="Designation" @bind-Value="Search.DesignationFilter" id="designation-filter" @oninput="OnDesgChange" />
                 </div>
             </td>
             <td>
                 <div class="input-group">
                     <button class="@GetSortButtonClass(1) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(1)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control" placeholder="Birth #" @bind-Value="Search.IdFilter" id="id-roster-filter" @oninput="OnIdChange" />
-                    </div>
+                    <InputText class="form-control" placeholder="Birth #" @bind-Value="Search.IdFilter" id="id-roster-filter" @oninput="OnIdChange" />
                 </div>
             </td>
             <td>
                 <div class="input-group">
                     <button class="@GetSortButtonClass(2) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(2)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="Search.NickNameFilter" id="nickname-filter" @oninput="OnNickChange" />
-                    </div>
+                    <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="Search.NickNameFilter" id="nickname-filter" @oninput="OnNickChange" />
                 </div>
             </td>
             <td>
@@ -66,7 +60,7 @@
         </tr>
     </table>
 </EditForm>
-<table class="table table-hover">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
             <th scope="col" class="w-5">Designation</th>
