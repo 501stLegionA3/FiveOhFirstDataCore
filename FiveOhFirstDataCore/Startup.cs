@@ -69,6 +69,13 @@ namespace FiveOhFirstDataCore
             services.AddAuthentication()
                 .AddSteam("Steam", "Steam", options =>
                 {
+                    options.CorrelationCookie = new()
+                    {
+                        IsEssential = true,
+                        SameSite = SameSiteMode.Lax,
+                        SecurePolicy = CookieSecurePolicy.Always
+                    };
+
                     options.Events = new OpenIdAuthenticationEvents
                     {
                         OnTicketReceived = async context =>
@@ -116,6 +123,13 @@ namespace FiveOhFirstDataCore
 
                     options.Scope.Add("identify");
                     options.Scope.Add("email");
+
+                    options.CorrelationCookie = new()
+                    {
+                        IsEssential = true,
+                        SameSite = SameSiteMode.Lax,
+                        SecurePolicy = CookieSecurePolicy.Always
+                    };
 
                     options.Events = new OAuthEvents
                     {
