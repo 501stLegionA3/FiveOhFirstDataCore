@@ -1,5 +1,6 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
+@inherits NoticePageModel
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
@@ -26,14 +27,21 @@
                                  AllowedAccess="AllowedAccess" />
                 }
             </div>
-            <div class="col-md-4 col-sm-12">
+            <div class="col-md-4 col-sm-12 overflow-auto container-fluid">
+                @if (Updates is not null)
+                {
+                    <PaginationController Controller="this" />
+                }
+
                 <h3 class="text-center">Recent Activity</h3>
                 @if(Updates is not null)
                 {
                     Counter = 0;
+                    var cap = CurrentPageCap;
+                    var start = CurrentPageStart;
                     @foreach(var update in Updates)
                     {
-                        @if (Counter++ >= 10) break;
+                        @if (Counter++ >= cap || Counter < start) continue;
 
                         switch (update)
                         {
@@ -188,6 +196,8 @@
                             break;
                         }
                     }
+
+                    <PaginationController Controller="this" />
                 }
             </div>
         </div>
@@ -211,6 +221,7 @@
         if(firstRender)
         {
             Updates = await _update.GetRosterUpdatesAsync();
+            Items = Updates.Count();
             StateHasChanged();
         }
         else if (Loading)
