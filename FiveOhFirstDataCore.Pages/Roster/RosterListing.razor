@@ -187,7 +187,14 @@
                     Filtered.Sort((x, y) => x.NickName.CompareTo(y.NickName));
                     break;
                 case 3:
-                    Filtered.Sort((x, y) => x.Rank?.CompareTo(y.Rank ?? TrooperRank.Recruit) ?? -1);
+                    Filtered.Sort((x, y) =>
+                    {
+                        if (x.Rank is null && y.Rank is null) return 0;
+                        if (x.Rank is null) return -1;
+                        if (y.Rank is null) return 1;
+
+                        return x.Rank.Value.CompareTo(y.Rank.Value);
+                    });
                     break;
                 case 4:
                     Filtered.Sort((x, y) => x.Slot.CompareTo(y.Slot));
@@ -212,7 +219,14 @@
                     Filtered.Sort((x, y) => y.NickName.CompareTo(x.NickName));
                     break;
                 case 3:
-                    Filtered.Sort((x, y) => y.Rank?.CompareTo(x.Rank ?? TrooperRank.Recruit) ?? -1);
+                    Filtered.Sort((x, y) =>
+                    {
+                        if (x.Rank is null && y.Rank is null) return 0;
+                        if (y.Rank is null) return -1;
+                        if (x.Rank is null) return 1;
+
+                        return y.Rank.Value.CompareTo(x.Rank.Value);
+                    });
                     break;
                 case 4:
                     Filtered.Sort((x, y) => y.Slot.CompareTo(x.Slot));
