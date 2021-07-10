@@ -10,24 +10,24 @@
         </th>
     </tr>
 </thead>
-
-<tr class="table-warning">
-    <th scope="row" class="text-right">
-        Section Commander
-    </th>
-    <td class="text-left">
-        @(UTCSection.Commander?.WarrantRank is null ? UTCSection.Commander?.Rank?.AsFull() + " " ?? "" : UTCSection.Commander?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Commander?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr class="table-warning">
-    <th scope="row" class="text-right">
-        Section Subordinate
-    </th>
-    <td  class="text-left">
-        @(UTCSection.Subordinate?.WarrantRank is null ? UTCSection.Subordinate?.Rank?.AsFull() + " " ?? "" : UTCSection.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Subordinate?.NickName ?? "TBD")
-    </td>
-</tr>
-
+<tbody>
+    <tr class="table-warning">
+        <th scope="row" class="text-end">
+            Section Commander
+        </th>
+        <td class="text-start">
+            @(UTCSection.Commander?.WarrantRank is null ? UTCSection.Commander?.Rank?.AsFull() + " " ?? "" : UTCSection.Commander?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Commander?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr class="table-warning">
+        <th scope="row" class="text-end">
+            Section Subordinate
+        </th>
+        <td  class="text-start">
+            @(UTCSection.Subordinate?.WarrantRank is null ? UTCSection.Subordinate?.Rank?.AsFull() + " " ?? "" : UTCSection.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(UTCSection.Subordinate?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 @for(int i = 0; i < UTCSection.Squads.Length; i++)
 {
     <ZetaUtcSquadDisplay UTCSquad="UTCSection.Squads[i]" Number="i + 1" />

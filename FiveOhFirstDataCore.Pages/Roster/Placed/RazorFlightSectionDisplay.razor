@@ -5,39 +5,40 @@
         </th>
     </tr>
 </thead>
-
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Pilot (@($"{SectionNumber}A"))
-    </th>
-    <td class="text-left" colspan="2">
-        @(Section.Alpha?.WarrantRank is null ? Section.Alpha?.PilotRank?.AsFull() + " " ?? "" : Section.Alpha?.WarrantRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Pilot (@($"{SectionNumber}B"))
-    </th>
-    <td class="text-left" colspan="2">
-        @(Section.Bravo?.WarrantRank is null ? Section.Bravo?.PilotRank?.AsFull() + " " ?? "" : Section.Bravo?.WarrantRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Pilot (@($"{SectionNumber}C"))
-    </th>
-    <td class="text-left" colspan="2">
-        @(Section.Charlie?.WarrantRank is null ? Section.Charlie?.PilotRank?.AsFull() + " " ?? "" : Section.Charlie?.WarrantRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Pilot (@($"{SectionNumber}D"))
-    </th>
-    <td class="text-left" colspan="2">
-        @(Section.Delta?.WarrantRank is null ? Section.Delta?.PilotRank?.AsFull() + " " ?? "" : Section.Delta?.WarrantRank?.AsFull() + " " ?? "")@(Section.Delta?.NickName ?? "TBD")
-    </td>
-</tr>
+<tbody>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Pilot (@($"{SectionNumber}A"))
+        </th>
+        <td class="text-start" colspan="2">
+            @(Section.Alpha?.WarrantRank is null ? Section.Alpha?.PilotRank?.AsFull() + " " ?? "" : Section.Alpha?.WarrantRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Pilot (@($"{SectionNumber}B"))
+        </th>
+        <td class="text-start" colspan="2">
+            @(Section.Bravo?.WarrantRank is null ? Section.Bravo?.PilotRank?.AsFull() + " " ?? "" : Section.Bravo?.WarrantRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Pilot (@($"{SectionNumber}C"))
+        </th>
+        <td class="text-start" colspan="2">
+            @(Section.Charlie?.WarrantRank is null ? Section.Charlie?.PilotRank?.AsFull() + " " ?? "" : Section.Charlie?.WarrantRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Pilot (@($"{SectionNumber}D"))
+        </th>
+        <td class="text-start" colspan="2">
+            @(Section.Delta?.WarrantRank is null ? Section.Delta?.PilotRank?.AsFull() + " " ?? "" : Section.Delta?.WarrantRank?.AsFull() + " " ?? "")@(Section.Delta?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 
 @code {
     [Parameter]
