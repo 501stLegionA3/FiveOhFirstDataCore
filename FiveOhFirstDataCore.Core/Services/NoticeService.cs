@@ -91,7 +91,7 @@ namespace FiveOhFirstDataCore.Core.Services
             if (item is null) return;
 
             newNotice.AuthorId = user.Id;
-            newNotice.PostedOn = DateTime.UtcNow.ToEst();
+            newNotice.PostedOn = DateTime.UtcNow.ToEst().ToEst();
 
             item.Notices.Add(newNotice);
 
