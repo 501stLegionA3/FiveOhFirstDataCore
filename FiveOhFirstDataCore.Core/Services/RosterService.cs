@@ -199,7 +199,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 trooper.RecruitedByData = new()
                 {
                     RecruitedById = recruiter?.Id ?? 0,
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = time,
                 };
 
                 var identRes = await _userManager.CreateAsync(trooper, token);
