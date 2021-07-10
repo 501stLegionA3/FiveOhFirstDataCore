@@ -24,12 +24,12 @@
         @((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
     </td>
     <td>
-        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right" aria-hidden="true"></a>
+        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
     </td>
     <AuthorizeView Policy="RequireRosterClerk">
         <Authorized>
             <td>
-                <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil" aria-hidden="true"></a>
+                <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil btn btn-outline-primary" aria-hidden="true"></a>
             </td>
         </Authorized>
     </AuthorizeView>
