@@ -9,7 +9,7 @@
 <AuthorizeView Policy="RequireRosterClerkOrReturningMemberStaff">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
-        <EditForm Context="editTrooperContext" class="form" Model="Trooper">
+        <EditForm Context="editTrooperContext" class="form pb-3" Model="Trooper">
             @if(Errors.Count > 0)
             {
             <div class="row">

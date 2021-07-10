@@ -10,7 +10,7 @@
 <AuthorizeView Policy="RequireNameChange">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
-        <EditForm Context="nameChangeContext" Model="Trooper">
+        <EditForm Context="nameChangeContext" Model="Trooper" class="pb-3">
             @if(Message is not null)
             {
             <div class="row">

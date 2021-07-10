@@ -10,7 +10,7 @@
 <AuthorizeView Policy="RequireManager">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
-        <EditForm Model="Trooper" class="form" Context="modifyTrooperDataContext">
+        <EditForm Model="Trooper" class="form pb-3" Context="modifyTrooperDataContext">
         @if(Message is not null)
         {
         <div class="row">
@@ -187,7 +187,6 @@
                             </div>
                         </div>
                     </div>
-                    <br class="p-3" />
                 </Authorized>
             </AuthorizeView>
         </div>
