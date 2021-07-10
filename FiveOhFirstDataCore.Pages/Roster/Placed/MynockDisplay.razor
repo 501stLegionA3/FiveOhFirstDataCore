@@ -5,39 +5,40 @@
         </th>
     </tr>
 </thead>
-
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Detachment Commander
-    </th>
-    <td colspan="2" class="text-left">
-        @(Mynock.Commander?.WarrantRank is null ? Mynock.Commander?.Rank?.AsFull() + " " ?? "" : Mynock.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Commander?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Detachment NCOIC
-    </th>
-    <td colspan="2" class="text-left">
-        @(Mynock.NCOIC?.WarrantRank is null ? Mynock.NCOIC?.Rank?.AsFull() + " " ?? "" : Mynock.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.NCOIC?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Detachment Medic
-    </th>
-    <td colspan="2" class="text-left">
-        @(Mynock.Medic?.WarrantRank is null ? Mynock.Medic?.Rank?.AsFull() + " " ?? "" : Mynock.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Medic?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" colspan="2" class="text-right">
-        Detachment RT
-    </th>
-    <td colspan="2" class="text-left">
-        @(Mynock.RT?.WarrantRank is null ? Mynock.RT?.Rank?.AsFull() + " " ?? "" : Mynock.RT?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.RT?.NickName ?? "TBD")
-    </td>
-</tr>
+<tbody>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Detachment Commander
+        </th>
+        <td colspan="2" class="text-start">
+            @(Mynock.Commander?.WarrantRank is null ? Mynock.Commander?.Rank?.AsFull() + " " ?? "" : Mynock.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Commander?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Detachment NCOIC
+        </th>
+        <td colspan="2" class="text-start">
+            @(Mynock.NCOIC?.WarrantRank is null ? Mynock.NCOIC?.Rank?.AsFull() + " " ?? "" : Mynock.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.NCOIC?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Detachment Medic
+        </th>
+        <td colspan="2" class="text-start">
+            @(Mynock.Medic?.WarrantRank is null ? Mynock.Medic?.Rank?.AsFull() + " " ?? "" : Mynock.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Medic?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Detachment RT
+        </th>
+        <td colspan="2" class="text-start">
+            @(Mynock.RT?.WarrantRank is null ? Mynock.RT?.Rank?.AsFull() + " " ?? "" : Mynock.RT?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.RT?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 
 @for(int i = 0; i < Mynock.Sections.Length; i++)
 {
