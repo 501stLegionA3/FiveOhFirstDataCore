@@ -183,7 +183,11 @@
                 case 3:
                     Filtered.Sort((x, y) =>
                     {
-                        if (x.Rank is null && y.Rank is null) return 0;
+                        if (x.Rank is null && y.Rank is null)
+                        {
+                            return x.GetRankName().CompareTo(y.GetRankName());
+                        }
+
                         if (x.Rank is null) return -1;
                         if (y.Rank is null) return 1;
 
@@ -215,7 +219,11 @@
                 case 3:
                     Filtered.Sort((x, y) =>
                     {
-                        if (x.Rank is null && y.Rank is null) return 0;
+                        if (x.Rank is null && y.Rank is null)
+                        {
+                            return y.GetRankName().CompareTo(x.GetRankName());
+                        }
+
                         if (y.Rank is null) return -1;
                         if (x.Rank is null) return 1;
 

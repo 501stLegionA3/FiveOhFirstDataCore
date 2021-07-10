@@ -123,6 +123,26 @@ namespace FiveOhFirstDataCore.Core.Account
             }
         }
 
+        public string GetRankName()
+        {
+            if(Slot >= Slot.Razor && Slot < Slot.Warden)
+            {
+                return PilotRank?.AsFull() ?? "";
+            }
+            else if (Slot >= Slot.Warden && Slot < Slot.ZetaCompany)
+            {
+                return WardenRank?.AsFull() ?? "";
+            }
+            else if (WarrantRank is not null)
+            {
+                return WarrantRank?.AsFull() ?? "";
+            }
+            else
+            {
+                return Rank?.AsFull() ?? "";
+            }
+        }
+
         public string GetRoleName()
         {
             if (Slot == Slot.InactiveReserve)
