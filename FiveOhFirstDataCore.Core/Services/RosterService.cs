@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -180,15 +181,18 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 var token = Guid.NewGuid().ToString();
 
+                var time = DateTime.UtcNow.ToEst();
+
                 var trooper = new Trooper()
                 {
                     Id = trooperData.Id,
                     NickName = trooperData.NickName,
                     Rank = trooperData.StartingRank,
                     UserName = token,
-                    StartOfService = DateTime.Now,
-                    LastPromotion = DateTime.Now,
-                    AccessCode = token
+                    StartOfService = time,
+                    LastPromotion = time,
+                    AccessCode = token,
+                    Slot = Data.Slot.InactiveReserve,
                 };
 
                 var recruiter = await GetTrooperFromClaimsPrincipalAsync(user);
@@ -219,16 +223,6 @@ namespace FiveOhFirstDataCore.Core.Services
                 }
 
                 identRes = await _userManager.AddClaimAsync(trooper, new("Training", "BCT"));
-
-                if (!identRes.Succeeded)
-                {
-                    foreach (var error in identRes.Errors)
-                        errors.Add($"[{error.Code}] {error.Description}");
-
-                    return new(false, null, errors);
-                }
-
-                identRes = await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
 
                 if (!identRes.Succeeded)
                 {
