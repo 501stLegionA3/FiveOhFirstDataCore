@@ -72,7 +72,7 @@ namespace FiveOhFirstDataCore
                     options.CorrelationCookie = new()
                     {
                         IsEssential = true,
-                        SameSite = SameSiteMode.Lax,
+                        SameSite = SameSiteMode.None,
                         SecurePolicy = CookieSecurePolicy.Always
                     };
 
@@ -127,7 +127,7 @@ namespace FiveOhFirstDataCore
                     options.CorrelationCookie = new()
                     {
                         IsEssential = true,
-                        SameSite = SameSiteMode.Lax,
+                        SameSite = SameSiteMode.None,
                         SecurePolicy = CookieSecurePolicy.Always
                     };
 
