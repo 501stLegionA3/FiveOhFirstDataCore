@@ -270,6 +270,8 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             List<Trooper> sub = new();
 
+            if (t is null) return sub;
+
             await _dbContext.Users
                 .AsNoTracking()
                 .ForEachAsync(x =>
@@ -291,7 +293,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a company
                 else if ((slot / 10 % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander)
+                    if (t.Role == Data.Role.Commander
+                        || t.Role == Data.Role.NCOIC
+                        || t.Role == Data.Role.XO)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 100)
@@ -300,7 +304,8 @@ namespace FiveOhFirstDataCore.Core.Services
                             {
                                 // In the company staff
                                 if (slotDif == 0
-                                    || x.Role == Data.Role.Commander)
+                                    || x.Role == Data.Role.Commander
+                                    || x.Role == Data.Role.SergeantMajor)
                                 {
                                     sub.Add(x);
                                     return;
@@ -322,21 +327,24 @@ namespace FiveOhFirstDataCore.Core.Services
                 if ((slot % 10) == 0)
                 {
                     if (t.Role == Data.Role.Commander 
+                        || t.Role == Data.Role.SergeantMajor
                         || t.Role == Data.Role.MasterWarden 
                         || t.Role == Data.Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 10)
                         {
-                            // In the platoon staff
-                            if (slotDif == 0) 
-                                sub.Add(x);
-                            // This is a squad leader
-                            else if (x.Role == Data.Role.Lead && x.Team is null) 
-                                sub.Add(x);
+                            //// In the platoon staff
+                            //if (slotDif == 0) 
+                            //    sub.Add(x);
+                            //// This is a squad leader
+                            //else if (x.Role == Data.Role.Lead && x.Team is null) 
+                            //    sub.Add(x);
 
-                            else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
-                                sub.Add(x);
+                            //else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
+                            //    sub.Add(x);
+
+                            sub.Add(x);
                         }
                     }
                 }
