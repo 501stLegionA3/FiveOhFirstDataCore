@@ -17,7 +17,7 @@ To get access codes for your troopers, login to the website and navigate to [thi
 
 ## C-Shop Guides
 
-> If your department is not listed, there are no features for you yet. Please see the [playbook]() for future goals.
+> If your department is not listed, there are no features for you yet. Please see the [playbook](https://docs.google.com/document/d/1GioMM4Ce4NtIzNg3liXp6BrJSThHhJkFY1wtgnKTVvE/edit#heading=h.rdloqpj8n1c8) for future goals.
 
 ### C1 PERSONNEL
 

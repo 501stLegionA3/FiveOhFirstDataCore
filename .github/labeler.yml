@@ -1,0 +1,14 @@
+documentation:
+- docs/**/*
+
+startup:
+- FiveOhFirstDataCore/**/*
+
+core:
+- FiveOhFirstDataCore.Core/**/*
+
+shared:
+- FiveOhFirstDataCore.Pages/**/*
+
+database:
+- FiveOhFirstDataCore/FiveOhFirstDataCore.Core/Database/**/*
