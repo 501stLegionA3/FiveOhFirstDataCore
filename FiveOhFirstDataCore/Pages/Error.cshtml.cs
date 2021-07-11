@@ -10,6 +10,7 @@ namespace FiveOhFirstDataCore.Pages
     public class ErrorModel : PageModel
     {
         public string RequestId { get; set; }
+        public string? Operation { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
@@ -23,6 +24,7 @@ namespace FiveOhFirstDataCore.Pages
         public void OnGet()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            Operation = Activity.Current?.OperationName;
         }
     }
 }
