@@ -9,10 +9,10 @@
                 <thead>
                     <tr>
                         <td colspan="3">
-                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" @oninput="IdChanged"/>
+                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="DummyId" @oninput="IdChanged"/>
                         </td>
                         <td colspan="2">
-                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" @oninput="NickChanged"/>
+                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="DummyNick" @oninput="NickChanged"/>
                         </td>
                     </tr>
                     <tr>
@@ -51,6 +51,9 @@
 
     public string IdSearch { get; set; } = "";
     public string NickSearch { get; set; } = "";
+
+    public string DummyId {get;set;} = "";
+    public string DummyNick { get; set; } = "";
 
     public List<Trooper> Unregistered { get; set; } = new();
     public List<Trooper> Filtered { get; set; } = new();
