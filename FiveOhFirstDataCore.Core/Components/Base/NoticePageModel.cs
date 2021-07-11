@@ -25,7 +25,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
             }
         }
         public int PageIndex { get; private set; } = 1;
-        public int ItemsPerPage { get; private set; } = 5;
+        public int ItemsPerPage { get; set; } = 5;
 
         public int Items { get; set; }
         public int Segments { get
