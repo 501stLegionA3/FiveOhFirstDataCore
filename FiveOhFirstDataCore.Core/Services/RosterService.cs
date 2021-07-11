@@ -6,6 +6,8 @@ using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -20,13 +22,15 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Trooper> _userManager;
         private readonly IDiscordService _discord;
+        private readonly ILogger _logger;
 
         public RosterService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
-            IDiscordService discord)
+            IDiscordService discord, ILogger<RosterService> logger)
         {
             this._dbContext = dbContext;
             this._userManager = userManager;
             this._discord = discord;
+            this._logger = logger;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
