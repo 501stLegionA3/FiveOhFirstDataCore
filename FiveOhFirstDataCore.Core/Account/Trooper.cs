@@ -39,6 +39,8 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string Notes { get; set; } = "";
 
+        public bool MilitaryPolice { get; set; } = false;
+
         public string? DiscordId { get; set; }
         public string? SteamLink { get; set; }
         public string? AccessCode { get; set; }

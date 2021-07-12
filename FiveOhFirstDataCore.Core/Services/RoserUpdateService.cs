@@ -170,6 +170,32 @@ namespace FiveOhFirstDataCore.Core.Services
                 primary.TimeUpdates.Add(timeUpdate);
             }
 
+            // MP Update
+            if(primary.MilitaryPolice != edit.MilitaryPolice)
+            {
+                primary.MilitaryPolice = edit.MilitaryPolice;
+
+                // Save MP Changes
+                var mprole = WebsiteRoles.MP.ToString();
+                IdentityResult? identRes;
+                if (edit.MilitaryPolice)
+                {
+                    identRes = await _userManager.AddToRoleAsync(primary, mprole);
+                }
+                else
+                {
+                    identRes = await _userManager.RemoveFromRoleAsync(primary, mprole);
+                }
+
+                if (!identRes.Succeeded)
+                {
+                    foreach (var err in identRes.Errors)
+                        errors.Add($"[{err.Code}] {err.Description}");
+
+                    return new(false, errors);
+                }
+            }
+
             // Slot updates.
             if (UpdateRosterPosition(edit, ref primary, ref submitter, out var slotChange))
                 await _discord.UpdateSlotChangeAsync(slotChange, pid);
