@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 # Pages Changed
-- Wesbite pages
+- Website pages
 - That have been updated
 
 # Detailed Changes
