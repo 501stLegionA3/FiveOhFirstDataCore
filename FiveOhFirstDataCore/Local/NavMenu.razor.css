@@ -50,6 +50,10 @@
     color: white;
 }
 
+.nav-menu-box {
+    width: 100vw;
+}
+
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;
@@ -58,5 +62,9 @@
     .collapse {
         /* Never collapse the sidebar for wide screens */
         display: block;
+    }
+
+    .nav-menu-box {
+        width: 280px;
     }
 }
