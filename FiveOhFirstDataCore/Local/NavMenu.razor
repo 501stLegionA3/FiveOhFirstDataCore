@@ -11,8 +11,36 @@
         </div>
     </div>
 
+    <div class="@NavMenuCssClass">
+        <div class="dropdown pt-3">
+            <AuthorizeView>
+                <Authorized>
+                    <button id="loginButtons" @onclick="ToggleUserNavMenu" class="@UserNavCssClass w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                        <strong>@CurrentUser?.Id @CurrentUser?.NickName</strong>
+                    </button>
+                    <div class="@UserNavCssClass w-100 dropdown-menu dropdown-menu-dark text-small shadow">
+                            <form method="post" action="Identity/Account/LogOut">
+                                <button type="submit" class="dropdown-item">Log out</button>
+                            </form>
+                        <hr />
+                        <a href="Identity/Account/Manage" class="dropdown-item">Settings</a>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <button id="loginButtons" @onclick="ToggleUserNavMenu" class="@UserNavCssClass w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                        <strong>Guest</strong>
+                    </button>
+                    <div class="@UserNavCssClass w-100 dropdown-menu dropdown-menu-dark text-small shadow">
+                        <a href="Identity/Account/Login" class="dropdown-item">Log in</a>    
+                        <a href="Identity/Account/Register" class="dropdown-item">Register</a>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+
     <div class="@NavMenuCssClass mb-auto flex-column" @onclick="ToggleNavMenu">
-        <ul class="nav flex-column">
+        <ul class="nav flex-column nav-pills">
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                     <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -125,16 +153,22 @@
         </ul>
     </div>
 
-    <div class="position-absolute start-50 bottom-0 translate-middle-x @NavMenuCssClass">
+    <div class="text-center mx-auto @NavMenuCssClass">
         v@(Version)
     </div>
 </div>
 
 @code {
+    [CascadingParameter]
+    public Trooper? CurrentUser { get; set; }
+
     private bool collapseNavMenu = true;
     private string Version { get; set; } = "";
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private bool userNavMenu = false;
+    private string UserNavCssClass => userNavMenu ? "show" : null;
 
     protected override void OnParametersSet()
     {
@@ -146,5 +180,10 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleUserNavMenu()
+    {
+        userNavMenu = !userNavMenu;
     }
 }

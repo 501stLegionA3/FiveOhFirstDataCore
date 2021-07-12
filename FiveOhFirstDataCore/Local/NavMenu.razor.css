@@ -34,10 +34,8 @@
     .nav-item ::deep a {
         color: #d7d7d7;
         border-radius: 4px;
-        height: 3rem;
         display: flex;
         align-items: center;
-        line-height: 3rem;
     }
 
 .nav-item ::deep a.active {
