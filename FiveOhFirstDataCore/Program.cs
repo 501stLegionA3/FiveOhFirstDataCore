@@ -25,33 +25,6 @@ namespace FiveOhFirstDataCore
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureLogging(logging =>
-                {
-                    logging.AddProvider(new FileLoggerProvider("logs/app.json", new FileLoggerOptions()
-                    {
-                        Append = true,
-                        MaxRollingFiles = 10,
-                        FileSizeLimitBytes = 104857600,
-                    })
-                    {
-                        FormatLogEntry = (msg) =>
-                        {
-                            StringBuilder sb = new();
-                            StringWriter sw = new(sb);
-                            JsonTextWriter jw = new(sw);
-
-                            jw.WriteStartObject();
-                            jw.WritePropertyName("time");
-                            jw.WriteValue(DateTime.UtcNow.ToEst());
-                            jw.WritePropertyName("log");
-                            jw.WriteRawValue(JsonConvert.SerializeObject(msg));
-                            jw.WriteEndObject();
-
-                            var output = sb.ToString();
-                            return output;
-                        }
-                    });
-                })
                 .ConfigureServices((hostContext, services) =>
                 {                    
                     try
