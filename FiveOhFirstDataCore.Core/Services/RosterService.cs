@@ -185,7 +185,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 var token = Guid.NewGuid().ToString();
 
-                var time = DateTime.UtcNow.ToEst().ToEst();
+                var time = DateTime.UtcNow.ToEst();
 
                 var trooper = new Trooper()
                 {
