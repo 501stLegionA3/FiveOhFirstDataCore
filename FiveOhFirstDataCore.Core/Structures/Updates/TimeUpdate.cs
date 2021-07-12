@@ -26,6 +26,6 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
         public DateTime? OldStartOfService { get; set; } = null;
 
         public Trooper ChangedBy { get; set; }
-        public int ChangedById { get; set; }
+        public int? ChangedById { get; set; }
     }
 }

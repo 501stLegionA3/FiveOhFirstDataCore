@@ -51,7 +51,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             rankChange.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.SubmittedRankUpdates)
-                .HasForeignKey(e => e.ChangedById);
+                .HasForeignKey(e => e.ChangedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            rankChange.Property(p => p.ChangedById)
+                .IsRequired(false);
 
             var slotChange = builder.Entity<SlotUpdate>();
             slotChange.HasKey(e => e.ChangeId);
@@ -68,7 +72,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             shopChange.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.SubmittedCShopUpdates)
-                .HasForeignKey(e => e.ChangedById);
+                .HasForeignKey(e => e.ChangedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            shopChange.Property(p => p.ChangedById)
+                .IsRequired(false);
 
             var qualChange = builder.Entity<QualificationUpdate>();
             qualChange.HasKey(e => e.ChangeId);
@@ -92,15 +100,6 @@ namespace FiveOhFirstDataCore.Core.Database
             da.HasMany(e => e.Witnesses)
                 .WithMany(p => p.WitnessedDisciplinaryActions);
 
-            var flags = builder.Entity<TrooperFlag>();
-            flags.HasKey(e => e.FlagId);
-            flags.HasOne(e => e.FlagFor)
-                .WithMany(p => p.Flags)
-                .HasForeignKey(e => e.FlagForId);
-            flags.HasOne(e => e.Author)
-                .WithMany(p => p.CreatedFlags)
-                .HasForeignKey(e => e.AuthorId);
-
             var recruit = builder.Entity<RecruitmentUpdate>();
             recruit.HasKey(e => e.ChangeId);
             recruit.HasOne(e => e.ChangedFor)
@@ -108,7 +107,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey<RecruitmentUpdate>(e => e.ChangedForId);
             recruit.HasOne(e => e.RecruitedBy)
                 .WithMany(p => p.Recruitments)
-                .HasForeignKey(e => e.RecruitedById);
+                .HasForeignKey(e => e.RecruitedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            recruit.Property(p => p.RecruitedById)
+                .IsRequired(false);
 
             var nickname = builder.Entity<NickNameUpdate>();
             nickname.HasKey(e => e.ChangeId);
@@ -117,7 +120,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             nickname.HasOne(e => e.ApprovedBy)
                 .WithMany(p => p.ApprovedNickNameUpdates)
-                .HasForeignKey(e => e.ApprovedById);
+                .HasForeignKey(e => e.ApprovedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            nickname.Property(p => p.ApprovedById)
+                .IsRequired(false);
 
             var claims = builder.Entity<ClaimUpdate>();
             claims.HasKey(e => e.ChangeId);
@@ -126,7 +133,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             claims.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.AuthorizedClaimUpdates)
-                .HasForeignKey(e => e.ChangedById);
+                .HasForeignKey(e => e.ChangedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            claims.Property(p => p.ChangedById)
+                .IsRequired(false);
 
             var times = builder.Entity<TimeUpdate>();
             times.HasKey(e => e.ChangeId);
@@ -135,8 +146,24 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.ChangedForId);
             times.HasOne(e => e.ChangedBy)
                 .WithMany(p => p.ApprovedTimeUpdates)
-                .HasForeignKey(e => e.ChangedById);
+                .HasForeignKey(e => e.ChangedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            times.Property(p => p.ChangedById)
+                .IsRequired(false);
 
+            var flags = builder.Entity<TrooperFlag>();
+            flags.HasKey(e => e.FlagId);
+            flags.HasOne(e => e.FlagFor)
+                .WithMany(p => p.Flags)
+                .HasForeignKey(e => e.FlagForId);
+            flags.HasOne(e => e.Author)
+                .WithMany(p => p.CreatedFlags)
+                .HasForeignKey(e => e.AuthorId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            flags.Property(p => p.AuthorId)
+                .IsRequired(false);
 
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);
@@ -151,7 +178,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.NoticeBoardName);
             notices.HasOne(e => e.Author)
                 .WithMany(p => p.NoticesWritten)
-                .HasForeignKey(e => e.AuthorId);
+                .HasForeignKey(e => e.AuthorId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            notices.Property(p => p.AuthorId)
+                .IsRequired(false);
             notices.Ignore(e => e.Display);
         }
     }

@@ -16,6 +16,6 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
         public CShop OldCShops { get; set; }
 
         public Trooper ChangedBy { get; set; }
-        public int ChangedById { get; set; }
+        public int? ChangedById { get; set; }
     }
 }

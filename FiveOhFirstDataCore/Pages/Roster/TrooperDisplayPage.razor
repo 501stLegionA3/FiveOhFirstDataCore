@@ -1,7 +1,5 @@
 ﻿@page "/trooper/{TrooperId}"
 @inject IRosterService _roster
-@implements IDisposable
-@inject ComponentApplicationState _state
 @inject NavigationManager _nav
 
 @if(Trooper is not null)
@@ -29,16 +27,11 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        _state.OnPersisting += OnPersisting;
-        if(_state.TryTakeAsJson<Trooper?>(_nav.Uri.ToString(), out var data))
-        {
-            Trooper = data;
-        }
-        else
+        if(firstRender)
         {
             var user = (await AuthStateTask).User;
 
@@ -46,17 +39,11 @@ else
                 Trooper = await _roster.GetTrooperFromIdAsync(id);
             else if (TrooperId == "me")
                 Trooper = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+
+            
+            if (Trooper is null) Trooper = new();
+
+            StateHasChanged();
         }
-
-        if (Trooper is null) Trooper = new();
     }
-
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson(_nav.Uri.ToString(), Trooper);
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-        => _state.OnPersisting -= OnPersisting;
 }

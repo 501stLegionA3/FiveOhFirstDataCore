@@ -13,6 +13,6 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
         public int ChangedTo { get; set; }
 
         public Trooper ChangedBy { get; set; }
-        public int ChangedById { get; set; }
+        public int? ChangedById { get; set; }
     }
 }
