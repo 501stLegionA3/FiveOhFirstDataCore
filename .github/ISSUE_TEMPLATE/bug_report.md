@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 # Platform
-What browser and platform is is happening on. Ex: Firefox on the Google Pixel 4
+What browser and platform it is happening on. Ex: Firefox on the Google Pixel 4
 
 # Notes
 Any other notes go here.
