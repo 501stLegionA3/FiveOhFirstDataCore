@@ -1,5 +1,6 @@
 ﻿@page "/c1/recruiter/unregistered"
 @inject IRosterService _roster
+@inject IAuthorizationService _auth
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
@@ -66,9 +67,7 @@
         {
             var claim = (await AuthStateTask).User;
 
-            if (claim.IsInRole("Admin")
-                || claim.IsInRole("Manager")
-                || claim.HasClaim("C1", "Recruiter"))
+            if ((await _auth.AuthorizeAsync(claim, "RequireRecruiter")).Succeeded)
             {
                 Unregistered = await _roster.GetUnregisteredTroopersAsync();
 
