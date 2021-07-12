@@ -149,12 +149,12 @@
 
         if(!string.IsNullOrWhiteSpace(Search.NickNameFilter))
         {
-            Filtered = Filtered.Where(x => x.NickName.StartsWith(Search.NickNameFilter)).ToList();
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(Search.NickNameFilter, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if(!string.IsNullOrWhiteSpace(Search.IdFilter))
         {
-            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter)).ToList();
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if(Search.RankFilter is not null)
