@@ -58,19 +58,28 @@
             <div class="row">
                 <div class="col-lg-6 col-md-12 form-group">
                     <label for="usernameEdit" class="form-label mt-4">Username</label>
-                    <InputTextValid Valid="ValidUserName" @oninput="OnEditUserName" id="usernameEdit" @bind-Value="Trooper.UserName" class="form-control" disabled="@(!EditingUserName)" />
-                    @if (!EditingUserName)
+                    @if(!RefreshUsernameField)
                     {
-                        <div class="d-grid gap-2 mx-auto">
-                            <button class="btn btn-warning" @onclick="StartUserNameEdit">Edit</button>
-                        </div>
-                    }
+                        <InputTextValid Valid="ValidUserName" @oninput="OnEditUserName" id="usernameEdit" @bind-Value="DummyUsername" class="form-control" disabled="@(!EditingUserName)" />
+                        @if (!EditingUserName)
+                        {
+                            <div class="d-grid gap-2 mx-auto">
+                                <button class="btn btn-warning" @onclick="StartUserNameEdit">Edit</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-grid gap-2 mx-auto d-md-block">
+                                <button class="btn p-1 btn-success" @onclick="SaveUserName">Save</button>
+                                <button class="btn p-1 btn-danger" @onclick="CancelUserNameEdit">Cancel</button> 
+                            </div>
+                        }
+                        }
                     else
                     {
-                        <div class="d-grid gap-2 mx-auto d-md-block">
-                            <button class="btn p-1 btn-success" @onclick="SaveUserName">Save</button>
-                            <button class="btn p-1 btn-danger" @onclick="CancelUserNameEdit">Cancel</button> 
-                        </div>
+                        RefreshUsernameField = false;
+                        StateHasChanged();
+                        <em>Loading...</em>
                     }
                 </div>
                 <div class="col-lg-6 col-md-12 form-group">
@@ -220,8 +229,10 @@
     public bool IsEditing { get; set; } = false;
 
     private string OldUserName { get; set; } = "";
+    private string DummyUsername { get; set; } = "";
     private bool ValidUserName { get; set; } = true;
     private bool EditingUserName { get; set; } = false;
+    private bool RefreshUsernameField { get; set; } = false;
     private string IdRep { get; set; } = "";
     private bool ValidId { get; set; } = true;
     private bool EditingId { get; set; } = false;
@@ -327,7 +338,8 @@
             Admin = res.Item1;
             Manager = res.Item2;
             Claims = await _roster.GetAllClaimsFromTrooperAsync(Trooper);
-            
+            DummyUsername = Trooper.UserName;
+
             var user = (await AuthStateTask).User;
             bool currentManager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
             bool currentAdmin = (await _auth.AuthorizeAsync(user, "RequireAdmin")).Succeeded;
@@ -384,8 +396,10 @@
     public void CancelUserNameEdit(EventArgs e)
     {
         Trooper.UserName = OldUserName;
+        DummyUsername = OldUserName;
         EditingUserName = false;
         ValidUserName = true;
+        RefreshUsernameField = true;
         _refresh.CallRequestRefresh();
     }
 
