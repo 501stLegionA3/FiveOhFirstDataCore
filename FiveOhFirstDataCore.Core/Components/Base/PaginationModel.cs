@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components.Base
 {
-    public class NoticePageModel : ComponentBase
+    public class PaginationModel : ComponentBase
     {
         public int CurrentPageCap
         {
@@ -24,13 +24,16 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return CurrentPageCap - ItemsPerPage;
             }
         }
+
         public int PageIndex { get; private set; } = 1;
         public int ItemsPerPage { get; set; } = 5;
 
-        public int Items { get; set; }
+        public int ItemCount { get; set; }
+        public bool KnowItemCount { get; set; } = false;
+
         public int Segments { get
             {
-                return (int)Math.Ceiling(Items / (double)ItemsPerPage);
+                return (int)Math.Ceiling(ItemCount / (double)ItemsPerPage);
             }
         }
 
@@ -46,27 +49,31 @@ namespace FiveOhFirstDataCore.Core.Components.Base
             InvokeAsync(StateHasChanged);
         }
 
-        public void NextPage()
+        public virtual Task NextPage()
         {
-            if (PageIndex + 1 <= Segments)
+            if (!KnowItemCount || PageIndex + 1 <= Segments)
             {
                 PageIndex++;
-                InvokeAsync(StateHasChanged);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void PreviousPage()
+        public virtual Task PreviousPage()
         {
             if (PageIndex - 1 > 0)
             {
                 PageIndex--;
-                InvokeAsync(StateHasChanged);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void SetPage(int index)
+        public virtual Task SetPage(int index)
         {
             PageIndex = index;
+
+            return Task.CompletedTask;
         }
 
         public (bool, bool) GetNextPrevSegmentChecks()
@@ -81,7 +88,12 @@ namespace FiveOhFirstDataCore.Core.Components.Base
 
         public bool HasNextSegment()
         {
-            return PageIndex < Segments;
+            return !KnowItemCount || PageIndex < Segments;
+        }
+
+        public void InvokeStateHasChanged()
+        {
+            InvokeAsync(StateHasChanged);
         }
     }
 }
