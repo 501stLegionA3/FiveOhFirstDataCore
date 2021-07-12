@@ -1,6 +1,6 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
-@inherits NoticePageModel
+@inherits PaginationModel
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
@@ -221,7 +221,7 @@
         if(firstRender)
         {
             Updates = await _update.GetRosterUpdatesAsync();
-            Items = Updates.Count();
+            ItemCount = Updates.Count();
             StateHasChanged();
         }
         else if (Loading)

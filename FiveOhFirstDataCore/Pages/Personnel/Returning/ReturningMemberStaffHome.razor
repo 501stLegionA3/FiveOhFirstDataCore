@@ -1,6 +1,6 @@
 ﻿@page "/c1/returning"
 @inject IUpdateService _update
-@inherits NoticePageModel
+@inherits PaginationModel
 
 <AuthorizeView>
     <Authorized>
@@ -72,7 +72,7 @@
         if(firstRender)
         {
             Changes = await _update.GetReturningMemberChangesAsync();
-            Items = Changes.Count();
+            ItemCount = Changes.Count();
             StateHasChanged();
         }
         else if (Loading)

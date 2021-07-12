@@ -1,6 +1,6 @@
 ﻿@inject IUpdateService _update
 @inject NavigationManager _nav
-@inherits NoticePageModel
+@inherits PaginationModel
 
 @if (Updates is not null)
 {
@@ -514,7 +514,7 @@
     {
         base.OnInitialized();
         ItemsPerPage = 15;
-        Items = Updates?.Count() ?? 0;
+        ItemCount = Updates?.Count() ?? 0;
     }
 
     private void ResetActive(EventArgs e)

@@ -1,6 +1,6 @@
 ﻿@page "/c1/recruiter"
 @inject IUpdateService _update
-@inherits NoticePageModel
+@inherits PaginationModel
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
@@ -74,6 +74,7 @@
         if (firstRender)
         {
             Changes = await _update.GetRecruitmentChangesAsync();
+            ItemCount = Changes.Count();
             StateHasChanged();
         }
         else if (Loading)
