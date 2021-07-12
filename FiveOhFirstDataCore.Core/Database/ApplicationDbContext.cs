@@ -39,7 +39,7 @@ namespace FiveOhFirstDataCore.Core.Database
             base.OnModelCreating(builder);
 
             var recruitStatus = builder.Entity<RecruitStatus>();
-            recruitStatus.HasKey(e => e.RecruitStatusKey);
+            recruitStatus.HasKey(e => e.RecruitStatusId);
             recruitStatus.HasOne(e => e.Trooper)
                 .WithOne(p => p.RecruitStatus)
                 .HasForeignKey<RecruitStatus>(e => e.TrooperId);

@@ -206,6 +206,15 @@ namespace FiveOhFirstDataCore.Core.Services
                     ChangedOn = time,
                 };
 
+                trooper.RecruitStatus = new()
+                {
+                    Age = trooperData.Age,
+                    ModsInstalled = trooperData.ModsDownloaded,
+                    OverSixteen = trooperData.Sixteen,
+                    PossibleTroll = trooperData.PossibleTroll,
+                    PreferredRole = trooperData.PreferredRole
+                };
+
                 var identRes = await _userManager.CreateAsync(trooper, token);
 
                 if (!identRes.Succeeded)

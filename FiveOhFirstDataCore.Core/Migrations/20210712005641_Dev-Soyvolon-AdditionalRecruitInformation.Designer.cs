@@ -5,14 +5,16 @@ using FiveOhFirstDataCore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210712005641_Dev-Soyvolon-AdditionalRecruitInformation")]
+    partial class DevSoyvolonAdditionalRecruitInformation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,9 +101,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
                 {
-                    b.Property<Guid>("RecruitStatusId")
+                    b.Property<int>("RecruitStatusKey")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("Age")
                         .HasColumnType("integer");
@@ -121,7 +124,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("TrooperId")
                         .HasColumnType("integer");
 
-                    b.HasKey("RecruitStatusId");
+                    b.HasKey("RecruitStatusKey");
 
                     b.HasIndex("TrooperId")
                         .IsUnique();

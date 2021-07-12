@@ -6,7 +6,7 @@
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="unregisteredForm" class="form form-inline" Model="this">
-            <table class="table table-hover">
+            <table class="table table-hover table-striped">
                 <thead>
                     <tr>
                         <td colspan="3">
@@ -20,18 +20,24 @@
                         <th scope="col">Birth #</th>
                         <th scope="col">Nickname</th>
                         <th scope="col">Over 16?</th>
+                        <th scope="col">Age</th>
                         <th scope="col">Mods Installed?</th>
+                        <th scope="col">Prefered Role</th>
+                        <th scope="col">Possible Troll?</th>
                         <th scope="col">Access Token</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach(var t in Filtered)
                     {
-                    <tr>
+                    <tr class="@((t.RecruitStatus?.PossibleTroll ?? false) ? "table-danger" : "")">
                         <td>@(t.Id)</td>
                         <td>@(t.NickName)</td>
-                        <td>@(t.RecruitStatus?.OverSixteen)</td>
-                        <td>@(t.RecruitStatus?.ModsInstalled)</td>
+                        <td>@(t.RecruitStatus?.OverSixteen.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.Age.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.ModsInstalled.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.PreferredRole.AsFull() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.PossibleTroll.ToString() ?? "n/a")</td>
                         <td>@(t.AccessCode)</td>
                     </tr>
                     }

@@ -14,5 +14,8 @@ namespace FiveOhFirstDataCore.Core.Structures
         public TrooperRank StartingRank { get; set; } = TrooperRank.Recruit;
         public bool Sixteen { get; set; } = false;
         public bool ModsDownloaded { get; set; } = false;
+        public bool PossibleTroll { get; set; } = false;
+        public int Age { get; set; }
+        public Role PreferredRole { get; set; } = Role.Trooper;
     }
 }
