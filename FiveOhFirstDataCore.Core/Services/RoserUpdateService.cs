@@ -211,9 +211,19 @@ namespace FiveOhFirstDataCore.Core.Services
             primary.Notes = edit.Notes;
             // Claim Modification
             List<Claim> remove = new();
+            
+            var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
             claimsToRemove.ForEach(x =>
             {
                 remove.Add(new(x.Key, x.Value));
+            });
+
+            existingClaims.ForEach(x =>
+            {
+                var couples = x.Value.Where(y => claimsToAdd.Any(z => z.Key.Equals(y.Key)));
+
+                foreach (var c in couples)
+                    remove.Add(new(c.Key, c.Value));
             });
 
             var identResult = await _userManager.RemoveClaimsAsync(primary, remove);
@@ -224,8 +234,6 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 return new(false, errors);
             }
-
-            var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
 
             List<Claim> add = new();
             claimsToAdd.ForEach(x =>
