@@ -15,6 +15,12 @@ namespace FiveOhFirstDataCore.Core.Components
 {
     public class InputEnumSelect<TEnum> : InputBase<TEnum>
     {
+        [Parameter]
+        public TEnum[]? Whitelist { get; set; }
+
+        [Parameter]
+        public TEnum[]? Blacklist { get; set; }
+
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(0, "select");
@@ -42,6 +48,12 @@ namespace FiveOhFirstDataCore.Core.Components
 
             foreach (TEnum value in Enum.GetValues(type))
             {
+                if (Whitelist is not null)
+                    if (!Whitelist.Contains(value)) continue;
+
+                if (Blacklist is not null)
+                    if (Blacklist.Contains(value)) continue;
+
                 builder.OpenElement(5, "option");
 
                 var name = Enum.GetName(type, value);
