@@ -608,5 +608,54 @@ namespace FiveOhFirstDataCore.Core.Services
             var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
             return (await _userManager.GetClaimsAsync(user)).ToList();
         }
+
+        public async Task<RegisterTrooperResult> ResetAccountAsync(Trooper trooper)
+        {
+            List<string> errors = new();
+            var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
+
+            var identResult = await _userManager.RemovePasswordAsync(user);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            user.AccessCode = Guid.NewGuid().ToString();
+
+            identResult = await _userManager.SetUserNameAsync(user, user.AccessCode);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            user.DiscordId = null;
+            user.SteamLink = null;
+
+            identResult = await _userManager.AddPasswordAsync(user, user.AccessCode);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            identResult = await _userManager.UpdateAsync(user);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            return new(true, user.AccessCode, null);
+        }
     }
 }

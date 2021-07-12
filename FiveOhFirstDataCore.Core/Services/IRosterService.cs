@@ -39,6 +39,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
         public Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers);
         public Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver);
+        public Task<RegisterTrooperResult> ResetAccountAsync(Trooper trooper);
         #endregion
 
         #region Permissions

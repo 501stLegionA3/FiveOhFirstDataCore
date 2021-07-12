@@ -155,6 +155,21 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <h5>Account Reset</h5>
+                    <div class="from-check">
+                        <input type="checkbox" id="confimResetAccount" class="form-check-input" @onclick="ConfirmAccountResetToggle" />
+                        <label for="confimResetAccount" class="form-check-label">
+                            I understand that resetting an account will remove Discord and Steam account links, reset the username and password,
+                            and generate a new access code. No 501st releated data will be lost.
+                        </label>
+                        <div class="d-grid gap-2 mx-auto">
+                            <button class="btn btn-danger m-3" @onclick="ResetAccount" disabled="@(!ResetConfirmation)">Reset Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <AuthorizeView Policy="RequireAdmin" Context="adminAuthView">
                 <Authorized>
                     <div class="row">
@@ -246,6 +261,8 @@
     private bool CanDelete { get; set; } = false;
     private bool ReadyToDelete { get; set; } = false;
     private string Password { get; set; } = "";
+
+    private bool ResetConfirmation { get; set; } = false;
 
     private HashSet<string> CurrentUserNames { get; set; } = new();
 
@@ -484,7 +501,7 @@
     }
     #endregion
 
-    #region password
+    #region Account Management
     private async Task SendPasswordReset(EventArgs e)
     {
         var abs = _nav.ToAbsoluteUri(_nav.BaseUri);
@@ -493,6 +510,32 @@
         await _mail.TriggerRemoteResetPasswordAsync(Trooper.Id.ToString(), Trooper.Email, callbackBase);
 
         EmailNotice = "Email was sent.";
+
+        _refresh.CallRequestRefresh();
+    }
+
+    private async Task ConfirmAccountResetToggle()
+    {
+        ResetConfirmation = !ResetConfirmation;
+    }
+
+    private async Task ResetAccount()
+    {
+        if(ResetConfirmation)
+        {
+            var res = await _roster.ResetAccountAsync(Trooper);
+            if(!res.GetResult(out var code, out var errors))
+            {
+                Errors = errors;
+                ReadyToDelete = false;
+                Password = "";
+                _refresh.CallRequestRefresh();
+            }
+            else
+            {
+                _nav.NavigateTo($"/manager/modify?message={HtmlEncoder.Default.Encode($"The account for {Trooper.Id} has reset. The new access code is: {code}")}", true);
+            }
+        }
 
         _refresh.CallRequestRefresh();
     }
