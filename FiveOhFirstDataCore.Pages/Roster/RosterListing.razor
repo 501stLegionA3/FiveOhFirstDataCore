@@ -120,7 +120,7 @@
                 {
                     return x.RTORank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
-                else if(x.Role == Role.Pilot)
+                else if(x.Slot >= Slot.Razor && x.Slot < Slot.Warden)
                 {
                     return x.PilotRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
@@ -128,9 +128,7 @@
                 {
                     return x.MedicRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
-                else if (x.Role == Role.Warden
-                    || x.Role == Role.MasterWarden
-                    || x.Role == Role.ChiefWarden)
+                else if (x.Slot >= Slot.Warden && x.Slot < Slot.ZetaCompany)
                 {
                     return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
