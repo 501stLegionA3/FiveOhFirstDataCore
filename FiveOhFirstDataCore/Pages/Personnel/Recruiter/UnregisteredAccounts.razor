@@ -99,12 +99,12 @@
 
         if(!string.IsNullOrWhiteSpace(IdSearch))
         {
-            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(IdSearch)).ToList();
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(IdSearch, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if(!string.IsNullOrWhiteSpace(NickSearch))
         {
-            Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch)).ToList();
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         StateHasChanged();
