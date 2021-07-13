@@ -10,7 +10,7 @@
 <AuthorizeView Policy="RequireNameChange">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
-        <EditForm Context="nameChangeContext" Model="Trooper">
+        <EditForm Context="nameChangeContext" Model="Trooper" class="pb-3">
             @if(Message is not null)
             {
             <div class="row">
@@ -46,8 +46,8 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col form-group">
-                    <button class="btn btn-primary btn-block" disabled="@IsEditing" @onclick="StartEdit">Change Name</button>
+                <div class="col form-group d-grid gap-2">
+                    <button class="btn btn-primary" disabled="@IsEditing" @onclick="StartEdit">Change Name</button>
                 </div>
             </div>
             @if(IsEditing)
@@ -78,8 +78,8 @@
             </div>
             <hr />
             <div class="row">
-                <div class="col text-center form-group">
-                    <button class="btn btn-block btn-primary" type="button" @onclick="SaveChanges">Save Name Change</button>
+                <div class="col text-center form-group d-grid gap-2 mx-auto">
+                    <button class="btn btn-primary" type="button" @onclick="SaveChanges">Save Name Change</button>
                 </div>
             </div>
             }

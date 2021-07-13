@@ -1,5 +1,5 @@
 ﻿<tr>
-    <td>
+    <td class="d-none d-xl-table-cell">
         <RankDisplay Trooper="Trooper" />
     </td>
     <td>
@@ -8,28 +8,28 @@
     <td>
         @Trooper.NickName
     </td>
-    <td>
-        @Trooper.Rank?.AsFull()
+    <td class="d-none d-md-table-cell">
+        @Trooper.GetRankName()
     </td>
-    <td>
+    <td class="d-none d-md-table-cell">
         @Trooper.Slot.AsFull()
     </td>
-    <td>
+    <td class="d-none d-md-table-cell">
         @Trooper.GetRoleName()
     </td>
-    <td>
+    <td class="d-none d-lg-table-cell">
         @((int)DateTime.Now.Subtract(Trooper.LastPromotion).TotalDays) DAY(S)
     </td>
-    <td>
+    <td class="d-none d-xl-table-cell">
         @((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
     </td>
     <td>
-        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right" aria-hidden="true"></a>
+        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
     </td>
     <AuthorizeView Policy="RequireRosterClerk">
         <Authorized>
-            <td>
-                <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil" aria-hidden="true"></a>
+            <td class="d-none d-lg-table-cell">
+                <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil btn btn-outline-primary" aria-hidden="true"></a>
             </td>
         </Authorized>
     </AuthorizeView>

@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
@@ -163,10 +164,36 @@ namespace FiveOhFirstDataCore.Core.Services
             if (timeUpdate is not null)
             {
                 timeUpdate.ChangedById = submitter.Id;
-                timeUpdate.ChangedOn = DateTime.UtcNow;
+                timeUpdate.ChangedOn = DateTime.UtcNow.ToEst();
                 timeUpdate.SubmittedByRosterClerk = true;
 
                 primary.TimeUpdates.Add(timeUpdate);
+            }
+
+            // MP Update
+            if(primary.MilitaryPolice != edit.MilitaryPolice)
+            {
+                primary.MilitaryPolice = edit.MilitaryPolice;
+
+                // Save MP Changes
+                var mprole = WebsiteRoles.MP.ToString();
+                IdentityResult? identRes;
+                if (edit.MilitaryPolice)
+                {
+                    identRes = await _userManager.AddToRoleAsync(primary, mprole);
+                }
+                else
+                {
+                    identRes = await _userManager.RemoveFromRoleAsync(primary, mprole);
+                }
+
+                if (!identRes.Succeeded)
+                {
+                    foreach (var err in identRes.Errors)
+                        errors.Add($"[{err.Code}] {err.Description}");
+
+                    return new(false, errors);
+                }
             }
 
             // Slot updates.
@@ -184,9 +211,19 @@ namespace FiveOhFirstDataCore.Core.Services
             primary.Notes = edit.Notes;
             // Claim Modification
             List<Claim> remove = new();
+            
+            var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
             claimsToRemove.ForEach(x =>
             {
                 remove.Add(new(x.Key, x.Value));
+            });
+
+            existingClaims.ForEach(x =>
+            {
+                var couples = x.Value.Where(y => claimsToAdd.Any(z => z.Key.Equals(y.Key)));
+
+                foreach (var c in couples)
+                    remove.Add(new(c.Key, c.Value));
             });
 
             var identResult = await _userManager.RemoveClaimsAsync(primary, remove);
@@ -197,8 +234,6 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 return new(false, errors);
             }
-
-            var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
 
             List<Claim> add = new();
             claimsToAdd.ForEach(x =>
@@ -254,7 +289,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     ChangedFrom = primary ?? -1,
                     ChangedTo = edit ?? -1,
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = DateTime.UtcNow.ToEst(),
                     SubmittedByRosterClerk = true
                 };
 
@@ -288,7 +323,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     OldTeam = primary.Team,
                     OldFlight = primary.Flight,
 
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = DateTime.UtcNow.ToEst(),
                     SubmittedByRosterClerk = true
                 };
 
@@ -323,7 +358,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     OldCShops = primary.CShops,
                     
                     SubmittedByRosterClerk = true,
-                    ChangedOn = DateTime.UtcNow
+                    ChangedOn = DateTime.UtcNow.ToEst()
                 };
 
                 primary.CShops = edit.CShops;
@@ -355,7 +390,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     Revoked = false,
 
                     SubmittedByRosterClerk = true,
-                    ChangedOn = DateTime.UtcNow
+                    ChangedOn = DateTime.UtcNow.ToEst()
                 };
 
                 primary.Qualifications = edit.Qualifications;
@@ -377,7 +412,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 _dbContext.Attach(trooper);
 
             flag.AuthorId = user.Id;
-            flag.CreatedOn = DateTime.UtcNow;
+            flag.CreatedOn = DateTime.UtcNow.ToEst();
 
             trooper.Flags.Add(flag);
 
@@ -482,7 +517,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var update = new NickNameUpdate()
             {
                 ApprovedById = approver,
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 OldNickname = old,
                 NewNickname = actual.NickName,
             };
@@ -520,7 +555,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 Additions = new() { new(claim.Type, claim.Value) },
                 ChangedById = manager,
-                ChangedOn = DateTime.UtcNow
+                ChangedOn = DateTime.UtcNow.ToEst()
             });
 
             identResult = await _userManager.UpdateAsync(user);
@@ -553,7 +588,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 Removals = new() { new(claim.Type, claim.Value) },
                 ChangedById = manager,
-                ChangedOn = DateTime.UtcNow
+                ChangedOn = DateTime.UtcNow.ToEst()
             });
 
             identResult = await _userManager.UpdateAsync(user);
@@ -572,6 +607,55 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
             return (await _userManager.GetClaimsAsync(user)).ToList();
+        }
+
+        public async Task<RegisterTrooperResult> ResetAccountAsync(Trooper trooper)
+        {
+            List<string> errors = new();
+            var user = await _userManager.FindByIdAsync(trooper.Id.ToString());
+
+            var identResult = await _userManager.RemovePasswordAsync(user);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            user.AccessCode = Guid.NewGuid().ToString();
+
+            identResult = await _userManager.SetUserNameAsync(user, user.AccessCode);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            user.DiscordId = null;
+            user.SteamLink = null;
+
+            identResult = await _userManager.AddPasswordAsync(user, user.AccessCode);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            identResult = await _userManager.UpdateAsync(user);
+            if (!identResult.Succeeded)
+            {
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, null, errors);
+            }
+
+            return new(true, user.AccessCode, null);
         }
     }
 }

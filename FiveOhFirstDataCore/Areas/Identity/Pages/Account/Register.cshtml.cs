@@ -38,7 +38,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         {
             [Required]
             [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 4)]
-            [Display(Name = "Account Username (Not your Trooper name)", Description = "The username you will use to sign in with. This is not your display/trooper name.")]
+            [Display(Name = "Account Username\n(Does not have to be your Trooper name)", Description = "The username you will use to sign in with. This is not your display/trooper name.")]
             public string UserName { get; set; }
 
             [Required]
@@ -78,40 +78,53 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                 {
                     if (user.AccessCode == Input.AccessCode)
                     {
-                        var passChangeRes = await _userManager.ChangePasswordAsync(user, user.AccessCode, Input.Password);
+                        var removeRes = await _userManager.RemovePasswordAsync(user);
 
-                        if (passChangeRes.Succeeded)
+                        if (removeRes.Succeeded)
                         {
-                            user.UserName = Input.UserName;
-                            user.AccessCode = null;
-                            var identResult = await _userManager.UpdateAsync(user);
 
-                            if (!identResult.Succeeded)
+                            var passChangeRes = await _userManager.AddPasswordAsync(user, Input.Password);
+
+                            if (passChangeRes.Succeeded)
                             {
-                                foreach (var error in identResult.Errors)
+                                user.UserName = Input.UserName;
+                                user.AccessCode = null;
+                                var identResult = await _userManager.UpdateAsync(user);
+
+                                if (!identResult.Succeeded)
                                 {
-                                    ModelState.AddModelError(error.Code, error.Description);
+                                    foreach (var error in identResult.Errors)
+                                    {
+                                        ModelState.AddModelError(error.Code, error.Description);
+                                    }
+                                }
+                                else
+                                {
+                                    var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
+
+                                    if (res is TrooperSignInResult result)
+                                    {
+                                        if (result.RequiresAccountLinking)
+                                        {
+                                            var token = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
+                                            returnUrl = $"/api/link/token/{token}";
+                                        }
+                                    }
+
+                                    return Redirect(returnUrl);
                                 }
                             }
                             else
                             {
-                                var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
-
-                                if (res is TrooperSignInResult result)
+                                foreach (var error in passChangeRes.Errors)
                                 {
-                                    if (result.RequiresAccountLinking)
-                                    {
-                                        var token = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
-                                        returnUrl = $"/api/link/token/{token}";
-                                    }
+                                    ModelState.AddModelError(error.Code, error.Description);
                                 }
-
-                                return Redirect(returnUrl);
                             }
                         }
                         else
                         {
-                            foreach (var error in passChangeRes.Errors)
+                            foreach (var error in removeRes.Errors)
                             {
                                 ModelState.AddModelError(error.Code, error.Description);
                             }

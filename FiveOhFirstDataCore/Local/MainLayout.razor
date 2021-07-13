@@ -1,19 +1,13 @@
 ﻿@inherits LayoutComponentBase
 @inject FiveOhFirstDataCore.Core.Services.IRosterService _roster
 
-<div class="page">
+<main class="page min-vh-100">
     @if (Loaded)
     {
     <CascadingValue Value="CurrentUser">
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+        <NavMenu />
 
         <div class="main">
-            <div class="top-row px-4 auth">
-                <LoginDisplay />
-            </div>
-
             <div class="content px-4">
                 @Body
             </div>
@@ -24,7 +18,7 @@
     {
         <em>Loading...</em>
     }
-</div>
+</main>
 
 @code {
     public Trooper? CurrentUser {get;set;} = null;

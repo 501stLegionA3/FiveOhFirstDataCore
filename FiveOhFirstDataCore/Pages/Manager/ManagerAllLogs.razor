@@ -6,7 +6,9 @@
         <BreadcrumbsList Url="Urls" />
         @if (!Loading)
         {
-        <UpdateDisplayTable Updates="Updates" />
+            <div class="overflow-auto container-fluid">
+                <UpdateDisplayTable Updates="Updates" />
+            </div>
         }
         else
         {

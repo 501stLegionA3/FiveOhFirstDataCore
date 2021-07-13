@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
@@ -220,7 +221,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 Removals = update.Additions,
                 RevertChange = true,
                 ChangedById = manager.Id,
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
             });
 
             identResult = await _userManager.UpdateAsync(user);
@@ -248,7 +249,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 OldNickname = update.NewNickname,
                 NewNickname = update.OldNickname,
                 ApprovedById = manager.Id,
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true
             });
 
@@ -274,7 +275,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 Added = update.Removed,
                 Removed = update.Added,
                 Instructors = new() { manager },
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true,
             });
 
@@ -320,7 +321,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 ChangedFrom = update.ChangedTo,
                 ChangedTo = update.ChangedFrom,
                 ChangedById = manager.Id,
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true
             });
 
@@ -360,7 +361,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 OldTeam = update.NewTeam,
 
                 ApprovedBy = new() { manager },
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true
             });
 
@@ -420,7 +421,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 NewStartOfService = update.OldStartOfService,
                 OldStartOfService = update.NewStartOfService,
 
-                ChangedOn = DateTime.UtcNow,
+                ChangedOn = DateTime.UtcNow.ToEst(),
                 ChangedById = manager.Id,
                 SubmittedByRosterClerk = update.SubmittedByRosterClerk,
                 RevertChange = true

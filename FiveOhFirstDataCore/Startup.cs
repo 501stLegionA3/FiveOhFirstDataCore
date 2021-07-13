@@ -64,7 +64,9 @@ namespace FiveOhFirstDataCore
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<Trooper>>();
+#if DEBUG
             services.AddDatabaseDeveloperPageExceptionFilter();
+#endif
 
             services.AddAuthentication()
                 .AddSteam("Steam", "Steam", options =>
@@ -72,7 +74,7 @@ namespace FiveOhFirstDataCore
                     options.CorrelationCookie = new()
                     {
                         IsEssential = true,
-                        SameSite = SameSiteMode.Lax,
+                        SameSite = SameSiteMode.None,
                         SecurePolicy = CookieSecurePolicy.Always
                     };
 
@@ -127,7 +129,7 @@ namespace FiveOhFirstDataCore
                     options.CorrelationCookie = new()
                     {
                         IsEssential = true,
-                        SameSite = SameSiteMode.Lax,
+                        SameSite = SameSiteMode.None,
                         SecurePolicy = CookieSecurePolicy.Always
                     };
 

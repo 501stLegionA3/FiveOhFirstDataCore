@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="col-md-8 col-sm-12 @(ValidNewNickname ? "has-success" : "has-danger")">
                             <label for="nicknameSetter">Nickname</label>
-                            <InputTextValid class="form-control" id="nicknameSetter" @oninput="NicknameChanged" @bind-Value="TrooperData.NickName" Valid="ValidNewNickname" />
+                            <InputTextValid class="form-control" id="nicknameSetter" @oninput="NicknameChanged" @bind-Value="DummyNickName" Valid="ValidNewNickname" />
                             <div class="valid-feedback">That Nickname is avalible!</div>
                             <div class="invalid-feedback">That Nickname has been taken or is invalid.</div>
                         </div>
@@ -69,28 +69,49 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row pb-2">
                 <div class="col-lg-6 col-md-12 col-sm-12">
-                    <label for="startingRole">Starting Role</label>
+                    <label for="startingRole">Starting Rank</label>
                     <InputEnumSelect @bind-Value="TrooperData.StartingRank" class="form-control" id="startingRole" />
                 </div>
-                <div class="col-lg-6 col-md-12 col-sm-12 form-group" id="miscData">
-                <fieldset>    
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group" id="miscData"> 
                     <label for="miscData">Member Details</label>
-                        <div class="form-check">
-                            <InputCheckbox @bind-Value="TrooperData.Sixteen" class="form-check-input" id="overSixteen" />
-                            <label for="overSixteen" class="form-check-label">Over Sixteen</label>
+                    <div class="input-group pb-2">                            
+                        <div class="input-group-text"><InputCheckbox @bind-Value="TrooperData.Sixteen" class="form-check-input mt-0" id="overSixteen" /></div>
+                        <span class="input-group-text">Over Sixteen</span>
+                        <span class="input-group-text"></span>
+                        <span class="input-group-text">Age</span>
+                        <InputNumber @bind-Value="TrooperData.Age" class="form-control" disabled="@TrooperData.Sixteen" />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                            <div class="input-group pb-2">
+                                <div class="input-group-text"><InputCheckbox @bind-Value="TrooperData.ModsDownloaded" class="form-check-input mt-0" id="hasModsInstalled" /></div>
+                                <span for="hasModsInstalled" class="input-group-text">Mods Installed</span>
+                            </div>
                         </div>
-                        <div class="form-check">
-                            <InputCheckbox @bind-Value="TrooperData.ModsDownloaded" class="form-check-input" id="hasModsInstalled" />
-                            <label for="hasModsInstalled" class="form-check-label">Mods Installed</label>
+                        <div class="col-md-6 col-sm-12">
+                            <div class="input-group">                            
+                                <div class="input-group-text bg-danger"><InputCheckbox @bind-Value="TrooperData.PossibleTroll" class="form-check-input mt-0" id="overSixteen" /></div>
+                                <span class="input-group-text bg-danger">Possible Troll</span>
+                            </div>
                         </div>
-                </fieldset>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <button class="btn btn-block btn-primary" @onclick="async (x) => await SubmitNewMember()" >Submit</button>
+            <div class="row pb-2">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <label for="preferredRole">Preferred Role</label>
+                    <InputEnumSelect @bind-Value="TrooperData.PreferredRole" class="form-control" id="preferredRole"
+                        Whitelist="new Role[] { Role.ARC, Role.RTO, Role.Medic, Role.Trooper, Role.Lead }"/>
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 form-group">
+                    
+                </div>
+            </div>
+            <div class="row pb-2">
+                <div class="col d-grid gap-2">
+                    <button class="btn btn-primary" @onclick="async (x) => await SubmitNewMember()" >Submit</button>
                 </div>
             </div>
         </EditForm>
@@ -117,6 +138,7 @@
 
     private NewTrooperData TrooperData { get; set; } = new();
 
+    private string DummyNickName { get; set; }
     private string IdPlaceholder { get; set; }
 
     private List<string> Errors { get; set; } = new();

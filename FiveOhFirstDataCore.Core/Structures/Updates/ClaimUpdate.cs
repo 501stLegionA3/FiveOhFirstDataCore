@@ -15,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Structures.Updates
         public bool AutomaticChange { get; set; } = true;
 
         public Trooper ChangedBy { get; set; }
-        public int ChangedById { get; set; }
+        public int? ChangedById { get; set; }
     }
 
     public class ClaimUpdateData

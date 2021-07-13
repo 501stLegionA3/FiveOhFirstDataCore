@@ -36,6 +36,8 @@
     <Folder Include="Pages\Roster\Squad\" />
     <Folder Include="Pages\Training\" />
     <Folder Include="Pages\Operations\" />
+    <Folder Include="wwwroot\css\bootstrap\" />
+    <Folder Include="wwwroot\media\" />
   </ItemGroup>
 
   <ItemGroup>

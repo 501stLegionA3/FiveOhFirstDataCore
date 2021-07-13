@@ -1,0 +1,75 @@
+﻿@if(Controller.Segments > 1)
+{
+    <nav aria-label="Recent Activity Pagination">
+        <ul class="pagination justify-content-center">
+            @if(PrevNext.Item1)
+            {
+                <li class="page-item">
+                    <button class="page-link" aria-label="Previous" @onclick="(x) => Controller.PreviousPage()">
+                        <span aria-hidden="true" class="oi oi-chevron-left"></span>
+                    </button>             
+                </li>
+            }
+
+            @if(PrevNext.Item1)
+            {
+                @if (PrevNext.Item2)
+                {
+                    <li class="page-item"><button class="page-link" @onclick="(x) => Controller.PreviousPage()">@(Controller.PageIndex - 1)</button></li>
+                    <li class="page-item active"><button class="page-link" @onclick="(x) => StateHasChanged()">@Controller.PageIndex</button></li>
+                    <li class="page-item"><button class="page-link" @onclick="(x) => Controller.NextPage()">@(Controller.PageIndex + 1)</button></li>
+                }
+                else
+                {
+                    if(Controller.PageIndex - 2 >= 1)
+                    {
+                        var i = Controller.PageIndex - 2;
+                        <li class="page-item"><button class="page-link" @onclick="(x) => { Controller.SetPage(i); 
+                            PrevNext = Controller.GetNextPrevSegmentChecks(); }">@i</button></li>
+                    }
+
+                    <li class="page-item"><button class="page-link" @onclick="(x) => Controller.PreviousPage()">@(Controller.PageIndex - 1)</button></li>
+                    <li class="page-item active"><button class="page-link" @onclick="(x) => StateHasChanged()">@Controller.PageIndex</button></li>
+                }
+            }
+            else
+            {
+                <li class="page-item active"><button class="page-link" @onclick="(x) => StateHasChanged()">@Controller.PageIndex</button></li>
+                @if (PrevNext.Item2)
+                {
+                    <li class="page-item"><button class="page-link" @onclick="(x) => Controller.NextPage()">@(Controller.PageIndex + 1)</button></li>
+
+                    @if(Controller.PageIndex + 2 <= Controller.Segments)
+                    {
+                        var i = Controller.PageIndex + 2;
+                        <li class="page-item"><button class="page-link" @onclick="(x) => { Controller.SetPage(i); 
+                            PrevNext = Controller.GetNextPrevSegmentChecks(); }">@i</button></li>
+                    }
+                }
+            }
+
+            @if (PrevNext.Item2)
+            {
+                <li class="page-item">
+                    <button class="page-link" aria-label="Next" @onclick="(x) => Controller.NextPage()">
+                        <span aria-hidden="true" class="oi oi-chevron-right"></span>
+                    </button>             
+                </li>
+            }
+        </ul>
+    </nav>
+}
+
+@code {
+    [Parameter]
+    public PaginationModel Controller { get; set; }
+
+    public (bool, bool) PrevNext { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        PrevNext = Controller.GetNextPrevSegmentChecks();
+    }
+}

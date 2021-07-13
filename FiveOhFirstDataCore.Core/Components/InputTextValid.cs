@@ -21,7 +21,7 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddAttribute(1, "type", "text");
             builder.AddMultipleAttributes(2, AdditionalAttributes);
             builder.AddAttribute(3, "class", $"{CssClass} {(Valid ? "is-valid" : "is-invalid")}");
-            builder.AddAttribute(4, "value", CurrentValue);
+            builder.AddAttribute(4, "value", CurrentValueAsString);
             builder.CloseElement();
         }
 

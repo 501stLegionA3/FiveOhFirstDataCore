@@ -1,5 +1,6 @@
 ﻿@inject IUpdateService _update
 @inject NavigationManager _nav
+@inherits PaginationModel
 
 @if (Updates is not null)
 {
@@ -32,9 +33,21 @@
         <div class="col"><h4>Date</h4></div>
         <div class="col"></div>
     </div>
+
+    <div class ="row">
+        <div class="col">
+            <PaginationController Controller="this" />
+        </div>
+    </div>
+
     @foreach (var u in Updates)
     {
         var i = Counter;
+        var start = CurrentPageStart;
+        var cap = CurrentPageCap;
+
+        if (Counter++ >= cap || Counter < start) continue;
+
         var update = u;
 
         <div class="row border border-bottom p-2">
@@ -474,8 +487,13 @@
                 <div class="col"><a class="oi oi-fullscreen-enter" @onclick="x => { ActiveDisplay = i; StateHasChanged(); }"></a></div>
             }
         </div>
-        Counter++;
     }
+
+    <div class="row pt-3">
+        <div class="col">
+            <PaginationController Controller="this" />
+        </div>
+    </div>
 }
 
 @code {
@@ -491,6 +509,13 @@
     public bool ConfirmRevert { get; set; } = false;
 
     public List<string> Errors { get; set; } = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ItemsPerPage = 15;
+        ItemCount = Updates?.Count() ?? 0;
+    }
 
     private void ResetActive(EventArgs e)
     {

@@ -4,7 +4,7 @@
     {
         Admin,
         Manager,
-
+        MP,
         Trooper,
         RTO,
         Medic,

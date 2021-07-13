@@ -15,10 +15,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0-preview.3.21201.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="6.0.0-preview.3.21201.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0-preview3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
+    <PackageReference Include="NReco.Logging.File" Version="1.1.1" />
   </ItemGroup>
 
 </Project>

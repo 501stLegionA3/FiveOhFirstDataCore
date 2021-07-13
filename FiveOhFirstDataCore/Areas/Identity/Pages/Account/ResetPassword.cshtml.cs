@@ -53,11 +53,19 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
             }
             else
             {
-                Input = new InputModel
+                try
                 {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
-                };
-                return Page();
+                    Input = new InputModel
+                    {
+                        Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
+                    };
+                    return Page();
+
+                }
+                catch
+                {
+                    return BadRequest($"An invalid code was provided");
+                }
             }
         }
 

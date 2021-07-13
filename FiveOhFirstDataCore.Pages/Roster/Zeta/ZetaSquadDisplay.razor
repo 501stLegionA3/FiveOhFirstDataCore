@@ -5,51 +5,52 @@
         </th>
     </tr>
 </thead>
-
-<tr>
-    <th scope="row" class="text-right">
-        Squad Leader
-    </th>
-    <td >
-        @(Squad.SquadLeader?.WarrantRank is null ? Squad.SquadLeader?.Rank?.AsFull() + " " ?? "" : Squad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.SquadLeader?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right">
-        Team Leader
-    </th>
-    <td >
-        @(Squad.Leader?.WarrantRank is null ? Squad.Leader?.Rank?.AsFull() + " " ?? "" : Squad.Leader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Leader?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right">
-        RT
-    </th>
-    <td >
-        @(Squad.RT?.WarrantRank is null ? Squad.RT?.Rank?.AsFull() + " " ?? "" : Squad.RT?.WarrantRank?.AsFull() + " " ?? "")@(Squad.RT?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right">
-        Medic
-    </th>
-    <td >
-        @(Squad.Medic?.WarrantRank is null ? Squad.Medic?.Rank?.AsFull() + " " ?? "" : Squad.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Medic?.NickName ?? "TBD")
-    </td>
-</tr>
-
-@for(int i = 0; i < Squad.Troopers.Length; i++)
-{
+<tbody>
     <tr>
-        <th scope="row" class="text-right">
-            Trooper
+        <th scope="row" class="text-end">
+            Squad Leader
         </th>
         <td >
-            @(Squad.Troopers[i]?.WarrantRank is null ? Squad.Troopers[i]?.Rank?.AsFull() + " " ?? "" : Squad.Troopers[i]?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Troopers[i]?.NickName ?? "TBD")
+            @(Squad.SquadLeader?.WarrantRank is null ? Squad.SquadLeader?.Rank?.AsFull() + " " ?? "" : Squad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.SquadLeader?.NickName ?? "TBD")
         </td>
     </tr>
-}
+    <tr>
+        <th scope="row" class="text-end">
+            Team Leader
+        </th>
+        <td >
+            @(Squad.Leader?.WarrantRank is null ? Squad.Leader?.Rank?.AsFull() + " " ?? "" : Squad.Leader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Leader?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end">
+            RT
+        </th>
+        <td >
+            @(Squad.RT?.WarrantRank is null ? Squad.RT?.Rank?.AsFull() + " " ?? "" : Squad.RT?.WarrantRank?.AsFull() + " " ?? "")@(Squad.RT?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end">
+            Medic
+        </th>
+        <td >
+            @(Squad.Medic?.WarrantRank is null ? Squad.Medic?.Rank?.AsFull() + " " ?? "" : Squad.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Medic?.NickName ?? "TBD")
+        </td>
+    </tr>
+
+    @for(int i = 0; i < Squad.Troopers.Length; i++)
+    {
+        <tr>
+            <th scope="row" class="text-end">
+                Trooper
+            </th>
+            <td >
+                @(Squad.Troopers[i]?.WarrantRank is null ? Squad.Troopers[i]?.Rank?.AsFull() + " " ?? "" : Squad.Troopers[i]?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Troopers[i]?.NickName ?? "TBD")
+            </td>
+        </tr>
+    }
+</tbody>
 
 @code {
     [Parameter]

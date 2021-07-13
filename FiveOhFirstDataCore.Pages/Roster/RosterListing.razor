@@ -1,86 +1,107 @@
 ﻿@inject IRefreshRequestService _refresh
 
 <EditForm Model="Search" class="form form-inline w-100">
-    <table class="w-100 justify-content-center">
-        <tr>
-            <td>
-            <div class="input-group p-1">
-                    <button class="@GetSortButtonClass(0) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(0)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control" placeholder="Designation" @bind-Value="Search.DesignationFilter" id="designation-filter" @oninput="OnDesgChange" />
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="input-group">
-                    <button class="@GetSortButtonClass(1) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(1)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control" placeholder="Birth #" @bind-Value="Search.IdFilter" id="id-roster-filter" @oninput="OnIdChange" />
-                    </div>
-                </div>
-            </td>
-            <td>
-                <div class="input-group">
-                    <button class="@GetSortButtonClass(2) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(2)"></button>
-                    <div class="form-floating p-1">
-                        <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="Search.NickNameFilter" id="nickname-filter" @oninput="OnNickChange" />
-                    </div>
-                </div>
-            </td>
-            <td>
+    <div class="row">
+        <div class="col col-xl-4 p-1 d-none d-xl-block">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(0) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(0)"></button>
+                <InputText class="form-control" placeholder="Designation" @bind-Value="d1" id="designation-filter" @oninput="OnDesgChange" />
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-1">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(1) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(1)"></button>
+                <InputText class="form-control" placeholder="Birth #" @bind-Value="d2" id="id-roster-filter" @oninput="OnIdChange" />
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-1">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(2) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(2)"></button>
+                <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="d3" id="nickname-filter" @oninput="OnNickChange" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-lg-4 col-md-12 p-1 d-none d-md-block">
             <div class="input-group">
                 <button class="@GetSortButtonClass(3) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(3)"></button>
-                <InputSelect @bind-Value="Search.RankFilter" @oninput="OnRankChange" class="form-control form-inline p-1">
-                    <option value="null">Rank</option>
-                    @foreach(TrooperRank r in Enum.GetValues(typeof(TrooperRank)))
-                    {
-                        <option value="@r">@r.AsFull()</option>
-                    }
-                </InputSelect>
+                @if(!Search.UseRankSearch)
+                {
+                    <InputSelect @bind-Value="Search.RankFilter" @oninput="OnRankChange" class="form-control form-inline p-1">
+                        <option value="null">Rank</option>
+                        @foreach(TrooperRank r in Enum.GetValues(typeof(TrooperRank)))
+                        {
+                            <option value="@r">@r.AsFull()</option>
+                        }
+                    </InputSelect>
+                    <button class="oi oi-text btn input-group-text" @onclick="(x) => Search.UseRankSearch = true" aria-hidden="true"></button>
+                }
+                else
+                {
+                    <InputText class="form-control p-1" placeholder="Rank" @bind-Value="d4" id="rank-filter" @oninput="OnRankSearchChange" />
+                    <button class="oi oi-tags btn input-group-text" @onclick="(x) => Search.UseRankSearch = false" aria-hidden="true"></button>
+                }
             </div>
-            </td>
-            <td>
+        </div>
+        <div class="col col-lg-4 col-md-12 p-1 d-none d-md-block">
             <div class="input-group">
                 <button class="@GetSortButtonClass(4) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(4)"></button>
-                <InputSelect @bind-Value="Search.UnitFilter" @oninput="OnUnitChange" class="form-control form-inline p-1">
-                    <option value="null">Unit</option>
-                    @foreach(Slot r in Enum.GetValues(typeof(Slot)))
-                    {
-                        <option value="@r">@r.AsFull()</option>
-                    }
-                </InputSelect>
+                @if(!Search.UseUnitSearch)
+                {
+                    <InputSelect @bind-Value="Search.UnitFilter" @oninput="OnUnitChange" class="form-control form-inline p-1">
+                        <option value="null">Unit</option>
+                        @foreach(Slot r in Enum.GetValues(typeof(Slot)))
+                        {
+                            <option value="@r">@r.AsFull()</option>
+                        }
+                    </InputSelect>
+                    <button class="oi oi-text btn input-group-text" @onclick="(x) => Search.UseUnitSearch = true" aria-hidden="true"></button>
+                }
+                else
+                {
+                    <InputText class="form-control p-1" placeholder="Unit" @bind-Value="d5" id="rank-filter" @oninput="OnUnitSearchChange" />
+                    <button class="oi oi-tags btn input-group-text" @onclick="(x) => Search.UseUnitSearch = false" aria-hidden="true"></button>
+                }
             </div>
-            </td>
-            <td>
+        </div>
+        <div class="col col-lg-4 col-md-12 p-1 d-none d-md-block">
             <div class="input-group">
                 <button class="@GetSortButtonClass(5) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(5)"></button>
-                <InputSelect @bind-Value="Search.RoleFilter" @oninput="OnRoleChange" class="form-control form-inline p-1">
-                    <option value="null">Role</option>
-                    @foreach(Role r in Enum.GetValues(typeof(Role)))
-                    {
-                        <option value="@r">@r.AsFull()</option>
-                    }
-                </InputSelect>
+                @if(!Search.UseRoleSearch)
+                {
+                    <InputSelect @bind-Value="Search.RoleFilter" @oninput="OnRoleChange" class="form-control form-inline p-1">
+                        <option value="null">Role</option>
+                        @foreach(Role r in Enum.GetValues(typeof(Role)))
+                        {
+                            <option value="@r">@r.AsFull()</option>
+                        }
+                    </InputSelect>
+                    <button class="oi oi-text btn input-group-text" @onclick="(x) => Search.UseRoleSearch = true" aria-hidden="true"></button>
+                }
+                else
+                {
+                    <InputText class="form-control p-1" placeholder="Role" @bind-Value="d6" id="rank-filter" @oninput="OnRoleSearchChange" />
+                    <button class="oi oi-tags btn input-group-text" @onclick="(x) => Search.UseRoleSearch = false" aria-hidden="true"></button>
+                }
             </div>
-            </td>
-        </tr>
-    </table>
+        </div>
+    </div>
 </EditForm>
-<table class="table table-hover">
+<table class="table table-hover table-striped">
     <thead>
         <tr>
-            <th scope="col" class="w-5">Designation</th>
+            <th scope="col" class="w-5 d-none d-xl-table-cell">Designation</th>
             <th scope="col">Birth #</th>
             <th scope="col">Nickname</th>
-            <th scope="col">Rank</th>
-            <th scope="col">Unit</th>
-            <th scope="col">Role</th>
-            <th scope="col">TiG</th>
-            <th scope="col">TiS</th>
+            <th scope="col" class="d-none d-md-table-cell">Rank</th>
+            <th scope="col" class="d-none d-md-table-cell">Unit</th>
+            <th scope="col" class="d-none d-md-table-cell">Role</th>
+            <th scope="col" class="d-none d-lg-table-cell">TiG</th>
+            <th scope="col" class="d-none d-xl-table-cell">TiS</th>
             <td scope="col"></td>
             <AuthorizeView Policy="RequireRosterClerk">
                 <Authorized>
-                    <td scope="col"></td>
+                    <td scope="col" class="d-none d-lg-table-cell"></td>
                 </Authorized>
             </AuthorizeView>
         </tr>
@@ -97,6 +118,13 @@
     [Parameter]
     public List<Trooper> Troopers { get; set; } = new();
     private List<Trooper> Filtered { get; set; } = new();
+
+    private string d1 { get; set; } = "";
+    private string d2 { get; set; } = "";
+    private string d3 { get; set; } = "";
+    private string d4 { get; set; } = "";
+    private string d5 { get; set; } = "";
+    private string d6 { get; set; } = "";
 
     private RosterSearch Search { get; set; } = new();
 
@@ -126,7 +154,7 @@
                 {
                     return x.RTORank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
-                else if(x.Role == Role.Pilot)
+                else if(x.Slot >= Slot.Razor && x.Slot < Slot.Warden)
                 {
                     return x.PilotRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
@@ -134,9 +162,7 @@
                 {
                     return x.MedicRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
-                else if (x.Role == Role.Warden
-                    || x.Role == Role.MasterWarden
-                    || x.Role == Role.ChiefWarden)
+                else if (x.Slot >= Slot.Warden && x.Slot < Slot.ZetaCompany)
                 {
                     return x.WardenRank?.AsShorthand().StartsWith(Search.DesignationFilter, StringComparison.OrdinalIgnoreCase) ?? false;
                 }
@@ -153,27 +179,57 @@
 
         if(!string.IsNullOrWhiteSpace(Search.NickNameFilter))
         {
-            Filtered = Filtered.Where(x => x.NickName.StartsWith(Search.NickNameFilter)).ToList();
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(Search.NickNameFilter, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if(!string.IsNullOrWhiteSpace(Search.IdFilter))
         {
-            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter)).ToList();
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
-        if(Search.RankFilter is not null)
+        if(Search.UseRankSearch)
         {
-            Filtered = Filtered.Where(x => x.Rank == Search.RankFilter).ToList();   
+            if(!string.IsNullOrWhiteSpace(Search.RankSearch))
+            {
+                Filtered = Filtered.Where(x => x.GetRankName().StartsWith(Search.RankSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+        }
+        else
+        {
+            if(Search.RankFilter is not null)
+            {
+                Filtered = Filtered.Where(x => x.Rank == Search.RankFilter).ToList();   
+            }
         }
 
-        if(Search.UnitFilter is not null)
+        if (Search.UseUnitSearch)
         {
-            Filtered = Filtered.Where(x => x.Slot == Search.UnitFilter).ToList();   
+            if (!string.IsNullOrWhiteSpace(Search.UnitSearch))
+            {
+                Filtered = Filtered.Where(x => x.Slot.AsFull().StartsWith(Search.UnitSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+        }
+        else
+        {
+            if (Search.UnitFilter is not null)
+            {
+                Filtered = Filtered.Where(x => x.Slot == Search.UnitFilter).ToList();
+            }
         }
 
-        if(Search.RoleFilter is not null)
+        if (Search.UseRoleSearch)
         {
-            Filtered = Filtered.Where(x => x.Role == Search.RoleFilter).ToList();   
+            if (!string.IsNullOrWhiteSpace(Search.RoleSearch))
+            {
+                Filtered = Filtered.Where(x => x.GetRoleName().StartsWith(Search.RankSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+            }
+        }
+        else
+        {
+            if (Search.RoleFilter is not null)
+            {
+                Filtered = Filtered.Where(x => x.Role == Search.RoleFilter).ToList();
+            }
         }
 
         if (Search.Ascending)
@@ -187,7 +243,18 @@
                     Filtered.Sort((x, y) => x.NickName.CompareTo(y.NickName));
                     break;
                 case 3:
-                    Filtered.Sort((x, y) => x.Rank?.CompareTo(y.Rank ?? TrooperRank.Recruit) ?? -1);
+                    Filtered.Sort((x, y) =>
+                    {
+                        if (x.Rank is null && y.Rank is null)
+                        {
+                            return x.GetRankName().CompareTo(y.GetRankName());
+                        }
+
+                        if (x.Rank is null) return -1;
+                        if (y.Rank is null) return 1;
+
+                        return x.Rank.Value.CompareTo(y.Rank.Value);
+                    });
                     break;
                 case 4:
                     Filtered.Sort((x, y) => x.Slot.CompareTo(y.Slot));
@@ -212,7 +279,18 @@
                     Filtered.Sort((x, y) => y.NickName.CompareTo(x.NickName));
                     break;
                 case 3:
-                    Filtered.Sort((x, y) => y.Rank?.CompareTo(x.Rank ?? TrooperRank.Recruit) ?? -1);
+                    Filtered.Sort((x, y) =>
+                    {
+                        if (x.Rank is null && y.Rank is null)
+                        {
+                            return y.GetRankName().CompareTo(x.GetRankName());
+                        }
+
+                        if (y.Rank is null) return -1;
+                        if (x.Rank is null) return 1;
+
+                        return y.Rank.Value.CompareTo(x.Rank.Value);
+                    });
                     break;
                 case 4:
                     Filtered.Sort((x, y) => y.Slot.CompareTo(x.Slot));
@@ -276,6 +354,13 @@
         return BuildFilteredList();
     }
 
+    public Task OnRankSearchChange(ChangeEventArgs e)
+    {
+        Search.RankSearch = (string?)e.Value ?? "";
+
+        return BuildFilteredList();
+    }
+
     public Task OnUnitChange(ChangeEventArgs e)
     {
         var val = ((string?)e.Value) ?? "";
@@ -286,12 +371,26 @@
         return BuildFilteredList();
     }
 
+    public Task OnUnitSearchChange(ChangeEventArgs e)
+    {
+        Search.UnitSearch = (string?)e.Value ?? "";
+
+        return BuildFilteredList();
+    }
+
     public Task OnRoleChange(ChangeEventArgs e)
     {
         var val = ((string?)e.Value) ?? "";
 
         if(val == "null") Search.RoleFilter = null;
         else Search.RoleFilter = val.ValueFromString<Role>();
+
+        return BuildFilteredList();
+    }
+
+    public Task OnRoleSearchChange(ChangeEventArgs e)
+    {
+        Search.RoleSearch = (string?)e.Value ?? "";
 
         return BuildFilteredList();
     }

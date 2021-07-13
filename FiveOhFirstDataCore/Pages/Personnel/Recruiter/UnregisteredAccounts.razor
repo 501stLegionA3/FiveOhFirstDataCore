@@ -1,36 +1,43 @@
 ﻿@page "/c1/recruiter/unregistered"
 @inject IRosterService _roster
+@inject IAuthorizationService _auth
 
 <AuthorizeView Policy="RequireRecruiter">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="unregisteredForm" class="form form-inline" Model="this">
-            <table class="table table-hover">
+            <table class="table table-hover table-striped">
                 <thead>
                     <tr>
                         <td colspan="3">
-                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="IdSearch" @oninput="IdChanged"/>
+                             <InputText id="idSearch" placeholder="Birth #" class="form-control w-100" @bind-Value="DummyId" @oninput="IdChanged"/>
                         </td>
                         <td colspan="2">
-                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="NickSearch" @oninput="NickChanged"/>
+                            <InputText id="nickSearch" placeholder="Nickname" class="form-control w-100" @bind-Value="DummyNick" @oninput="NickChanged"/>
                         </td>
                     </tr>
                     <tr>
                         <th scope="col">Birth #</th>
                         <th scope="col">Nickname</th>
                         <th scope="col">Over 16?</th>
+                        <th scope="col">Age</th>
                         <th scope="col">Mods Installed?</th>
+                        <th scope="col">Prefered Role</th>
+                        <th scope="col">Possible Troll?</th>
                         <th scope="col">Access Token</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach(var t in Filtered)
                     {
-                    <tr>
+                    <tr class="@((t.RecruitStatus?.PossibleTroll ?? false) ? "table-danger" : "")">
                         <td>@(t.Id)</td>
                         <td>@(t.NickName)</td>
-                        <td>@(t.RecruitStatus?.OverSixteen)</td>
-                        <td>@(t.RecruitStatus?.ModsInstalled)</td>
+                        <td>@(t.RecruitStatus?.OverSixteen.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.Age.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.ModsInstalled.ToString() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.PreferredRole.AsFull() ?? "n/a")</td>
+                        <td>@(t.RecruitStatus?.PossibleTroll.ToString() ?? "n/a")</td>
                         <td>@(t.AccessCode)</td>
                     </tr>
                     }
@@ -52,6 +59,9 @@
     public string IdSearch { get; set; } = "";
     public string NickSearch { get; set; } = "";
 
+    public string DummyId {get;set;} = "";
+    public string DummyNick { get; set; } = "";
+
     public List<Trooper> Unregistered { get; set; } = new();
     public List<Trooper> Filtered { get; set; } = new();
 
@@ -63,9 +73,7 @@
         {
             var claim = (await AuthStateTask).User;
 
-            if (claim.IsInRole("Admin")
-                || claim.IsInRole("Manager")
-                || claim.HasClaim("C1", "Recruiter"))
+            if ((await _auth.AuthorizeAsync(claim, "RequireRecruiter")).Succeeded)
             {
                 Unregistered = await _roster.GetUnregisteredTroopersAsync();
 
@@ -96,12 +104,12 @@
 
         if(!string.IsNullOrWhiteSpace(IdSearch))
         {
-            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(IdSearch)).ToList();
+            Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(IdSearch, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         if(!string.IsNullOrWhiteSpace(NickSearch))
         {
-            Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch)).ToList();
+            Filtered = Filtered.Where(x => x.NickName.StartsWith(NickSearch, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         StateHasChanged();

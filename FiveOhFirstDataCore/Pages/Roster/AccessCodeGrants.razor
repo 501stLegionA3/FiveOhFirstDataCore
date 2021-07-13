@@ -1,5 +1,4 @@
 ﻿@page "/trooper/me/accessgrants"
-@implements IDisposable
 @inject ComponentApplicationState _state
 @inject NavigationManager _nav
 @inject IRosterService _roster
@@ -47,30 +46,14 @@
 
     public List<Trooper> DirectSubordinates { get; set; } = new();
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnParametersSetAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        _state.OnPersisting += PersistState;
-
-        if (_state.TryTakeAsJson<List<Trooper>>(_nav.Uri.ToString(), out var data))
-        {
-            DirectSubordinates = data;
-        }
-        else
+        if(firstRender)
         {
             DirectSubordinates = await _roster.GetDirectSubordinates(Trooper);
+            StateHasChanged();
         }
-    }
-
-    private Task PersistState()
-    {
-        _state.PersistAsJson(_nav.Uri.ToString(), DirectSubordinates);
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-    {
-        _state.OnPersisting -= PersistState;
     }
 }

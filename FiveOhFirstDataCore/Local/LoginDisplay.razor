@@ -1,10 +1,10 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <a href="/trooper/me">Welcome @CurrentUser?.Id @CurrentUser?.NickName</a>
+        <a href="/trooper/me" class="nav-link btn btn-link me-1">Welcome @CurrentUser?.Id @CurrentUser?.NickName</a>
         <form method="post" action="Identity/Account/LogOut">
             <button type="submit" class="nav-link btn btn-link">Log out</button>
         </form>
-        <a href="Identity/Account/Manage" class="oi oi-dashboard" aria-hidden="true"></a>
+        <a href="Identity/Account/Manage" class="btn btn-primary oi oi-dashboard" aria-hidden="true"></a>
     </Authorized>
     <NotAuthorized>
         <a href="Identity/Account/Register">Register</a>

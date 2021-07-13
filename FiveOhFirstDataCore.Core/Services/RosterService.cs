@@ -1,10 +1,13 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -19,13 +22,15 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Trooper> _userManager;
         private readonly IDiscordService _discord;
+        private readonly ILogger _logger;
 
         public RosterService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
-            IDiscordService discord)
+            IDiscordService discord, ILogger<RosterService> logger)
         {
             this._dbContext = dbContext;
             this._userManager = userManager;
             this._discord = discord;
+            this._logger = logger;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
@@ -74,7 +79,7 @@ namespace FiveOhFirstDataCore.Core.Services
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
-                if (x.Slot == Data.Slot.InactiveReserve)
+                if (x.Slot >= Data.Slot.InactiveReserve && x.Slot < Data.Slot.Archived)
                     troopers.Add(x);
             });
 
@@ -180,22 +185,34 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 var token = Guid.NewGuid().ToString();
 
+                var time = DateTime.UtcNow.ToEst();
+
                 var trooper = new Trooper()
                 {
                     Id = trooperData.Id,
                     NickName = trooperData.NickName,
                     Rank = trooperData.StartingRank,
                     UserName = token,
-                    StartOfService = DateTime.Now,
-                    LastPromotion = DateTime.Now,
-                    AccessCode = token
+                    StartOfService = time,
+                    LastPromotion = time,
+                    AccessCode = token,
+                    Slot = Data.Slot.InactiveReserve,
                 };
 
                 var recruiter = await GetTrooperFromClaimsPrincipalAsync(user);
                 trooper.RecruitedByData = new()
                 {
                     RecruitedById = recruiter?.Id ?? 0,
-                    ChangedOn = DateTime.UtcNow,
+                    ChangedOn = time,
+                };
+
+                trooper.RecruitStatus = new()
+                {
+                    Age = trooperData.Age,
+                    ModsInstalled = trooperData.ModsDownloaded,
+                    OverSixteen = trooperData.Sixteen,
+                    PossibleTroll = trooperData.PossibleTroll,
+                    PreferredRole = trooperData.PreferredRole
                 };
 
                 var identRes = await _userManager.CreateAsync(trooper, token);
@@ -219,16 +236,6 @@ namespace FiveOhFirstDataCore.Core.Services
                 }
 
                 identRes = await _userManager.AddClaimAsync(trooper, new("Training", "BCT"));
-
-                if (!identRes.Succeeded)
-                {
-                    foreach (var error in identRes.Errors)
-                        errors.Add($"[{error.Code}] {error.Description}");
-
-                    return new(false, null, errors);
-                }
-
-                identRes = await _userManager.AddClaimAsync(trooper, new("Display", $"{trooper.Id} {trooper.NickName}"));
 
                 if (!identRes.Succeeded)
                 {
@@ -272,6 +279,8 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             List<Trooper> sub = new();
 
+            if (t is null) return sub;
+
             await _dbContext.Users
                 .AsNoTracking()
                 .ForEachAsync(x =>
@@ -293,7 +302,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a company
                 else if ((slot / 10 % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander)
+                    if (t.Role == Data.Role.Commander
+                        || t.Role == Data.Role.NCOIC
+                        || t.Role == Data.Role.XO)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 100)
@@ -302,7 +313,8 @@ namespace FiveOhFirstDataCore.Core.Services
                             {
                                 // In the company staff
                                 if (slotDif == 0
-                                    || x.Role == Data.Role.Commander)
+                                    || x.Role == Data.Role.Commander
+                                    || x.Role == Data.Role.SergeantMajor)
                                 {
                                     sub.Add(x);
                                     return;
@@ -324,21 +336,24 @@ namespace FiveOhFirstDataCore.Core.Services
                 if ((slot % 10) == 0)
                 {
                     if (t.Role == Data.Role.Commander 
+                        || t.Role == Data.Role.SergeantMajor
                         || t.Role == Data.Role.MasterWarden 
                         || t.Role == Data.Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 10)
                         {
-                            // In the platoon staff
-                            if (slotDif == 0) 
-                                sub.Add(x);
-                            // This is a squad leader
-                            else if (x.Role == Data.Role.Lead && x.Team is null) 
-                                sub.Add(x);
+                            //// In the platoon staff
+                            //if (slotDif == 0) 
+                            //    sub.Add(x);
+                            //// This is a squad leader
+                            //else if (x.Role == Data.Role.Lead && x.Team is null) 
+                            //    sub.Add(x);
 
-                            else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
-                                sub.Add(x);
+                            //else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
+                            //    sub.Add(x);
+
+                            sub.Add(x);
                         }
                     }
                 }

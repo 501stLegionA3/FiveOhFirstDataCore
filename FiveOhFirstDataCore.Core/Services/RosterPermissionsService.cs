@@ -2,6 +2,8 @@
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Structures;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -120,10 +122,29 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             var user = await _userManager.FindByIdAsync(id);
 
-            if(admin)
-                await _userManager.AddToRoleAsync(user, "Admin");
-            if (manager)
-                await _userManager.AddToRoleAsync(user, "Manager");
+            try
+            {
+                if (admin)
+                    await _userManager.AddToRoleAsync(user, "Admin");
+                else
+                    await _userManager.RemoveFromRoleAsync(user, "Admin");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to modify trooper role.");
+            }
+
+            try
+            {
+                if (manager)
+                    await _userManager.AddToRoleAsync(user, "Manager");
+                else
+                    await _userManager.RemoveFromRoleAsync(user, "Manager");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to modify trooper role.");
+            }
         }
 
         public async Task<List<Trooper>> GetAllowedNameChangersAsync()

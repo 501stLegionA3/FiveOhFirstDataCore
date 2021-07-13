@@ -10,23 +10,24 @@
         </th>
     </tr>
 </thead>
-
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Squadron Commander
-    </th>
-    <td class="text-left" colspan="2">
-        @(Razor.Commander?.WarrantRank is null ? Razor.Commander?.PilotRank?.AsFull() + " " ?? "" : Razor.Commander.WarrantRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
-    </td>
-</tr>
-<tr>
-    <th scope="row" class="text-right" colspan="2">
-        Squadron Sub-Commander
-    </th>
-    <td class="text-left" colspan="2">
-        @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
-    </td>
-</tr>
+<tbody>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Squadron Commander
+        </th>
+        <td class="text-start" colspan="2">
+            @(Razor.Commander?.WarrantRank is null ? Razor.Commander?.PilotRank?.AsFull() + " " ?? "" : Razor.Commander.WarrantRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Squadron Sub-Commander
+        </th>
+        <td class="text-start" colspan="2">
+            @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
+        </td>
+    </tr>
+</tbody>
 
 @for(int i = 0; i < Razor.Flights.Length; i++)
 {

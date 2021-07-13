@@ -15,7 +15,7 @@
         <EditForm Model="ToEdit">
             <div class="row">
                 <div class="col">
-                    @if (IsEditing)
+                    @if (IsEditing && EditIndex == -1)
                     {
                         <div class="form-group">
                             <label for="noticeType">Notice Type</label>
@@ -32,14 +32,16 @@
                             </div>
                         </dvi>
                         <div class="form-group">
-                            <button type="button" class="btn btn-danger p-3" @onclick="DiscardChanges">Discard Changes</button>
-                            <button type="button" class="btn btn-success p-3" @onclick="SaveChanges">Save Changes</button>
+                            <button type="button" class="btn btn-danger" @onclick="DiscardChanges">Discard Changes</button>
+                            <button type="button" class="btn btn-success" @onclick="SaveChanges">Save Changes</button>
                         </div>
                         <hr />
                     }
                     else
                     {
-                        <button type="button" class="btn btn-block btn-primary m-3" @onclick="async (x) => await StartEdit()">Create New Notice</button>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-primary m-3" @onclick="async (x) => await StartEdit()">Create New Notice</button>
+                        </div>
                         <hr />
                     }
                 </div>
@@ -53,18 +55,47 @@
         {
             var c = i++;
             var n = notice;
-            <div class="row">
-                <div class="col p-2">
-                    <div class="@n.Level.GetAlertClasses() ck ck-content">
-                        @n.Display
-                    </div>
-                    @if(IsEditor)
-                    {
-                        <div class="form-group align-content-right float-right">
-                            <button class="oi oi-pencil m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await StartEdit(c)"></button>
-                            <button class="oi oi-trash m-2 btn btn-link" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
-                        </div>
-                    }
+                <div class="row">
+                    <div class="col p-2 position-relative">
+                        @if (EditIndex != c)
+                        {
+                            <div class="@n.Level.GetAlertClasses() ck ck-content text-break">
+                                @n.Display
+                            </div>
+                            @if (IsEditor && !IsEditing)
+                            {
+                                <div class="form-group position-absolute bottom-0 end-0">
+                                    <div class="mb-3 me-4 d-grid gap-2 d-md-block">
+                                        <button class="oi oi-pencil btn btn-outline-primary" aria-hidden="true" @onclick="async (x) => await StartEdit(c)"></button>
+                                        <button class="oi oi-trash btn btn-outline-danger" aria-hidden="true" @onclick="async (x) => await DeleteAsync(n)"></button>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else if (IsEditing)
+                        {
+                            <EditForm Model="ToEdit">
+                                <div class="form-group">
+                                    <label for="noticeType">Notice Type</label>
+                                    <InputEnumSelect class="form-select" id="noticeType" @bind-Value="ToEdit.Level" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="noticeContent">Notice Content</label>
+                                    <InputRichText class="form-control" id="noticeContent" @bind-Value="DummyContents" />
+                                </div>
+                                <dvi class="form-group">
+                                    <div class="form-check">
+                                        <InputCheckbox class="form-check-input ck ck-content" id="noticeSticky" @bind-Value="ToEdit.Sticky" />
+                                        <label class="form-check-label" for="noticeSticky">Is Notice Sticky?</label>
+                                    </div>
+                                </dvi>
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-danger" @onclick="DiscardChanges">Discard Changes</button>
+                                    <button type="button" class="btn btn-success" @onclick="SaveChanges">Save Changes</button>
+                                </div>
+                                <hr />
+                            </EditForm>
+                        }
                 </div>
             </div>
         }
@@ -107,6 +138,7 @@ else
         if(firstRender)
         {
             Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
+            SortNotices();
             _refresh.CallRequestRefresh();
         }
     }
@@ -136,8 +168,6 @@ else
                 IsEditor = await _notice.IsAllowedCShopEditor(claims, CSHopOverride, AllowedAccess);
             }
         }
-
-        SortNotices();
 
         _refresh.RefreshRequested += RefreshRequested;
     }
@@ -204,6 +234,7 @@ else
         else
         {
             ToEdit = new();
+            EditIndex = -1;
             DummyContents = "";
         }
 

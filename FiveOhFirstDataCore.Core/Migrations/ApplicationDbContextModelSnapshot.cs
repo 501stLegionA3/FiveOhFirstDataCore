@@ -99,10 +99,12 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
                 {
-                    b.Property<int>("RecruitStatusKey")
+                    b.Property<Guid>("RecruitStatusId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Age")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("ModsInstalled")
                         .HasColumnType("boolean");
@@ -110,10 +112,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<bool>("OverSixteen")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("PossibleTroll")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PreferredRole")
+                        .HasColumnType("integer");
+
                     b.Property<int>("TrooperId")
                         .HasColumnType("integer");
 
-                    b.HasKey("RecruitStatusKey");
+                    b.HasKey("RecruitStatusId");
 
                     b.HasIndex("TrooperId")
                         .IsUnique();
@@ -177,6 +185,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int?>("MedicRank")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("MilitaryPolice")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("NickName")
                         .IsRequired()
@@ -299,7 +310,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Contents")
@@ -344,7 +355,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("AuthorId")
+                    b.Property<int?>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Contents")
@@ -375,7 +386,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<long>("Added")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int?>("ChangedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedForId")
@@ -414,7 +425,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<bool>("AutomaticChange")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int?>("ChangedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedForId")
@@ -473,7 +484,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ApprovedById")
+                    b.Property<int?>("ApprovedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedForId")
@@ -548,7 +559,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int?>("ChangedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedForId")
@@ -590,7 +601,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<DateTime>("ChangedOn")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<int>("RecruitedById")
+                    b.Property<int?>("RecruitedById")
                         .HasColumnType("integer");
 
                     b.Property<bool>("RevertChange")
@@ -664,7 +675,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("ChangedById")
+                    b.Property<int?>("ChangedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("ChangedForId")
@@ -907,8 +918,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
                         .WithMany("NoticesWritten")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", "NoticeBoard")
                         .WithMany("Notices")
@@ -926,8 +936,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
                         .WithMany("CreatedFlags")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FlagFor")
                         .WithMany("Flags")
@@ -945,8 +954,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("SubmittedCShopUpdates")
                         .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("CShopUpdates")
@@ -964,8 +972,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("AuthorizedClaimUpdates")
                         .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("ClaimUpdates")
@@ -994,8 +1001,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ApprovedBy")
                         .WithMany("ApprovedNickNameUpdates")
                         .HasForeignKey("ApprovedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("NickNameUpdates")
@@ -1024,8 +1030,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("SubmittedRankUpdates")
                         .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("RankChanges")
@@ -1049,8 +1054,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "RecruitedBy")
                         .WithMany("Recruitments")
                         .HasForeignKey("RecruitedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("ChangedFor");
 
@@ -1073,8 +1077,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
                         .WithMany("ApprovedTimeUpdates")
                         .HasForeignKey("ChangedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("TimeUpdates")

@@ -1,5 +1,6 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
+@inherits PaginationModel
 
 <AuthorizeView Policy="RequireRosterClerk">
     <Authorized>
@@ -10,13 +11,13 @@
                     <h1 class="col">Roster Clerk Home</h1>
                 </div>
                 <div class="row">
-                    <div class="col p-2">
-                        <a href="/c1/roster/edit" class="btn btn-block btn-primary">Edit Trooper</a>
+                    <div class="col p-2 d-grid gap-2">
+                        <a href="/c1/roster/edit" class="btn btn-primary">Edit Trooper</a>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col p-2">
-                        <a href="/c1/roster/names" class="btn btn-block btn-info">Name Change Home</a>
+                    <div class="col p-2 d-grid gap-2">
+                        <a href="/c1/roster/names" class="btn btn-info">Name Change Home</a>
                     </div>
                 </div>
                 @if (!Loading)
@@ -26,14 +27,21 @@
                                  AllowedAccess="AllowedAccess" />
                 }
             </div>
-            <div class="col-md-4 col-sm-12">
+            <div class="col-md-4 col-sm-12 overflow-auto container-fluid">
+                @if (Updates is not null)
+                {
+                    <PaginationController Controller="this" />
+                }
+
                 <h3 class="text-center">Recent Activity</h3>
                 @if(Updates is not null)
                 {
                     Counter = 0;
+                    var cap = CurrentPageCap;
+                    var start = CurrentPageStart;
                     @foreach(var update in Updates)
                     {
-                        @if (Counter++ >= 10) break;
+                        @if (Counter++ >= cap || Counter < start) continue;
 
                         switch (update)
                         {
@@ -156,7 +164,7 @@
                                 @if(c.OldGraduatedUTC is not null
                                     && c.NewGraduatedUTC is not null)
                                 {
-                                    <div class="mb-0">BCT Update</div>
+                                    <div class="mb-0">UTC Update</div>
                                     <p><b>From: </b>@c.OldGraduatedUTC.Value.ToString("f")<br />
                                     <b>To: </b>@c.NewGraduatedUTC.Value.ToString("f")</p>
                                 }
@@ -164,7 +172,7 @@
                                 @if(c.OldBilletChange is not null
                                     && c.NewBilletChange is not null)
                                 {
-                                    <div class="mb-0">BCT Update</div>
+                                    <div class="mb-0">Billet Update</div>
                                     <p><b>From: </b>@c.OldBilletChange.Value.ToString("f")<br />
                                     <b>To: </b>@c.NewBilletChange.Value.ToString("f")</p>
                                 }
@@ -172,7 +180,7 @@
                                 @if(c.OldPromotion is not null
                                     && c.NewPromotion is not null)
                                 {
-                                    <div class="mb-0">BCT Update</div>
+                                    <div class="mb-0">Promotion Update</div>
                                     <p><b>From: </b>@c.OldPromotion.Value.ToString("f")<br />
                                     <b>To: </b>@c.NewPromotion.Value.ToString("f")</p>
                                 }
@@ -180,7 +188,7 @@
                                 @if(c.OldStartOfService is not null
                                     && c.NewStartOfService is not null)
                                 {
-                                    <div class="mb-0">BCT Update</div>
+                                    <div class="mb-0">Start of Service Update</div>
                                     <p><b>From: </b>@c.OldStartOfService.Value.ToString("f")<br />
                                     <b>To: </b>@c.NewStartOfService.Value.ToString("f")</p>
                                 }
@@ -188,6 +196,8 @@
                             break;
                         }
                     }
+
+                    <PaginationController Controller="this" />
                 }
             </div>
         </div>
@@ -211,6 +221,7 @@
         if(firstRender)
         {
             Updates = await _update.GetRosterUpdatesAsync();
+            ItemCount = Updates.Count();
             StateHasChanged();
         }
         else if (Loading)
