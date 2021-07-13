@@ -1,0 +1,65 @@
+﻿@page "/squad/{SquadDesignation}"
+@inject IRosterService _roster
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == SquadDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(SquadDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == SquadDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(SquadDisplayOption.PromotionBoard)">Promotion Board</button>
+    </li>
+</ul>
+<CascadingValue Name="Squad Data" Value="Data">
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case SquadDisplayOption.Roster:
+
+                break;
+            case SquadDisplayOption.PromotionBoard:
+                <SquadPromotionBoard />
+                break;
+        }
+    </div>
+</CascadingValue>
+
+@code {
+    public enum SquadDisplayOption
+    {
+        Roster,
+        PromotionBoard,
+    }
+
+    [Parameter]
+    public string SquadDesignation { get; set; } = "";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private SquadDisplayOption Active { get; set; } = SquadDisplayOption.Roster;
+    private SquadData Data { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            if(int.TryParse(SquadDesignation, out int id))
+                Data = await _roster.GetSquadDataFromSlotAsync((Slot)id);
+            else if (SquadDesignation == "me")
+                Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+
+            Loaded = true;
+        }
+    }
+
+    private void OnTypeChange(SquadDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+}

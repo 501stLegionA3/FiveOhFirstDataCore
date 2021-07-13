@@ -1,0 +1,51 @@
+﻿<div class="row">
+    <div class="col">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">Trooper Id</th>
+                    <th scope="col">Trooper NickName</th>
+                    <th scope="col">From Rank</th>
+                    <th scope="col">To Rank</th>
+                    <th scope="col">Initiator</th>
+                    <th scope="col">Approved By</th>
+                    @if (AllowedPromoter)
+                    {
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if(PendingPromotions is not null)
+                {
+                    @foreach (var pair in PendingPromotions)
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5"><em>Loading...</em></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+@code {
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public bool AllowedPromoter { get; set; }
+
+    [CascadingParameter]
+    public List<Trooper> ActiveTroopers { get; set; }
+
+    private Dictionary<Trooper, (int, int)>? PendingPromotions { get; set; } = null;
+}

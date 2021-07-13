@@ -1,0 +1,12 @@
+﻿<h3>EligibleForPromotionListing</h3>
+
+@code {
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public bool AllowedPromoter { get; set; }
+
+    [CascadingParameter]
+    public List<Trooper> ActiveTroopers { get; set; }
+}

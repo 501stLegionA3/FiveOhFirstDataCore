@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
@@ -355,6 +356,29 @@ namespace FiveOhFirstDataCore.Core.Services
             });
 
             return sub;
+        }
+
+        public async Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot)
+        {
+            if (slot <= Slot.Hailstorm || slot >= Slot.Mynock)
+                return null;
+            else if (((int)slot) % 10 == 0)
+                return null;
+            
+            var data = new SquadData();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Where(x => x.Slot == slot)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<SquadData?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            return await GetSquadDataFromSlotAsync(user.Slot);
         }
     }
 }

@@ -1,0 +1,21 @@
+﻿<h3>SquadPromotionBoard</h3>
+
+
+
+
+@code {
+    [CascadingParameter(Name = "Squad Data")]
+    public SquadData Squad { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    private bool CanPromote { get; set; } = false;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+
+    }
+}
