@@ -319,5 +319,14 @@ namespace FiveOhFirstDataCore.Core.Account
 
             return promotions;
         }
+
+        public IReadOnlyList<Promotion> GetEligiblePromotions()
+        {
+            List<Promotion> promotions = new();
+
+
+
+            return promotions;
+        }
     }
 }
