@@ -59,7 +59,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var one = await _dbContext
                 .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.ChangedBy)
+                .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
@@ -110,7 +110,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
-                .Include(p => p.ChangedBy)
+                .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
@@ -326,7 +326,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 ChangedFrom = update.ChangedTo,
                 ChangedTo = update.ChangedFrom,
-                ChangedById = manager.Id,
+                RequestedById = manager.Id,
                 ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true
             });

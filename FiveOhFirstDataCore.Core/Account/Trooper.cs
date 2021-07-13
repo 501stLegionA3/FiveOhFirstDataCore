@@ -63,7 +63,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public List<Promotion> PendingPromotions { get; set; } = new();
         public List<Promotion> RequestedPromotions { get; set; } = new();
-        public List<Promotion> ApprovedPromotions { get; set; } = new();
+        public List<Promotion> ApprovedPendingPromotions { get; set; } = new();
 
         #region Logging
         /// <summary>
@@ -74,6 +74,8 @@ namespace FiveOhFirstDataCore.Core.Account
         /// Rank changes submitted by this account for other accounts.
         /// </summary>
         public List<RankUpdate> SubmittedRankUpdates { get; set; } = new();
+        public List<RankUpdate> ApprovedRankUpdates { get; set; } = new();
+        public List<RankUpdate> DeniedRankUpdates { get; set; } = new();
         public List<SlotUpdate> SlotUpdates { get; set; } = new();
         public List<SlotUpdate> ApprovedSlotUpdates { get; set; } = new();
         public List<CShopUpdate> CShopUpdates { get; set; } = new();

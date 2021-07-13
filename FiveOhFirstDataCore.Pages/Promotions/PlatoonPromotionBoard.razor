@@ -1,13 +1,13 @@
 ﻿@inject IAuthorizationService _auth
 
-<h3>SquadPromotionBoard</h3>
+<h3>PlatoonPromotionBoard</h3>
 
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
     <CascadingValue Value="Troopers">
 
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" />
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Platoon" />
 
         <EligibleForPromotionListing />
 
@@ -17,7 +17,7 @@
 
 @code {
     [CascadingParameter]
-    public SquadData Squad { get; set; }
+    public PlatoonData? Platoon { get; set; }
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -37,15 +37,24 @@
         {
             Troopers = new()
             {
-                Squad.RT,
-                Squad.ARC
+                Platoon.RT,
+                Platoon.ARC,
+                Platoon.Medic,
+                Platoon.SergeantMajor
             };
 
-            foreach(var t in Squad.Teams)
+            foreach (var squad in Platoon.Squads)
             {
-                Troopers.Add(t.Lead);
-                Troopers.Add(t.Medic);
-                Troopers.AddRange(t.Troopers);
+                Troopers.Add(squad.Lead);
+                Troopers.Add(squad.RT);
+                Troopers.Add(squad.ARC);
+
+                foreach (var t in squad.Teams)
+                {
+                    Troopers.Add(t.Lead);
+                    Troopers.Add(t.Medic);
+                    Troopers.AddRange(t.Troopers);
+                }
             }
 
             StateHasChanged();
@@ -60,6 +69,8 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager || Squad.Lead.Id == CurrentUser.Id;
+        CanPromote = manager 
+            || Platoon.Commander.Id == CurrentUser.Id 
+            || Platoon.SergeantMajor.Id == CurrentUser.Id;
     }
 }

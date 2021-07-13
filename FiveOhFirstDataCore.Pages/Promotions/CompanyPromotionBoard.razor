@@ -1,0 +1,87 @@
+﻿@inject IAuthorizationService _auth
+
+<h3>CompanyPromotionBoard</h3>
+
+<CascadingValue Value="CanPromote">
+@if(Troopers is not null)
+{
+    <CascadingValue Value="Troopers">
+
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Compnay" />
+
+        <EligibleForPromotionListing />
+
+    </CascadingValue>
+}
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    public CompanyData Company { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            Troopers = new()
+            {
+                Company.RT,
+                Company.ARC,
+                Company.Medic,
+                Company.XO,
+                Company.NCOIC
+            };
+
+            foreach(var platoon in Company.Platoons)
+            {
+                Troopers.Add(platoon.Commander);
+                Troopers.Add(platoon.SergeantMajor);
+                Troopers.Add(platoon.ARC);
+                Troopers.Add(platoon.Medic);
+                Troopers.Add(platoon.RT);
+
+                foreach (var squad in platoon.Squads)
+                {
+                    Troopers.Add(squad.Lead);
+                    Troopers.Add(squad.RT);
+                    Troopers.Add(squad.ARC);
+
+                    foreach (var t in squad.Teams)
+                    {
+                        Troopers.Add(t.Lead);
+                        Troopers.Add(t.Medic);
+                        Troopers.AddRange(t.Troopers);
+                    }
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        CanPromote = manager 
+            || Company.Commander.Id == CurrentUser.Id 
+            || Company.XO.Id == CurrentUser.Id 
+            || Company.NCOIC.Id == CurrentUser.Id;
+    }
+}

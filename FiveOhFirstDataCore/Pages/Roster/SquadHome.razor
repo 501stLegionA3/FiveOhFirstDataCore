@@ -1,5 +1,6 @@
 ﻿@page "/squad/{SquadDesignation}"
 @inject IRosterService _roster
+@inject IAuthorizationService _auth
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -9,19 +10,34 @@
         <button class="nav-link w-100 h-100 @(Active == SquadDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(SquadDisplayOption.PromotionBoard)">Promotion Board</button>
     </li>
 </ul>
-<CascadingValue Name="Squad Data" Value="Data">
-    <div class="tab-content">
-        @switch(Active)
-        {
-            case SquadDisplayOption.Roster:
+@if(Loaded)
+{
+    <CascadingValue Value="Data">
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case SquadDisplayOption.Roster:
 
-                break;
-            case SquadDisplayOption.PromotionBoard:
-                <SquadPromotionBoard />
-                break;
-        }
-    </div>
-</CascadingValue>
+                    break;
+                case SquadDisplayOption.PromotionBoard:
+                    
+                    @if(Data is not null)
+                    {
+                        <SquadPromotionBoard />
+                    }
+                    else
+                    {
+                        <em>No squad data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                    }
+                    break;
+            }
+        </div>
+    </CascadingValue>
+}
+else
+{
+    <em>Loading...</em>
+}
 
 @code {
     public enum SquadDisplayOption
@@ -37,7 +53,7 @@
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
     private SquadDisplayOption Active { get; set; } = SquadDisplayOption.Roster;
-    private SquadData Data { get; set; }
+    private SquadData? Data { get; set; }
     private bool Loaded { get; set; } = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -49,11 +65,13 @@
             var user = (await AuthStateTask).User;
 
             if(int.TryParse(SquadDesignation, out int id))
-                Data = await _roster.GetSquadDataFromSlotAsync((Slot)id);
+                Data = await _roster.GetSquadDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
             else if (SquadDesignation == "me")
                 Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
 
             Loaded = true;
+
+            StateHasChanged();
         }
     }
 

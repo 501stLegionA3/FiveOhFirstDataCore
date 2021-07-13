@@ -1,5 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
@@ -358,17 +359,17 @@ namespace FiveOhFirstDataCore.Core.Services
             return sub;
         }
 
-        public async Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot)
+        public async Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
         {
-            if (slot <= Slot.Hailstorm || slot >= Slot.Mynock)
-                return null;
-            else if (((int)slot) % 10 == 0)
+            if (!manager && !slot.IsSquad())
                 return null;
             
             var data = new SquadData();
 
             await _dbContext.Users.AsNoTracking()
                 .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
                 .Where(x => x.Slot == slot)
                 .ForEachAsync(x => data.Assign(x));
 
@@ -378,7 +379,61 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<SquadData?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
-            return await GetSquadDataFromSlotAsync(user.Slot);
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin") 
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetSquadDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<PlatoonData?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsPlatoon())
+                return null;
+
+            var data = new PlatoonData(3);
+
+            var s = (int)slot / 10;
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => s == ((int)x.Slot / 10))
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<PlatoonData?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsCompany())
+                return null;
+
+            var data = new CompanyData(3, 3);
+
+            var s = (int)slot / 100;
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => s == ((int)x.Slot / 100))
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetCompanyDataFromSlotAsync(user.Slot, manager);
         }
     }
 }

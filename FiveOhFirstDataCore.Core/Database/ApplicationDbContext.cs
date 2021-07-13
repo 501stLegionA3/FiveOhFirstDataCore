@@ -66,7 +66,7 @@ namespace FiveOhFirstDataCore.Core.Database
             promotion.Property(p => p.RequestedById)
                 .IsRequired(false);
             promotion.HasMany(p => p.ApprovedBy)
-                .WithMany(e => e.ApprovedPromotions);
+                .WithMany(e => e.ApprovedPendingPromotions);
 
             #endregion
 
@@ -77,12 +77,21 @@ namespace FiveOhFirstDataCore.Core.Database
             rankChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.RankChanges)
                 .HasForeignKey(e => e.ChangedForId);
-            rankChange.HasOne(e => e.ChangedBy)
+            rankChange.HasOne(e => e.RequestedBy)
                 .WithMany(p => p.SubmittedRankUpdates)
-                .HasForeignKey(e => e.ChangedById)
+                .HasForeignKey(e => e.RequestedById)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
-            rankChange.Property(p => p.ChangedById)
+            rankChange.Property(p => p.RequestedById)
+                .IsRequired(false);
+            rankChange.HasMany(e => e.ApprovedBy)
+                .WithMany(p => p.ApprovedRankUpdates);
+            rankChange.HasOne(e => e.DeniedBy)
+                .WithMany(p => p.DeniedRankUpdates)
+                .HasForeignKey(e => e.DeniedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+            rankChange.Property(p => p.RequestedById)
                 .IsRequired(false);
 
             var slotChange = builder.Entity<SlotUpdate>();

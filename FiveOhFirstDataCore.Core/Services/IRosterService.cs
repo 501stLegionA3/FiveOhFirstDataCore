@@ -27,8 +27,12 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
-        public Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot);
+        public Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot, bool manager);
         public Task<SquadData?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<PlatoonData?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager);
+        public Task<PlatoonData?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
+        public Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
         #endregion
 
         #region Roster Registration

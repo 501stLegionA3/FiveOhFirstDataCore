@@ -1,0 +1,82 @@
+﻿@page "/company/{CompanyDesignation}"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == CompanyDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(CompanyDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == CompanyDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(CompanyDisplayOption.PromotionBoard)">Promotion Board</button>
+    </li>
+</ul>
+@if(Loaded)
+{
+    <CascadingValue Value="Data">
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case CompanyDisplayOption.Roster:
+
+                    break;
+                case CompanyDisplayOption.PromotionBoard:
+                    @if(Data is not null)
+                    {
+                        <CompanyPromotionBoard />
+                    }
+                    else
+                    {
+                        <em>No company data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                    }
+                    break;
+            }
+        </div>
+    </CascadingValue>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public enum CompanyDisplayOption
+    {
+        Roster,
+        PromotionBoard,
+    }
+
+    [Parameter]
+    public string CompanyDesignation { get; set; } = "";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private CompanyDisplayOption Active { get; set; } = CompanyDisplayOption.Roster;
+    private CompanyData? Data { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            if(int.TryParse(CompanyDesignation, out int id))
+                Data = await _roster.GetCompanyDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            else if (CompanyDesignation == "me")
+                Data = await _roster.GetCompanyDataFromClaimPrincipalAsync(user);
+
+            Loaded = true;
+
+            StateHasChanged();
+        }
+    }
+
+    private void OnTypeChange(CompanyDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+}

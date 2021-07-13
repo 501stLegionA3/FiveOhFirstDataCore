@@ -1,4 +1,35 @@
-﻿<div class="row">
+﻿@inject IPromotionService _promote
+
+@if(Errors.Count > 0)
+{
+<div class="row">
+    <div class="col p-3">
+        <div class="alert alert-danger alert-dismissible w-100">
+            <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+            <strong>Something went wrong!</strong>
+            <ul>
+            @foreach(var i in Errors)
+            {
+                <li>@i</li>
+            }
+            </ul>
+        </div>
+    </div>
+</div>
+}
+@if(SuccessMessage is not null)
+{
+<div class="row">
+    <div class="col p-3">
+        <div class="alert alert-success alert-dismissible w-100">
+            <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
+            <p>@SuccessMessage</p>
+        </div>
+    </div>
+</div>
+}
+
+<div class="row">
     <div class="col">
         <table class="table table-striped table-hover">
             <thead>
@@ -7,35 +38,72 @@
                     <th scope="col">Trooper NickName</th>
                     <th scope="col">From Rank</th>
                     <th scope="col">To Rank</th>
-                    <th scope="col">Initiator</th>
-                    <th scope="col">Approved By</th>
-                    @if (AllowedPromoter)
-                    {
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    }
+                    <th scope="col">Requester</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Current Board</th>
+                    <th scope="col">Needed Board</th>
                 </tr>
             </thead>
             <tbody>
-                @if(PendingPromotions is not null)
+                @if(ActiveTroopers is not null)
                 {
-                    @foreach (var pair in PendingPromotions)
+                    foreach(var trooper in ActiveTroopers)
                     {
-                        
+                        if (trooper is null) continue;
+
+                        foreach(var promo in trooper.PendingPromotions)
+                        {
+                            if (promo is null) continue;
+
+                            @if (promo.CurrentBoard >= BoardLevel)
+                            {
+                                <tr>
+                                    <td>@(promo.PromotionFor?.Id ?? 0)</td>
+                                    <td>@(promo.PromotionFor?.NickName ?? "")</td>
+                                    <td>@promo.PromoteFrom.GetRank().AsFull()</td>
+                                    <td>@promo.PromoteTo.GetRank().AsFull()</td>
+                                    <td>@promo.RequestedBy?.NickName</td>
+                                    <td>@promo.Reason</td>
+                                    @if (AllowedPromoter && promo.CurrentBoard == BoardLevel)
+                                    {
+                                        var p = promo;
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-text bg-success">
+                                                    <input type="checkbox" class="form-check-input mt-0" @onclick="ToggleApprove" />
+                                                </div>
+                                                <button class="btn btn-outline-success" disabled="@(!ConfirmApprove)" @onclick="async (x) => await ApprovePromotion(p)">Approve</button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-text bg-danger">
+                                                    <input type="checkbox" class="form-check-input mt-0" @onclick="ToggleDeny" />
+                                                </div>
+                                                <button class="btn btn-outline-danger" disabled="@(!ConfirmDeny)" @onclick="async (x) => await DenyPromotion(p)">Deny</button>
+                                            </div>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>@promo.CurrentBoard.AsFull()</td>
+                                        <td>@promo.NeededBoard.AsFull()</td>
+                                    }
+                                </tr>
+                            }
+                        }
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="5"><em>Loading...</em></td>
+                        <td colspan="@(AllowedPromoter ? "7" : "5")"><em>Loading...</em></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
-
-
 
 @code {
     [CascadingParameter]
@@ -45,7 +113,71 @@
     public bool AllowedPromoter { get; set; }
 
     [CascadingParameter]
-    public List<Trooper> ActiveTroopers { get; set; }
+    public List<Trooper>? ActiveTroopers { get; set; }
 
-    private Dictionary<Trooper, (int, int)>? PendingPromotions { get; set; } = null;
+    [Parameter]
+    public PromotionBoardLevel BoardLevel { get; set; } = PromotionBoardLevel.Squad;
+
+    protected string? SuccessMessage { get; set; } = null;
+    protected List<string> Errors { get; set; } = new();
+
+    private bool ConfirmApprove { get; set; } = false;
+    private bool ConfirmDeny { get; set; } = false;
+
+    private void ToggleApprove()
+        => ConfirmApprove = !ConfirmApprove;
+
+    private void ToggleDeny()
+        => ConfirmDeny = !ConfirmDeny;
+
+    protected void ClearSuccess()
+    {
+        SuccessMessage = null;
+    }
+
+    protected void ClearErrors()
+    {
+        Errors.Clear();   
+    }
+
+    protected async Task ApprovePromotion(Promotion promo)
+    {
+        if(ConfirmApprove)
+        {
+            var res = await _promote.ElevatePromotion(promo, CurrentUser);
+
+            if(!res.GetResult(out var errors))
+            {
+                Errors.AddRange(errors);
+            }
+            else
+            {
+                if(promo.NeededBoard == BoardLevel)
+                {
+                    SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is complete.";
+                }
+                else
+                {
+                    SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is has been passed up.";
+                }
+            }
+        }
+    }
+
+    protected async Task DenyPromotion(Promotion promo)
+    {
+        if(ConfirmDeny)
+        {
+            var res = await _promote.CancelPromotion(promo, CurrentUser);
+
+            if(!res.GetResult(out var errors))
+            {
+                Errors.AddRange(errors);
+            }
+            else
+            {
+                SuccessMessage = $"Denied the promotion for {promo.PromotionFor?.NickName}.";
+            }
+        }
+    }
 }

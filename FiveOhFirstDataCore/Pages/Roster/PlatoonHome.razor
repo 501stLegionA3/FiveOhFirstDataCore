@@ -1,0 +1,82 @@
+﻿@page "/platoon/{PlatoonDesignation}"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == PlatoonDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(PlatoonDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == PlatoonDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(PlatoonDisplayOption.PromotionBoard)">Promotion Board</button>
+    </li>
+</ul>
+@if(Loaded)
+{
+    <CascadingValue Value="Data">
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case PlatoonDisplayOption.Roster:
+
+                    break;
+                case PlatoonDisplayOption.PromotionBoard:
+                    @if(Data is not null)
+                    {
+                        <PlatoonPromotionBoard />
+                    }
+                    else
+                    {
+                        <em>No platoon data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                    }
+                    break;
+            }
+        </div>
+    </CascadingValue>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public enum PlatoonDisplayOption
+    {
+        Roster,
+        PromotionBoard,
+    }
+
+    [Parameter]
+    public string PlatoonDesignation { get; set; } = "";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private PlatoonDisplayOption Active { get; set; } = PlatoonDisplayOption.Roster;
+    private PlatoonData? Data { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            if(int.TryParse(PlatoonDesignation, out int id))
+                Data = await _roster.GetPlatoonDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            else if (PlatoonDesignation == "me")
+                Data = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+
+            Loaded = true;
+
+            StateHasChanged();
+        }
+    }
+
+    private void OnTypeChange(PlatoonDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+}
