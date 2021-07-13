@@ -14,25 +14,27 @@
 </ul>
 @if(Loaded)
 {
-    <div class="tab-content">
-        @switch(Active)
-        {
-            case HailstormDisplayOption.Roster:
+    <CascadingValue Value="Data">
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case HailstormDisplayOption.Roster:
 
-                break;
-            case HailstormDisplayOption.PromotionBoard:
+                    break;
+                case HailstormDisplayOption.PromotionBoard:
                     
-                @if(Data is not null)
-                {
+                    @if(Data is not null)
+                    {
                     <BattallionPromotionBoard Battalion="Data" />
-                }
-                else
-                {
-                    <em>No battalion data was found.</em>
-                }
-                break;
-        }
-    </div>
+                    }
+                    else
+                    {
+                        <em>No battalion data was found.</em>
+                    }
+                    break;
+            }
+        </div>
+    </CascadingValue>
 }
 else
 {
@@ -58,6 +60,8 @@ else
 
         if(firstRender)
         {
+            var user = (await AuthStateTask).User;
+
             Data = await _roster.GetHailstormDataAsync();
 
             Loaded = true;
