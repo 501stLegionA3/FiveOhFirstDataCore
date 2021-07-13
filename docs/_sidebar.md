@@ -11,4 +11,4 @@
     - [Visit the Site](https://s4.501stlegion-a3.com/)
     - [GitHub](https://github.com/501stLegionA3/FiveOhFirstDataCore)
 - **Version Information**
-    - [Version 0.1.3 Beta](https://github.com/501stLegionA3/FiveOhFirstDataCore/releases/tag/v0.1.0-beta)
+    - [Version 0.2.0 Beta](https://github.com/501stLegionA3/FiveOhFirstDataCore/releases/tag/v0.2.0-beta)
