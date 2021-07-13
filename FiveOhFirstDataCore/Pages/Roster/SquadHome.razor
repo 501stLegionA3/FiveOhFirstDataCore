@@ -13,26 +13,26 @@
 @if(Loaded)
 {
     <CascadingValue Value="Data">
-        <div class="tab-content">
-            @switch(Active)
-            {
-                case SquadDisplayOption.Roster:
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case SquadDisplayOption.Roster:
 
-                    break;
-                case SquadDisplayOption.PromotionBoard:
+                break;
+            case SquadDisplayOption.PromotionBoard:
                     
                     @if(Data is not null)
                     {
-                        <SquadPromotionBoard />
+                <SquadPromotionBoard />
                     }
                     else
                     {
                         <em>No squad data was found. Make sure you are in a platoon or the provided designation is correct.</em>
                     }
-                    break;
-            }
-        </div>
-    </CascadingValue>
+                break;
+        }
+    </div>
+</CascadingValue>
 }
 else
 {

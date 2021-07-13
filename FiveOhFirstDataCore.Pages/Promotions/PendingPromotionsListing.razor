@@ -50,7 +50,7 @@
                     foreach(var trooper in ActiveTroopers)
                     {
                         if (trooper is null) continue;
-
+                        
                         foreach(var promo in trooper.PendingPromotions)
                         {
                             if (promo is null) continue;
@@ -97,13 +97,15 @@
                 else
                 {
                     <tr>
-                        <td colspan="@(AllowedPromoter ? "7" : "5")"><em>Loading...</em></td>
+                        <td colspan="8"><em>Loading...</em></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
 </div>
+
+
 
 @code {
     [CascadingParameter]

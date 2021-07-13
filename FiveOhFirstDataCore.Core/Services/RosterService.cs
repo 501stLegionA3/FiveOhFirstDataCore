@@ -391,6 +391,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var data = new PlatoonData(3);
 
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
             var s = (int)slot / 10;
             await _dbContext.Users.AsNoTracking()
                 .AsSplitQuery()
@@ -416,6 +418,8 @@ namespace FiveOhFirstDataCore.Core.Services
                 return null;
 
             var data = new CompanyData(3, 3);
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var s = (int)slot / 100;
             await _dbContext.Users.AsNoTracking()
