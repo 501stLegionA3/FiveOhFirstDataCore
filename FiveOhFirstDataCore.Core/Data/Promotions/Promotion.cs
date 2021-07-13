@@ -23,6 +23,6 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         public int PromoteFrom { get; set; }
         public int PromoteTo { get; set; }
 
-        public string Reason { get; set; }
+        public string Reason { get; set; } = "";
     }
 }

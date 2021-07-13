@@ -193,9 +193,9 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 CurrentBoard = currentBoard,
                 NeededBoard = promoReq.NeededLevel,
-                
+
                 PromoteFrom = promotionFrom,
-                PromoteTo = promotionTo, 
+                PromoteTo = promotionTo,
                 Reason = reason,
 
                 RequestedById = invoked.Id
@@ -222,5 +222,10 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return new(true, promo, null);
         }
+
+        public async Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Promotion promotion)
+            => await StartPromotionProcess(invoker, promotion.PromotionFor,
+                promotion.CurrentBoard, promotion.PromoteFrom, promotion.PromoteTo,
+                promotion.Reason);
     }
 }

@@ -1,4 +1,6 @@
-﻿@if(Errors.Count > 0)
+﻿@inject IPromotionService _promotion
+
+@if(Errors.Count > 0)
 {
 <div class="row">
     <div class="col p-3">
@@ -100,7 +102,7 @@
     {
         <EditForm Model="Promotion" class="form">
             <div class="form-group text-center">
-                <div class="row">
+                <div class="row p-2">
                     <div class="col">
                         <h3>To Promote</h3>
                         <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="ActiveTroopers" class="form-control" />
@@ -108,7 +110,7 @@
                 </div>
                 @if (Promotion.PromotionFor is not null)
                 {
-                    <div class="row">
+                    <div class="row p-2">
                         <div class="col-md-12 col-lg-6">
                             <h4>Promote From</h4>
                             <InputSelect @bind-Value="Promotion.PromoteFrom" class="form-control">
@@ -148,6 +150,8 @@
                             <InputSelect @bind-Value="Promotion.PromoteTo" class="form-control">
                                 @if (Promotion.PromoteFrom != 0)
                                 {
+                                    <option value="-1">Select Rank</option>
+
                                     var c = Promotion.PromoteFrom / 100;
                                     switch(c)
                                     {
@@ -157,7 +161,7 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
@@ -167,7 +171,7 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
@@ -177,7 +181,7 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
@@ -187,7 +191,7 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
@@ -197,7 +201,7 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
@@ -207,13 +211,25 @@
                                                 var ri = (int)r;
                                                 if (ri > Promotion.PromoteFrom)
                                                 {
-                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                    <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
                                         break;
                                     }
                                 }
                             </InputSelect>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col">
+                            <h4>Reason for Promotion</h4>
+                            <InputText @bind-Value="Promotion.Reason" class="form-control"></InputText>
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col d-grid gap-2">
+                            <button class="btn btn-primary" @onclick="StartPromotion">Request Promotion</button>
+                            <button class="btn btn-danger" @onclick="ToggleStartPromotionForm">Cancel</button>
                         </div>
                     </div>
                 }
@@ -231,6 +247,12 @@
 
     [CascadingParameter]
     public List<Trooper> ActiveTroopers { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    [Parameter]
+    public PromotionBoardLevel SendPromotionsTo { get; set; }
 
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
@@ -290,6 +312,37 @@
 
     private async Task StartPromotion(Promotion p)
     {
-        
+        Promotion = p;
+        await StartPromotion();
+    }
+
+    private async Task StartPromotion()
+    {
+        if (AllowedPromoter)
+        {
+            Promotion.CurrentBoard = SendPromotionsTo;
+
+            if(Promotion.PromoteTo <= 0)
+            {
+                Errors.Add("No rank was selected to promote to.");
+                return;
+            }
+
+            ToggleStartPromotionForm();
+
+            var user = (await AuthStateTask).User;
+
+            var res = await _promotion.StartPromotionProcess(user, Promotion);
+
+            if (!res.GetResult(out var errors))
+            {
+                Errors.AddRange(errors);
+            }
+            else
+            {
+                SuccessMessage = "Promotion filed successfully!";
+            }
+            StateHasChanged();
+        }
     }
 }
