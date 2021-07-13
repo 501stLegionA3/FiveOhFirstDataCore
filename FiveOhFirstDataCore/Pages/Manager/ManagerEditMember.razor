@@ -124,96 +124,100 @@
                 </div>
             </div>
         </div>
-        <hr />
-        <div class="form-group">
-            <h3 class="text-center">External Accounts</h3>
-            <div class="row text-center">
-                <div class="col">
-                    <h5>Discord ID</h5>
-                    <h6>@Trooper.DiscordId</h6>
-                </div>
-                <div class="col">
-                    <h5>Steam ID</h5>
-                    <a href="https://steamcommunity.com/profiles/@Trooper.SteamLink" rel="nofollow" target="_blank"><h6>@Trooper.SteamLink</h6></a>
-                </div>
-            </div>
-        </div>
-        <hr />
-        <div class="form-group">
-            <h3 class="text-center">Account Management</h3>
-            <div class="row">
-                <div class="col">
-                    <h5>Password Reset</h5>
-                    @if(EmailNotice is not null)
-                    {
-                        <span class="alert alert-primary">@EmailNotice</span>
-                    }
-                    <InputText id="emailSendTo" @bind-Value="Trooper.Email" placeholder="Email for password reset." class="form-control"/>
-                    <br />
-                    <div class="d-grid gap-2 mx-auto">
-                        <button class="btn btn-primary m-3" @onclick="SendPasswordReset">Send Password Reset</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <h5>Account Reset</h5>
-                    <div class="from-check">
-                        <input type="checkbox" id="confimResetAccount" class="form-check-input" @onclick="ConfirmAccountResetToggle" />
-                        <label for="confimResetAccount" class="form-check-label">
-                            I understand that resetting an account will remove Discord and Steam account links, reset the username and password,
-                            and generate a new access code. No 501st releated data will be lost.
-                        </label>
-                        <div class="d-grid gap-2 mx-auto">
-                            <button class="btn btn-danger m-3" @onclick="ResetAccount" disabled="@(!ResetConfirmation)">Reset Account</button>
+            <hr />
+
+            @if (Trooper.Id != -1)
+            {
+                <div class="form-group">
+                    <h3 class="text-center">External Accounts</h3>
+                    <div class="row text-center">
+                        <div class="col">
+                            <h5>Discord ID</h5>
+                            <h6>@Trooper.DiscordId</h6>
+                        </div>
+                        <div class="col">
+                            <h5>Steam ID</h5>
+                            <a href="https://steamcommunity.com/profiles/@Trooper.SteamLink" rel="nofollow" target="_blank"><h6>@Trooper.SteamLink</h6></a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <AuthorizeView Policy="RequireAdmin" Context="adminAuthView">
-                <Authorized>
+                <hr />
+                <div class="form-group">
+                    <h3 class="text-center">Account Management</h3>
                     <div class="row">
-                        <div class="col-lg-6 col-md-12">
-                            <h5>Access Grants</h5>
-                            <hr />
-                            <div class="d-grid gap-2 mx-auto">
-                                <button class="btn @(Admin ? "btn-success" : "btn-danger")" disabled="@(CurrentUser.Id != -1 || !EditAdminManagerValues)" @onclick="OnAdminPress">Admin</button>
-                            </div>
-                            <hr />
-                            <div class="d-grid gap-2 mx-auto">
-                                <button class="btn @(Manager ? "btn-success" : "btn-danger")" disabled="@(!EditAdminManagerValues)" @onclick="OnManagerPress">Manager</button>
-                            </div>
-                            <hr />
-                            @if(CurrentUser.Id != Trooper.Id)
+                        <div class="col">
+                            <h5>Password Reset</h5>
+                            @if (EmailNotice is not null)
                             {
-                                <div class="d-grid gap-2 mx-auto">
-                                    @if (!EditAdminManagerValues)
-                                    {
-                                    <button class="btn btn-warning" @onclick="EditPermStart">Edit</button>
-                                    }
-                                    else
-                                    {
-                                    <button class="btn btn-success" @onclick="EditPermSave">Save</button>
-                                    }
-                                </div>
+                                <span class="alert alert-primary">@EmailNotice</span>
                             }
-                        </div>
-                        <div class="col-lg-6 col-md-12">
-                            <h5>Account Deletion</h5>
-                            <div class="form-check">
-                                <InputCheckbox class="form-check-input" @bind-Value="ReadyToDelete" id="deleteCheckbox" disabled="@(!CanDelete)" />
-                                <label class="form-check-label">I understand that this action is irreversible, and deleting an account can not be undone.</label>
-                            </div>
-                            <label for="pwordDelete" class="form-label">Your Password</label>
-                            <InputText class="form-control" id="pwordDelete" type="password" @bind-Value="Password" disabled="@(!CanDelete)" />
+                            <InputText id="emailSendTo" @bind-Value="Trooper.Email" placeholder="Email for password reset." class="form-control"/>
+                            <br />
                             <div class="d-grid gap-2 mx-auto">
-                                <button class="btn btn-danger" disabled="@(!ReadyToDelete || !CanDelete)" @onclick="OnDeleteAccount">Delete Account</button>
+                                <button class="btn btn-primary m-3" @onclick="SendPasswordReset">Send Password Reset</button>
                             </div>
                         </div>
                     </div>
-                </Authorized>
-            </AuthorizeView>
-        </div>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Account Reset</h5>
+                            <div class="from-check">
+                                <input type="checkbox" id="confimResetAccount" class="form-check-input" @onclick="ConfirmAccountResetToggle" />
+                                <label for="confimResetAccount" class="form-check-label">
+                                    I understand that resetting an account will remove Discord and Steam account links, reset the username and password,
+                                    and generate a new access code. No 501st releated data will be lost.
+                                </label>
+                                <div class="d-grid gap-2 mx-auto">
+                                    <button class="btn btn-danger m-3" @onclick="ResetAccount" disabled="@(!ResetConfirmation)">Reset Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <AuthorizeView Policy="RequireAdmin" Context="adminAuthView">
+                        <Authorized>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12">
+                                    <h5>Access Grants</h5>
+                                    <hr />
+                                    <div class="d-grid gap-2 mx-auto">
+                                        <button class="btn @(Admin ? "btn-success" : "btn-danger")" disabled="@(CurrentUser.Id != -1 || !EditAdminManagerValues)" @onclick="OnAdminPress">Admin</button>
+                                    </div>
+                                    <hr />
+                                    <div class="d-grid gap-2 mx-auto">
+                                        <button class="btn @(Manager ? "btn-success" : "btn-danger")" disabled="@(!EditAdminManagerValues)" @onclick="OnManagerPress">Manager</button>
+                                    </div>
+                                    <hr />
+                                    @if (CurrentUser.Id != Trooper.Id)
+                                {
+                                    <div class="d-grid gap-2 mx-auto">
+                                        @if (!EditAdminManagerValues)
+                                        {
+                                            <button class="btn btn-warning" @onclick="EditPermStart">Edit</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-success" @onclick="EditPermSave">Save</button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-lg-6 col-md-12">
+                                <h5>Account Deletion</h5>
+                                <div class="form-check">
+                                    <InputCheckbox class="form-check-input" @bind-Value="ReadyToDelete" id="deleteCheckbox" disabled="@(!CanDelete)" />
+                                    <label class="form-check-label">I understand that this action is irreversible, and deleting an account can not be undone.</label>
+                                </div>
+                                <label for="pwordDelete" class="form-label">Your Password</label>
+                                <InputText class="form-control" id="pwordDelete" type="password" @bind-Value="Password" disabled="@(!CanDelete)" />
+                                <div class="d-grid gap-2 mx-auto">
+                                    <button class="btn btn-danger" disabled="@(!ReadyToDelete || !CanDelete)" @onclick="OnDeleteAccount">Delete Account</button>
+                                </div>
+                            </div>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+            }
         }
         </EditForm>
     </Authorized>
