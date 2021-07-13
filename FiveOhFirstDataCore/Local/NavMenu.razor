@@ -2,6 +2,7 @@
 @inject IConfiguration _config
 @implements IRefreshBase
 @inject IAdvancedRefreshService _advRefresh
+@inject IAuthorizationService _auth
 
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark align-items-stretch position-relative nav-menu-box">
     <div class="top-row pl-4 navbar navbar-dark">
@@ -53,33 +54,32 @@
                     <span class="oi oi-clipboard" aria-hidden="true"></span> Roster
                 </NavLink>
             </li>
-            <AuthorizeView Policy="RequireSquad">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/squad/me" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Squad
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequirePlatoon">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/platoon/me" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Platoon
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireCompany">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/company/me" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Company
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
+
+            @if(InSquad)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/squad/me" Match="NavLinkMatch.All">
+                        <span class="oi oi-compass" aria-hidden="true"></span> My Squad
+                    </NavLink>
+                </li>
+            }
+            @if(InPlatoon)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/platoon/me" Match="NavLinkMatch.All">
+                        <span class="oi oi-compass" aria-hidden="true"></span> My Platoon
+                    </NavLink>
+                </li>
+            }
+            @if (InCompany)
+            {
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/company/me" Match="NavLinkMatch.All">
+                        <span class="oi oi-compass" aria-hidden="true"></span> My Company
+                    </NavLink>
+                </li>
+            }
+
             <AuthorizeView Policy="RequireC1">
                 <Authorized>
                     <li class="nav-item px-3">
@@ -164,6 +164,13 @@
     [CascadingParameter]
     public Trooper? CurrentUser { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public bool InSquad { get; set; } = false;
+    public bool InPlatoon {get;set;} = false;
+    public bool InCompany { get; set; } = false;
+
     private bool collapseNavMenu = true;
     private string Version { get; set; } = "";
 
@@ -172,9 +179,9 @@
     private bool userNavMenu = false;
     private string UserNavCssClass => userNavMenu ? "show" : null;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
         if(CurrentUser is not null)
         {
@@ -183,6 +190,17 @@
         }
 
         Version = _config["Version"];
+
+        if(CurrentUser is not null)
+        {
+            var user = (await AuthStateTask).User;
+
+            bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+            InSquad = manager || CurrentUser.Slot.IsSquad();
+            InPlatoon = manager || InSquad || CurrentUser.Slot.IsPlatoon();
+            InCompany = manager || InPlatoon || CurrentUser.Slot.IsCompany();
+        }
     }
 
     private void ToggleNavMenu()

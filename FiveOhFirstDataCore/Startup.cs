@@ -200,36 +200,6 @@ namespace FiveOhFirstDataCore
                     policy.RequireRole("Admin");
                 });
 
-                options.AddPolicy("RequireSquad", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Slotted", "Squad");
-                    });
-                });
-
-                options.AddPolicy("RequirePlatoon", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Slotted", "Platoon");
-                    });
-                });
-
-                options.AddPolicy("RequireCompany", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Slotted", "Company");
-                    });
-                });
-
                 options.AddPolicy("RequireNCO", policy =>
                 {
                     policy.RequireAssertion(ctx =>
@@ -443,6 +413,7 @@ namespace FiveOhFirstDataCore
                 .AddScoped<IImportService, ImportService>()
                 .AddScoped<INoticeService, NoticeService>()
                 .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
+                .AddScoped<IPromotionService, PromotionService>();
 
             #region Discord Setup
             var cshop = Secrets.GetSection("Discord:CShopRoleBindings");

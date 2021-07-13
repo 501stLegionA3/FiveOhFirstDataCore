@@ -194,5 +194,38 @@ namespace FiveOhFirstDataCore.Core.Data
             var slot = 500 + (10 * squad) + wing;
             return (Slot)slot;
         }
+
+        public static bool IsSquad(this Slot slot)
+        {
+            if(slot >= Slot.AvalancheOneOne && slot <= Slot.AcklayTwoTwo)
+            {
+                var val = (int)slot % 10;
+                if (val > 0) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsPlatoon(this Slot slot)
+        {
+            if (slot >= Slot.AvalancheOneOne && slot <= Slot.AcklayTwoTwo)
+            {
+                var val = (int)slot % 10;
+                if (val == 0) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsCompany(this Slot slot)
+        {
+            if (slot >= Slot.AvalancheOneOne && slot <= Slot.AcklayTwoTwo)
+            {
+                var val = (int)slot / 10 % 10;
+                if (val == 0) return true;
+            }
+
+            return false;
+        }
     }
 }
