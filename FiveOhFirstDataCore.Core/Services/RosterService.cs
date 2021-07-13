@@ -388,7 +388,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<PlatoonData?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
         {
-            if (!manager && !slot.IsPlatoon())
+            if (!manager && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
             var data = new PlatoonData(3);
@@ -416,7 +416,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
         {
-            if (!manager && !slot.IsCompany())
+            if (!manager && !slot.IsCompany() && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
             var data = new CompanyData(3, 3);
@@ -440,6 +440,31 @@ namespace FiveOhFirstDataCore.Core.Services
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetCompanyDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<HailstormData> GetHailstormDataAsync()
+        {
+            var data = new HailstormData();
+
+            await _dbContext.Users.AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => x.Slot == Slot.Hailstorm)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<List<Trooper>> GetTroopersWithPendingPromotions()
+        {
+            var pending = await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.PendingPromotions.Count > 0)
+                .ToListAsync();
+
+            return pending;
         }
     }
 }

@@ -33,6 +33,8 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<PlatoonData?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
         public Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
         public Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<HailstormData> GetHailstormDataAsync();
+        public Task<List<Trooper>> GetTroopersWithPendingPromotions();
         #endregion
 
         #region Roster Registration

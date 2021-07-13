@@ -1,0 +1,76 @@
+﻿@page "/hailstorm"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == HailstormDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(HailstormDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == HailstormDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(HailstormDisplayOption.PromotionBoard)">Promotion Board</button>
+    </li>
+</ul>
+@if(Loaded)
+{
+    <CascadingValue Value="Data">
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case HailstormDisplayOption.Roster:
+
+                    break;
+                case HailstormDisplayOption.PromotionBoard:
+                    
+                    @if(Data is not null)
+                    {
+                        <BattallionPromotionBoard />
+                    }
+                    else
+                    {
+                        <em>No battalion data was found.</em>
+                    }
+                    break;
+            }
+        </div>
+    </CascadingValue>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public enum HailstormDisplayOption
+    {
+        Roster,
+        PromotionBoard,
+    }
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private HailstormDisplayOption Active { get; set; } = HailstormDisplayOption.Roster;
+    private HailstormData Data { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            Data = await _roster.GetHailstormDataAsync();
+
+            Loaded = true;
+
+            StateHasChanged();
+        }
+    }
+
+    private void OnTypeChange(HailstormDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+}
