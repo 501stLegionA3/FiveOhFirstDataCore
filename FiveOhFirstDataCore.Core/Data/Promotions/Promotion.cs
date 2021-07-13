@@ -2,9 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Promotions
 {
@@ -18,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         public Trooper RequestedBy { get; set; }
         public int? RequestedById { get; set; }
 
-        public List<Trooper> ApprovedBy { get; set; }
+        public List<Trooper> ApprovedBy { get; set; } = new();
 
         public PromotionBoardLevel NeededBoard { get; set; }
         public PromotionBoardLevel CurrentBoard { get; set; }

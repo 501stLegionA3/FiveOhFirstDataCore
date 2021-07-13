@@ -40,6 +40,10 @@ namespace FiveOhFirstDataCore.Core.Account
         public DateTime LastBilletChange { get; set; }
         public DateTime GraduatedBCTOn { get; set; }
         public DateTime GraduatedUTCOn { get; set; }
+
+        public DateTime? BilletedCShopLeadership { get; set; }
+        public bool IsCShopCommand { get; set; }
+
         #endregion
         #region Notes
         public string? InitialTraining { get; set; }
@@ -305,6 +309,15 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 return "";
             }
+        }
+
+        public IReadOnlyList<Promotion> GetEligiblePromotions()
+        {
+            List<Promotion> promotions = new();
+
+
+
+            return promotions;
         }
     }
 }

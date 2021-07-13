@@ -13,8 +13,9 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IPromotionService
     {
-        public Task<Promotion> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor,
-            int promotionFrom, int promotionTo);
+        public Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor,
+            PromotionBoardLevel currentBoard,
+            int promotionFrom, int promotionTo, string reason);
         /// <summary>
         /// Elevates a promotion to the next stage. Will finalize a promotion if able.
         /// </summary>

@@ -1,4 +1,99 @@
-﻿<h3>EligibleForPromotionListing</h3>
+﻿@if(Errors.Count > 0)
+{
+<div class="row">
+    <div class="col p-3">
+        <div class="alert alert-danger alert-dismissible w-100">
+            <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+            <strong>Something went wrong!</strong>
+            <ul>
+            @foreach(var i in Errors)
+            {
+                <li>@i</li>
+            }
+            </ul>
+        </div>
+    </div>
+</div>
+}
+@if(SuccessMessage is not null)
+{
+<div class="row">
+    <div class="col p-3">
+        <div class="alert alert-success alert-dismissible w-100">
+            <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
+            <p>@SuccessMessage</p>
+        </div>
+    </div>
+</div>
+}
+
+<div class="row">
+    <div class="col">
+        <h4>Troopers Eligible for Promotion</h4>
+        @if (Loaded)
+        {
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">NickName</th>
+                        <th scope="col">From Rank</th>
+                        <th scope="col">To Rank</th>
+                        @if (AllowedPromoter)
+                        {
+                            <th scope="col"></th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (EligiblePromotions.Count > 0)
+                    {
+                        @foreach(var e in EligiblePromotions)
+                        {
+                            <tr>
+                                <td>@e.PromotionFor.Id</td>
+                                <td>@e.PromotionFor.NickName</td>
+                                <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
+                                <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>
+                                @if(AllowedPromoter)
+                                {
+                                    var p = e;
+                                    <td>
+                                        <div class="input-group">
+                                            <div class="input-group-text bg-success">
+                                                <input type="checkbox" class="form-check-input mt-0" @onclick="TogglePromote" />
+                                            </div>
+                                            <button class="btn btn-outline-success" disabled="@(!ConfirmPromote)" @onclick="async (x) => await StartPromotion(p)">Raise For Promotion</button>
+                                        </div>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr><td colspan="6">No eligible promotions found.</td></tr>
+                    }
+                </tbody>
+            <tbody>
+                
+            </tbody>
+        </table>
+        }
+        else
+        {
+            <em>Loading....</em>
+        }
+    </div>
+</div>
+@if (AllowedPromoter)
+{
+    <div class="row">
+        <dvi class="col d-grid gap-2">
+            <button class="btn btn-primary">Start Promotion Process</button>
+        </dvi>
+    </div>
+}
 
 @code {
     [CascadingParameter]
@@ -9,4 +104,53 @@
 
     [CascadingParameter]
     public List<Trooper> ActiveTroopers { get; set; }
+
+    protected string? SuccessMessage { get; set; } = null;
+    protected List<string> Errors { get; set; } = new();
+
+    public bool Loaded { get; set; } = false;
+
+    public List<Promotion> EligiblePromotions { get; set; } = new();
+
+    protected bool ConfirmPromote { get; set; } = false;
+    public void TogglePromote()
+        => ConfirmPromote = !ConfirmPromote;
+
+    protected void ClearSuccess()
+    {
+        SuccessMessage = null;
+    }
+
+    protected void ClearErrors()
+    {
+        Errors.Clear();   
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            BuildEligiblePromotionsList();
+
+            Loaded = true;
+            StateHasChanged();
+        }
+    }
+
+    private void BuildEligiblePromotionsList()
+    {
+        if (ActiveTroopers is null) return;
+
+        foreach(var t in ActiveTroopers)
+        {
+            EligiblePromotions.AddRange(t.GetEligiblePromotions());
+        }
+    }
+
+    private async Task StartPromotion(Promotion p)
+    {
+        
+    }
 }

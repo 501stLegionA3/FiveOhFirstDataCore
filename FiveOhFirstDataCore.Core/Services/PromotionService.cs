@@ -172,9 +172,52 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public Task<Promotion> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor, int promotionFrom, int promotionTo)
+        public async Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor,
+            PromotionBoardLevel currentBoard,
+            int promotionFrom, int promotionTo, string reason)
         {
-            throw new NotImplementedException();
+            var invoked = await _userManager.GetUserAsync(invoker);
+            var trooper = await _userManager.FindByIdAsync(promotionFor.Id.ToString());
+
+
+            if (!Promotion.NeededBoardLevels.TryGetValue(promotionTo, 
+                out PromotionBoardLevel neededBoard))
+            {
+                return new(false, null, new() { "No promotion board data for the rank this trooper is being promoted to." });
+            }
+
+            var promotion = new Promotion()
+            {
+                CurrentBoard = currentBoard,
+                NeededBoard = neededBoard,
+                
+                PromoteFrom = promotionFrom,
+                PromoteTo = promotionTo, 
+                Reason = reason,
+
+                RequestedById = invoked.Id
+            };
+
+            trooper.PendingPromotions.Add(promotion);
+
+            var identRes = await _userManager.UpdateAsync(trooper);
+            if (!identRes.Succeeded)
+            {
+                List<string> errors = new();
+                foreach (var error in identRes.Errors)
+                    errors.Add($"[{error.Code}] {error.Description}");
+
+                return new(false, null, errors);
+            }
+
+            var promo = await _dbContext.Promotions.FindAsync(promotion.Id);
+
+            if (promo is null) return new(false, null, new() { "No promotion object was abled to be retrieved." });
+
+            await _dbContext.Entry(promo).Reference(e => e.PromotionFor).LoadAsync();
+            await _dbContext.Entry(promo).Reference(e => e.RequestedBy).LoadAsync();
+
+            return new(true, promo, null);
         }
     }
 }
