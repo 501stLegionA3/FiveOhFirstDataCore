@@ -258,6 +258,12 @@
     [Parameter]
     public bool Mynock { get; set; } = false;
 
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    [Parameter]
+    public PromotionBoardLevel SendPromotionsTo { get; set; }
+
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
