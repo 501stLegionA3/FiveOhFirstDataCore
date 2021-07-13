@@ -27,26 +27,33 @@
 
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Platoon.RT,
-            Platoon.ARC,
-            Platoon.Medic,
-            Platoon.SergeantMajor
-        };
+        await base.OnAfterRenderAsync(firstRender);
 
-        foreach (var squad in Platoon.Squads)
+        if(firstRender)
         {
-            Troopers.Add(squad.Lead);
-            Troopers.Add(squad.RT);
-            Troopers.Add(squad.ARC);
-
-            foreach (var t in squad.Teams)
+            Troopers = new()
             {
-                Troopers.Add(t.Lead);
-                Troopers.Add(t.Medic);
-                Troopers.AddRange(t.Troopers);
+                Platoon.RT,
+                Platoon.ARC,
+                Platoon.Medic,
+                Platoon.SergeantMajor
+            };
+
+            foreach (var squad in Platoon.Squads)
+            {
+                Troopers.Add(squad.Lead);
+                Troopers.Add(squad.RT);
+                Troopers.Add(squad.ARC);
+
+                foreach (var t in squad.Teams)
+                {
+                    Troopers.Add(t.Lead);
+                    Troopers.Add(t.Medic);
+                    Troopers.AddRange(t.Troopers);
+                }
             }
+
+            StateHasChanged();
         }
     }
 
@@ -58,7 +65,7 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager
+        CanPromote = manager 
             || (Platoon?.Commander?.Id ?? 0) == CurrentUser.Id
             || (Platoon?.SergeantMajor?.Id ?? 0) == CurrentUser.Id;
             

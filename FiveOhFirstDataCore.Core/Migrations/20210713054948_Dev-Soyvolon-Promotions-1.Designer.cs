@@ -5,14 +5,16 @@ using FiveOhFirstDataCore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210713054948_Dev-Soyvolon-Promotions-1")]
+    partial class DevSoyvolonPromotions1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,9 +144,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime?>("BilletedCShopLeadership")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<long>("CShops")
                         .HasColumnType("bigint");
 
@@ -174,16 +173,10 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<string>("InitialTraining")
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsCShopCommand")
-                        .HasColumnType("boolean");
-
                     b.Property<DateTime>("LastBilletChange")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("LastPromotion")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<DateTime>("LastUpdate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("LockoutEnabled")
@@ -393,66 +386,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasIndex("RequestedById");
 
                     b.ToTable("Promotions");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionRequirements", b =>
-                {
-                    b.Property<int>("RequirementsFor")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int?>("DivideEqualsZero")
-                        .HasColumnType("integer");
-
-                    b.Property<List<int>>("InherentRankAuth")
-                        .HasColumnType("integer[]");
-
-                    b.Property<int>("NeededLevel")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("RankOrHigher")
-                        .HasColumnType("boolean");
-
-                    b.Property<int[]>("RequiredBillet")
-                        .HasColumnType("integer[]");
-
-                    b.Property<long>("RequiredQualifications")
-                        .HasColumnType("bigint");
-
-                    b.Property<List<int>>("RequiredRank")
-                        .HasColumnType("integer[]");
-
-                    b.Property<int>("RequiredTimeInBillet")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("RequiredTimeInGrade")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("RequiresCShop")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("RequiresCShopCommand")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("RequiresCShopLeadership")
-                        .HasColumnType("boolean");
-
-                    b.Property<int?>("SlotMax")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("SlotMin")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("TeamMustBeNull")
-                        .HasColumnType("boolean");
-
-                    b.Property<List<int>>("TiGWaivedFor")
-                        .HasColumnType("integer[]");
-
-                    b.HasKey("RequirementsFor");
-
-                    b.ToTable("PromotionRequirements");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
@@ -1306,36 +1239,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PromotionTrooper", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedPendingPromotionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PromotionTrooper", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedPendingPromotionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
