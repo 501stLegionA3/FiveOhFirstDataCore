@@ -2,7 +2,7 @@
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonNullTesting : Migration
+    public partial class ReleaseSoyvolonVersionZeroFourZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
