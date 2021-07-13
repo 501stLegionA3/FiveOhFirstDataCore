@@ -142,6 +142,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("BilletedCShopLeadership")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<long>("CShops")
                         .HasColumnType("bigint");
 
@@ -170,6 +173,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<string>("InitialTraining")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsCShopCommand")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastBilletChange")
                         .HasColumnType("timestamp without time zone");

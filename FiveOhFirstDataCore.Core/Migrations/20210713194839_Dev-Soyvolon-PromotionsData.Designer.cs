@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210713054948_Dev-Soyvolon-Promotions-1")]
-    partial class DevSoyvolonPromotions1
+    [Migration("20210713194839_Dev-Soyvolon-PromotionsData")]
+    partial class DevSoyvolonPromotionsData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -144,6 +144,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime?>("BilletedCShopLeadership")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<long>("CShops")
                         .HasColumnType("bigint");
 
@@ -172,6 +175,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<string>("InitialTraining")
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsCShopCommand")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastBilletChange")
                         .HasColumnType("timestamp without time zone");

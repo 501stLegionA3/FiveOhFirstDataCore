@@ -21,11 +21,14 @@ namespace FiveOhFirstDataCore.Core.Services
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<Trooper> _userManager;
+        private readonly IWebsiteSettingsService _webSettings;
 
-        public PromotionService(ApplicationDbContext dbContext, UserManager<Trooper> userManager)
+        public PromotionService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
+            IWebsiteSettingsService webSettings)
         {
             _dbContext = dbContext;
             _userManager = userManager;
+            _webSettings = webSettings;
         }
 
         public async Task<ResultBase> CancelPromotion(Promotion promotion, Trooper denier)
@@ -179,9 +182,9 @@ namespace FiveOhFirstDataCore.Core.Services
             var invoked = await _userManager.GetUserAsync(invoker);
             var trooper = await _userManager.FindByIdAsync(promotionFor.Id.ToString());
 
+            var promoReq = await _webSettings.GetPromotionRequirementsAsync(promotionTo);
 
-            if (!Promotion.NeededBoardLevels.TryGetValue(promotionTo, 
-                out PromotionBoardLevel neededBoard))
+            if (promoReq is null)
             {
                 return new(false, null, new() { "No promotion board data for the rank this trooper is being promoted to." });
             }
@@ -189,7 +192,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var promotion = new Promotion()
             {
                 CurrentBoard = currentBoard,
-                NeededBoard = neededBoard,
+                NeededBoard = promoReq.NeededLevel,
                 
                 PromoteFrom = promotionFrom,
                 PromoteTo = promotionTo, 

@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonPromotions1 : Migration
+    public partial class DevSoyvolonPromotionsData : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_PromotionTrooper_Promotions_ApprovedPromotionsId",
-                table: "PromotionTrooper");
-
             migrationBuilder.DropForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_ChangedById",
                 table: "RankUpdates");
@@ -25,16 +21,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 table: "RankUpdates",
                 newName: "IX_RankUpdates_RequestedById");
 
-            migrationBuilder.RenameColumn(
-                name: "ApprovedPromotionsId",
-                table: "PromotionTrooper",
-                newName: "ApprovedPendingPromotionsId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_PromotionTrooper_ApprovedPromotionsId",
-                table: "PromotionTrooper",
-                newName: "IX_PromotionTrooper_ApprovedPendingPromotionsId");
-
             migrationBuilder.AddColumn<bool>(
                 name: "Approved",
                 table: "RankUpdates",
@@ -47,6 +33,49 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 table: "RankUpdates",
                 type: "integer",
                 nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "BilletedCShopLeadership",
+                table: "AspNetUsers",
+                type: "timestamp without time zone",
+                nullable: true);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsCShopCommand",
+                table: "AspNetUsers",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.CreateTable(
+                name: "Promotions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PromotionForId = table.Column<int>(type: "integer", nullable: false),
+                    RequestedById = table.Column<int>(type: "integer", nullable: true),
+                    NeededBoard = table.Column<int>(type: "integer", nullable: false),
+                    CurrentBoard = table.Column<int>(type: "integer", nullable: false),
+                    PromoteFrom = table.Column<int>(type: "integer", nullable: false),
+                    PromoteTo = table.Column<int>(type: "integer", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Promotions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Promotions_AspNetUsers_PromotionForId",
+                        column: x => x.PromotionForId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Promotions_AspNetUsers_RequestedById",
+                        column: x => x.RequestedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
 
             migrationBuilder.CreateTable(
                 name: "RankUpdateTrooper",
@@ -72,23 +101,54 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PromotionTrooper",
+                columns: table => new
+                {
+                    ApprovedById = table.Column<int>(type: "integer", nullable: false),
+                    ApprovedPendingPromotionsId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PromotionTrooper", x => new { x.ApprovedById, x.ApprovedPendingPromotionsId });
+                    table.ForeignKey(
+                        name: "FK_PromotionTrooper_AspNetUsers_ApprovedById",
+                        column: x => x.ApprovedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PromotionTrooper_Promotions_ApprovedPendingPromotionsId",
+                        column: x => x.ApprovedPendingPromotionsId,
+                        principalTable: "Promotions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_RankUpdates_DeniedById",
                 table: "RankUpdates",
                 column: "DeniedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Promotions_PromotionForId",
+                table: "Promotions",
+                column: "PromotionForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Promotions_RequestedById",
+                table: "Promotions",
+                column: "RequestedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PromotionTrooper_ApprovedPendingPromotionsId",
+                table: "PromotionTrooper",
+                column: "ApprovedPendingPromotionsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RankUpdateTrooper_ApprovedRankUpdatesChangeId",
                 table: "RankUpdateTrooper",
                 column: "ApprovedRankUpdatesChangeId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PromotionTrooper_Promotions_ApprovedPendingPromotionsId",
-                table: "PromotionTrooper",
-                column: "ApprovedPendingPromotionsId",
-                principalTable: "Promotions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_DeniedById",
@@ -110,10 +170,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_PromotionTrooper_Promotions_ApprovedPendingPromotionsId",
-                table: "PromotionTrooper");
-
-            migrationBuilder.DropForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_DeniedById",
                 table: "RankUpdates");
 
@@ -122,7 +178,13 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 table: "RankUpdates");
 
             migrationBuilder.DropTable(
+                name: "PromotionTrooper");
+
+            migrationBuilder.DropTable(
                 name: "RankUpdateTrooper");
+
+            migrationBuilder.DropTable(
+                name: "Promotions");
 
             migrationBuilder.DropIndex(
                 name: "IX_RankUpdates_DeniedById",
@@ -136,6 +198,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "DeniedById",
                 table: "RankUpdates");
 
+            migrationBuilder.DropColumn(
+                name: "BilletedCShopLeadership",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "IsCShopCommand",
+                table: "AspNetUsers");
+
             migrationBuilder.RenameColumn(
                 name: "RequestedById",
                 table: "RankUpdates",
@@ -145,24 +215,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "IX_RankUpdates_RequestedById",
                 table: "RankUpdates",
                 newName: "IX_RankUpdates_ChangedById");
-
-            migrationBuilder.RenameColumn(
-                name: "ApprovedPendingPromotionsId",
-                table: "PromotionTrooper",
-                newName: "ApprovedPromotionsId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_PromotionTrooper_ApprovedPendingPromotionsId",
-                table: "PromotionTrooper",
-                newName: "IX_PromotionTrooper_ApprovedPromotionsId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PromotionTrooper_Promotions_ApprovedPromotionsId",
-                table: "PromotionTrooper",
-                column: "ApprovedPromotionsId",
-                principalTable: "Promotions",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_ChangedById",

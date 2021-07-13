@@ -37,5 +37,7 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         public bool RequiresCShop { get; set; } = false;
         public bool RequiresCShopLeadership { get; set; } = false;
         public bool RequiresCShopCommand { get; set; } = false;
+
+        public PromotionBoardLevel NeededLevel { get; set; } = PromotionBoardLevel.Platoon;
     }
 }
