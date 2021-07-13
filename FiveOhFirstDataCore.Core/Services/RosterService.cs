@@ -366,6 +366,8 @@ namespace FiveOhFirstDataCore.Core.Services
             
             var data = new SquadData();
 
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
             await _dbContext.Users.AsNoTracking()
                 .AsSplitQuery()
                 .Include(p => p.PendingPromotions)

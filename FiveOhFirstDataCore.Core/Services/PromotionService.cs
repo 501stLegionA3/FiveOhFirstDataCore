@@ -202,7 +202,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var identRes = await _userManager.UpdateAsync(trooper);
             if (!identRes.Succeeded)
-            {
+        {
                 List<string> errors = new();
                 foreach (var error in identRes.Errors)
                     errors.Add($"[{error.Code}] {error.Description}");

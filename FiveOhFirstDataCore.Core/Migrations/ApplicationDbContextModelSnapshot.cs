@@ -1254,7 +1254,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
                         .WithMany()
-                        .HasForeignKey("ApprovedPromotionsId")
+                        .HasForeignKey("ApprovedPendingPromotionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
