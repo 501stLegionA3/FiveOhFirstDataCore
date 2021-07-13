@@ -25,11 +25,8 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         /// </summary>
         public int? DivideEqualsZero { get; set; } = null;
 
-        /// <summary>
-        /// Require a slot value between item 1 incluseve and item 2 exclusive. 
-        /// Follows slot >= Item1 && slot < Item2
-        /// </summary>
-        public (Slot, Slot)? RequireSlotBetween { get; set; } = null;
+        public Slot? SlotMin { get; set; } = null;
+        public Slot? SlotMax { get; set; } = null;
 
         public bool TeamMustBeNull { get; set; } = false;
 

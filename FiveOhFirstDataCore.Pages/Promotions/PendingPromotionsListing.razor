@@ -161,6 +161,8 @@
                     SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is has been passed up.";
                 }
             }
+
+            StateHasChanged();
         }
     }
 
@@ -178,6 +180,8 @@
             {
                 SuccessMessage = $"Denied the promotion for {promo.PromotionFor?.NickName}.";
             }
+
+            StateHasChanged();
         }
     }
 }

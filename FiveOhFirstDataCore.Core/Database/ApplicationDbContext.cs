@@ -31,6 +31,10 @@ namespace FiveOhFirstDataCore.Core.Database
 
         public DbSet<Promotion> Promotions { get; internal set; }
 
+        #region Website Settings
+        public DbSet<PromotionRequirements> PromotionRequirements { get; internal set; }
+        #endregion
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -49,6 +53,11 @@ namespace FiveOhFirstDataCore.Core.Database
                 .WithOne(p => p.RecruitStatus)
                 .HasForeignKey<RecruitStatus>(e => e.TrooperId);
 
+            #endregion
+
+            #region Website Settings
+            var promoReq = builder.Entity<PromotionRequirements>();
+            promoReq.HasKey(p => p.RequirementsFor);
             #endregion
 
             #region Promotions and Transfers

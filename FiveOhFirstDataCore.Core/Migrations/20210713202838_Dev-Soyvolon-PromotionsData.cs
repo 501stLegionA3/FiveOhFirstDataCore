@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
@@ -46,6 +48,34 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.CreateTable(
+                name: "PromotionRequirements",
+                columns: table => new
+                {
+                    RequirementsFor = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RequiredRank = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    InherentRankAuth = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    RankOrHigher = table.Column<bool>(type: "boolean", nullable: false),
+                    RequiredTimeInGrade = table.Column<int>(type: "integer", nullable: false),
+                    TiGWaivedFor = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    RequiredBillet = table.Column<int[]>(type: "integer[]", nullable: true),
+                    RequiredTimeInBillet = table.Column<int>(type: "integer", nullable: false),
+                    DivideEqualsZero = table.Column<int>(type: "integer", nullable: true),
+                    SlotMin = table.Column<int>(type: "integer", nullable: true),
+                    SlotMax = table.Column<int>(type: "integer", nullable: true),
+                    TeamMustBeNull = table.Column<bool>(type: "boolean", nullable: false),
+                    RequiredQualifications = table.Column<long>(type: "bigint", nullable: false),
+                    RequiresCShop = table.Column<bool>(type: "boolean", nullable: false),
+                    RequiresCShopLeadership = table.Column<bool>(type: "boolean", nullable: false),
+                    RequiresCShopCommand = table.Column<bool>(type: "boolean", nullable: false),
+                    NeededLevel = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PromotionRequirements", x => x.RequirementsFor);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Promotions",
@@ -176,6 +206,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_RequestedById",
                 table: "RankUpdates");
+
+            migrationBuilder.DropTable(
+                name: "PromotionRequirements");
 
             migrationBuilder.DropTable(
                 name: "PromotionTrooper");

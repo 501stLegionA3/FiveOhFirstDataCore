@@ -88,11 +88,138 @@
 </div>
 @if (AllowedPromoter)
 {
-    <div class="row">
-        <dvi class="col d-grid gap-2">
-            <button class="btn btn-primary">Start Promotion Process</button>
-        </dvi>
-    </div>
+    @if (!IsPromoting)
+    {
+        <div class="row">
+            <dvi class="col d-grid gap-2">
+                <button class="btn btn-primary" @onclick="ToggleStartPromotionForm">Start Promotion Process</button>
+            </dvi>
+        </div>
+    }
+    else
+    {
+        <EditForm Model="Promotion" class="form">
+            <div class="form-group text-center">
+                <div class="row">
+                    <div class="col">
+                        <h3>To Promote</h3>
+                        <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="ActiveTroopers" class="form-control" />
+                    </div>
+                </div>
+                @if (Promotion.PromotionFor is not null)
+                {
+                    <div class="row">
+                        <div class="col-md-12 col-lg-6">
+                            <h4>Promote From</h4>
+                            <InputSelect @bind-Value="Promotion.PromoteFrom" class="form-control">
+                                @if(Promotion.PromotionFor.Rank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.Rank.Value)">@(Promotion.PromotionFor.Rank?.AsFull() ?? "")</option>
+                                }
+
+                                @if(Promotion.PromotionFor.MedicRank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.MedicRank.Value)">@(Promotion.PromotionFor.MedicRank?.AsFull() ?? "")</option>
+                                }
+
+                                @if(Promotion.PromotionFor.RTORank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.RTORank.Value)">@(Promotion.PromotionFor.RTORank?.AsFull() ?? "")</option>
+                                }
+
+                                @if(Promotion.PromotionFor.PilotRank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.PilotRank.Value)">@(Promotion.PromotionFor.PilotRank?.AsFull() ?? "")</option>
+                                }
+
+                                @if(Promotion.PromotionFor.WarrantRank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.WarrantRank.Value)">@(Promotion.PromotionFor.WarrantRank?.AsFull() ?? "")</option>
+                                }
+
+                                @if(Promotion.PromotionFor.WardenRank is not null)
+                                {
+                                    <option value="@((int)Promotion.PromotionFor.WardenRank.Value)">@(Promotion.PromotionFor.WardenRank?.AsFull() ?? "")</option>
+                                }
+                            </InputSelect>
+                        </div>
+                        <div class="col-md-12 col-lg-6">
+                            <h4>Promote To</h4>
+                            <InputSelect @bind-Value="Promotion.PromoteTo" class="form-control">
+                                @if (Promotion.PromoteFrom != 0)
+                                {
+                                    var c = Promotion.PromoteFrom / 100;
+                                    switch(c)
+                                    {
+                                        case 0:
+                                            foreach (TrooperRank r in Enum.GetValues(typeof(TrooperRank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                        case 1:
+                                            foreach (MedicRank r in Enum.GetValues(typeof(MedicRank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                        case 2:
+                                            foreach (RTORank r in Enum.GetValues(typeof(RTORank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                        case 3:
+                                            foreach (WarrantRank r in Enum.GetValues(typeof(WarrantRank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                        case 4:
+                                            foreach (PilotRank r in Enum.GetValues(typeof(PilotRank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                        case 5:
+                                            foreach (WardenRank r in Enum.GetValues(typeof(WardenRank)))
+                                            {
+                                                var ri = (int)r;
+                                                if (ri > Promotion.PromoteFrom)
+                                                {
+                                                    <option value="@(ri)">@r.AsFull()</option>
+                                                }
+                                            }
+                                        break;
+                                    }
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                }
+            </div>
+        </EditForm>
+    }
 }
 
 @code {
@@ -115,6 +242,9 @@
     protected bool ConfirmPromote { get; set; } = false;
     public void TogglePromote()
         => ConfirmPromote = !ConfirmPromote;
+
+    private bool IsPromoting { get; set; } = false;
+    private Promotion Promotion { get; set; } = new();
 
     protected void ClearSuccess()
     {
@@ -145,8 +275,17 @@
 
         foreach(var t in ActiveTroopers)
         {
+            if (t is null) continue;
             EligiblePromotions.AddRange(t.GetEligiblePromotions());
         }
+    }
+
+    private void ToggleStartPromotionForm()
+    {
+        IsPromoting = !IsPromoting;
+
+        if (IsPromoting)
+            Promotion = new();
     }
 
     private async Task StartPromotion(Promotion p)

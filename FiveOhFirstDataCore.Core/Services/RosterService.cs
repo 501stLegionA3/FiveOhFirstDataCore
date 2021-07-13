@@ -396,7 +396,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var s = (int)slot / 10;
-            await _dbContext.Users.AsNoTracking()
+            await _dbContext.Users
                 .AsSplitQuery()
                 .Include(p => p.PendingPromotions)
                 .ThenInclude(p => p.RequestedBy)
@@ -424,7 +424,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var s = (int)slot / 100;
-            await _dbContext.Users.AsNoTracking()
+            await _dbContext.Users
                 .AsSplitQuery()
                 .Include(p => p.PendingPromotions)
                 .ThenInclude(p => p.RequestedBy)

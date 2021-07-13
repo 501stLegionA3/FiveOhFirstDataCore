@@ -395,6 +395,66 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("Promotions");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionRequirements", b =>
+                {
+                    b.Property<int>("RequirementsFor")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int?>("DivideEqualsZero")
+                        .HasColumnType("integer");
+
+                    b.Property<List<int>>("InherentRankAuth")
+                        .HasColumnType("integer[]");
+
+                    b.Property<int>("NeededLevel")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("RankOrHigher")
+                        .HasColumnType("boolean");
+
+                    b.Property<int[]>("RequiredBillet")
+                        .HasColumnType("integer[]");
+
+                    b.Property<long>("RequiredQualifications")
+                        .HasColumnType("bigint");
+
+                    b.Property<List<int>>("RequiredRank")
+                        .HasColumnType("integer[]");
+
+                    b.Property<int>("RequiredTimeInBillet")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequiredTimeInGrade")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("RequiresCShop")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequiresCShopCommand")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequiresCShopLeadership")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("SlotMax")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SlotMin")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("TeamMustBeNull")
+                        .HasColumnType("boolean");
+
+                    b.Property<List<int>>("TiGWaivedFor")
+                        .HasColumnType("integer[]");
+
+                    b.HasKey("RequirementsFor");
+
+                    b.ToTable("PromotionRequirements");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
                 {
                     b.Property<Guid>("FlagId")

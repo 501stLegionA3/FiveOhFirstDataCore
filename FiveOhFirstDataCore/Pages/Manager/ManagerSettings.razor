@@ -1,0 +1,22 @@
+﻿@page "/manager/settings"
+@inject IWebsiteSettingsService _settings
+<AuthorizeView Policy="RequireManager">
+    <Authorized>
+        <BreadcrumbsList Url="Urls" />
+        <h3>Manager Settings</h3>
+
+        <div class="row">
+            <div class="col d-grid gap-2">
+                <button class="btn btn-primary" @onclick="async (x) => await _settings.SetDefaultSettings()">Set Default Website Settings</button>
+            </div>
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/settings", "Manager Settings") };
+}

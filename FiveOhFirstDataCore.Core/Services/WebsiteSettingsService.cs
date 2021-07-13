@@ -81,7 +81,8 @@ namespace FiveOhFirstDataCore.Core.Services
             [(int)TrooperRank.BattalionSergeantMajor] = new()
             {
                 RequiredBillet = new() { Role.NCOIC },
-                RequireSlotBetween = (Slot.Hailstorm, Slot.AvalancheCompany),
+                SlotMin = Slot.Hailstorm,
+                SlotMax = Slot.Hailstorm,
                 RequiredTimeInBillet = 122,
                 NeededLevel = PromotionBoardLevel.Battalion
             },
@@ -149,7 +150,8 @@ namespace FiveOhFirstDataCore.Core.Services
             [(int)MedicRank.BattalionSergeantMajor] = new()
             {
                 RequiredBillet = new() { Role.Medic },
-                RequireSlotBetween = (Slot.Hailstorm, Slot.AvalancheCompany),
+                SlotMin = Slot.Hailstorm,
+                SlotMax = Slot.Hailstorm,
                 RequiredTimeInBillet = 122,
                 NeededLevel = PromotionBoardLevel.Battalion
             },
@@ -186,7 +188,8 @@ namespace FiveOhFirstDataCore.Core.Services
             [(int)RTORank.BattalionSergeantMajor] = new()
             {
                 RequiredBillet = new() { Role.RTO },
-                RequireSlotBetween = (Slot.Hailstorm, Slot.AvalancheCompany),
+                SlotMin = Slot.Hailstorm,
+                SlotMax = Slot.Hailstorm,
                 RequiredTimeInBillet = 122,
                 NeededLevel = PromotionBoardLevel.Battalion
             },
@@ -333,9 +336,22 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext = dbContext;
         }
 
-        public async Task<PromotionRequirements> GetPromotionRequirementsAsync(int rank)
+        public async Task SetDefaultSettings()
         {
-            throw new NotImplementedException();
+            foreach(var pair in NeededTimeForPromotion)
+            {
+                var old = await _dbContext.PromotionRequirements.FindAsync(pair.Key);
+                if (old is not null)
+                    _dbContext.Remove(old);
+
+                pair.Value.RequirementsFor = pair.Key;
+                _dbContext.PromotionRequirements.Add(pair.Value);
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<PromotionRequirements?> GetPromotionRequirementsAsync(int rank)
+            => await _dbContext.FindAsync<PromotionRequirements>(rank);
     }
 }

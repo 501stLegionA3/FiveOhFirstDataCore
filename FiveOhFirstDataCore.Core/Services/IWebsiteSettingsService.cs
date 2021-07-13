@@ -10,6 +10,7 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IWebsiteSettingsService
     {
-        public Task<PromotionRequirements> GetPromotionRequirementsAsync(int rank);
+        public Task SetDefaultSettings();
+        public Task<PromotionRequirements?> GetPromotionRequirementsAsync(int rank);
     }
 }
