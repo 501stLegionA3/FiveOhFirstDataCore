@@ -10,6 +10,8 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
 {
     public class Promotion
     {
+        public Guid Id { get; set; }
+
         public Trooper PromotionFor { get; set; }
         public int PromotionForId { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
@@ -59,6 +60,10 @@ namespace FiveOhFirstDataCore.Core.Account
         public RecruitStatus RecruitStatus { get; set; }
         public List<TrooperFlag> Flags { get; set; } = new();
         public List<TrooperFlag> CreatedFlags { get; set; } = new();
+
+        public List<Promotion> PendingPromotions { get; set; } = new();
+        public List<Promotion> RequestedPromotions { get; set; } = new();
+        public List<Promotion> ApprovedPromotions { get; set; } = new();
 
         #region Logging
         /// <summary>

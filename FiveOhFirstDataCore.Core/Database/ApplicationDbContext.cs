@@ -2,6 +2,7 @@
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Components;
 using FiveOhFirstDataCore.Core.Data.Notice;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -28,6 +29,8 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
         public DbSet<Notice> Notices { get; internal set; }
 
+        public DbSet<Promotion> Promotions { get; internal set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -38,11 +41,36 @@ namespace FiveOhFirstDataCore.Core.Database
         {
             base.OnModelCreating(builder);
 
+            #region Account Setup
+
             var recruitStatus = builder.Entity<RecruitStatus>();
             recruitStatus.HasKey(e => e.RecruitStatusId);
             recruitStatus.HasOne(e => e.Trooper)
                 .WithOne(p => p.RecruitStatus)
                 .HasForeignKey<RecruitStatus>(e => e.TrooperId);
+
+            #endregion
+
+            #region Promotions and Transfers
+
+            var promotion = builder.Entity<Promotion>();
+            promotion.HasKey(p => p.Id);
+            promotion.HasOne(p => p.PromotionFor)
+                .WithMany(e => e.PendingPromotions)
+                .HasForeignKey(p => p.PromotionForId);
+            promotion.HasOne(p => p.RequestedBy)
+                .WithMany(e => e.RequestedPromotions)
+                .HasForeignKey(p => p.RequestedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+            promotion.Property(p => p.RequestedById)
+                .IsRequired(false);
+            promotion.HasMany(p => p.ApprovedBy)
+                .WithMany(e => e.ApprovedPromotions);
+
+            #endregion
+
+            #region Logging
 
             var rankChange = builder.Entity<RankUpdate>();
             rankChange.HasKey(e => e.ChangeId);
@@ -152,6 +180,10 @@ namespace FiveOhFirstDataCore.Core.Database
             times.Property(p => p.ChangedById)
                 .IsRequired(false);
 
+            #endregion Logging
+
+            #region Boards
+
             var flags = builder.Entity<TrooperFlag>();
             flags.HasKey(e => e.FlagId);
             flags.HasOne(e => e.FlagFor)
@@ -164,9 +196,6 @@ namespace FiveOhFirstDataCore.Core.Database
                 .OnDelete(DeleteBehavior.SetNull);
             flags.Property(p => p.AuthorId)
                 .IsRequired(false);
-
-            var claimData = builder.Entity<ClaimUpdateData>();
-            claimData.HasKey(e => e.UpdateKey);
 
             var noticeBoard = builder.Entity<NoticeBoardData>();
             noticeBoard.HasKey(e => e.Location);
@@ -184,6 +213,11 @@ namespace FiveOhFirstDataCore.Core.Database
             notices.Property(p => p.AuthorId)
                 .IsRequired(false);
             notices.Ignore(e => e.Display);
+
+            #endregion Boards
+
+            var claimData = builder.Entity<ClaimUpdateData>();
+            claimData.HasKey(e => e.UpdateKey);
         }
     }
 }
