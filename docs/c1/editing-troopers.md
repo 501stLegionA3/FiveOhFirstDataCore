@@ -77,6 +77,13 @@ If there is at least one (1) green box for C-Shops, additional settings will app
 - UTC Graduation Date
     - Change the date this trooper graduated from UTC.
 
+## Military Police Information
+
+![mp-display](../_media/trooper-edit/mp-info.png)
+
+- Military Police Field
+    - Check this box if the person you are editing is an active member of the Military Police.
+
 ## Final Edits
 
 ![final-info-display](../_media/trooper-edit/final-info.png)

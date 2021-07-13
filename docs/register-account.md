@@ -27,8 +27,13 @@ Once you hit the register button, you will be redirected to a Discord and then a
 
 You will not be able to sign in until you complete this process.
 
+### Logging In and Out
+To log in and out, go to the sidebar on the left side of your display, and click the drop down menu. If you are logging in, the dropdown will contain the word "Guest". If you are logging out, the drop down will contain both you birth number and name. The option to both log in and log out will be found at the top of the drop down menu.
+
+![login-button](_media/register/login-button.png)
+
 ### User Information
-501st Data Core will save your email from Discord to use in the event you need to reset your password. If you need this changed, click the dashboard icon in the top right of your screen to go to the manage account page.
+501st Data Core will save your email from Discord to use in the event you need to reset your password. If you need this changed, you can go the manage account page. To go to the manage account page, click the dropdown icon on the left side of your screen with your name, and click "settings".
 
 ![dashboard-button](_media/register/dashboard_button.png)
 
