@@ -489,7 +489,13 @@ namespace FiveOhFirstDataCore.Core.Services
 
                     if(supportingElements.Item1)
                     {
-                        trooper.Slot = Slot.InactiveReserve;
+                        if (parts[4].StartsWith("Mynock"))
+                            trooper.Slot = Slot.MynockReserve;
+                        else if (parts[4].StartsWith("Acklay"))
+                            trooper.Slot = Slot.AcklayReserve;
+                        else if (parts[4].StartsWith(("Razor")))
+                            trooper.Slot = Slot.RazorReserve;
+                        else trooper.Slot = Slot.InactiveReserve;
                     }
                     else if (!slotSet)
                     {

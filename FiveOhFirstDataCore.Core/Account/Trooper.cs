@@ -147,10 +147,8 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRoleName()
         {
-            if (Slot == Slot.InactiveReserve)
-                return "Inactive Reserves";
-            else if (Slot == Slot.Archived)
-                return "Archived";
+            if (Slot >= Slot.InactiveReserve)
+                return Slot.AsFull();
             else if (Slot < Slot.AvalancheCompany)
             {
                 return $"Battalion {Role.AsFull()}";

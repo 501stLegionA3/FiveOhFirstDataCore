@@ -79,7 +79,7 @@ namespace FiveOhFirstDataCore.Core.Services
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
-                if (x.Slot == Data.Slot.InactiveReserve)
+                if (x.Slot >= Data.Slot.InactiveReserve && x.Slot < Data.Slot.Archived)
                     troopers.Add(x);
             });
 

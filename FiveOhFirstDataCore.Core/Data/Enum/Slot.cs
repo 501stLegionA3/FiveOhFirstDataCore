@@ -159,6 +159,12 @@ namespace FiveOhFirstDataCore.Core.Data
         // Inactive
         [Description("Inactive Reserves")]
         InactiveReserve = 700,
+        [Description("Mynock Reserves")]
+        MynockReserve,
+        [Description("Acklay Reserves")]
+        AcklayReserve,
+        [Description("Razor Reserves")]
+        RazorReserve,
         // Archives
         [Description("Archived")]
         Archived = 1000
