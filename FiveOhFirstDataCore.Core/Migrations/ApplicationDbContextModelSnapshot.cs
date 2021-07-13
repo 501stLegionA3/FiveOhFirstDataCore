@@ -1254,6 +1254,21 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
                         .WithMany()
+                        .HasForeignKey("ApprovedPromotionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PromotionTrooper", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                        .WithMany()
+                        .HasForeignKey("ApprovedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
+                        .WithMany()
                         .HasForeignKey("ApprovedPendingPromotionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
