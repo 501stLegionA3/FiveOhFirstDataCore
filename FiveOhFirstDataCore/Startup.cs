@@ -415,7 +415,6 @@ namespace FiveOhFirstDataCore
                 .AddScoped<IPromotionService, PromotionService>()
                 .AddScoped<IWebsiteSettingsService, WebsiteSettingsService>()
                 .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
-                .AddScoped<IPromotionService, PromotionService>();
 
             #region Discord Setup
             var cshop = Secrets.GetSection("Discord:CShopRoleBindings");
