@@ -18,7 +18,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<List<Trooper>> GetActiveReservesAsync();
         public Task<List<Trooper>> GetInactiveReservesAsync();
         public Task<List<Trooper>> GetArchivedTroopersAsync();
-        public Task<List<Trooper>> GetAllTroopersAsync();
+        public Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false);
         public Task<List<Trooper>> GetFullRosterAsync();
         public Task<List<Trooper>> GetUnregisteredTroopersAsync();
         public Task<OrbatData> GetOrbatDataAsync();

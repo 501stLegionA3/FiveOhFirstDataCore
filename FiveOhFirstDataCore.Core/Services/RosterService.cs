@@ -57,9 +57,9 @@ namespace FiveOhFirstDataCore.Core.Services
             return troopers;
         }
 
-        public async Task<List<Trooper>> GetAllTroopersAsync(bool getAdmin = false)
+        public async Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false)
         {
-            if (getAdmin)
+            if (includeAdmin)
                 return await _dbContext.Users.AsNoTracking().ToListAsync();
             else
                 return await _dbContext.Users.AsNoTracking()
