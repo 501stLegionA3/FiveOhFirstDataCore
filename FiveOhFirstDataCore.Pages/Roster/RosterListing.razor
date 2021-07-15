@@ -1,4 +1,5 @@
 ﻿@inject IRefreshRequestService _refresh
+@implements IDisposable
 
 <EditForm Model="Search" class="form form-inline w-100">
     <div class="row">
@@ -401,4 +402,7 @@
             return Search.Ascending ? "oi-chevron-top" : "oi-chevron-bottom";
         else return "oi-menu";
     }
+
+    public void Dispose()
+        => _refresh.RefreshRequested -= RefreshMe;
 }
