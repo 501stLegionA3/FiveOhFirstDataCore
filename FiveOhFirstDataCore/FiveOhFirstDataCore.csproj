@@ -8,6 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\Roster\Company\**" />
+    <Compile Remove="Pages\Roster\Platoon\**" />
+    <Compile Remove="Pages\Roster\Squad\**" />
+    <Content Remove="Pages\Roster\Company\**" />
+    <Content Remove="Pages\Roster\Platoon\**" />
+    <Content Remove="Pages\Roster\Squad\**" />
+    <EmbeddedResource Remove="Pages\Roster\Company\**" />
+    <EmbeddedResource Remove="Pages\Roster\Platoon\**" />
+    <EmbeddedResource Remove="Pages\Roster\Squad\**" />
+    <None Remove="Pages\Roster\Company\**" />
+    <None Remove="Pages\Roster\Platoon\**" />
+    <None Remove="Pages\Roster\Squad\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNet.Security.OpenId.Steam" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0-preview.3.21201.13" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-preview.3.21201.13" />
@@ -31,9 +46,6 @@
     <Folder Include="Pages\Communications\" />
     <Folder Include="Pages\Civil.Affairs\" />
     <Folder Include="Pages\Resource.Management\" />
-    <Folder Include="Pages\Roster\Company\" />
-    <Folder Include="Pages\Roster\Platoon\" />
-    <Folder Include="Pages\Roster\Squad\" />
     <Folder Include="Pages\Training\" />
     <Folder Include="Pages\Operations\" />
     <Folder Include="wwwroot\css\bootstrap\" />
