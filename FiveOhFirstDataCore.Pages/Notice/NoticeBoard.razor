@@ -210,12 +210,14 @@ else
             ToEdit.Contents = DummyContents;
             if (EditIndex >= 0 && EditIndex < Board.Notices.Count)
             {
-                await _notice.SaveChangesAsync();
+                await _notice.SaveChangesAsync(Board.Notices[EditIndex]);
             }
             else
             {
                 await _notice.PostNoticeAsync(ToEdit, Name, CurrentUser);
             }
+
+            Board = await _notice.GetOrCreateNoticeBoardAsync(Name);
         }
 
         DiscardChanges(e);

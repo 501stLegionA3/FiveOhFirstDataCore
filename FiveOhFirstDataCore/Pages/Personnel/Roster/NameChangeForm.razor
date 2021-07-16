@@ -6,6 +6,7 @@
 @inject INicknameComparisonService _nicks
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
+@inject IAdvancedRefreshService _advRefresh
 
 <AuthorizeView Policy="RequireNameChange">
     <Authorized>
@@ -259,6 +260,8 @@
                 Errors = errors;
             }
             
+            _advRefresh.CallDataReloadRequest(RefreshRequestValues.UserDetails_NickName, Trooper.Id);
+
             IsEditing = false;
             Trooper = new();
             Message = "Name changed successfully.";

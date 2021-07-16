@@ -1,5 +1,6 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
+@inject IAdvancedRefreshService _advRefresh
 @inherits PaginationModel
 
 <AuthorizeView Policy="RequireRosterClerk">

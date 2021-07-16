@@ -46,6 +46,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd,
             List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var primary = await _dbContext.FindAsync<Trooper>(edit.Id);
             var submitter = await _userManager.GetUserAsync(submitterClaim);
 
@@ -407,6 +408,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var user = await _userManager.GetUserAsync(claim);
             if (_dbContext.Entry(trooper).State == EntityState.Detached)
                 _dbContext.Attach(trooper);
@@ -504,6 +506,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.FindAsync<Trooper>(trooper.Id);
             
             if(actual is null)

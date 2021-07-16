@@ -19,17 +19,18 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class UpdateService : IUpdateService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
 
-        public UpdateService(ApplicationDbContext dbContext, UserManager<Trooper> userManager)
+        public UpdateService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
             _userManager = userManager;
         }
 
         public Task<IEnumerable<RecruitmentUpdate>> GetRecruitmentChangesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             return Task.FromResult(_dbContext
                 .RecruitmentUpdates
                 .Include(p => p.ChangedFor)
@@ -41,6 +42,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public Task<IEnumerable<SlotUpdate>> GetReturningMemberChangesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             return Task.FromResult(_dbContext
                 .SlotUpdates
                 .Where(x => x.OldSlot == Data.Slot.Archived)
@@ -53,6 +55,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
@@ -104,6 +107,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<IEnumerable<UpdateBase>> GetAllUpdatesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
                 .Include(p => p.ChangedBy)
@@ -243,6 +247,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task<ResultBase> RevertNickNameUpdateAsync(Trooper manager, NickNameUpdate update)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             update.ChangedFor.NickName = update.OldNickname;
             update.ChangedFor.NickNameUpdates.Add(new()
             {
@@ -267,6 +272,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task<ResultBase> RevertQualificationUpdateAsync(Trooper manager, QualificationUpdate update)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var oldQuals = update.ChangedFor.Qualifications;
             update.ChangedFor.Qualifications = update.OldQualifications;
             update.ChangedFor.QualificationUpdates.Add(new()
@@ -327,6 +333,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -367,6 +374,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -429,6 +437,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)

@@ -34,11 +34,6 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> representing this operation.</returns>
         public Task DeleteNoticeAsync(Notice toRemove, string board);
         /// <summary>
-        /// Initiates a database save operation.
-        /// </summary>
-        /// <returns></returns>
-        public Task SaveChangesAsync();
-        /// <summary>
         /// Determines if this person is one of the provided allowed roles in the selected C-Shops.
         /// </summary>
         /// <param name="claims"><see cref="ClaimsPrincipal"/> for the signed in user.</param>
@@ -46,5 +41,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="allowed">A list of grant values needed to be allowed to edit the notices.</param>
         /// <returns>A <see cref="bool"/> that determines if they can edit notices.</returns>
         public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed);
+        /// <summary>
+        /// Saves the changes made to a notice.
+        /// </summary>
+        /// <param name="toSave">The notice to save.</param>
+        /// <returns></returns>
+        public Task SaveChangesAsync(Notice toSave);
     }
 }
