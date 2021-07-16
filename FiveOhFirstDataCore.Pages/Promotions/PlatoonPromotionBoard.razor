@@ -27,33 +27,26 @@
 
     private void BuildTrooperList()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
+        Troopers = new()
         {
-            Troopers = new()
-            {
-                Platoon.RT,
-                Platoon.ARC,
-                Platoon.Medic,
-                Platoon.SergeantMajor
-            };
+            Platoon.RT,
+            Platoon.ARC,
+            Platoon.Medic,
+            Platoon.SergeantMajor
+        };
 
-            foreach (var squad in Platoon.Squads)
-            {
-                Troopers.Add(squad.Lead);
-                Troopers.Add(squad.RT);
-                Troopers.Add(squad.ARC);
+        foreach (var squad in Platoon.Squads)
+        {
+            Troopers.Add(squad.Lead);
+            Troopers.Add(squad.RT);
+            Troopers.Add(squad.ARC);
 
-                foreach (var t in squad.Teams)
-                {
-                    Troopers.Add(t.Lead);
-                    Troopers.Add(t.Medic);
-                    Troopers.AddRange(t.Troopers);
-                }
+            foreach (var t in squad.Teams)
+            {
+                Troopers.Add(t.Lead);
+                Troopers.Add(t.Medic);
+                Troopers.AddRange(t.Troopers);
             }
-
-            StateHasChanged();
         }
     }
 

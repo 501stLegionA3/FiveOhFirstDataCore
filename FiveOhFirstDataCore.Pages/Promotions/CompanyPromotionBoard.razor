@@ -27,46 +27,38 @@
 
     private void BuildTrooperList()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
+        Troopers = new()
         {
-            Troopers = new()
-            {
-                Company.RT,
-                Company.ARC,
-                Company.Medic,
-                Company.XO,
-                Company.NCOIC
-            };
+            Company.RT,
+            Company.ARC,
+            Company.Medic,
+            Company.XO,
+            Company.NCOIC
+        };
 
-            foreach(var platoon in Company.Platoons)
-            {
-                Troopers.Add(platoon.Commander);
-                Troopers.Add(platoon.SergeantMajor);
-                Troopers.Add(platoon.ARC);
-                Troopers.Add(platoon.Medic);
-                Troopers.Add(platoon.RT);
+        foreach(var platoon in Company.Platoons)
+        {
+            Troopers.Add(platoon.Commander);
+            Troopers.Add(platoon.SergeantMajor);
+            Troopers.Add(platoon.ARC);
+            Troopers.Add(platoon.Medic);
+            Troopers.Add(platoon.RT);
 
-                foreach (var squad in platoon.Squads)
+            foreach (var squad in platoon.Squads)
+            {
+                Troopers.Add(squad.Lead);
+                Troopers.Add(squad.RT);
+                Troopers.Add(squad.ARC);
+
+                foreach (var t in squad.Teams)
                 {
-                    Troopers.Add(squad.Lead);
-                    Troopers.Add(squad.RT);
-                    Troopers.Add(squad.ARC);
-
-                    foreach (var t in squad.Teams)
-                    {
-                        Troopers.Add(t.Lead);
-                        Troopers.Add(t.Medic);
-                        Troopers.AddRange(t.Troopers);
-                    }
+                    Troopers.Add(t.Lead);
+                    Troopers.Add(t.Medic);
+                    Troopers.AddRange(t.Troopers);
                 }
             }
-
-            StateHasChanged();
         }
-    }
-
+    }
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();

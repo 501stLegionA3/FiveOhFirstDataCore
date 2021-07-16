@@ -26,18 +26,6 @@
 
     private bool CanPromote { get; set; } = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
-        {
-            Troopers = await _roster.GetTroopersWithPendingPromotions();
-
-            StateHasChanged();
-        }
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();

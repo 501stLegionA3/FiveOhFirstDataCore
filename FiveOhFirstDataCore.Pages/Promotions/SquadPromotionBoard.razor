@@ -11,10 +11,6 @@
 }
 </CascadingValue>
 
-    </CascadingValue>
-}
-</CascadingValue>
-
 @code {
     [Parameter]
     public SquadData Squad { get; set; }
@@ -54,7 +50,7 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser.Id;
-
+        
         BuildTrooperList();
     }
 }

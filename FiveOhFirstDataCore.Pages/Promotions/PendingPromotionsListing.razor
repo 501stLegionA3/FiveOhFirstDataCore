@@ -246,6 +246,15 @@
             else if (BoardLevel == PromotionBoardLevel.Warden)
                 _advRefresh.CallDataReloadRequest("Promotion_Warden");
 
+            if(BoardLevel >= PromotionBoardLevel.Battalion)
+                _advRefresh.CallDataReloadRequest("Promotion_Battalion");
+            if(BoardLevel >= PromotionBoardLevel.Compnay)
+                _advRefresh.CallDataReloadRequest("Promotion_Company");
+            if(BoardLevel >= PromotionBoardLevel.Platoon)
+                _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+            if(BoardLevel >= PromotionBoardLevel.Squad)
+                _advRefresh.CallDataReloadRequest("Promotion_Squad");
+
             StateHasChanged();
         }
     }

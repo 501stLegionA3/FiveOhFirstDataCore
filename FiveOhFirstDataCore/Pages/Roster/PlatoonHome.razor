@@ -14,26 +14,24 @@
 </ul>
 @if(Loaded)
 {
-    <CascadingValue Value="Data">
-        <div class="tab-content">
-            @switch(Active)
-            {
-                case PlatoonDisplayOption.Roster:
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case PlatoonDisplayOption.Roster:
 
-                    break;
-                case PlatoonDisplayOption.PromotionBoard:
-                    @if(Data is not null)
-                    {
+                break;
+            case PlatoonDisplayOption.PromotionBoard:
+                @if(Data is not null)
+                {
                     <PlatoonPromotionBoard Platoon="Data" />
-                    }
-                    else
-                    {
-                        <em>No platoon data was found. Make sure you are in a platoon or the provided designation is correct.</em>
-                    }
-                    break;
-            }
-        </div>
-    </CascadingValue>
+                }
+                else
+                {
+                    <em>No platoon data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                }
+                break;
+        }
+    </div>
 }
 else
 {
