@@ -5,18 +5,14 @@
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <CascadingValue Value="Troopers">
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" />
 
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" />
-
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" />
-
-    </CascadingValue>
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
 }
 </CascadingValue>
 
 @code {
-    [CascadingParameter]
+    [Parameter]
     public SquadData Squad { get; set; }
 
     [CascadingParameter]
@@ -29,26 +25,19 @@
 
     private bool CanPromote { get; set; } = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void BuildTrooperList()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
+        Troopers = new()
         {
-            Troopers = new()
-            {
-                Squad.RT,
-                Squad.ARC
-            };
+            Squad.RT,
+            Squad.ARC
+        };
 
-            foreach(var t in Squad.Teams)
-            {
-                Troopers.Add(t.Lead);
-                Troopers.Add(t.Medic);
-                Troopers.AddRange(t.Troopers);
-            }
-
-            StateHasChanged();
+        foreach(var t in Squad.Teams)
+        {
+            Troopers.Add(t.Lead);
+            Troopers.Add(t.Medic);
+            Troopers.AddRange(t.Troopers);
         }
     }
 
@@ -60,6 +49,8 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager || Squad.Lead.Id == CurrentUser.Id;
+        CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser.Id;
+        
+        BuildTrooperList();
     }
 }

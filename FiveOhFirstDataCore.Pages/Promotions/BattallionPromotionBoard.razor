@@ -6,13 +6,9 @@
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <CascadingValue Value="Troopers">
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
 
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" />
-
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" />
-
-    </CascadingValue>
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
 }
 </CascadingValue>
 
@@ -20,7 +16,7 @@
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
 
-    [CascadingParameter]
+    [Parameter]
     public HailstormData Battalion { get; set; }
 
     [CascadingParameter]
@@ -29,18 +25,6 @@
     public List<Trooper>? Troopers { get; set; } = null;
 
     private bool CanPromote { get; set; } = false;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
-        {
-            Troopers = await _roster.GetTroopersWithPendingPromotions();
-
-            StateHasChanged();
-        }
-    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -51,8 +35,10 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager
-            || Battalion.Commander.Id == CurrentUser.Id 
-            || Battalion.XO.Id == CurrentUser.Id
-            || Battalion.NCOIC.Id == CurrentUser.Id;
+            || (Battalion?.Commander?.Id ?? 0) == CurrentUser.Id 
+            || (Battalion?.XO?.Id ?? 0) == CurrentUser.Id
+            || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser.Id;
+
+        Troopers = await _roster.GetTroopersWithPendingPromotions();
     }
 }

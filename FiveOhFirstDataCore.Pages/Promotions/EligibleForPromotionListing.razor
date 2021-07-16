@@ -1,4 +1,5 @@
 ﻿@inject IPromotionService _promotion
+@inject IAdvancedRefreshService _advRefresh
 
 @if(Errors.Count > 0)
 {
@@ -245,7 +246,7 @@
     [CascadingParameter]
     public bool AllowedPromoter { get; set; }
 
-    [CascadingParameter]
+    [Parameter]
     public List<Trooper> ActiveTroopers { get; set; }
 
     [CascadingParameter]
@@ -341,6 +342,15 @@
             else
             {
                 SuccessMessage = "Promotion filed successfully!";
+
+                if(SendPromotionsTo >= PromotionBoardLevel.Battalion)
+                    _advRefresh.CallDataReloadRequest("Promotion_Battalion");
+                if(SendPromotionsTo >= PromotionBoardLevel.Compnay)
+                    _advRefresh.CallDataReloadRequest("Promotion_Company");
+                if(SendPromotionsTo >= PromotionBoardLevel.Platoon)
+                    _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+                if(SendPromotionsTo >= PromotionBoardLevel.Squad)
+                    _advRefresh.CallDataReloadRequest("Promotion_Squad");
             }
             StateHasChanged();
         }

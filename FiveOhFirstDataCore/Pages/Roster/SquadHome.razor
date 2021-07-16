@@ -1,6 +1,8 @@
 ﻿@page "/squad/{SquadDesignation}"
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -12,27 +14,25 @@
 </ul>
 @if(Loaded)
 {
-    <CascadingValue Value="Data">
-        <div class="tab-content">
-            @switch(Active)
-            {
-                case SquadDisplayOption.Roster:
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case SquadDisplayOption.Roster:
 
-                    break;
-                case SquadDisplayOption.PromotionBoard:
+                break;
+            case SquadDisplayOption.PromotionBoard:
                     
-                    @if(Data is not null)
-                    {
-                        <SquadPromotionBoard />
-                    }
-                    else
-                    {
-                        <em>No squad data was found. Make sure you are in a platoon or the provided designation is correct.</em>
-                    }
-                    break;
-            }
-        </div>
-    </CascadingValue>
+                @if(Data is not null)
+                {
+                    <SquadPromotionBoard Squad="Data" />
+                }
+                else
+                {
+                    <em>No squad data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                }
+                break;
+        }
+    </div>
 }
 else
 {
@@ -72,6 +72,8 @@ else
             Loaded = true;
 
             StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Squad", DataReloadRequested);
         }
     }
 
@@ -79,5 +81,27 @@ else
     {
         Active = option;
         StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task DataReloadRequested()
+    {
+        var user = (await AuthStateTask).User;
+
+        if(int.TryParse(SquadDesignation, out int id))
+            Data = await _roster.GetSquadDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        else if (SquadDesignation == "me")
+            Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
     }
 }

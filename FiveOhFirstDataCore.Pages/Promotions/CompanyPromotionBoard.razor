@@ -5,18 +5,14 @@
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <CascadingValue Value="Troopers">
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Compnay" ActiveTroopers="Troopers" />
 
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Compnay" />
-
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" />
-
-    </CascadingValue>
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
 }
 </CascadingValue>
 
 @code {
-    [CascadingParameter]
+    [Parameter]
     public CompanyData Company { get; set; }
 
     [CascadingParameter]
@@ -29,48 +25,40 @@
 
     private bool CanPromote { get; set; } = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private void BuildTrooperList()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
+        Troopers = new()
         {
-            Troopers = new()
-            {
-                Company.RT,
-                Company.ARC,
-                Company.Medic,
-                Company.XO,
-                Company.NCOIC
-            };
+            Company.RT,
+            Company.ARC,
+            Company.Medic,
+            Company.XO,
+            Company.NCOIC
+        };
 
-            foreach(var platoon in Company.Platoons)
-            {
-                Troopers.Add(platoon.Commander);
-                Troopers.Add(platoon.SergeantMajor);
-                Troopers.Add(platoon.ARC);
-                Troopers.Add(platoon.Medic);
-                Troopers.Add(platoon.RT);
+        foreach(var platoon in Company.Platoons)
+        {
+            Troopers.Add(platoon.Commander);
+            Troopers.Add(platoon.SergeantMajor);
+            Troopers.Add(platoon.ARC);
+            Troopers.Add(platoon.Medic);
+            Troopers.Add(platoon.RT);
 
-                foreach (var squad in platoon.Squads)
+            foreach (var squad in platoon.Squads)
+            {
+                Troopers.Add(squad.Lead);
+                Troopers.Add(squad.RT);
+                Troopers.Add(squad.ARC);
+
+                foreach (var t in squad.Teams)
                 {
-                    Troopers.Add(squad.Lead);
-                    Troopers.Add(squad.RT);
-                    Troopers.Add(squad.ARC);
-
-                    foreach (var t in squad.Teams)
-                    {
-                        Troopers.Add(t.Lead);
-                        Troopers.Add(t.Medic);
-                        Troopers.AddRange(t.Troopers);
-                    }
+                    Troopers.Add(t.Lead);
+                    Troopers.Add(t.Medic);
+                    Troopers.AddRange(t.Troopers);
                 }
             }
-
-            StateHasChanged();
         }
-    }
-
+    }
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -80,8 +68,10 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager 
-            || Company.Commander.Id == CurrentUser.Id 
-            || Company.XO.Id == CurrentUser.Id 
-            || Company.NCOIC.Id == CurrentUser.Id;
+            || (Company?.Commander?.Id ?? 0) == CurrentUser.Id 
+            || (Company?.XO?.Id ?? 0) == CurrentUser.Id 
+            || (Company?.NCOIC?.Id ?? 0) == CurrentUser.Id;
+            
+        BuildTrooperList();
     }
 }

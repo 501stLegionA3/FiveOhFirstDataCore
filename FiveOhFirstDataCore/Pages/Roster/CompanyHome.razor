@@ -1,6 +1,8 @@
 ﻿@page "/company/{CompanyDesignation}"
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -22,7 +24,7 @@
                 case CompanyDisplayOption.PromotionBoard:
                     @if(Data is not null)
                     {
-                        <CompanyPromotionBoard />
+                        <CompanyPromotionBoard Company="Data" />
                     }
                     else
                     {
@@ -71,6 +73,8 @@ else
             Loaded = true;
 
             StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Company", DataReloadRequested);
         }
     }
 
@@ -78,5 +82,27 @@ else
     {
         Active = option;
         StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task DataReloadRequested()
+    {
+        var user = (await AuthStateTask).User;
+
+        if(int.TryParse(CompanyDesignation, out int id))
+            Data = await _roster.GetCompanyDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        else if (CompanyDesignation == "me")
+            Data = await _roster.GetCompanyDataFromClaimPrincipalAsync(user);
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
     }
 }

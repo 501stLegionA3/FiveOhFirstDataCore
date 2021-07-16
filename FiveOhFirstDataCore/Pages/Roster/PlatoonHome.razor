@@ -1,6 +1,8 @@
 ﻿@page "/platoon/{PlatoonDesignation}"
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -12,26 +14,24 @@
 </ul>
 @if(Loaded)
 {
-    <CascadingValue Value="Data">
-        <div class="tab-content">
-            @switch(Active)
-            {
-                case PlatoonDisplayOption.Roster:
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case PlatoonDisplayOption.Roster:
 
-                    break;
-                case PlatoonDisplayOption.PromotionBoard:
-                    @if(Data is not null)
-                    {
-                        <PlatoonPromotionBoard />
-                    }
-                    else
-                    {
-                        <em>No platoon data was found. Make sure you are in a platoon or the provided designation is correct.</em>
-                    }
-                    break;
-            }
-        </div>
-    </CascadingValue>
+                break;
+            case PlatoonDisplayOption.PromotionBoard:
+                @if(Data is not null)
+                {
+                    <PlatoonPromotionBoard Platoon="Data" />
+                }
+                else
+                {
+                    <em>No platoon data was found. Make sure you are in a platoon or the provided designation is correct.</em>
+                }
+                break;
+        }
+    </div>
 }
 else
 {
@@ -71,6 +71,8 @@ else
             Loaded = true;
 
             StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Platoon", DataReloadRequested);
         }
     }
 
@@ -78,5 +80,27 @@ else
     {
         Active = option;
         StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task DataReloadRequested()
+    {
+        var user = (await AuthStateTask).User;
+
+        if(int.TryParse(PlatoonDesignation, out int id))
+            Data = await _roster.GetPlatoonDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        else if (PlatoonDesignation == "me")
+            Data = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
     }
 }

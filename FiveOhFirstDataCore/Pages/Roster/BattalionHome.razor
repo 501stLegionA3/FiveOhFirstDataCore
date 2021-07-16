@@ -1,6 +1,8 @@
 ﻿@page "/hailstorm"
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -12,27 +14,25 @@
 </ul>
 @if(Loaded)
 {
-    <CascadingValue Value="Data">
-        <div class="tab-content">
-            @switch(Active)
-            {
-                case HailstormDisplayOption.Roster:
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case HailstormDisplayOption.Roster:
 
-                    break;
-                case HailstormDisplayOption.PromotionBoard:
+                break;
+            case HailstormDisplayOption.PromotionBoard:
                     
-                    @if(Data is not null)
-                    {
-                        <BattallionPromotionBoard />
-                    }
-                    else
-                    {
-                        <em>No battalion data was found.</em>
-                    }
-                    break;
-            }
-        </div>
-    </CascadingValue>
+                @if(Data is not null)
+                {
+                    <BattallionPromotionBoard Battalion="Data" />
+                }
+                else
+                {
+                    <em>No battalion data was found.</em>
+                }
+                break;
+        }
+    </div>
 }
 else
 {
@@ -58,13 +58,13 @@ else
 
         if(firstRender)
         {
-            var user = (await AuthStateTask).User;
-
             Data = await _roster.GetHailstormDataAsync();
 
             Loaded = true;
 
             StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Battalion", DataReloadRequested);
         }
     }
 
@@ -72,5 +72,22 @@ else
     {
         Active = option;
         StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task DataReloadRequested()
+    {
+        Data = await _roster.GetHailstormDataAsync();
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
     }
 }
