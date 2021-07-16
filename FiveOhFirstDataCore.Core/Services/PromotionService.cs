@@ -75,7 +75,6 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
-            var user = await _userManager.FindByIdAsync(approver.Id.ToString());
 
             if(actual is null)
             {
@@ -99,15 +98,6 @@ namespace FiveOhFirstDataCore.Core.Services
             user.ApprovedPendingPromotions.Add(actual);
 
             await _dbContext.SaveChangesAsync();
-            var identRes = await _userManager.UpdateAsync(user);
-            if (!identRes.Succeeded)
-            {
-                List<string> errors = new();
-                foreach (var error in identRes.Errors)
-                    errors.Add($"[{error.Code}] {error.Description}");
-
-                return new(false, errors);
-            }
 
             return new(true, null);
         }
@@ -116,7 +106,6 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
-            var user = await _userManager.FindByIdAsync(approver.Id.ToString());
 
             if (actual is null)
             {
