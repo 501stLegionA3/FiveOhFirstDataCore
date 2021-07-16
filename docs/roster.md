@@ -16,42 +16,10 @@ The roster pages contains 6 tabs.
 6. The Full Roster contains information on every trooper within the 501st. Period.
 
 ## ORBAT Sheets
-The ORBAT Sheets display the following units(including sub-units). 
-
-- ORBAT
-    - Hailstorm Battalion Command
-    - Avalanche Company
-    - Cyclone Company
-    - Acklay Detachment
-    - Mynock Detachment
-    - Razor Squadron
-- Zeta ORBAT
-    - Hailstorm Battalion Command
-    - Zeta Reservist Company
 
 ### Headquarters Unit Displays
-Headquarters Units (Being Platoon, Company, and Battalion HQs) are displayed as follows.
-
-![hq-display](../_media/roster/hq-display.png)
-
-1. Placeholder
-2. Placeholder
-3. Placeholder
-4. Placeholder
-5. Placeholder
-6. Placeholder
 
 ### Squad Unit Displays
-Squad Units (Infantry Squad, Mynock Section, Razor Flight) are displayed as follows.
-
-![squad-display](../_media/roster/squad-display.png)
-
-1. Placeholder
-2. Placeholder
-3. Placeholder
-4. Placeholder
-5. Placeholder
-6. Placeholder
 
 ## Roster Sheets
 
