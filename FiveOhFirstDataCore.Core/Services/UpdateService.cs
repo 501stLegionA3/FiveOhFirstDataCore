@@ -28,32 +28,32 @@ namespace FiveOhFirstDataCore.Core.Services
             _userManager = userManager;
         }
 
-        public Task<IEnumerable<RecruitmentUpdate>> GetRecruitmentChangesAsync()
+        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            return Task.FromResult(_dbContext
+            return await _dbContext
                 .RecruitmentUpdates
                 .Include(p => p.ChangedFor)
                 .Include(p => p.RecruitedBy)
                 .AsSplitQuery()
                 .OrderByDescending(x => x.ChangedOn)
-                .AsEnumerable());
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<SlotUpdate>> GetReturningMemberChangesAsync()
+        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            return Task.FromResult(_dbContext
+            return await _dbContext
                 .SlotUpdates
                 .Where(x => x.OldSlot == Data.Slot.Archived)
                 .Include(p => p.ChangedFor)
                 .Include(p => p.ApprovedBy)
                 .AsSplitQuery()
                 .OrderByDescending(x => x.ChangedOn)
-                .AsEnumerable());
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
+        public async Task<List<UpdateBase>> GetRosterUpdatesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
@@ -102,10 +102,10 @@ namespace FiveOhFirstDataCore.Core.Services
             one.AddRange(five);
             var dataList = one.AsEnumerable();
 
-            return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
+            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
         }
 
-        public async Task<IEnumerable<UpdateBase>> GetAllUpdatesAsync()
+        public async Task<List<UpdateBase>> GetAllUpdatesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
@@ -159,7 +159,7 @@ namespace FiveOhFirstDataCore.Core.Services
             one.AddRange(six);
             var dataList = one.AsEnumerable();
 
-            return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
+            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
         }
 
         public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update) 
