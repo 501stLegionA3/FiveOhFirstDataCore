@@ -7,6 +7,7 @@ using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
@@ -19,20 +20,21 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class PromotionService : IPromotionService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
         private readonly IWebsiteSettingsService _webSettings;
 
-        public PromotionService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
+        public PromotionService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
             IWebsiteSettingsService webSettings)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
             _userManager = userManager;
             _webSettings = webSettings;
         }
 
         public async Task<ResultBase> CancelPromotion(Promotion promotion, Trooper denier)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
             var user = await _userManager.FindByIdAsync(denier.Id.ToString());
 
@@ -71,13 +73,16 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ResultBase> ElevatePromotion(Promotion promotion, Trooper approver, int levels = 1)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
-            var user = await _userManager.FindByIdAsync(approver.Id.ToString());
 
             if(actual is null)
             {
                 return new(false, new() { "Promotion was not found in the database." });
             }
+
+            var user = await _dbContext.FindAsync<Trooper>(approver.Id);
+            await _dbContext.Entry(actual).Collection(e => e.ApprovedBy).LoadAsync();
 
             actual.CurrentBoard++;
 
@@ -89,26 +94,18 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (actual.ApprovedBy is null) actual.ApprovedBy = new();
 
-            user.ApprovedPendingPromotions.Add(actual);
+            if(user is not null && !actual.ApprovedBy.Any(x => x.Id == user.Id))
+                user.ApprovedPendingPromotions.Add(actual);
 
             await _dbContext.SaveChangesAsync();
-            var identRes = await _userManager.UpdateAsync(user);
-            if (!identRes.Succeeded)
-            {
-                List<string> errors = new();
-                foreach (var error in identRes.Errors)
-                    errors.Add($"[{error.Code}] {error.Description}");
-
-                return new(false, errors);
-            }
 
             return new(true, null);
         }
 
         public async Task<ResultBase> FinalizePromotion(Promotion promotion, Trooper approver)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
-            var user = await _userManager.FindByIdAsync(approver.Id.ToString());
 
             if (actual is null)
             {
@@ -117,6 +114,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.Entry(actual).Collection(e => e.ApprovedBy).LoadAsync();
             await _dbContext.Entry(actual).Reference(e => e.PromotionFor).LoadAsync();
+
+            var user = await _dbContext.FindAsync<Trooper>(approver.Id);
+
             var now = DateTime.UtcNow.ToEst();
             var log = new RankUpdate()
             {
@@ -162,15 +162,6 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext.Remove(actual);
 
             await _dbContext.SaveChangesAsync();
-            var identRes = await _userManager.UpdateAsync(user);
-            if (!identRes.Succeeded)
-            {
-                List<string> errors = new();
-                foreach (var error in identRes.Errors)
-                    errors.Add($"[{error.Code}] {error.Description}");
-
-                return new(false, errors);
-            }
 
             return new(true, null);
         }
@@ -212,6 +203,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 return new(false, null, errors);
             }
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var promo = await _dbContext.Promotions.FindAsync(promotion.Id);
 

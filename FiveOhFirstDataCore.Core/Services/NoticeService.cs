@@ -69,11 +69,11 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed)
         {
-            foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+            foreach (CShop shop in Enum.GetValues(typeof(CShop)))
             {
-                if((shop & cshops) == shop)
+                if ((shop & cshops) == shop)
                 {
-                    foreach(var groupName in CShopExtensions.ClaimsTree[shop])
+                    foreach (var groupName in CShopExtensions.ClaimsTree[shop])
                     {
                         if (claims.HasClaim(x => x.Type.Equals(groupName.Key)
                             && groupName.Value.Contains(x.Value)
