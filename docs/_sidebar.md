@@ -2,9 +2,11 @@
 
 - **General Information**
     - [Home]()
+    - [Roster](roster)
+    **Getting Started**
     - [Account Registration](register-account)
     - [Getting Recruited](get-recruited)
-- **NCO Guides**
+- **Leadership Guides**
 - **C-Shop Guides**
     - [C-1 PERSONNEL](c1/c1-home)
 - **Links**
