@@ -117,6 +117,11 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var user = await _dbContext.FindAsync<Trooper>(approver.Id);
 
+            if(user is null)
+            {
+                return new(false, new() { "Failed to find an account for the approver" });
+            }
+
             var now = DateTime.UtcNow.ToEst();
             var log = new RankUpdate()
             {
