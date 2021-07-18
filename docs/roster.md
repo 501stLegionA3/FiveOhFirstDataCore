@@ -6,7 +6,7 @@ The roster page can be found from the Roster Page on the Home Screen, or with [t
 
 The roster pages contains 6 tabs.
 
-![tab-display](../_media/roster/tab-display.png)
+![tab-display](_media/roster/tab-display.png)
 
 1. The ORBAT Tab displays the overall organization of the 501st Legion. All active duty units and subunits are displayed.
 2. The Placed Roster Tab contains information on every trooper within the 501st organization, with the exception of Zeta Company.
@@ -32,7 +32,7 @@ The ORBAT Sheets display the following units(including sub-units).
 ### Headquarters Unit Displays
 Headquarters Units (Being Platoon, Company, and Battalion HQs) are displayed as follows.
 
-![hq-display](../_media/roster/hq-display.png)
+![hq-display](_media/roster/hq-display.png)
 
 1. The **Parent Unit** of the Currently displayed unit.
 2. The **Currently Displayed Unit**
@@ -42,7 +42,7 @@ Headquarters Units (Being Platoon, Company, and Battalion HQs) are displayed as 
 ### Squad Unit Displays
 Squad Units (Infantry Squad, Mynock Section, Razor Flight) are displayed as follows.
 
-![squad-display](../_media/roster/squad-display.png)
+![squad-display](_media/roster/squad-display.png)
 
 1. The **Currently Displayed Squad**
 2. The **Command Team** is highlighted in yellow.
@@ -55,7 +55,7 @@ While the ORBAT Sheets are good for looking at a glance. The Roster Sheets show 
 ### Information
 When you select a roster page, it will display as follows. The sheet will display everyone related to that specific roster page, and will default to sorting by birth number from lowest to highest.
 
-![roster-display](../_media/roster/roster-display.png)
+![roster-display](_media/roster/roster-display.png)
 
 1. At the top of the sheet are the tabs to swith between different rosters.
 2. Below that are all the search options to search for specific troopers within that roster page.
@@ -68,7 +68,7 @@ When you select a roster page, it will display as follows. The sheet will displa
 Each roster page contains a comprehensive search function within them.
 
 #### Overview
-![search-display](../_media/roster/search-display.png)
+![search-display](_media/roster/search-display.png)
 
 1. The top 3 search bars are for Designation, Birth Number, and Nickname specifically. When something is typed in, the roster will display all troopers found that match that specific field. The data displayed can also be sorted by the **Sort Button** to the left of every search box.
 2. The **Sort Button** has 3 modes.
