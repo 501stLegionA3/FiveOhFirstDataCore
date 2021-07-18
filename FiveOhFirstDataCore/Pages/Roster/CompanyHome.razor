@@ -22,6 +22,7 @@
 
                     break;
                 case CompanyDisplayOption.PromotionBoard:
+                    <h4>@Slot.AsFull()'s Promotion Board</h4>
                     @if(Data is not null)
                     {
                         <CompanyPromotionBoard Company="Data" />
@@ -56,6 +57,7 @@ else
     private CompanyDisplayOption Active { get; set; } = CompanyDisplayOption.Roster;
     private CompanyData? Data { get; set; }
     private bool Loaded { get; set; } = false;
+    private Slot Slot { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -65,10 +67,17 @@ else
         {
             var user = (await AuthStateTask).User;
 
-            if(int.TryParse(CompanyDesignation, out int id))
-                Data = await _roster.GetCompanyDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            if (int.TryParse(CompanyDesignation, out int id))
+            {
+                Slot = (Slot)id;
+                Data = await _roster.GetCompanyDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            }
             else if (CompanyDesignation == "me")
+            {
                 Data = await _roster.GetCompanyDataFromClaimPrincipalAsync(user);
+                var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+                Slot = (Slot)((int)t.Slot / 100 * 100);
+            }
 
             Loaded = true;
 

@@ -21,7 +21,7 @@
 
                 break;
             case SquadDisplayOption.PromotionBoard:
-                    
+                <h4>@Slot.AsFull()'s Promotion Board</h4>
                 @if(Data is not null)
                 {
                     <SquadPromotionBoard Squad="Data" />
@@ -55,6 +55,7 @@ else
     private SquadDisplayOption Active { get; set; } = SquadDisplayOption.Roster;
     private SquadData? Data { get; set; }
     private bool Loaded { get; set; } = false;
+    private Slot Slot { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -64,10 +65,17 @@ else
         {
             var user = (await AuthStateTask).User;
 
-            if(int.TryParse(SquadDesignation, out int id))
-                Data = await _roster.GetSquadDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            if (int.TryParse(SquadDesignation, out int id))
+            {
+                Slot = (Slot)id;
+                Data = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            }
             else if (SquadDesignation == "me")
+            {
                 Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+                var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+                Slot = t.Slot;
+            }
 
             Loaded = true;
 

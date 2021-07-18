@@ -21,6 +21,7 @@
 
                 break;
             case PlatoonDisplayOption.PromotionBoard:
+                <h4>@Slot.AsFull()'s Promotion Board</h4>
                 @if(Data is not null)
                 {
                     <PlatoonPromotionBoard Platoon="Data" />
@@ -54,6 +55,7 @@ else
     private PlatoonDisplayOption Active { get; set; } = PlatoonDisplayOption.Roster;
     private PlatoonData? Data { get; set; }
     private bool Loaded { get; set; } = false;
+    private Slot Slot { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -63,10 +65,17 @@ else
         {
             var user = (await AuthStateTask).User;
 
-            if(int.TryParse(PlatoonDesignation, out int id))
-                Data = await _roster.GetPlatoonDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            if (int.TryParse(PlatoonDesignation, out int id))
+            {
+                Slot = (Slot)id;
+                Data = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            }
             else if (PlatoonDesignation == "me")
+            {
                 Data = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+                var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
+                Slot = (Slot)((int)t.Slot / 10 * 10);
+            }
 
             Loaded = true;
 
