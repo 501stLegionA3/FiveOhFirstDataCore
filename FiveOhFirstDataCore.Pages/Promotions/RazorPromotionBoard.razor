@@ -54,8 +54,8 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager 
-            || (Razor?.Commander?.Id ?? 0) == CurrentUser.Id
-            || (Razor?.SubCommander?.Id ?? 0) == CurrentUser.Id;
+            || (Razor?.Commander?.Id ?? 0) == CurrentUser?.Id
+            || (Razor?.SubCommander?.Id ?? 0) == CurrentUser?.Id;
         
         BuildTrooperList();
     }

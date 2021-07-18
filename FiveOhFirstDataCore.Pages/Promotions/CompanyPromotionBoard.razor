@@ -58,7 +58,8 @@
                 }
             }
         }
-    }
+    }
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -68,9 +69,9 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager 
-            || (Company?.Commander?.Id ?? 0) == CurrentUser.Id 
-            || (Company?.XO?.Id ?? 0) == CurrentUser.Id 
-            || (Company?.NCOIC?.Id ?? 0) == CurrentUser.Id;
+            || (Company?.Commander?.Id ?? 0) == CurrentUser?.Id 
+            || (Company?.XO?.Id ?? 0) == CurrentUser?.Id 
+            || (Company?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
             
         BuildTrooperList();
     }

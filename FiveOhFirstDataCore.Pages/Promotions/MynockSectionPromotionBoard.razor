@@ -50,7 +50,7 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager
-            || (Mynock?.Lead?.Id ?? 0) == CurrentUser.Id;
+            || (Mynock?.Lead?.Id ?? 0) == CurrentUser?.Id;
 
         BuildTrooperList();
     }

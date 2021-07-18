@@ -35,9 +35,9 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager
-            || (Battalion?.Commander?.Id ?? 0) == CurrentUser.Id 
-            || (Battalion?.XO?.Id ?? 0) == CurrentUser.Id
-            || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser.Id;
+            || (Battalion?.Commander?.Id ?? 0) == CurrentUser?.Id 
+            || (Battalion?.XO?.Id ?? 0) == CurrentUser?.Id
+            || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
 
         Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
     }

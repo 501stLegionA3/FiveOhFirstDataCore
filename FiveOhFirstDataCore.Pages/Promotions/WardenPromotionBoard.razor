@@ -47,8 +47,8 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager 
-            || (Warden?.Master?.Id ?? 0) == CurrentUser.Id
-            || (Warden?.Chief?.Id ?? 0) == CurrentUser.Id;
+            || (Warden?.Master?.Id ?? 0) == CurrentUser?.Id
+            || (Warden?.Chief?.Id ?? 0) == CurrentUser?.Id;
         
         BuildTrooperList();
     }
