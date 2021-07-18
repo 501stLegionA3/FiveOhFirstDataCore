@@ -25,7 +25,7 @@ namespace FiveOhFirstDataCore.Core.Services
     /// </summary>
     public class ImportService : IImportService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
         private readonly IWebHostEnvironment _env;
 
@@ -128,10 +128,10 @@ namespace FiveOhFirstDataCore.Core.Services
             { 11, Qualification.RTOQualified }
         };
 
-        public ImportService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
+        public ImportService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
             IWebHostEnvironment env)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
             _userManager = userManager;
             _env = env;
         }
@@ -584,6 +584,8 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
+
                 List<string> warnings = new();
 
                 stream.Seek(0, SeekOrigin.Begin);

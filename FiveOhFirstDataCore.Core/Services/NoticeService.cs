@@ -5,6 +5,8 @@ using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 
 using Microsoft.AspNetCore.Mvc.TagHelpers;
+using Microsoft.EntityFrameworkCore;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,15 +18,16 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class NoticeService : INoticeService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public NoticeService(ApplicationDbContext dbContext)
+        public NoticeService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
         }
 
         public async Task DeleteNoticeAsync(Notice toRemove, string board)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var item = await _dbContext.FindAsync<NoticeBoardData>(board);
 
             if (item is null) item = await GetOrCreateNoticeBoardAsync(board);
@@ -40,6 +43,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 var board = await _dbContext.FindAsync<NoticeBoardData>(name);
 
                 if (board is null)
@@ -84,6 +88,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task PostNoticeAsync(Notice newNotice, string board, Trooper user)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var item = await _dbContext.FindAsync<NoticeBoardData>(board);
 
             if (item is null) item = await GetOrCreateNoticeBoardAsync(board);
@@ -98,7 +103,12 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task SaveChangesAsync() 
-            => await _dbContext.SaveChangesAsync();
+        public async Task SaveChangesAsync(Notice toSave)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = _dbContext.Attach(toSave);
+            _dbContext.Entry(toSave).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

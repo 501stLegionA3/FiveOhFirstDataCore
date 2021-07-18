@@ -14,16 +14,17 @@ namespace FiveOhFirstDataCore.Core.Services
     {
         private ConcurrentDictionary<string, HashSet<string>> Keys { get; set; }
 
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public NicknameComparisionService(ApplicationDbContext dbContext)
+        public NicknameComparisionService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
             Keys = new();
         }
 
         public async Task InitializeAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             Keys = new();
             var encoder = new DoubleMetaphone();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>

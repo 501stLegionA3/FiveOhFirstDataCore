@@ -19,40 +19,43 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class UpdateService : IUpdateService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
 
-        public UpdateService(ApplicationDbContext dbContext, UserManager<Trooper> userManager)
+        public UpdateService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager)
         {
-            _dbContext = dbContext;
+            _dbContextFactory = dbContextFactory;
             _userManager = userManager;
         }
 
-        public Task<IEnumerable<RecruitmentUpdate>> GetRecruitmentChangesAsync()
+        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync()
         {
-            return Task.FromResult(_dbContext
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext
                 .RecruitmentUpdates
                 .Include(p => p.ChangedFor)
                 .Include(p => p.RecruitedBy)
                 .AsSplitQuery()
                 .OrderByDescending(x => x.ChangedOn)
-                .AsEnumerable());
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<SlotUpdate>> GetReturningMemberChangesAsync()
+        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync()
         {
-            return Task.FromResult(_dbContext
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext
                 .SlotUpdates
                 .Where(x => x.OldSlot == Data.Slot.Archived)
                 .Include(p => p.ChangedFor)
                 .Include(p => p.ApprovedBy)
                 .AsSplitQuery()
                 .OrderByDescending(x => x.ChangedOn)
-                .AsEnumerable());
+                .ToListAsync();
         }
 
-        public async Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync()
+        public async Task<List<UpdateBase>> GetRosterUpdatesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
@@ -99,11 +102,12 @@ namespace FiveOhFirstDataCore.Core.Services
             one.AddRange(five);
             var dataList = one.AsEnumerable();
 
-            return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
+            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
         }
 
-        public async Task<IEnumerable<UpdateBase>> GetAllUpdatesAsync()
+        public async Task<List<UpdateBase>> GetAllUpdatesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
                 .Include(p => p.ChangedBy)
@@ -155,7 +159,7 @@ namespace FiveOhFirstDataCore.Core.Services
             one.AddRange(six);
             var dataList = one.AsEnumerable();
 
-            return dataList.OrderByDescending(x => x.ChangedOn).AsEnumerable();
+            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
         }
 
         public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update) 
@@ -243,6 +247,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task<ResultBase> RevertNickNameUpdateAsync(Trooper manager, NickNameUpdate update)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             update.ChangedFor.NickName = update.OldNickname;
             update.ChangedFor.NickNameUpdates.Add(new()
             {
@@ -267,6 +272,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task<ResultBase> RevertQualificationUpdateAsync(Trooper manager, QualificationUpdate update)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var oldQuals = update.ChangedFor.Qualifications;
             update.ChangedFor.Qualifications = update.OldQualifications;
             update.ChangedFor.QualificationUpdates.Add(new()
@@ -327,6 +333,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -367,6 +374,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -429,6 +437,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             try
             {
+                using var _dbContext = _dbContextFactory.CreateDbContext();
                 await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)

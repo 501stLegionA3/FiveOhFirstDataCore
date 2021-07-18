@@ -1,5 +1,7 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration _config
+@implements IRefreshBase
+@inject IAdvancedRefreshService _advRefresh
 
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark align-items-stretch position-relative nav-menu-box">
     <div class="top-row pl-4 navbar navbar-dark">
@@ -174,6 +176,12 @@
     {
         base.OnParametersSet();
 
+        if(CurrentUser is not null)
+        {
+            _advRefresh.AddUserSpecificRefreshListener(CurrentUser.Id, 
+                RefreshRequestValues.UserDetails_NickName, CallRefreshRequest);
+        }
+
         Version = _config["Version"];
     }
 
@@ -185,5 +193,15 @@
     private void ToggleUserNavMenu()
     {
         userNavMenu = !userNavMenu;
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveRefreshListeners(CallRefreshRequest);
     }
 }

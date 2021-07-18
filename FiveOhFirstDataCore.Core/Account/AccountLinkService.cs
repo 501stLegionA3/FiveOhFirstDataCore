@@ -30,7 +30,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public async Task<string> StartAsync(int trooperId, string username, string password, bool rememberMe)
         {
             var scope = _services.CreateScope();
-            var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var _databaseFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+            using var _database = _databaseFac.CreateDbContext();
             var trooper = await _database.FindAsync<Trooper>(trooperId);
             if (trooper is null)
                 if (trooper?.DiscordId is not null)
@@ -52,7 +53,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public async Task BindDiscordAsync(string token, ulong accountId, string email)
         {
             var scope = _services.CreateScope();
-            var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var _databaseFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+            using var _database = _databaseFac.CreateDbContext();
             int failed = 0;
             await _database.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -77,7 +79,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public async Task BindSteamUserAsync(string token, string steamId)
         {
             var scope = _services.CreateScope();
-            var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var _databaseFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+            using var _database = _databaseFac.CreateDbContext();
             int failed = 0;
             await _database.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -131,7 +134,8 @@ namespace FiveOhFirstDataCore.Core.Account
                 var disp = state.ExparationTimer.DisposeAsync();
 
                 var scope = _services.CreateScope();
-                var _database = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var _databaseFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+                using var _database = _databaseFac.CreateDbContext();
                 var user = await _database.FindAsync<Trooper>(state.TrooperId);
 
                 if (user is null)

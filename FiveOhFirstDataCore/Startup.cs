@@ -47,14 +47,16 @@ namespace FiveOhFirstDataCore
                 .AddJsonFile(Path.Join("Config", "website_config.json"))
                 .Build();
 
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseNpgsql(
                     Secrets.GetConnectionString("database"))
 #if DEBUG
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
 #endif
-                , ServiceLifetime.Scoped, ServiceLifetime.Scoped);
+                , ServiceLifetime.Scoped);
+            services.AddScoped(p 
+                => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
             services.AddIdentity<Trooper, TrooperRole>()
                 .AddDefaultTokenProviders()
                 .AddDefaultUI()
@@ -416,7 +418,8 @@ namespace FiveOhFirstDataCore
                 .AddScoped<SmtpClient>()
                 .AddScoped<ICustomMailSender, MailSender>()
                 .AddScoped<IImportService, ImportService>()
-                .AddScoped<INoticeService, NoticeService>();
+                .AddScoped<INoticeService, NoticeService>()
+                .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
 
             #region Discord Setup
             var cshop = Secrets.GetSection("Discord:CShopRoleBindings");
@@ -459,7 +462,8 @@ namespace FiveOhFirstDataCore
             }
 
             using var scope = app.ApplicationServices.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var dbFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
+            using var db = dbFac.CreateDbContext();
             ApplyDatabaseMigrations(db);
 
             var roleManager = scope.ServiceProvider.GetRequiredService<TrooperRoleManager>();

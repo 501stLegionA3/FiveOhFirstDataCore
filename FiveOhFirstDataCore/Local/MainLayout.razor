@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
-@inject FiveOhFirstDataCore.Core.Services.IRosterService _roster
+@inject IRosterService _roster
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 <main class="page min-vh-100">
     @if (Loaded)
@@ -40,6 +42,33 @@
 
         CurrentUser = await GetTrooperFromClaimTask;
 
+        if (CurrentUser is not null)
+        {
+            _advRefresh.AddUserSpecificDataReloadListener(CurrentUser.Id, RefreshRequestValues.UserDetails, ReloadData);
+        }
+
         Loaded = true;
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task ReloadData()
+    {
+        var claims = (await AuthStateTask).User;
+        
+        GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims);
+
+        CurrentUser = await GetTrooperFromClaimTask;
+
+        if (CurrentUser is not null)
+            _advRefresh.CallRefreshRequest(RefreshRequestValues.UserDetails, CurrentUser.Id);
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(ReloadData);
     }
 }

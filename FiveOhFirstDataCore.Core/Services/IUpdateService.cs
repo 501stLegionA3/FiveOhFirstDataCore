@@ -11,10 +11,10 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IUpdateService
     {
-        public Task<IEnumerable<UpdateBase>> GetRosterUpdatesAsync();
-        public Task<IEnumerable<RecruitmentUpdate>> GetRecruitmentChangesAsync();
-        public Task<IEnumerable<SlotUpdate>> GetReturningMemberChangesAsync();
-        public Task<IEnumerable<UpdateBase>> GetAllUpdatesAsync();
+        public Task<List<UpdateBase>> GetRosterUpdatesAsync();
+        public Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync();
+        public Task<List<SlotUpdate>> GetReturningMemberChangesAsync();
+        public Task<List<UpdateBase>> GetAllUpdatesAsync();
 
         /// <summary>
         /// Reverts a change.

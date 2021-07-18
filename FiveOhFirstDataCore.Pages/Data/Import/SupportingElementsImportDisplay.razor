@@ -13,7 +13,6 @@ but the file gets populated with intellisense errors.*@
 
 @inject IImportService _import
 @inject IAuthorizationService _auth
-@inject IRefreshRequestService _refresh
 @inject IWebHostEnvironment _env
 
 <EditForm Context="importSupportingElementsDataContext" Model="Import">
@@ -142,7 +141,7 @@ but the file gets populated with intellisense errors.*@
         }
 
         Running = false;
-        _refresh.CallRequestRefresh();
+        StateHasChanged();
     }
 
     private void ClearErrors(EventArgs e)

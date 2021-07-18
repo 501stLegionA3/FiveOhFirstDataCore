@@ -19,15 +19,15 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
         private readonly IDiscordService _discord;
         private readonly ILogger _logger;
 
-        public RosterService(ApplicationDbContext dbContext, UserManager<Trooper> userManager,
-            IDiscordService discord, ILogger<RosterService> logger)
+        public RosterService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
+            IDiscordService discord, ILogger<RosterService> logger, IServiceProvider provider)
         {
-            this._dbContext = dbContext;
+            this._dbContextFactory = dbContextFactory;
             this._userManager = userManager;
             this._discord = discord;
             this._logger = logger;
@@ -35,6 +35,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -47,6 +48,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetArchivedTroopersAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -57,13 +59,19 @@ namespace FiveOhFirstDataCore.Core.Services
             return troopers;
         }
 
-        public async Task<List<Trooper>> GetAllTroopersAsync()
+        public async Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false)
         {
-            return await _dbContext.Users.AsNoTracking().ToListAsync();
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            if (includeAdmin)
+                return await _dbContext.Users.AsNoTracking().ToListAsync();
+            else
+                return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Id != -1).ToListAsync();
         }
 
         public async Task<List<Trooper>> GetFullRosterAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -76,6 +84,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetInactiveReservesAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -88,6 +97,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             HashSet<int> ids = new();
             HashSet<string> nicknames = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
@@ -103,6 +113,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<OrbatData> GetOrbatDataAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             OrbatData data = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -115,6 +126,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetPlacedRosterAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -127,6 +139,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<Trooper?> GetTrooperFromIdAsync(int id)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var trooper = await _dbContext.FindAsync<Trooper>(id);
             return trooper;
         }
@@ -139,6 +152,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetUnregisteredTroopersAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> troopers = new();
             await _dbContext.Users.AsNoTracking()
                 .Include(x => x.RecruitStatus)
@@ -153,6 +167,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ZetaOrbatData> GetZetaOrbatDataAsync()
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             ZetaOrbatData data = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
@@ -256,6 +271,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task LoadPublicProfileDataAsync(Trooper trooper)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             await _dbContext.DisciplinaryActions.Include(e => e.FiledBy)
                 .Where(e => e.FiledAgainstId == trooper.Id)
                 .LoadAsync();
@@ -277,6 +293,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<List<Trooper>> GetDirectSubordinates(Trooper t)
         {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             List<Trooper> sub = new();
 
             if (t is null) return sub;
