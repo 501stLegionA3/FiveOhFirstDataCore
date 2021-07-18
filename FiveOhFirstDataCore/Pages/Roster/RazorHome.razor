@@ -60,6 +60,9 @@ else
         WardenPromotionBoard
     }
 
+    [Parameter]
+    public string SquadDesignation { get; set; } = "";
+
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
