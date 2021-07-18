@@ -38,6 +38,8 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<RazorSquadronData> GetRazorDataAsync();
         public Task<WardenData> GetWardenDataAsync();
         public Task<MynockDetachmentData> GetMynockDataAsync();
+        public Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager);
+        public Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
         #endregion
 
         #region Roster Registration

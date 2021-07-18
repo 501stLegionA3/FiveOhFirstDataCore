@@ -119,6 +119,9 @@
     [Parameter]
     public PromotionBoardLevel BoardLevel { get; set; } = PromotionBoardLevel.Squad;
 
+    [Parameter]
+    public bool Mynock { get; set; } = false;
+
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
@@ -153,7 +156,8 @@
             }
             else
             {
-                if(promo.NeededBoard == BoardLevel)
+                if(promo.NeededBoard == BoardLevel
+                    || (promo.NeededBoard >= BoardLevel && promo.NeededBoard < PromotionBoardLevel.Razor))
                 {
                     SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is complete.";
                 }
@@ -163,14 +167,36 @@
                 }
             }
 
-            if(BoardLevel >= PromotionBoardLevel.Compnay)
+            if (BoardLevel >= PromotionBoardLevel.Compnay
+                && BoardLevel < PromotionBoardLevel.Razor)
+            {
                 _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-            if(BoardLevel >= PromotionBoardLevel.Platoon)
+            }
+            if (BoardLevel >= PromotionBoardLevel.Platoon
+                && BoardLevel < PromotionBoardLevel.Razor)
+            {
                 _advRefresh.CallDataReloadRequest("Promotion_Company");
-            if(BoardLevel >= PromotionBoardLevel.Squad)
+                if(Mynock)
+                {
+                    _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
+                }
+            }
+            if(BoardLevel >= PromotionBoardLevel.Squad 
+                && BoardLevel < PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Platoon");
 
-            _advRefresh.CallDataReloadRequest("Promotion_Squad");
+            if (BoardLevel == PromotionBoardLevel.Razor)
+                _advRefresh.CallDataReloadRequest("Promotion_Razor");
+            else if (BoardLevel == PromotionBoardLevel.Warden)
+                _advRefresh.CallDataReloadRequest("Promotion_Warden");
+            else
+            {
+                _advRefresh.CallDataReloadRequest("Promotion_Squad");
+                if(Mynock)
+                {
+                    _advRefresh.CallDataReloadRequest("Promotion_Mynock_Section");
+                }
+            }
 
             StateHasChanged();
         }
@@ -191,14 +217,34 @@
                 SuccessMessage = $"Denied the promotion for {promo.PromotionFor?.NickName}.";
             }
 
-            if(BoardLevel >= PromotionBoardLevel.Battalion)
+            if (BoardLevel >= PromotionBoardLevel.Battalion
+                && BoardLevel < PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-            if(BoardLevel >= PromotionBoardLevel.Compnay)
+            if(BoardLevel >= PromotionBoardLevel.Compnay 
+                && BoardLevel < PromotionBoardLevel.Razor)
+            {
                 _advRefresh.CallDataReloadRequest("Promotion_Company");
-            if(BoardLevel >= PromotionBoardLevel.Platoon)
+                if(Mynock)
+                {
+                    _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
+                }
+            }
+            if(BoardLevel >= PromotionBoardLevel.Platoon 
+                && BoardLevel < PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Platoon");
-            if(BoardLevel >= PromotionBoardLevel.Squad)
+            if(BoardLevel >= PromotionBoardLevel.Squad 
+                && BoardLevel < PromotionBoardLevel.Razor)
+            {
                 _advRefresh.CallDataReloadRequest("Promotion_Squad");
+                if(Mynock)
+                {
+                    _advRefresh.CallDataReloadRequest("Promotion_Mynock_Section");
+                }
+            }
+            if (BoardLevel == PromotionBoardLevel.Razor)
+                _advRefresh.CallDataReloadRequest("Promotion_Razor");
+            else if (BoardLevel == PromotionBoardLevel.Warden)
+                _advRefresh.CallDataReloadRequest("Promotion_Warden");
 
             StateHasChanged();
         }

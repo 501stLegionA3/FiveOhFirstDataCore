@@ -518,5 +518,32 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return mynock;
         }
+
+        public async Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsSquad())
+                return null;
+
+            var data = new MynockSectionData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => x.Slot == slot && x.Slot >= Slot.Mynock && x.Slot < Slot.Razor)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetMynockDataFromSlotAsync(user.Slot, manager);
+        }
     }
 }

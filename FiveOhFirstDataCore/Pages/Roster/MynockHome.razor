@@ -1,0 +1,133 @@
+﻿@page "/mynock/{SectionDesignation}"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.SectionPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.SectionPromotionBoard)">Section Promotion Board</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.CommandPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.CommandPromotionBoard)">Command Promotion Board</button>
+    </li>
+</ul>
+@if(Loaded)
+{
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case MynockDisplayOption.Roster:
+                
+                break;
+            case MynockDisplayOption.SectionPromotionBoard:
+                @if(CommandData is not null)
+                {
+                    <MynockSectionPromotionBoard Mynock="SectionData" />
+                }
+                else
+                {
+                    <em>No Mynock section data was found. Make sure the route has a valid section in it or you are in a Mynock section.</em>
+                }
+                break;
+            case MynockDisplayOption.CommandPromotionBoard:
+                    
+                @if(CommandData is not null)
+                {
+                    <MynockCommandPromotionBoard Mynock="CommandData" />
+                }
+                else
+                {
+                    <em>No Mynock data was found.</em>
+                }
+                break;
+        }
+    </div>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public enum MynockDisplayOption
+    {
+        Roster,
+        CommandPromotionBoard,
+        SectionPromotionBoard
+    }
+
+    [Parameter]
+    public string SectionDesignation { get; set; } = "me";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private MynockDisplayOption Active { get; set; } = MynockDisplayOption.Roster;
+    private MynockDetachmentData? CommandData { get; set; }
+    private MynockSectionData? SectionData { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            CommandData = await _roster.GetMynockDataAsync();
+
+            if(int.TryParse(SectionDesignation, out int id))
+                SectionData = await _roster.GetMynockDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            else if (SectionDesignation == "me")
+                SectionData = await _roster.GetMynockDataFromClaimPrincipalAsync(user);
+
+            Loaded = true;
+
+            StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Mynock_Command", CommandDataReloadRequested);
+            _advRefresh.AddDataReloadListener("Promotion_Mynock_Section", SectionDataReloadRequested);
+        }
+    }
+
+    private void OnTypeChange(MynockDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task CommandDataReloadRequested()
+    {
+        CommandData = await _roster.GetMynockDataAsync();
+
+        await CallRefreshRequest();
+    }
+
+    public async Task SectionDataReloadRequested()
+    {
+        var user = (await AuthStateTask).User;
+
+        if(int.TryParse(SectionDesignation, out int id))
+            SectionData = await _roster.GetMynockDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        else if (SectionDesignation == "me")
+            SectionData = await _roster.GetMynockDataFromClaimPrincipalAsync(user);
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(CommandDataReloadRequested);
+        _advRefresh.RemoveDataReloadListener(SectionDataReloadRequested);
+    }
+}

@@ -255,6 +255,9 @@
     [Parameter]
     public PromotionBoardLevel SendPromotionsTo { get; set; }
 
+    [Parameter]
+    public bool Mynock { get; set; } = false;
+
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
@@ -343,14 +346,34 @@
             {
                 SuccessMessage = "Promotion filed successfully!";
 
-                if(SendPromotionsTo >= PromotionBoardLevel.Battalion)
+                if(SendPromotionsTo >= PromotionBoardLevel.Battalion 
+                    && SendPromotionsTo < PromotionBoardLevel.Razor)
                     _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-                if(SendPromotionsTo >= PromotionBoardLevel.Compnay)
+                if(SendPromotionsTo >= PromotionBoardLevel.Compnay 
+                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                {
                     _advRefresh.CallDataReloadRequest("Promotion_Company");
-                if(SendPromotionsTo >= PromotionBoardLevel.Platoon)
+                    if(Mynock)
+                    {
+                        _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
+                    }
+                }
+                if(SendPromotionsTo >= PromotionBoardLevel.Platoon 
+                    && SendPromotionsTo < PromotionBoardLevel.Razor)
                     _advRefresh.CallDataReloadRequest("Promotion_Platoon");
-                if(SendPromotionsTo >= PromotionBoardLevel.Squad)
+                if(SendPromotionsTo >= PromotionBoardLevel.Squad 
+                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                {
                     _advRefresh.CallDataReloadRequest("Promotion_Squad");
+                    if(Mynock)
+                    {
+                        _advRefresh.CallDataReloadRequest("Promotion_Mynock_Section");
+                    }
+                }
+                if (SendPromotionsTo == PromotionBoardLevel.Razor)
+                    _advRefresh.CallDataReloadRequest("Promotion_Razor");
+                else if (SendPromotionsTo == PromotionBoardLevel.Warden)
+                    _advRefresh.CallDataReloadRequest("Promotion_Warden");
             }
             StateHasChanged();
         }

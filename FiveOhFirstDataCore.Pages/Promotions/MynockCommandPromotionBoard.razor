@@ -1,19 +1,19 @@
 ﻿@inject IAuthorizationService _auth
 
-<h3>Razor Promotion Board</h3>
+<h3>Mynock Command Promotion Board</h3>
 
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Compnay" ActiveTroopers="Troopers" Mynock="true" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Mynock="true" />
 }
 </CascadingValue>
 
 @code {
     [Parameter]
-    public RazorSquadronData Razor { get; set; }
+    public MynockDetachmentData Mynock { get; set; }
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -29,18 +29,21 @@
     {
         Troopers = new()
         {
-            Razor.SubCommander,
+            Mynock.Medic,
+            Mynock.NCOIC,
+            Mynock.RT,
         };
 
-        foreach(var flight in Razor.Flights)
+        foreach(var section in Mynock.Sections)
         {
-            Troopers.Add(flight.Commander);
-            foreach(var section in flight.Sections)
+            Troopers.Add(section.Lead);
+            Troopers.Add(section.RT);
+
+            foreach(var team in section.Teams)
             {
-                Troopers.Add(section.Alpha);
-                Troopers.Add(section.Bravo);
-                Troopers.Add(section.Charlie);
-                Troopers.Add(section.Delta);
+                Troopers.Add(team.Lead);
+                Troopers.Add(team.Medic);
+                Troopers.AddRange(team.Troopers);
             }
         }
     }
@@ -54,8 +57,8 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager 
-            || (Razor?.Commander?.Id ?? 0) == CurrentUser.Id
-            || (Razor?.SubCommander?.Id ?? 0) == CurrentUser.Id;
+            || (Mynock?.Commander?.Id ?? 0) == CurrentUser.Id
+            || (Mynock?.NCOIC?.Id ?? 0) == CurrentUser.Id;
         
         BuildTrooperList();
     }

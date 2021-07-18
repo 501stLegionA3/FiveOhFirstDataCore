@@ -1,19 +1,19 @@
 ﻿@inject IAuthorizationService _auth
 
-<h3>Warden Promotion Board</h3>
+<h3>Mynock Section Promotion Board</h3>
 
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Warden" ActiveTroopers="Troopers" />
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" Mynock="true" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Warden" ActiveTroopers="Troopers" />
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Compnay" ActiveTroopers="Troopers" Mynock="true" />
 }
 </CascadingValue>
 
 @code {
     [Parameter]
-    public WardenData Warden { get; set; }
+    public MynockSectionData Mynock { get; set; }
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -29,12 +29,15 @@
     {
         Troopers = new()
         {
-            Warden.Chief,
+            Mynock.Lead,
+            Mynock.RT
         };
 
-        foreach(var warden in Warden.Wardens)
+        foreach(var team in Mynock.Teams)
         {
-            Troopers.Add(warden);
+            Troopers.Add(team.Lead);
+            Troopers.Add(team.Medic);
+            Troopers.AddRange(team.Troopers);
         }
     }
 
@@ -46,10 +49,9 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager 
-            || (Warden?.Master?.Id ?? 0) == CurrentUser.Id
-            || (Warden?.Chief?.Id ?? 0) == CurrentUser.Id;
-        
+        CanPromote = manager
+            || (Mynock?.Lead?.Id ?? 0) == CurrentUser.Id;
+
         BuildTrooperList();
     }
 }

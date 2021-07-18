@@ -249,55 +249,55 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 RequiredRank = new() { (int)PilotRank.Cadet },
                 RequiredTimeInGrade = 60,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.Ensign] = new()
             {
                 RequiredRank = new() { (int)PilotRank.SeniorCadet },
                 RequiredTimeInGrade = 80,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.SeniorEnsign] = new()
             {
                 RequiredRank = new() { (int)PilotRank.Ensign },
                 RequiredTimeInGrade = 100,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.Master] = new()
             {
                 RequiredRank = new() { (int)PilotRank.SeniorEnsign },
                 RequiredTimeInGrade = 250,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.FlightOfficer] = new()
             {
                 RequiredRank = new() { (int)PilotRank.SeniorEnsign },
                 RequiredTimeInGrade = 140,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.JuniorLieutenant] = new()
             {
                 RequiredRank = new() { (int)PilotRank.FlightOfficer },
                 RequiredTimeInGrade = 170,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.SecondLieutenant] = new()
             {
                 RequiredRank = new() { (int)PilotRank.JuniorLieutenant },
                 RequiredTimeInGrade = 200,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.FirstLieutenant] = new()
             {
                 RequiredRank = new() { (int)PilotRank.SecondLieutenant },
                 RequiredTimeInGrade = 243,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
             [(int)PilotRank.Captain] = new()
             {
                 RequiredRank = new() { (int)PilotRank.FirstLieutenant },
                 RequiredTimeInGrade = 243,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Razor
             },
 
             // Save with warden ranks as the pilot ranks.
@@ -306,25 +306,25 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 RequiredRank = new() { (int)WardenRank.Warden },
                 RequiredTimeInGrade = 90,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Warden
             },
             [(int)WardenRank.Veteran] = new()
             {
                 RequiredRank = new() { (int)WardenRank.Senior },
                 RequiredTimeInGrade = 120,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Warden
             },
             [(int)WardenRank.Chief] = new()
             {
                 RequiredBillet = new() { Role.ChiefWarden },
                 RequiredTimeInBillet = 60,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Warden
             },
             [(int)WardenRank.Master] = new()
             {
                 RequiredBillet = new() { Role.MasterWarden },
                 RequiredTimeInBillet = 60,
-                NeededLevel = PromotionBoardLevel.Battalion
+                NeededLevel = PromotionBoardLevel.Warden
             },
         };
         #endregion
