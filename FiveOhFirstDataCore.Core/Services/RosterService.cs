@@ -457,7 +457,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<List<Trooper>> GetTroopersWithPendingPromotions()
+        public async Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -469,6 +469,54 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync();
 
             return pending;
+        }
+
+        public async Task<RazorSquadronData> GetRazorDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var razor = new RazorSquadronData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Razor && p.Slot < Slot.Warden)
+                .ForEachAsync(x => razor.Assign(x));
+
+            return razor;
+        }
+
+        public async Task<WardenData> GetWardenDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var warden = new WardenData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Warden && p.Slot < Slot.ZetaCompany)
+                .ForEachAsync(x => warden.Assign(x));
+
+            return warden;
+        }
+
+        public async Task<MynockDetachmentData> GetMynockDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var mynock = new MynockDetachmentData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Mynock && p.Slot < Slot.Razor)
+                .ForEachAsync(x => mynock.Assign(x));
+
+            return mynock;
         }
     }
 }

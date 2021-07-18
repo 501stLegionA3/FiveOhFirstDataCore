@@ -16,6 +16,11 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         [Description("Company")]
         Compnay = 2,
         [Description("Battalion")]
-        Battalion = 3
+        Battalion = 3,
+        [Description("Razor")]
+        Razor = 4,
+
+        [Description("Warden")]
+        Warden = 5,
     }
 }

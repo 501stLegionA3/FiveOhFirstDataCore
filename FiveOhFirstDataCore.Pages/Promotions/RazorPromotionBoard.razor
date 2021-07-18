@@ -1,0 +1,60 @@
+﻿@inject IAuthorizationService _auth
+
+<h3>Razor Promotion Board</h3>
+
+<CascadingValue Value="CanPromote">
+@if(Troopers is not null)
+{
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+}
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RazorSquadronData Razor { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+
+    private void BuildTrooperList()
+    {
+        Troopers = new()
+        {
+            Razor.SubCommander,
+        };
+
+        foreach(var flight in Razor.Flights)
+        {
+            Troopers.Add(flight.Commander);
+            foreach(var section in flight.Sections)
+            {
+                Troopers.Add(section.Alpha);
+                Troopers.Add(section.Bravo);
+                Troopers.Add(section.Charlie);
+                Troopers.Add(section.Delta);
+            }
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        CanPromote = manager || (Razor?.Commander?.Id ?? 0) == CurrentUser.Id;
+        
+        BuildTrooperList();
+    }
+}

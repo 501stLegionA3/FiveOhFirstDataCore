@@ -34,7 +34,10 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
         public Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
         public Task<HailstormData> GetHailstormDataAsync();
-        public Task<List<Trooper>> GetTroopersWithPendingPromotions();
+        public Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync();
+        public Task<RazorSquadronData> GetRazorDataAsync();
+        public Task<WardenData> GetWardenDataAsync();
+        public Task<MynockDetachmentData> GetMynockDataAsync();
         #endregion
 
         #region Roster Registration

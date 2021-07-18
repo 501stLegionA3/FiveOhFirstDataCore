@@ -1,23 +1,22 @@
 ﻿@inject IAuthorizationService _auth
-@inject IRosterService _roster
 
-<h3>Hailstorm Battalion Promotion Board</h3>
+<h3>Warden Promotion Board</h3>
 
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Warden" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Warden" ActiveTroopers="Troopers" />
 }
 </CascadingValue>
 
 @code {
+    [Parameter]
+    public WardenData Warden { get; set; }
+
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
-
-    [Parameter]
-    public HailstormData Battalion { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -25,6 +24,14 @@
     public List<Trooper>? Troopers { get; set; } = null;
 
     private bool CanPromote { get; set; } = false;
+
+    private void BuildTrooperList()
+    {
+        Troopers = new()
+        {
+            Warden.Chief,
+        };
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -34,11 +41,8 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager
-            || (Battalion?.Commander?.Id ?? 0) == CurrentUser.Id 
-            || (Battalion?.XO?.Id ?? 0) == CurrentUser.Id
-            || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser.Id;
-
-        Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
+        CanPromote = manager || (Warden?.Commander?.Id ?? 0) == CurrentUser.Id;
+        
+        BuildTrooperList();
     }
 }

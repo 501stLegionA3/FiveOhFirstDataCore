@@ -1,0 +1,118 @@
+﻿@page "/squad/{SquadDesignation}"
+@inject IRosterService _roster
+@inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
+
+<ul class="nav nav-tabs row">
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.Roster)">Roster</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.RazorPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.RazorPromotionBoard)">Razor Promotion Board</button>
+    </li>
+    <li class="nav-item col">
+        <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.WardenPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.WardenPromotionBoard)">Warden Promotion Board</button>
+    </li>
+</ul>
+@if(Loaded)
+{
+    <div class="tab-content">
+        @switch(Active)
+        {
+            case RazorDisplayOption.Roster:
+
+                break;
+            case RazorDisplayOption.RazorPromotionBoard:
+                    
+                @if(RazorData is not null)
+                {
+                    <RazorPromotionBoard Razor="RazorData" />
+                }
+                else
+                {
+                    <em>No Razor data was found.</em>
+                }
+                break;
+            case RazorDisplayOption.WardenPromotionBoard:
+                @if(WardenData is not null)
+                {
+                    <WardenPromotionBoard Warden="WardenData" />
+                }
+                else
+                {
+                    <em>No Warden data was found.</em>
+                }
+                break;
+        }
+    </div>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public enum RazorDisplayOption
+    {
+        Roster,
+        RazorPromotionBoard,
+        WardenPromotionBoard
+    }
+
+    [Parameter]
+    public string SquadDesignation { get; set; } = "";
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    private RazorDisplayOption Active { get; set; } = RazorDisplayOption.Roster;
+    private RazorSquadronData? RazorData { get; set; }
+    private WardenData? WardenData { get; set; }
+    private bool Loaded { get; set; } = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            var user = (await AuthStateTask).User;
+
+            RazorData = await _roster.GetRazorDataAsync();
+            WardenData = await _roster.GetWardenDataAsync();
+
+            Loaded = true;
+
+            StateHasChanged();
+
+            _advRefresh.AddDataReloadListener("Promotion_Squad", DataReloadRequested);
+        }
+    }
+
+    private void OnTypeChange(RazorDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task DataReloadRequested()
+    {
+        var user = (await AuthStateTask).User;
+
+        RazorData = await _roster.GetRazorDataAsync();
+        WardenData = await _roster.GetWardenDataAsync();
+
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
+    }
+}
