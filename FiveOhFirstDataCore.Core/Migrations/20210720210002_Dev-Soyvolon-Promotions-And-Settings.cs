@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonPromotionsData : Migration
+    public partial class DevSoyvolonPromotionsAndSettings : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -70,7 +70,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     RequiresCShop = table.Column<bool>(type: "boolean", nullable: false),
                     RequiresCShopLeadership = table.Column<bool>(type: "boolean", nullable: false),
                     RequiresCShopCommand = table.Column<bool>(type: "boolean", nullable: false),
-                    NeededLevel = table.Column<int>(type: "integer", nullable: false)
+                    NeededLevel = table.Column<int>(type: "integer", nullable: false),
+                    CanPromoteTo = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    DoesNotRequireLinearProgression = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

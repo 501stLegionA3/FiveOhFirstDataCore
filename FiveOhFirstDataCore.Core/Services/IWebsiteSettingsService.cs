@@ -1,4 +1,5 @@
-﻿using FiveOhFirstDataCore.Core.Data.Promotions;
+﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace FiveOhFirstDataCore.Core.Services
     public interface IWebsiteSettingsService
     {
         public Task SetDefaultSettings();
-        public Task<PromotionRequirements?> GetPromotionRequirementsAsync(int rank);
+        public Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank);
+        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper);
     }
 }

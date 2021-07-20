@@ -32,7 +32,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<Promotion> Promotions { get; internal set; }
 
         #region Website Settings
-        public DbSet<PromotionRequirements> PromotionRequirements { get; internal set; }
+        public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -56,7 +56,7 @@ namespace FiveOhFirstDataCore.Core.Database
             #endregion
 
             #region Website Settings
-            var promoReq = builder.Entity<PromotionRequirements>();
+            var promoReq = builder.Entity<PromotionDetails>();
             promoReq.HasKey(p => p.RequirementsFor);
             #endregion
 

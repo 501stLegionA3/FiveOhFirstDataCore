@@ -22,5 +22,10 @@ namespace FiveOhFirstDataCore.Core.Extensions
         {
             return TimeZoneInfo.ConvertTimeFromUtc(utc, TimeZone);
         }
+
+        public static int DaysFromToday(this DateTime toady)
+        {
+            return DateTime.UtcNow.Subtract(toady).Days;
+        }
     }
 }

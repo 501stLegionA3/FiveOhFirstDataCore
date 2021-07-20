@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210713202838_Dev-Soyvolon-PromotionsData")]
-    partial class DevSoyvolonPromotionsData
+    [Migration("20210720210002_Dev-Soyvolon-Promotions-And-Settings")]
+    partial class DevSoyvolonPromotionsAndSettings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -394,15 +394,21 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionRequirements", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionDetails", b =>
                 {
                     b.Property<int>("RequirementsFor")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<List<int>>("CanPromoteTo")
+                        .HasColumnType("integer[]");
+
                     b.Property<int?>("DivideEqualsZero")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("DoesNotRequireLinearProgression")
+                        .HasColumnType("boolean");
 
                     b.Property<List<int>>("InherentRankAuth")
                         .HasColumnType("integer[]");

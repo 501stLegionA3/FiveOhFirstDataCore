@@ -395,15 +395,21 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionRequirements", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionDetails", b =>
                 {
                     b.Property<int>("RequirementsFor")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<List<int>>("CanPromoteTo")
+                        .HasColumnType("integer[]");
+
                     b.Property<int?>("DivideEqualsZero")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("DoesNotRequireLinearProgression")
+                        .HasColumnType("boolean");
 
                     b.Property<List<int>>("InherentRankAuth")
                         .HasColumnType("integer[]");
@@ -1306,21 +1312,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PromotionTrooper", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
-                        .WithMany()
-                        .HasForeignKey("ApprovedPendingPromotionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
