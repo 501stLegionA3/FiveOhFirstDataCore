@@ -7,7 +7,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public Trooper Master { get; set; }
         public Trooper Chief { get; set; }
-        public Trooper[] Wardens { get; set; } = new Trooper[9];
+        public WardenSection[] Wardens { get; set; } = new WardenSection[] { new(), new(), new() };
 
         public void Assign(Trooper t)
         {
@@ -20,14 +20,9 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                     Chief = t;
                     break;
                 case Role.Warden:
-                    for (int i = 0; i < Wardens.Length; i++)
-                    {
-                        if (Wardens[i] is null)
-                        {
-                            Wardens[i] = t;
-                            break;
-                        }
-                    }
+                    int i = ((int)t.Slot % 10) - 1;
+                    if (i < Wardens.Length && i >= 0)
+                        Wardens[i].Assign(t);
                     break;
             }
         }

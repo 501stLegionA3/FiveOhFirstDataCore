@@ -125,8 +125,14 @@ namespace FiveOhFirstDataCore.Core.Data
         RazorFiveOne,
         [Description("Razor 5-2")]
         RazorFiveTwo,
-        [Description("Warden")]
+        [Description("Warden HQ")]
         Warden = 560,
+        [Description("Warden 1")]
+        WardenOne,
+        [Description("Warden 2")]
+        WardenTwo,
+        [Description("Warden 3")]
+        WardenThree,
         // Reserve.
         [Description("Zeta HQ")]
         ZetaCompany = 600,

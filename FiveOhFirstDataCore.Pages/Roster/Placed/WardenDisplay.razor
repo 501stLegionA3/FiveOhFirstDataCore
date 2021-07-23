@@ -25,12 +25,29 @@
 
 @for(int i = 0; i < Warden.Wardens.Length; i++)
 {
-    <tr>
+        var c = i + 1;
+        <tr>
         <th scope="row" colspan="2" class="text-end">
-            Warden
+            Section Lead (@c-1)
         </th>
         <td scope="row" colspan="2">
-            @(Warden.Wardens[i]?.WarrantRank is null ? Warden.Wardens[i]?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i]?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i]?.NickName ?? "TBD")
+            @(Warden.Wardens[i].SectionLead?.WarrantRank is null ? Warden.Wardens[i].SectionLead?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i].SectionLead?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i].SectionLead?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Warden @c-2
+        </th>
+        <td scope="row" colspan="2">
+            @(Warden.Wardens[i].WardenTwo?.WarrantRank is null ? Warden.Wardens[i].WardenTwo?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i].WardenTwo?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i].WardenTwo?.NickName ?? "TBD")
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" colspan="2" class="text-end">
+            Warden @c-3
+        </th>
+        <td scope="row" colspan="2">
+            @(Warden.Wardens[i].WardenThree?.WarrantRank is null ? Warden.Wardens[i].WardenThree?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i].WardenThree?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i].WardenThree?.NickName ?? "TBD")
         </td>
     </tr>
 }
