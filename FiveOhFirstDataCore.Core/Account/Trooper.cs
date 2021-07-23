@@ -12,34 +12,43 @@ namespace FiveOhFirstDataCore.Core.Account
     public class Trooper : IdentityUser<int>
     {
         public string NickName { get; set; } = "";
-
+        #region Ranks
         public TrooperRank? Rank { get; set; }
         public RTORank? RTORank { get; set; }
         public MedicRank? MedicRank { get; set; }
         public PilotRank? PilotRank { get; set; }
         public WarrantRank? WarrantRank { get; set; }
         public WardenRank? WardenRank { get; set; }
-
+        #endregion
+        #region Slots
         public Slot Slot { get; set; }
         public Role Role { get; set; }
         public Team? Team { get; set; }
         public Flight? Flight { get; set; }
-
+        #endregion
+        #region C-Shops
         public CShop CShops { get; set; }
+        #endregion
+        #region Quals
         public Qualification Qualifications { get; set; }
+        #endregion
 
+        #region Time Management
         public DateTime LastPromotion { get; set; }
         public DateTime StartOfService { get; set; }
         public DateTime LastBilletChange { get; set; }
         public DateTime GraduatedBCTOn { get; set; }
         public DateTime GraduatedUTCOn { get; set; }
-
+        #endregion
+        #region Notes
         public string? InitialTraining { get; set; }
         public string? UTC { get; set; }
 
         public string Notes { get; set; } = "";
-
+        #endregion
+        #region MP
         public bool MilitaryPolice { get; set; } = false;
+        #endregion
 
         public string? DiscordId { get; set; }
         public string? SteamLink { get; set; }
@@ -96,6 +105,11 @@ namespace FiveOhFirstDataCore.Core.Account
         #endregion
 
         public List<Notice> NoticesWritten { get; set; } = new();
+
+        public DateTime LastUpdate { get; set; }
+
+        public Trooper ShallowCopy()
+            => (Trooper)MemberwiseClone();
 
         public string GetRankDesignation()
         {

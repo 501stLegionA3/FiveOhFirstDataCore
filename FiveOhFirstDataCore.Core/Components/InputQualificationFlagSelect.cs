@@ -21,6 +21,20 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddMultipleAttributes(3, AdditionalAttributes);
             builder.AddAttribute(4, "aria-label", "Qualifications button toggle group");
 
+            var disabled = false;
+            if (AdditionalAttributes is not null 
+                && AdditionalAttributes.TryGetValue("disabled", out var value))
+            {
+                try
+                {
+                    disabled = Convert.ToBoolean(value);
+                }
+                catch
+                {
+                    disabled = false;
+                }
+            }
+
             var quals = (Qualification[])Enum.GetValues(typeof(Qualification));
 
             for(int x = 1; x < quals.Length; x += 3)
@@ -43,7 +57,8 @@ namespace FiveOhFirstDataCore.Core.Components
                     builder.OpenElement(9, "button");
                     builder.AddAttribute(10, "class", $"w-100 p-1 {((CurrentValue & quals[i]) == quals[i] ? "btn-success text-light" : "btn-outline-danger text-dark")} btn");
                     builder.AddAttribute(11, "onclick", GetEventCallback(quals[i]));
-                    builder.AddContent(12, quals[i].AsFull());
+                    builder.AddAttribute(12, "disabled", disabled);
+                    builder.AddContent(13, quals[i].AsFull());
 
                     builder.CloseElement();
                     builder.CloseElement();

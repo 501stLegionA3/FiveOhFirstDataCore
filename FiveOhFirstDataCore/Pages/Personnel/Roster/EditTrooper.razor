@@ -42,35 +42,35 @@
             @if (IsEditing)
             {
                 @if(Trooper.Id != 0 && Trooper.AccessCode is not null)
-            {
+                {
                 <hr />
                 <div class="row">
                     <div class="col p-1 w-100 text-center">
                         <span class="p-4 alert-secondary"><strong>This user has not registered their account.</strong> Give them the following code so they can register: @Trooper.AccessCode</span>
                     </div>
                 </div>
-            }
+                }
             <hr />
             <div class="form-group">
                 <h4>Slot Details</h4>
                 <div class="row">
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="trooperSlot">Slot</label>
-                        <InputEnumSelect @bind-Value="Trooper.Slot" id="trooperSlot" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.Slot" id="trooperSlot" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="trooperRole">Role</label>
-                        <InputEnumSelect @bind-Value="Trooper.Role" id="trooperRole" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.Role" id="trooperRole" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="trooperTeam">Team</label>
-                        <InputEnumSelect @bind-Value="Trooper.Team" id="trooperTeam" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.Team" id="trooperTeam" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="trooperFlight">Flight</label>
-                        <InputEnumSelect @bind-Value="Trooper.Flight" id="trooperFlight" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.Flight" id="trooperFlight" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -80,29 +80,29 @@
                 <div class="row">
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperRank">Trooper Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.Rank" id="trooperRank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.Rank" id="trooperRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperRTORank">RTO Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.RTORank" id="trooperRTORank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.RTORank" id="trooperRTORank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperMedicRank">Medic Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.MedicRank" id="trooperMedicRank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.MedicRank" id="trooperMedicRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperPilotRank">Pilot Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.PilotRank" id="trooperPilotRank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.PilotRank" id="trooperPilotRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperWardenRank">Warden Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.WardenRank" id="trooperWardenRank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.WardenRank" id="trooperWardenRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-4 col-md-12 p-2">
                         <label for="trooperWarrantRank">Warrant Rank</label>
-                        <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" />
+                        <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -112,11 +112,11 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-12 p-4">
                         <label for="trooperQualifications">Qualifications</label>
-                        <InputQualificationFlagSelect @bind-Value="Trooper.Qualifications" id="trooperQualifications" />
+                        <InputQualificationFlagSelect @bind-Value="Trooper.Qualifications" id="trooperQualifications" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-6 col-md-12 p-4">
                         <label for="trooperUpperCShops">Upper Level CShops</label>
-                        <InputCShopFlagSelect @bind-Value="Trooper.CShops" id="trooperUpperCShops" />
+                        <InputCShopFlagSelect @bind-Value="Trooper.CShops" id="trooperUpperCShops" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -136,7 +136,7 @@
                                     CShop localShop = shop;
                             <div class="row p-2">
                                 <div class="col-lg-5 col-md-12 p-2">
-                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Key" >
+                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Key" disabled="@(Conflicts is not null)" >
                                     @foreach(var item in CShopExtensions.ClaimsTree[localShop].Keys)
                                     {
                                         <option value="@item">@item</option>
@@ -146,7 +146,7 @@
                                 <div class="col-lg-5 col-md-12 p-2">
                                     @if (!string.IsNullOrWhiteSpace(CShopClaims[localShop][local].Key))
                                     {
-                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Value" >
+                                    <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Value" disabled="@(Conflicts is not null)" >
                                         @foreach (var item in CShopExtensions.ClaimsTree[localShop][CShopClaims[localShop][local].Key])
                                         {
                                         <option value="@item">@item</option>
@@ -155,14 +155,14 @@
                                     }
                                 </div>
                                 <div class="col-lg-2 col-md-12 p-2">
-                                    <button class="btn btn-danger" @onclick="async (x) => await RemoveClaimGroup(localShop, local)">Remove</button>
+                                    <button class="btn btn-danger" @onclick="async (x) => await RemoveClaimGroup(localShop, local)" disabled="@(Conflicts is not null)">Remove</button>
                                 </div>
                             </div>
                             }
                         }
                             <div class="row">
                                 <div class="col d-grid gap-2">
-                                    <button class="btn btn-primary" @onclick="async (x) => await AddNewClaimGroup(shop)">Add New</button>
+                                    <button class="btn btn-primary" @onclick="async (x) => await AddNewClaimGroup(shop)" disabled="@(Conflicts is not null)">Add New</button>
                                 </div>
                             </div>
                         </div>
@@ -175,27 +175,27 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="startOfService">Start of Service</label><br />
-                        <InputDate @bind-Value="Trooper.StartOfService" class="from-control" id="startOfService" />
+                        <InputDate @bind-Value="Trooper.StartOfService" class="from-control" id="startOfService" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="startOfService">Last Promotion</label><br />
-                        <InputDate @bind-Value="Trooper.LastPromotion" class="from-control" id="startOfService" />
+                        <InputDate @bind-Value="Trooper.LastPromotion" class="from-control" id="startOfService" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="startOfService">Last Billet Change</label><br />
-                        <InputDate @bind-Value="Trooper.LastBilletChange" class="from-control" id="startOfService" />
+                        <InputDate @bind-Value="Trooper.LastBilletChange" class="from-control" id="startOfService" disabled="@(Conflicts is not null)" />
                     </div>
                     <div class="col-lg-6 col-md-12 p-2">
                         <label for="startOfService">BCT Graduation Date</label><br />
-                        <InputDate @bind-Value="Trooper.GraduatedBCTOn" class="from-control" id="startOfService" />
+                        <InputDate @bind-Value="Trooper.GraduatedBCTOn" class="from-control" id="startOfService" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
                 <div class="row">
                     <div class="col p-2">
                         <label for="startOfService">UTC Graduation Date</label><br />
-                        <InputDate @bind-Value="Trooper.GraduatedUTCOn" class="from-control" id="startOfService" />
+                        <InputDate @bind-Value="Trooper.GraduatedUTCOn" class="from-control" id="startOfService" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -204,7 +204,7 @@
                 <h4>Militray Police Management</h4>
                 <div class="row">
                     <div class="col align-content-center text-center">
-                        <InputCheckbox @bind-Value="Trooper.MilitaryPolice" id="mpSelection" class="form-check-input p-2" />
+                        <InputCheckbox @bind-Value="Trooper.MilitaryPolice" id="mpSelection" class="form-check-input p-2" disabled="@(Conflicts is not null)" />
                         <label for="mpSelection" class="form-check-label">Active Military Police</label>
                     </div>
                 </div>
@@ -215,17 +215,17 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-12">
                         <label for="trooperInitial">Initial Training</label>
-                        <InputText @bind-Value="Trooper.InitialTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0"/>
+                        <InputText @bind-Value="Trooper.InitialTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0" disabled="@(Conflicts is not null)"/>
                     </div>
                     <div class="col-lg-6 col-md-12">
                         <label for="trooperUTC">UTC Class</label>
-                        <InputText @bind-Value="Trooper.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0"/>
+                        <InputText @bind-Value="Trooper.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0" disabled="@(Conflicts is not null)"/>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <label for="trooperUTC">Notes</label>
-                        <InputTextArea @bind-Value="Trooper.Notes" class="form-control w-100" id="trooperNotes" />
+                        <InputTextArea @bind-Value="Trooper.Notes" class="form-control w-100" id="trooperNotes" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -233,11 +233,624 @@
             <div class="form-group">
                 <div class="row">
                     <div class="col d-grid gap-2">
-                        <button class="btn btn-primary" @onclick="async (x) => await SaveChangesAsync()">Save Changes</button>
+                        <button class="btn btn-primary" @onclick="async (x) => await SaveChangesAsync()" disabled="@(Conflicts is not null)">Save Changes</button>
                     </div>
                 </div>
             </div>
+        }
+        
+        @if(Conflicts is not null)
+        {
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-danger">
+                        There were edit conflicts for this trooper. Please resovlve them below before saving changes.
+                    </div>
+                </div>
+            </div>
+            
+            @foreach(var group in ConflictGroups)
+            {
+                var g = group;
+                switch(g)
+                {
+                    case TrooperUpdateConflicts.EditGroups.Rank:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Rank Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditRank" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditRank = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div> 
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRank">Trooper Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.Rank" id="trooperRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRTORank">RTO Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.RTORank" id="trooperRTORank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperMedicRank">Medic Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.MedicRank" id="trooperMedicRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperPilotRank">Pilot Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.PilotRank" id="trooperPilotRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperWardenRank">Warden Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.WardenRank" id="trooperWardenRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperWarrantRank">Warrant Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Rank Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentRank" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentRank = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRank">Trooper Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.Rank" id="trooperRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRTORank">RTO Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.RTORank" id="trooperRTORank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperMedicRank">Medic Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.MedicRank" id="trooperMedicRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperPilotRank">Pilot Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.PilotRank" id="trooperPilotRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperWardenRank">Warden Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.WardenRank" id="trooperWardenRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperWarrantRank">Warrant Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <div class="row">
+                                    <!-- For Final Edits -->
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperRank">Trooper Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.Rank" id="trooperRank" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperRTORank">RTO Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.RTORank" id="trooperRTORank" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperMedicRank">Medic Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.MedicRank" id="trooperMedicRank" class="form-control p-2" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperPilotRank">Pilot Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.PilotRank" id="trooperPilotRank" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperWardenRank">Warden Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.WardenRank" id="trooperWardenRank" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="trooperWarrantRank">Warrant Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.WarrantRank" id="trooperWarrantRank" class="form-control p-2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.Slot:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Slot Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditSlot" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditSlot = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperSlot">Slot</label>
+                                            <InputEnumSelect @bind-Value="Trooper.Slot" id="trooperSlot" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRole">Role</label>
+                                            <InputEnumSelect @bind-Value="Trooper.Role" id="trooperRole" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperTeam">Team</label>
+                                            <InputEnumSelect @bind-Value="Trooper.Team" id="trooperTeam" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperFlight">Flight</label>
+                                            <InputEnumSelect @bind-Value="Trooper.Flight" id="trooperFlight" class="form-control p-2" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Slot Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentSlot" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentSlot = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperSlot">Slot</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.Slot" id="trooperSlot" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRole">Role</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.Role" id="trooperRole" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperTeam">Team</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.Team" id="trooperTeam" class="form-control p-2" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperFlight">Flight</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.Current.Flight" id="trooperFlight" class="form-control p-2" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperSlot">Slot</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.Slot" id="trooperSlot" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperRole">Role</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.Role" id="trooperRole" class="form-control p-2" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperTeam">Team</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.Team" id="trooperTeam" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperFlight">Flight</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.Flight" id="trooperFlight" class="form-control p-2" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.CShop:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>C-Shop Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditCShop" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditCShop = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 p-4">
+                                            <InputCShopFlagSelect @bind-Value="Trooper.CShops" id="trooperUpperCShops" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>C-Shop Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentCShop" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentCShop = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 p-4">
+                                            <InputCShopFlagSelect @bind-Value="Conflicts.Current.CShops" id="trooperUpperCShops" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="col-md-12 p-4">
+                                        <InputCShopFlagSelect @bind-Value="Conflicts.MergeResult.CShops" id="trooperUpperCShops" />
+                                        @if(Conflicts.MergeResult.CShops != CShop.None)
+                                        {
+                                            @foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+                                            {
+                                                @if((shop & Conflicts.MergeResult.CShops) == shop && shop != CShop.None)
+                                                {
+                                                    <div class="form-group">
+                                                    <h5>@shop.AsFull() Details</h5>
+                                                    @if(Conflicts.CShopClaims.TryGetValue(shop, out var claims))
+                                                    {
+                                                        @for(int i = 0; i < claims.Count; i++)
+                                                        {
+                                                                int local = i;
+                                                                CShop localShop = shop;
+                                                        <div class="row p-2">
+                                                            <div class="col-lg-5 col-md-12 p-2">
+                                                                <InputSelect class="form-control" @bind-Value="Conflicts.CShopClaims[localShop][local].Key" >
+                                                                @foreach(var item in CShopExtensions.ClaimsTree[localShop].Keys)
+                                                                {
+                                                                    <option value="@item">@item</option>
+                                                                }
+                                                                </InputSelect>
+                                                            </div>
+                                                            <div class="col-lg-5 col-md-12 p-2">
+                                                                @if (!string.IsNullOrWhiteSpace(Conflicts.CShopClaims[localShop][local].Key))
+                                                                {
+                                                                <InputSelect class="form-control" @bind-Value="Conflicts.CShopClaims[localShop][local].Value" >
+                                                                    @foreach (var item in CShopExtensions.ClaimsTree[localShop][Conflicts.CShopClaims[localShop][local].Key])
+                                                                    {
+                                                                    <option value="@item">@item</option>
+                                                                    }
+                                                                </InputSelect>
+                                                                }
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-12 p-2">
+                                                                <button class="btn btn-danger" @onclick="async (x) => Conflicts.RemoveClaimGroup(localShop, local)">Remove</button>
+                                                            </div>
+                                                        </div>
+                                                        }
+                                                    }
+                                                        <div class="row">
+                                                            <div class="col d-grid gap-2">
+                                                                <button class="btn btn-primary" @onclick="async (x) => Conflicts.AddNewClaimGroup(shop)">Add New</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.Qual:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                <h4>Qualifications Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditQual" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditQual = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 p-4">
+                                            <InputQualificationFlagSelect @bind-Value="Trooper.Qualifications" id="trooperQualifications" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Qualifications Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentQual" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentQual = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12 p-4">
+                                            <InputQualificationFlagSelect @bind-Value="Conflicts.Current.Qualifications" id="trooperQualifications" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="col-md-12 p-4">
+                                        <InputQualificationFlagSelect @bind-Value="Conflicts.MergeResult.Qualifications" id="trooperQualifications" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.Time:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Time Edit</h4>
+                                    <div class="row align-content-center text-center">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditTime" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditTime = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Start of Service</label><br />
+                                            <InputDate @bind-Value="Trooper.StartOfService" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Last Promotion</label><br />
+                                            <InputDate @bind-Value="Trooper.LastPromotion" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Last Billet Change</label><br />
+                                            <InputDate @bind-Value="Trooper.LastBilletChange" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">BCT Graduation Date</label><br />
+                                            <InputDate @bind-Value="Trooper.GraduatedBCTOn" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">UTC Graduation Date</label><br />
+                                            <InputDate @bind-Value="Trooper.GraduatedUTCOn" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Time Current</h4>
+                                    <div class="row align-content-center text-center">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentTime" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentTime = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Start of Service</label><br />
+                                            <InputDate @bind-Value="Conflicts.Current.StartOfService" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Last Promotion</label><br />
+                                            <InputDate @bind-Value="Conflicts.Current.LastPromotion" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">Last Billet Change</label><br />
+                                            <InputDate @bind-Value="Conflicts.Current.LastBilletChange" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">BCT Graduation Date</label><br />
+                                            <InputDate @bind-Value="Conflicts.Current.GraduatedBCTOn" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">UTC Graduation Date</label><br />
+                                            <InputDate @bind-Value="Conflicts.Current.GraduatedUTCOn" class="from-control" id="startOfService" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="row align-content-center text-center">
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="startOfService">Start of Service</label><br />
+                                            <InputDate @bind-Value="Conflicts.MergeResult.StartOfService" class="from-control" id="startOfService" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="startOfService">Last Promotion</label><br />
+                                            <InputDate @bind-Value="Conflicts.MergeResult.LastPromotion" class="from-control" id="startOfService" />
+                                        </div>
+                                        <div class="col-lg-4 col-md-12 p-2">
+                                            <label for="startOfService">Last Billet Change</label><br />
+                                            <InputDate @bind-Value="Conflicts.MergeResult.LastBilletChange" class="from-control" id="startOfService" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">BCT Graduation Date</label><br />
+                                            <InputDate @bind-Value="Conflicts.MergeResult.GraduatedBCTOn" class="from-control" id="startOfService" />
+                                        </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="startOfService">UTC Graduation Date</label><br />
+                                            <InputDate @bind-Value="Conflicts.MergeResult.GraduatedUTCOn" class="from-control" id="startOfService" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.Notes:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Notes Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditNotes" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditNotes = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <label for="trooperInitial">Initial Training</label>
+                                            <InputText @bind-Value="Trooper.InitialTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0" disabled="true"/>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <label for="trooperUTC">UTC Class</label>
+                                            <InputText @bind-Value="Trooper.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0" disabled="true"/>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="trooperUTC">Notes</label>
+                                            <InputTextArea @bind-Value="Trooper.Notes" class="form-control w-100" id="trooperNotes" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>Notes Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentNotes" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentNotes = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <label for="trooperInitial">Initial Training</label>
+                                            <InputText @bind-Value="Conflicts.Current.InitialTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0" disabled="true"/>
+                                        </div>
+                                        <div class="col-lg-6 col-md-12">
+                                            <label for="trooperUTC">UTC Class</label>
+                                            <InputText @bind-Value="Conflicts.Current.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0" disabled="true"/>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="trooperUTC">Notes</label>
+                                            <InputTextArea @bind-Value="Conflicts.Current.Notes" class="form-control w-100" id="trooperNotes" disabled="true" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Notes Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="col-lg-6 col-md-12">
+                                        <label for="trooperInitial">Initial Training</label>
+                                        <InputText @bind-Value="Conflicts.MergeResult.InitialTraining" class="form-control" id="trooperInitial" placeholder="Cycle 0 Class 0" />
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <label for="trooperUTC">UTC Class</label>
+                                        <InputText @bind-Value="Conflicts.MergeResult.UTC" class="form-control" id="trooperUTC" placeholder="Alpha 0" />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="trooperUTC">Notes</label>
+                                        <InputTextArea @bind-Value="Conflicts.MergeResult.Notes" class="form-control w-100" id="trooperNotes" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                    case TrooperUpdateConflicts.EditGroups.MP:
+                        <hr />
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>MP Edit</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.EditMP" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.EditMP = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Edit</label>
+                                            </div>
+                                        </div>
+                                        <div class="col align-content-center text-center">
+                                            <InputCheckbox @bind-Value="Trooper.MilitaryPolice" id="mpSelection" class="form-check-input p-2" disabled="true" />
+                                            <label for="mpSelection" class="form-check-label">Active Military Police</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-12 p-2">
+                                    <h4>MP Current</h4>
+                                    <div class="row">
+                                        <div class="col-md-12 p-2">
+                                            <div class="col align-content-center text-center">
+                                                <InputCheckbox @bind-Value="Conflicts.CurrentMP" id="mpSelection" class="form-check-input p-2" @oninput="(x) => { Conflicts.CurrentMP = (bool)x.Value; Conflicts.ResolveConflict(g); }" />
+                                                <label for="mpSelection" class="form-check-label">Take Current</label>
+                                            </div>
+                                        </div>
+                                        <div class="col align-content-center text-center">
+                                            <InputCheckbox @bind-Value="Conflicts.Current.MilitaryPolice" id="mpSelection" class="form-check-input p-2" disabled="true" />
+                                            <label for="mpSelection" class="form-check-label">Active Military Police</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Merge Result</h4>
+                                    <!-- For Final Edits -->
+                                    <div class="col align-content-center text-center">
+                                        <InputCheckbox @bind-Value="Conflicts.MergeResult.MilitaryPolice" id="mpSelection" class="form-check-input p-2" />
+                                        <label for="mpSelection" class="form-check-label">Active Military Police</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col d-grid gap-2">
+                                    <button class="btn btn-success" @onclick="(x) => ResolveConflict(g)">Accept Merge</button>
+                                </div>
+                            </div>
+                        </div>
+                        break;
+                }
             }
+            <hr class="p-3" />
+            <div class="form-group">
+                <div class="row">
+                    <div class="col d-grid gap-2">
+                        <button class="btn btn-primary" @onclick="async (x) => await SaveChangesAsync(true)"  disabled="@(ConflictGroups.Count > 0)">Save Changes</button>
+                        <button class="btn btn-danger" @onclick="DiscardChanges">Discard Changes</button>
+                    </div>
+                </div>
+            </div>
+        }
         </EditForm>
     </Authorized>
     <NotAuthorized>
@@ -263,6 +876,9 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
+    List<TrooperUpdateConflicts.EditGroups> ConflictGroups { get; set; } = new();
+    private TrooperUpdateConflicts? Conflicts { get; set; } = null;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -278,7 +894,7 @@
         }
         else
         {
-           if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+            if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))
@@ -357,12 +973,16 @@
     {
         if(Trooper is not null && Trooper.Id != 0)
         {
-            IsEditing = true;
-            CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+            Trooper = await _roster.GetTrooperFromIdAsync(Trooper.Id);
+            if(Trooper is not null && Trooper.Id != 0)
+            {
+                IsEditing = true;
+                CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+            }
         }
     }
 
-    protected async Task SaveChangesAsync()
+    protected async Task SaveChangesAsync(bool isMerge = false)
     {
         Errors.Clear();
 
@@ -370,6 +990,36 @@
 
         if ((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
         {
+            if (!isMerge || Conflicts is null)
+            {
+                var active = await _roster.GetTrooperFromIdAsync(Trooper.Id);
+
+                if (active is null)
+                {
+                    Errors.Add("Unable to get a valid trooper for the current edit.");
+                    return;
+                }
+
+                if (Trooper.LastUpdate < active.LastUpdate)
+                {
+                    var otherClaims = await _roster.GetCShopClaimsAsync(active);
+
+                    Conflicts = new TrooperUpdateConflicts(Trooper, active, CShopClaims, otherClaims, RemovedClaims);
+                    ConflictGroups = Conflicts.GetGroupsWithConflicts();
+                    if (ConflictGroups.Count > 0)
+                    {
+                        _refresh.CallRequestRefresh();
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                Trooper = Conflicts.MergeResult;
+                CShopClaims = Conflicts.CShopClaims;
+                RemovedClaims = Conflicts.RemovedClaims;
+            }
+
             List<ClaimUpdateData> additions = new();
             List<ClaimUpdateData> removals = RemovedClaims;
 
@@ -397,6 +1047,8 @@
             {
                 IsEditing = false;
                 Trooper = new();
+                ConflictGroups.Clear();
+                Conflicts = null;
                 _advRefresh.CallDataReloadRequest("UserData");
             }
         }
@@ -404,6 +1056,16 @@
         {
             Errors.Add("You are not authorized to complete that action.");
         }
+
+        _refresh.CallRequestRefresh();
+    }
+
+    private void DiscardChanges()
+    {
+        IsEditing = false;
+        Trooper = new();
+        ConflictGroups.Clear();
+        Conflicts = null;
 
         _refresh.CallRequestRefresh();
     }
@@ -424,4 +1086,13 @@
         _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
     }
+
+    private void ResolveConflict(TrooperUpdateConflicts.EditGroups group)
+    {
+        if(Conflicts is not null)
+        {
+            ConflictGroups.Remove(group);
+            _refresh.CallRequestRefresh();
+        }
+   }
 }

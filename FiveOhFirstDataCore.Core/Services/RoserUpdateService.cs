@@ -257,6 +257,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _discord.UpdateCShopAsync(add, remove, pid);
 
+            primary.LastUpdate = DateTime.UtcNow;
+
             try
             {
                 identResult = await _userManager.UpdateAsync(primary);
@@ -533,6 +535,8 @@ namespace FiveOhFirstDataCore.Core.Services
             };
 
             actual.NickNameUpdates.Add(update);
+
+            actual.LastUpdate = DateTime.UtcNow;
 
             try
             {
