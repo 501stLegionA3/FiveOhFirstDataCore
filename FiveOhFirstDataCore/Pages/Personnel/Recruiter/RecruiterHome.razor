@@ -48,6 +48,12 @@
                             <br />
                             <small>@c.ChangedOn.ToString("f")</small>
                         </div>
+                    }  
+
+                    if(Counter < CurrentPageCap)
+                    {
+                        KnowItemCount = true;
+                        ItemCount = Counter - 1;
                     }
 
                     <PaginationController Controller="this" />

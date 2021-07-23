@@ -42,7 +42,7 @@
                     var start = CurrentPageStart;
                     @foreach(var update in Updates)
                     {
-                        @if (Counter++ >= cap || Counter < start) continue;
+                        @if (Counter >= cap || Counter++ < start) continue;
 
                         switch (update)
                         {
@@ -196,6 +196,12 @@
                             </div>
                             break;
                         }
+                    }
+
+                    if(Counter < CurrentPageCap)
+                    {
+                        KnowItemCount = true;
+                        ItemCount = Counter - 1;
                     }
 
                     <PaginationController Controller="this" />

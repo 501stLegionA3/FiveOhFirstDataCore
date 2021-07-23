@@ -4,10 +4,10 @@
 
 @if (Updates is not null)
 {
-    Counter = 0;
-
     @if(Errors.Count > 0)
     {
+        Counter = 0;
+
     <div class="row">
         <div class="col p-3">
             <div class="alert alert-danger alert-dismissible w-100">
@@ -46,7 +46,7 @@
         var start = CurrentPageStart;
         var cap = CurrentPageCap;
 
-        if (Counter++ >= cap || Counter < start) continue;
+        if (Counter >= cap || Counter++ < start) continue;
 
         var update = u;
 
@@ -489,6 +489,12 @@
         </div>
     }
 
+    if(Counter < CurrentPageCap)
+    {
+        KnowItemCount = true;
+        ItemCount = Counter - 1;
+    }
+
     <div class="row pt-3">
         <div class="col">
             <PaginationController Controller="this" />
@@ -514,7 +520,6 @@
     {
         base.OnInitialized();
         ItemsPerPage = 15;
-        ItemCount = Updates?.Count() ?? 0;
     }
 
     private void ResetActive(EventArgs e)

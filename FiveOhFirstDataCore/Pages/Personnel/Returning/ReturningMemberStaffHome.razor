@@ -49,6 +49,12 @@
                         </div>
                     }
 
+                    if(Counter < CurrentPageCap)
+                    {
+                        KnowItemCount = true;
+                        ItemCount = Counter - 1;
+                    }
+
                     <PaginationController Controller="this" />
                 }
             </div>
