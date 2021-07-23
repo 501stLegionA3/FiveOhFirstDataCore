@@ -1,4 +1,6 @@
 ﻿@inject IRosterService _roster
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
 
 @if(Roster is not null)
 {
@@ -18,8 +20,25 @@ else
 
         if (firstRender)
         {
+            _advRefresh.AddDataReloadListener("UserData", OnDataReloadRequests);
             Roster = await _roster.GetPlacedRosterAsync();
             StateHasChanged();
         }
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task OnDataReloadRequests()
+    {
+        Roster = await _roster.GetPlacedRosterAsync();
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(OnDataReloadRequests);
     }
 }

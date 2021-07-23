@@ -44,7 +44,7 @@
 
         if (CurrentUser is not null)
         {
-            _advRefresh.AddUserSpecificDataReloadListener(CurrentUser.Id, RefreshRequestValues.UserDetails, ReloadData);
+            _advRefresh.AddUserSpecificDataReloadListener(CurrentUser.Id, "UserData", ReloadData);
         }
 
         Loaded = true;
@@ -64,7 +64,7 @@
         CurrentUser = await GetTrooperFromClaimTask;
 
         if (CurrentUser is not null)
-            _advRefresh.CallRefreshRequest(RefreshRequestValues.UserDetails, CurrentUser.Id);
+            _advRefresh.CallRefreshRequest("UserData", CurrentUser.Id);
     }
 
     public void Dispose()

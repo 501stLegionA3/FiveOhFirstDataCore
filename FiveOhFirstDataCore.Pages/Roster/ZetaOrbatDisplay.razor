@@ -1,4 +1,7 @@
 ﻿@inject IRosterService _roster
+@inject IAdvancedRefreshService _advRefresh
+@implements IRefreshBase
+
 
 @if(Data is not null)
 {
@@ -21,8 +24,25 @@ else
 
         if (firstRender)
         {
+            _advRefresh.AddDataReloadListener("UserData", OnDataReloadRequests);
             Data = await _roster.GetZetaOrbatDataAsync();
             StateHasChanged();
         }
+    }
+
+    public async Task CallRefreshRequest()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task OnDataReloadRequests()
+    {
+        Data = await _roster.GetZetaOrbatDataAsync();
+        await CallRefreshRequest();
+    }
+
+    public void Dispose()
+    {
+        _advRefresh.RemoveDataReloadListener(OnDataReloadRequests);
     }
 }

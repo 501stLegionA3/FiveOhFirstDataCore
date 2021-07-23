@@ -13,8 +13,8 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public class AdvancedRefreshService : IAdvancedRefreshService
     {
-        protected ConcurrentDictionary<RefreshRequestValues, ConcurrentDictionary<Func<Task>, int?>> ActiveRefreshListeners { get; init; }
-        protected ConcurrentDictionary<RefreshRequestValues, ConcurrentDictionary<Func<Task>, int?>> DataReloadListeners { get; set; }
+        protected ConcurrentDictionary<string, ConcurrentDictionary<Func<Task>, int?>> ActiveRefreshListeners { get; init; }
+        protected ConcurrentDictionary<string, ConcurrentDictionary<Func<Task>, int?>> DataReloadListeners { get; set; }
 
         public AdvancedRefreshService()
         {
@@ -22,14 +22,14 @@ namespace FiveOhFirstDataCore.Core.Services
             DataReloadListeners = new();
         }
 
-        public void AddRefreshListener(RefreshRequestValues key, Func<Task> refreshRequest)
+        public void AddRefreshListener(string key, Func<Task> refreshRequest)
             => AddUserSpecificRefreshListener(null, key, refreshRequest);
 
-        public void AddUserSpecificRefreshListener(int? id, RefreshRequestValues key, Func<Task> refreshRequest)
+        public void AddUserSpecificRefreshListener(int? id, string key, Func<Task> refreshRequest)
         {
             if (ActiveRefreshListeners.TryGetValue(key, out var data))
                 data[refreshRequest] = id;
-            else 
+            else
                 ActiveRefreshListeners[key] = new() { [refreshRequest] = id };
         }
 
@@ -39,14 +39,14 @@ namespace FiveOhFirstDataCore.Core.Services
                 _ = set.Value.TryRemove(refreshRequest, out _);
         }
 
-        public void CallRefreshRequest(RefreshRequestValues key)
+        public void CallRefreshRequest(string key)
             => CallRefreshRequest(key, null);
 
-        public void CallRefreshRequest(RefreshRequestValues key, int? idFilter)
+        public void CallRefreshRequest(string key, int? idFilter)
         {
-            foreach(var data in ActiveRefreshListeners)
+            foreach (var data in ActiveRefreshListeners)
             {
-                if ((data.Key & key) != 0)
+                if (data.Key == key)
                 {
                     foreach (var pair in data.Value)
                     {
@@ -66,10 +66,10 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        public void AddDataReloadListener(RefreshRequestValues key, Func<Task> refreshRequest)
+        public void AddDataReloadListener(string key, Func<Task> refreshRequest)
             => AddUserSpecificDataReloadListener(null, key, refreshRequest);
 
-        public void AddUserSpecificDataReloadListener(int? id, RefreshRequestValues key, Func<Task> refreshRequest)
+        public void AddUserSpecificDataReloadListener(int? id, string key, Func<Task> refreshRequest)
         {
             if (DataReloadListeners.TryGetValue(key, out var data))
                 data[refreshRequest] = id;
@@ -83,14 +83,14 @@ namespace FiveOhFirstDataCore.Core.Services
                 _ = set.Value.TryRemove(refreshRequest, out _);
         }
 
-        public void CallDataReloadRequest(RefreshRequestValues key)
+        public void CallDataReloadRequest(string key)
             => CallDataReloadRequest(key, null);
 
-        public void CallDataReloadRequest(RefreshRequestValues key, int? idFilter)
+        public void CallDataReloadRequest(string key, int? idFilter)
         {
             foreach (var data in DataReloadListeners)
             {
-                if ((data.Key & key) != 0)
+                if (data.Key == key)
                 {
                     foreach (var pair in data.Value)
                     {

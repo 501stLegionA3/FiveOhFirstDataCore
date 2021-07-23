@@ -5,6 +5,7 @@
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 @inject INicknameComparisonService _nicks
+@inject IAdvancedRefreshService _advRefresh
 @inject IRosterService _roster
 
 <AuthorizeView Policy="RequireRecruiter" Context="authContext">
@@ -256,6 +257,7 @@
             if(res.GetResult(out var token, out var errors))
             {
                 SuccessMessage = $"New trooper added. Their Access Code is: {token}";
+                _advRefresh.CallDataReloadRequest("UserData");
                 TrooperData = new();
             }
             else

@@ -179,7 +179,7 @@
         if(CurrentUser is not null)
         {
             _advRefresh.AddUserSpecificRefreshListener(CurrentUser.Id, 
-                RefreshRequestValues.UserDetails_NickName, CallRefreshRequest);
+                "UserData", CallRefreshRequest);
         }
 
         Version = _config["Version"];

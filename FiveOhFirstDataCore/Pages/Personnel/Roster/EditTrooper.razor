@@ -5,6 +5,7 @@
 @inject IAuthorizationService _auth
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
+@inject IAdvancedRefreshService _advRefresh
 
 <AuthorizeView Policy="RequireRosterClerkOrReturningMemberStaff">
     <Authorized>
@@ -396,6 +397,7 @@
             {
                 IsEditing = false;
                 Trooper = new();
+                _advRefresh.CallDataReloadRequest("UserData");
             }
         }
         else
