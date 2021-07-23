@@ -6,6 +6,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public Trooper Commander { get; set; }
         public Trooper SubCommander { get; set; }
+        public Trooper FOIC { get; set; }
         public RazorFlightData[] Flights { get; set; } = new RazorFlightData[] { new(), new(), new(), new(), new() };
         public WardenData Warden { get; set; } = new();
 
@@ -21,6 +22,9 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                         break;
                     case Role.SubCommander:
                         SubCommander = t;
+                        break;
+                    case Role.FOIC:
+                        FOIC = t;
                         break;
                 }
             }

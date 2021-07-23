@@ -27,6 +27,14 @@
             @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
         </td>
     </tr>
+    <tr>
+        <th scope="row" class="text-end" colspan="2">
+            Squadron FOIC
+        </th>
+        <td class="text-start" colspan="2">
+            @(Razor.FOIC?.WarrantRank is null ? Razor.FOIC?.PilotRank?.AsFull() + " " ?? "" : Razor.FOIC.WarrantRank?.AsFull() + " " ?? "")@(Razor.FOIC?.NickName ?? "TBD")
+        </td>
+    </tr>
 </tbody>
 
 @for(int i = 0; i < Razor.Flights.Length; i++)

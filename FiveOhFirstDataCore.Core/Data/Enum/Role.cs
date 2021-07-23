@@ -43,7 +43,9 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Pilot")]
         Pilot,
         [Description("Subordinate")]
-        Subordinate
+        Subordinate,
+        [Description("FOIC")]
+        FOIC
     }
 
     public static class RoleExtensions
