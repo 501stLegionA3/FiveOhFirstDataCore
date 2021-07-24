@@ -1,5 +1,5 @@
 # 501st Data Core
-A web application designed to manage roster upkeep for the 501st Legion StarSim ArmA gorup.
+A web application designed to manage roster upkeep for the 501st Legion StarSim ArmA group.
 
 [![CI](https://github.com/Soyvolon/FiveOhFirstDataCore/actions/workflows/dotnet-ci.yml/badge.svg?branch=master)](https://github.com/Soyvolon/FiveOhFirstDataCore/actions/workflows/dotnet-ci.yml)
 
