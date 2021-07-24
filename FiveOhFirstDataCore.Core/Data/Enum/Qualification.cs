@@ -37,7 +37,9 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Jumpmaster")]
         Jumpmaster = 0x0000000800, // 1 << 11
         [Description("Combat Engineer")]
-        CombatEngineer = 0x0000001000 // 1 << 12
+        CombatEngineer = 0x0000001000, // 1 << 12
+        [Description("Advanced Combat Engineer")]
+        AdvancedCombatEngineer = 0x0000002000 // 1 << 13
     }
 
     public static class QualificationsExtensions
@@ -94,6 +96,11 @@ namespace FiveOhFirstDataCore.Core.Data
                         if (claim.HasClaim(x => x.Type == "Combat Engineer") || claim.IsInRole("Admin")
                             || claim.IsInRole("Manager") || claim.HasClaim(x => x.Type == staff))
                             output |= Qualification.CombatEngineer;
+                        break;
+                    case Qualification.AdvancedCombatEngineer:
+                        if (claim.HasClaim(x => x.Type == "Advanced Combat Engineer") || claim.IsInRole("Admin")
+                            || claim.IsInRole("Manager") || claim.HasClaim(x => x.Type == staff))
+                            output |= Qualification.AdvancedCombatEngineer;
                         break;
                 }
             }
