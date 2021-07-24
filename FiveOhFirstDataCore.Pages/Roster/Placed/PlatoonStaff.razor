@@ -31,17 +31,22 @@
             @(Platoon.RT?.WarrantRank is null ? Platoon.RT?.Rank?.AsFull() + " " ?? "" : Platoon.RT?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.RT?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
-        <th scope="row" colspan="2" class="text-end">
-            Platoon ARC
-        </th>
-        <td colspan="2" class="text-start">
-            @(Platoon.ARC?.WarrantRank is null ? Platoon.ARC?.Rank?.AsFull() + " " ?? "" : Platoon.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.ARC?.NickName ?? "TBD")
-        </td>
-    </tr>
+    @if (!Airborne)
+    {
+        <tr>
+            <th scope="row" colspan="2" class="text-end">
+                Platoon ARC
+            </th>
+            <td colspan="2" class="text-start">
+                @(Platoon.ARC?.WarrantRank is null ? Platoon.ARC?.Rank?.AsFull() + " " ?? "" : Platoon.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.ARC?.NickName ?? "TBD")
+            </td>
+        </tr> 
+    }
 </tbody>
 
 @code {
     [Parameter]
     public PlatoonData Platoon { get; set; }
+    [CascadingParameter(Name = "Airborne")]
+    public bool Airborne { get; set; }
 }
