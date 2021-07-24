@@ -147,7 +147,7 @@ namespace FiveOhFirstDataCore.Core.Data
         [Description("Flight Officer")]
         FlightOfficer,
         [RankDisplay("CX-S")]
-        [Description("Junior Lieutenant")]
+        [Description("Lieutenant Junior Grade")]
         JuniorLieutenant,
         [RankDisplay("CX")]
         [Description("Second Lieutenant")]
