@@ -36,27 +36,17 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<List<Trooper>> GetActiveReservesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
-                    troopers.Add(x);
-            });
-
-            return troopers;
+            return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
+                .ToListAsync();
         }
 
         public async Task<List<Trooper>> GetArchivedTroopersAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot == Data.Slot.Archived)
-                    troopers.Add(x);
-            });
-
-            return troopers;
+            return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot == Data.Slot.Archived)
+                .ToListAsync();
         }
 
         public async Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false)
@@ -72,27 +62,16 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<List<Trooper>> GetFullRosterAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot < Data.Slot.Archived)
-                    troopers.Add(x);
-            });
-
-            return troopers;
+            return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot < Data.Slot.Archived).ToListAsync();
         }
 
         public async Task<List<Trooper>> GetInactiveReservesAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot >= Data.Slot.InactiveReserve && x.Slot < Data.Slot.Archived)
-                    troopers.Add(x);
-            });
-
-            return troopers;
+            return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot >= Data.Slot.InactiveReserve && x.Slot < Data.Slot.Archived)
+                .ToListAsync();
         }
 
         public async Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync()
@@ -115,11 +94,9 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             OrbatData data = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if(x.Slot < Data.Slot.ZetaCompany)
-                    data.Assign(x);
-            });
+            await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot < Data.Slot.ZetaCompany)
+                .ForEachAsync(x => data.Assign(x));
 
             return data;
         }
@@ -127,14 +104,9 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<List<Trooper>> GetPlacedRosterAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot < Data.Slot.ZetaCompany)
-                    troopers.Add(x);
-            });
-
-            return troopers;
+            return await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot < Data.Slot.ZetaCompany)
+                .ToListAsync();
         }
 
         public async Task<Trooper?> GetTrooperFromIdAsync(int id)
@@ -153,28 +125,20 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<List<Trooper>> GetUnregisteredTroopersAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            List<Trooper> troopers = new();
-            await _dbContext.Users.AsNoTracking()
+            return await _dbContext.Users.AsNoTracking()
                 .Include(x => x.RecruitStatus)
-                .ForEachAsync(x =>
-            {
-                if (!string.IsNullOrEmpty(x.AccessCode))
-                    troopers.Add(x);
-            });
-
-            return troopers;
+                .Where(x => !string.IsNullOrEmpty(x.AccessCode))
+                .ToListAsync();
         }
 
         public async Task<ZetaOrbatData> GetZetaOrbatDataAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             ZetaOrbatData data = new();
-            await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
-            {
-                if (x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve
+            await _dbContext.Users.AsNoTracking()
+                .Where(x => x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve
                     || x.Slot == Data.Slot.Hailstorm)
-                    data.Assign(x);
-            });
+                .ForEachAsync(x => data.Assign(x));
 
             return data;
         }
