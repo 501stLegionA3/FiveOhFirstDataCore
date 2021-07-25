@@ -218,14 +218,6 @@ namespace FiveOhFirstDataCore.Core.Services
                 remove.Add(new(x.Key, x.Value));
             });
 
-            existingClaims.ForEach(x =>
-            {
-                var couples = x.Value.Where(y => claimsToAdd.Any(z => z.Key.Equals(y.Key)));
-
-                foreach (var c in couples)
-                    remove.Add(new(c.Key, c.Value));
-            });
-
             var identResult = await _userManager.RemoveClaimsAsync(primary, remove);
             if (!identResult.Succeeded)
             {
