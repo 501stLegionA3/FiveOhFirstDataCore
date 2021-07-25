@@ -2,7 +2,7 @@
 @inject IUpdateService _update
 @inherits PaginationModel
 
-<AuthorizeView>
+<AuthorizeView Policy="RequireReturningMemberStaff">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">
@@ -14,6 +14,7 @@
                     <div class="col p-2">
                         <div class="d-grid gap-2 mx-auto">
                             <a href="/c1/roster/edit" class="btn btn-primary">Roster Edit Form</a>
+                            <a href="/c1/recruiter/addmember" class="btn btn-secondary">New Recruit Form</a>
                         </div>
                     </div>
                 </div>

@@ -8,7 +8,7 @@
 @inject IAdvancedRefreshService _advRefresh
 @inject IRosterService _roster
 
-<AuthorizeView Policy="RequireRecruiter" Context="authContext">
+<AuthorizeView Policy="RequireRecruiterOrReturningMemberStaff" Context="authContext">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">

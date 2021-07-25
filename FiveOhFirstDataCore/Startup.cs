@@ -301,6 +301,29 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
+                options.AddPolicy("RequireRecruiterOrReturningMemberStaff", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Department Lead", "C1")
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type))
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
+                    });
+                });
+
+                options.AddPolicy("RequireReturningMemberStaff", policy =>
+                {
+                    policy.RequireAssertion(ctx =>
+                    {
+                        return ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")
+                            || ctx.User.HasClaim("Department Lead", "C1")
+                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
+                    });
+                });
+
                 options.AddPolicy("RequireC3", policy =>
                 {
                     policy.RequireAssertion(ctx =>
