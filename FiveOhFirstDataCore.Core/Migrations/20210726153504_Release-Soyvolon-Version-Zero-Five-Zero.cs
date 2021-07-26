@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonUpdateChecks : Migration
+    public partial class ReleaseSoyvolonVersionZeroFiveZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

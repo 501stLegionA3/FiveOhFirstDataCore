@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210723160723_Dev-Soyvolon-UpdateChecks")]
-    partial class DevSoyvolonUpdateChecks
+    [Migration("20210726153504_Release-Soyvolon-Version-Zero-Five-Zero")]
+    partial class ReleaseSoyvolonVersionZeroFiveZero
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
