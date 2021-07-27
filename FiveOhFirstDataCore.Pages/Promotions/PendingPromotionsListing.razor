@@ -148,7 +148,7 @@
     {
         if(ConfirmApprove)
         {
-            var res = await _promote.ElevatePromotion(promo, CurrentUser);
+            var res = await _promote.ElevatePromotionAsync(promo, CurrentUser);
 
             if(!res.GetResult(out var errors))
             {
@@ -206,7 +206,7 @@
     {
         if(ConfirmDeny)
         {
-            var res = await _promote.CancelPromotion(promo, CurrentUser);
+            var res = await _promote.CancelPromotionAsync(promo, CurrentUser);
 
             if(!res.GetResult(out var errors))
             {

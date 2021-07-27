@@ -310,23 +310,5 @@ namespace FiveOhFirstDataCore.Core.Account
                 return "";
             }
         }
-
-        public IReadOnlyList<Promotion> GetEligiblePromotions()
-        {
-            List<Promotion> promotions = new();
-
-
-
-            return promotions;
-        }
-
-        public IReadOnlyList<Promotion> GetEligiblePromotions()
-        {
-            List<Promotion> promotions = new();
-
-
-
-            return promotions;
-        }
     }
 }

@@ -32,7 +32,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _webSettings = webSettings;
         }
 
-        public async Task<ResultBase> CancelPromotion(Promotion promotion, Trooper denier)
+        public async Task<ResultBase> CancelPromotionAsync(Promotion promotion, Trooper denier)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
@@ -71,7 +71,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public async Task<ResultBase> ElevatePromotion(Promotion promotion, Trooper approver, int levels = 1)
+        public async Task<ResultBase> ElevatePromotionAsync(Promotion promotion, Trooper approver, int levels = 1)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
@@ -89,7 +89,7 @@ namespace FiveOhFirstDataCore.Core.Services
             if (actual.CurrentBoard > actual.NeededBoard)
             {
                 await _dbContext.SaveChangesAsync();
-                return await FinalizePromotion(promotion, approver);
+                return await FinalizePromotionAsync(promotion, approver);
             }
 
             if (actual.ApprovedBy is null) actual.ApprovedBy = new();
@@ -102,7 +102,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public async Task<ResultBase> FinalizePromotion(Promotion promotion, Trooper approver)
+        public async Task<ResultBase> FinalizePromotionAsync(Promotion promotion, Trooper approver)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
@@ -171,7 +171,12 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public async Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor,
+        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper t)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Trooper promotionFor,
             PromotionBoardLevel currentBoard,
             int promotionFrom, int promotionTo, string reason)
         {
@@ -221,8 +226,8 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, promo, null);
         }
 
-        public async Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Promotion promotion)
-            => await StartPromotionProcess(invoker, promotion.PromotionFor,
+        public async Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Promotion promotion)
+            => await StartPromotionProcessAsync(invoker, promotion.PromotionFor,
                 promotion.CurrentBoard, promotion.PromoteFrom, promotion.PromoteTo,
                 promotion.Reason);
     }

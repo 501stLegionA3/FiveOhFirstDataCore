@@ -258,12 +258,6 @@
     [Parameter]
     public bool Mynock { get; set; } = false;
 
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
-
-    [Parameter]
-    public PromotionBoardLevel SendPromotionsTo { get; set; }
-
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
@@ -294,21 +288,21 @@
 
         if(firstRender)
         {
-            BuildEligiblePromotionsList();
+            await BuildEligiblePromotionsList();
 
             Loaded = true;
             StateHasChanged();
         }
     }
 
-    private void BuildEligiblePromotionsList()
+    private async Task BuildEligiblePromotionsList()
     {
         if (ActiveTroopers is null) return;
 
         foreach(var t in ActiveTroopers)
         {
             if (t is null) continue;
-            EligiblePromotions.AddRange(t.GetEligiblePromotions());
+            EligiblePromotions.AddRange(await _promotion.GetEligiblePromotionsAsync(t));
         }
     }
 
@@ -342,7 +336,7 @@
 
             var user = (await AuthStateTask).User;
 
-            var res = await _promotion.StartPromotionProcess(user, Promotion);
+            var res = await _promotion.StartPromotionProcessAsync(user, Promotion);
 
             if (!res.GetResult(out var errors))
             {

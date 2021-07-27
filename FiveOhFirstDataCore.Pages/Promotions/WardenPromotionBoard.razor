@@ -32,7 +32,9 @@
 
         foreach(var warden in Warden.Wardens)
         {
-            Troopers.Add(warden);
+            Troopers.Add(warden.SectionLead);
+            Troopers.Add(warden.WardenTwo);
+            Troopers.Add(warden.WardenThree);
         }
     }
 

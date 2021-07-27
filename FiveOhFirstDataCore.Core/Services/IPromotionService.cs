@@ -13,8 +13,8 @@ namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IPromotionService
     {
-        public Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Promotion promotion);
-        public Task<PromotionResult> StartPromotionProcess(ClaimsPrincipal invoker, Trooper promotionFor,
+        public Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Promotion promotion);
+        public Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Trooper promotionFor,
             PromotionBoardLevel currentBoard,
             int promotionFrom, int promotionTo, string reason);
         /// <summary>
@@ -24,8 +24,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="approver">Trooper who approved the promotion.</param>
         /// <param name="levels">Ammount of levels to elevate the promotion by.</param>
         /// <returns></returns>
-        public Task<ResultBase> ElevatePromotion(Promotion promotion, Trooper approver, int levels = 1);
-        public Task<ResultBase> FinalizePromotion(Promotion promotion, Trooper approver);
-        public Task<ResultBase> CancelPromotion(Promotion promotion, Trooper denier);
+        public Task<ResultBase> ElevatePromotionAsync(Promotion promotion, Trooper approver, int levels = 1);
+        public Task<ResultBase> FinalizePromotionAsync(Promotion promotion, Trooper approver);
+        public Task<ResultBase> CancelPromotionAsync(Promotion promotion, Trooper denier);
+        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper t);
     }
 }
