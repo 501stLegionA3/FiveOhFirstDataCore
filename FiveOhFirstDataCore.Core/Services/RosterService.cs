@@ -25,14 +25,16 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly UserManager<Trooper> _userManager;
         private readonly IDiscordService _discord;
         private readonly ILogger _logger;
+        private readonly IWebsiteSettingsService _settings;
 
         public RosterService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
-            IDiscordService discord, ILogger<RosterService> logger, IServiceProvider provider)
+            IDiscordService discord, ILogger<RosterService> logger, IWebsiteSettingsService settings)
         {
             this._dbContextFactory = dbContextFactory;
             this._userManager = userManager;
             this._discord = discord;
             this._logger = logger;
+            this._settings = settings;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()

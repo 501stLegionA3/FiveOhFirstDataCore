@@ -171,11 +171,6 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper t)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Trooper promotionFor,
             PromotionBoardLevel currentBoard,
             int promotionFrom, int promotionTo, string reason)

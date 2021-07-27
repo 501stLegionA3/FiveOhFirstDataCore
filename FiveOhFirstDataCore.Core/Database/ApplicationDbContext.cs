@@ -7,6 +7,13 @@ using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+using Newtonsoft.Json;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FiveOhFirstDataCore.Core.Database
 {
@@ -33,6 +40,7 @@ namespace FiveOhFirstDataCore.Core.Database
 
         #region Website Settings
         public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
+        public DbSet<CShopClaim> CShopClaims { get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -58,6 +66,22 @@ namespace FiveOhFirstDataCore.Core.Database
             #region Website Settings
             var promoReq = builder.Entity<PromotionDetails>();
             promoReq.HasKey(p => p.RequirementsFor);
+
+            var cshopClaims = builder.Entity<CShopClaim>();
+            cshopClaims.HasKey(p => p.Key);
+            cshopClaims.Property(p => p.ClaimData)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(x) ?? new(),
+                    new ValueComparer<Dictionary<string, List<string>>>(
+                        (c1, c2) => CompareCShopClaims(c1, c2),
+                        c => c.Aggregate(0, (x, y) => HashCode.Combine(
+                            HashCode.Combine(x, y.GetHashCode(), 
+                                y.Value.Aggregate(0, (z, v) => HashCode.Combine(z, v.GetHashCode()))
+                                )
+                            )),
+                        c => c == null ? null : c.ToDictionary(c => c.Key, c => c.Value)
+                    ));
             #endregion
 
             #region Promotions and Transfers
@@ -236,6 +260,24 @@ namespace FiveOhFirstDataCore.Core.Database
 
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);
+        }
+
+        private bool CompareCShopClaims(Dictionary<string, List<string>>? c1, 
+            Dictionary<string, List<string>>? c2)
+        {
+            if (c1 is null & c2 is null) return true;
+            if (c1 is null || c2 is null) return false;
+            if(c1.Count != c2.Count) return false;
+            foreach(var i in c1)
+            {
+                if (c2.TryGetValue(i.Key, out var c2Val))
+                {
+                    if (!i.Value.SequenceEqual(c2Val)) return false;
+                }
+                else return false;
+            }
+
+            return true;
         }
     }
 }

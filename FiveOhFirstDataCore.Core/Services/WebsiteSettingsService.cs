@@ -2,7 +2,9 @@
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Structures;
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using System;
@@ -384,19 +386,550 @@ namespace FiveOhFirstDataCore.Core.Services
                 DoesNotRequireLinearProgression = true
             },
         };
+        private static readonly Dictionary<CShop, CShopClaim> ClaimsTree = new()
+        {
+            [CShop.DepartmentLead] = new()
+            {
+                ClaimData = new()
+                {
+                    ["Department Lead"] = new()
+                    {
+                        "C1",
+                        "C3",
+                        "C4",
+                        "C5",
+                        "C6",
+                        "C7",
+                        "C8"
+                    }
+                },
+                CShopCommand = new()
+                {
+                    "C1",
+                    "C3",
+                    "C4",
+                    "C5",
+                    "C6",
+                    "C7",
+                    "C8"
+                }
+            },
+            // C1
+            [CShop.RosterStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.RosterStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Sr",
+                        "Clerk",
+                        "Jr"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.DocMainCom] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.DocMainCom.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Curator",
+                        "Proofreader",
+                        "Distribution Overseer",
+                        "Project Assistant"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
+            [CShop.RecruitingStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.RecruitingStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Sr",
+                        "Recruiter"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
+            [CShop.ReturningMemberStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.ReturningMemberStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
+            [CShop.MedalsStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.MedalsStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
 
+            // C3
+            [CShop.CampaignManagement] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.CampaignManagement.AsFull()] = new()
+                    {
+                        "DeptAssistant"
+                    },
+                    ["Story Writer"] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Writer"
+                    },
+                    ["Zeus"] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Zeus"
+                    },
+                    ["Mission Builder"] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Sr",
+                        "Builder",
+                        "Jr"
+                    },
+                    ["Artisan"] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Artisan"
+                    },
+                    ["Logistics"] = new()
+                    {
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "DeptAssistant",
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.EventManagement] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.EventManagement.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Documentation",
+                        "Host",
+                        "Helper"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            // C4
+            [CShop.Logistics] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.Logistics.AsFull()] = new()
+                    {
+                        "Donations",
+                        "Patreon",
+                        "TeamSpeak",
+                        "Website"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Donations",
+                    "Patreon",
+                    "TeamSpeak",
+                    "Website"
+                }
+            },
+
+            // C5
+            [CShop.TeamSpeakAdmin] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.TeamSpeakAdmin.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
+            [CShop.HolositeSupport] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.HolositeSupport.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                }
+            },
+            [CShop.DiscordManagement] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.DiscordManagement.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                }
+            },
+            [CShop.TechSupport] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.TechSupport.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+
+            // C6
+            [CShop.BCTStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.BCTStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Sr",
+                        "Instructor",
+                        "Cadre"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.PrivateTrainingInstructor] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.PrivateTrainingInstructor.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Instructor",
+                        "Cadre"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.UTCStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.UTCStaff.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Documentation",
+                        "Phase Blue Lead",
+                        "Chief",
+                        "Sr",
+                        "Instructor",
+                        "Jr"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.QualTrainingStaff] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.QualTrainingStaff.AsFull()] = new()
+                    {
+                        "Lead"
+                    },
+                    ["RTO"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Medical"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Assault"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Support"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Marksman"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Grenadier"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Jump-Master"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    },
+                    ["Combat Engineer"] = new()
+                    {
+                        "Lead",
+                        "Instructor",
+                        "Cadre"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                }
+            },
+
+            // C7
+            [CShop.ServerManagement] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.ServerManagement.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff",
+                        "Minecraft",
+                        "Space Engineers"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.AuxModTeam] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.AuxModTeam.AsFull()] = new()
+                    {
+                        "Lead Developer",
+                        "Developer",
+                        "Texture Lead",
+                        "Texture Team"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead Developer",
+                    "Texture Lead"
+                }
+            },
+
+            // C8
+            [CShop.PublicAffairs] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.PublicAffairs.AsFull()] = new()
+                    {
+                        "Units",
+                        "TCW",
+                        "Steam"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Units",
+                    "TCW",
+                    "Steam"
+                }
+            },
+            [CShop.MediaOutreach] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.MediaOutreach.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Mod"
+                    },
+                    ["YouTube"] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    },
+                    ["Reddit"] = new()
+                    {
+                        "Staff"
+                    },
+                    ["Facebook"] = new()
+                    {
+                        "Staff"
+                    },
+                    ["Twitter"] = new()
+                    {
+                        "Staff"
+                    },
+                    ["TikTok"] = new()
+                    {
+                        "Lead",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant"
+                }
+            },
+            [CShop.NewsTeam] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.NewsTeam.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Managing Editor",
+                        "Copy Editor",
+                        "News Editor",
+                        "Graphics Editor",
+                        "Writer",
+                        "Photographer"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead"
+                }
+            }
+        };
         #endregion
 
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+
+        public Dictionary<CShop, CShopClaim> CShopClaimTree { get; set; } = null;
 
         public WebsiteSettingsService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
-        public async Task SetDefaultSettings()
+        public async Task ReloadClaimTreeAsync()
         {
-            var _dbContext = _dbContextFactory.CreateDbContext();
+            CShopClaimTree = await GetFullClaimsTreeAsync();
+        }
+
+        public async Task<Dictionary<CShop, CShopClaim>> GetCachedCShopClaimTree()
+        {
+            if (CShopClaimTree is null)
+                await ReloadClaimTreeAsync();
+
+            return CShopClaimTree!;
+        }
+
+        public async Task SetDefaultSettingsAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             foreach(var pair in NeededTimeForPromotion)
             {
                 var old = await _dbContext.PromotionRequirements.FindAsync(pair.Key);
@@ -407,12 +940,24 @@ namespace FiveOhFirstDataCore.Core.Services
                 _dbContext.PromotionRequirements.Add(pair.Value);
             }
 
+            foreach(var item in ClaimsTree)
+            {
+                var old = await _dbContext.CShopClaims.FindAsync(item.Key);
+                if (old is not null)
+                    _dbContext.CShopClaims.Remove(old);
+
+                item.Value.Key = item.Key;
+                _dbContext.CShopClaims.Add(item.Value);
+            }
+
             await _dbContext.SaveChangesAsync();
+
+            await ReloadClaimTreeAsync();
         }
 
         public async Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank)
         {
-            var _dbContext = _dbContextFactory.CreateDbContext();
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.FindAsync<PromotionDetails>(rank);
         }
 
@@ -420,7 +965,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             List<Promotion> promotions = new();
 
-            var _dbContext = _dbContextFactory.CreateDbContext();
+            using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var levels = await GetCshopLevelsAsync(forTrooper.Id);
 
@@ -445,9 +990,81 @@ namespace FiveOhFirstDataCore.Core.Services
             return promotions;
         }
 
+        /// <summary>
+        /// Gets a boolean tuple with values determining if a trooper is in C-Shop leadership or command.
+        /// </summary>
+        /// <param name="trooperId">The ID of the trooper to compare.</param>
+        /// <returns>Returns <see cref="(bool, bool)"/> where Item1 is if the Trooper is in C-Shop command and Item2 is if the Trooper is in C-Shop leadership.</returns>
         public async Task<(bool, bool)> GetCshopLevelsAsync(int trooperId)
         {
-            throw new NotImplementedException();
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var claims = await _dbContext.UserClaims.AsNoTracking()
+                .Where(x => x.UserId == trooperId)
+                .ToListAsync();
+
+            var trooper = await _dbContext.Users.FindAsync(trooperId);
+
+            if (trooper is null || claims is null) return (false, false);
+
+            bool lead = false;
+            bool cmd = false;
+
+            foreach (CShop shop in Enum.GetValues(typeof(CShop)))
+            {
+                if ((shop & trooper.CShops) == shop && shop != CShop.None)
+                {
+                    var cData = await _dbContext.CShopClaims.FindAsync(shop);
+                    if (cData is null) continue;
+
+                    foreach (var c in claims)
+                    {
+                        if (lead && cmd) return (cmd, lead);
+
+                        if (cData.ClaimData.TryGetValue(c.ClaimType, out var values))
+                        {
+                            if (values.Contains(c.ClaimValue, StringComparer.OrdinalIgnoreCase))
+                            {
+                                if (cData.CShopCommand.Contains(c.ClaimValue, StringComparer.OrdinalIgnoreCase))
+                                    cmd = true;
+                                if (cData.CShopLeadership.Contains(c.ClaimValue, StringComparer.OrdinalIgnoreCase))
+                                    lead = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return (cmd, lead);
+        }
+
+        public async Task<Dictionary<CShop, CShopClaim>> GetFullClaimsTreeAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            Dictionary<CShop, CShopClaim> data = new();
+
+            await _dbContext.CShopClaims.AsNoTracking().ForEachAsync(x =>
+            {
+                if(data.ContainsKey(x.Key))
+                {
+                    data[x.Key] = x;
+                }
+                else
+                {
+                    data.Add(x.Key, x);
+                }
+            });
+
+            return data;
+        }
+
+        public async Task<Dictionary<string, List<string>>> GetClaimDataForCShopAsync(CShop key)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = await _dbContext.CShopClaims.FindAsync(key);
+
+            return data?.ClaimData ?? new();
         }
     }
 }

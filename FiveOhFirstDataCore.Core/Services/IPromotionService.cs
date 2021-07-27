@@ -27,6 +27,5 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<ResultBase> ElevatePromotionAsync(Promotion promotion, Trooper approver, int levels = 1);
         public Task<ResultBase> FinalizePromotionAsync(Promotion promotion, Trooper approver);
         public Task<ResultBase> CancelPromotionAsync(Promotion promotion, Trooper denier);
-        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper t);
     }
 }

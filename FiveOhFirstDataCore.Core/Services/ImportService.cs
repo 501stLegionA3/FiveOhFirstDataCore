@@ -28,6 +28,7 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
         private readonly IWebHostEnvironment _env;
+        private readonly IWebsiteSettingsService _settings;
 
         private static readonly Dictionary<string, (string, string)> CShopClaimMatches = new()
         {
@@ -128,12 +129,15 @@ namespace FiveOhFirstDataCore.Core.Services
             { 11, Qualification.RTOQualified }
         };
 
+        private Dictionary<CShop, CShopClaim>? ClaimsTree { get; set; } = null;
+
         public ImportService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env, IWebsiteSettingsService settings)
         {
             _dbContextFactory = dbContextFactory;
             _userManager = userManager;
             _env = env;
+            _settings = settings;
         }
 
         public async Task<ImportResult> ImportOrbatDataAsync(OrbatImport import)
@@ -722,7 +726,7 @@ namespace FiveOhFirstDataCore.Core.Services
                                 }
                                 else
                                 {
-                                    claim = GetclaimForCShop(segment[0].Trim().ToLower(), group.Value);
+                                    claim = await GetclaimForCShop(segment[0].Trim().ToLower(), group.Value);
                                 }
 
                                 if (claim is not null)
@@ -761,7 +765,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return possible.FirstOrDefault();
         }
 
-        private static Claim? GetclaimForCShop(string role, CShop group)
+        private async Task<Claim?> GetclaimForCShop(string role, CShop group)
         {
             if (CShopClaimMatches.TryGetValue(role, out var pair))
             {
@@ -769,9 +773,12 @@ namespace FiveOhFirstDataCore.Core.Services
                 else return new(pair.Item1, pair.Item2);
             }
 
+            if (ClaimsTree is null)
+                ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             // Nothing custom matched, so lets look directly.
-            if(CShopExtensions.ClaimsTree.TryGetValue(group, out var item))
-                foreach (var sets in item)
+            if(ClaimsTree.TryGetValue(group, out var item))
+                foreach (var sets in item.ClaimData)
                     foreach (var value in sets.Value)
                         if (value.Equals(role, StringComparison.OrdinalIgnoreCase))
                             return new(sets.Key, role);

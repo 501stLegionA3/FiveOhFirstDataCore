@@ -1,5 +1,6 @@
 ﻿@inject IPromotionService _promotion
 @inject IAdvancedRefreshService _advRefresh
+@inject IWebsiteSettingsService _settings
 
 @if(Errors.Count > 0)
 {
@@ -302,7 +303,7 @@
         foreach(var t in ActiveTroopers)
         {
             if (t is null) continue;
-            EligiblePromotions.AddRange(await _promotion.GetEligiblePromotionsAsync(t));
+            EligiblePromotions.AddRange(await _settings.GetEligiblePromotionsAsync(t));
         }
     }
 

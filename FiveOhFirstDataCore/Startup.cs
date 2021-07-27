@@ -9,8 +9,11 @@ using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Mail;
 using FiveOhFirstDataCore.Core.Services;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Auth;
+
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -54,7 +57,7 @@ namespace FiveOhFirstDataCore
                 .EnableSensitiveDataLogging()
                 .EnableDetailedErrors()
 #endif
-                , ServiceLifetime.Scoped);
+                , ServiceLifetime.Singleton);
             services.AddScoped(p 
                 => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
             services.AddIdentity<Trooper, TrooperRole>()
@@ -183,6 +186,7 @@ namespace FiveOhFirstDataCore
                 });
 
             #region Policy Setup
+            services.AddSingleton<IAuthorizationPolicyProvider, DataCoreAuthorizationPolicyProvider>();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("RequireTrooper", policy =>
@@ -211,32 +215,6 @@ namespace FiveOhFirstDataCore
                     });
                 });
 
-                options.AddPolicy("RequireC1", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.DocMainCom].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.MedalsStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireRosterClerk", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type));
-                    });
-                });
-
                 options.AddPolicy("RequireNameChange", policy =>
                 {
                     policy.RequireAssertion(ctx =>
@@ -245,139 +223,6 @@ namespace FiveOhFirstDataCore
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim("Change", "Name");
-                    });
-                });
-
-                options.AddPolicy("RequireRosterClerkOrReturningMemberStaff", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type))
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireRecruiter", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireRecruiterOrReturningMemberStaff", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type))
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireReturningMemberStaff", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC3", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C3")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.CampaignManagement].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.EventManagement].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC4", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C4")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.Logistics].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC5", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C5")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.TeamSpeakAdmin].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.HolositeSupport].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.DiscordManagement].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.TechSupport].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC6", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C6")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.BCTStaff].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.PrivateTrainingInstructor].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.UTCStaff].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.QualTrainingStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireQualificationInstructor", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C6")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.QualTrainingStaff].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC7", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C7")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ServerManagement].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.AuxModTeam].ContainsKey(x.Type));
-                    });
-                });
-
-                options.AddPolicy("RequireC8", policy =>
-                {
-                    policy.RequireAssertion(ctx =>
-                    {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C8")
-                            || ctx.User.HasClaim(x => CShopExtensions.ClaimsTree[CShop.PublicAffairs].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.MediaOutreach].ContainsKey(x.Type)
-                                || CShopExtensions.ClaimsTree[CShop.NewsTeam].ContainsKey(x.Type));
                     });
                 });
             });
@@ -413,7 +258,7 @@ namespace FiveOhFirstDataCore
                 .AddScoped<IImportService, ImportService>()
                 .AddScoped<INoticeService, NoticeService>()
                 .AddScoped<IPromotionService, PromotionService>()
-                .AddScoped<IWebsiteSettingsService, WebsiteSettingsService>()
+                .AddSingleton<IWebsiteSettingsService, WebsiteSettingsService>()
                 .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
 
             #region Discord Setup
@@ -466,6 +311,9 @@ namespace FiveOhFirstDataCore
 
             var data = scope.ServiceProvider.GetRequiredService<InitalAccountPopulationService>();
             data.InitializeAsync().GetAwaiter().GetResult();
+
+            var claims = scope.ServiceProvider.GetRequiredService<IWebsiteSettingsService>();
+            claims.ReloadClaimTreeAsync().GetAwaiter().GetResult();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions()
             {

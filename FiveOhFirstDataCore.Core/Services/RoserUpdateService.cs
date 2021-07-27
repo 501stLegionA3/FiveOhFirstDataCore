@@ -27,11 +27,13 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var rawSet = await _userManager.GetClaimsAsync(trooper);
 
-            foreach(var c in rawSet)
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
+            foreach (var c in rawSet)
             {
-                foreach(var shops in CShopExtensions.ClaimsTree)
+                foreach(var shops in ClaimsTree)
                 {
-                    if(shops.Value.ContainsKey(c.Type))
+                    if(shops.Value.ClaimData.ContainsKey(c.Type))
                     {
                         if (claimUpdates.TryGetValue(shops.Key, out var list))
                             list.Add(new(c.Type, c.Value));

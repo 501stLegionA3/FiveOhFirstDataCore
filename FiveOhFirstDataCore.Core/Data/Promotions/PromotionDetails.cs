@@ -81,10 +81,10 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
                 if (trooper.CShops == CShop.None)
                     return false;
 
-            if (RequiresCShopLeadership && !cshopLevels.Item1)
+            if (RequiresCShopLeadership && !cshopLevels.Item2)
                 return false;
 
-            if (RequiresCShopCommand && !cshopLevels.Item2)
+            if (RequiresCShopCommand && !cshopLevels.Item1)
                 return false;
 
             promotion = new()

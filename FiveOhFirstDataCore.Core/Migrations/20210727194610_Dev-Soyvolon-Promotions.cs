@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
@@ -48,6 +48,20 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.CreateTable(
+                name: "CShopClaims",
+                columns: table => new
+                {
+                    Key = table.Column<long>(type: "bigint", nullable: false),
+                    ClaimData = table.Column<string>(type: "text", nullable: false),
+                    CShopLeadership = table.Column<List<string>>(type: "text[]", nullable: false),
+                    CShopCommand = table.Column<List<string>>(type: "text[]", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CShopClaims", x => x.Key);
+                });
 
             migrationBuilder.CreateTable(
                 name: "PromotionRequirements",
@@ -208,6 +222,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_RankUpdates_AspNetUsers_RequestedById",
                 table: "RankUpdates");
+
+            migrationBuilder.DropTable(
+                name: "CShopClaims");
 
             migrationBuilder.DropTable(
                 name: "PromotionRequirements");

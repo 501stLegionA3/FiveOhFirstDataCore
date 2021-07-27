@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using FiveOhFirstDataCore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "6.0.0-preview.3.21201.2")
+                .HasAnnotation("ProductVersion", "6.0.0-preview.6.21352.1")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("DisciplinaryActionTrooper", b =>
@@ -282,7 +282,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperRole", b =>
@@ -310,7 +310,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsUnique()
                         .HasDatabaseName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("AspNetRoles", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
@@ -459,6 +459,28 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasKey("RequirementsFor");
 
                     b.ToTable("PromotionRequirements");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopClaim", b =>
+                {
+                    b.Property<long>("Key")
+                        .HasColumnType("bigint");
+
+                    b.Property<List<string>>("CShopCommand")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<List<string>>("CShopLeadership")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("ClaimData")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("CShopClaims");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
@@ -869,7 +891,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetRoleClaims");
+                    b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -892,7 +914,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserClaims");
+                    b.ToTable("AspNetUserClaims", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -913,7 +935,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AspNetUserLogins");
+                    b.ToTable("AspNetUserLogins", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -928,7 +950,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("AspNetUserRoles");
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -947,7 +969,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("AspNetUserTokens");
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("PromotionTrooper", b =>

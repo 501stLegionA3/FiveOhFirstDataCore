@@ -83,7 +83,10 @@ namespace FiveOhFirstDataCore.Core.Data
         NewsTeam = 0x0000100000,
         // 1 << 22
         [Description("Big Brother")]
-        BigBrother = 0x0000200000
+        BigBrother = 0x0000200000,
+        // 1 << 23
+        [Description("Department Lead")]
+        DepartmentLead = 0x0000400000,
     }
 
     public static class CShopExtensions
@@ -98,69 +101,5 @@ namespace FiveOhFirstDataCore.Core.Data
 
             return null;
         }
-
-        public static Dictionary<CShop, Dictionary<string, HashSet<string>>> ClaimsTree { get; private set; } = new()
-        {
-            { CShop.None, new() { { "Department Lead", new() { "C1", "C3", "C4", "C5", "C6", "C7", "C8" } } } },
-            // C1
-            { CShop.RosterStaff, new() { { CShop.RosterStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Clerk", "Jr" } } } },
-            { CShop.DocMainCom, new() { { CShop.DocMainCom.AsFull(), new() { "Lead", "Assistant", "Curator", "Proofreader", "Distribution Overseer", "Project Assistant" } } } },
-            { CShop.RecruitingStaff, new() { { CShop.RecruitingStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Recruiter" } } } },
-            { CShop.ReturningMemberStaff, new() { { CShop.ReturningMemberStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
-            { CShop.MedalsStaff, new() { { CShop.MedalsStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
-            { CShop.BigBrother, new() { { CShop.BigBrother.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
-
-            // C3
-            { CShop.CampaignManagement, new() { 
-                { CShop.CampaignManagement.AsFull(), new() { "DeptAssistant" } },
-                { "Story Writer", new() { "Lead", "Assistant", "Writer" } },
-                { "Zeus", new() { "Lead", "Assistant", "Zeus" } },
-                { "Mission Builder", new() { "Lead", "Assistant", "Sr", "Builder", "Jr"} },
-                { "Artisan", new() { "Lead", "Assistant", "Artisan" } },
-                { "Logistics", new() { "Staff" } }
-            } },
-            { CShop.EventManagement, new() { { CShop.EventManagement.AsFull(), new() { "Lead", "Assistant", "Documentation", "Host", "Helper" } } } },
-
-            // C4
-            { CShop.Logistics, new() { { CShop.Logistics.AsFull(), new() { "Donations", "Patreon", "TeamSpeak", "Website" } } } },
-
-            // C5
-            { CShop.TeamSpeakAdmin, new() { { CShop.TeamSpeakAdmin.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
-            { CShop.HolositeSupport, new() { { CShop.HolositeSupport.AsFull(), new() { "Lead", "Staff" } } } },
-            { CShop.DiscordManagement, new() { { CShop.DiscordManagement.AsFull(), new() { "Lead", "Staff" } } } },
-            { CShop.TechSupport, new() { { CShop.TechSupport.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
-
-            // C6
-            { CShop.BCTStaff, new() { { CShop.BCTStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Instructor", "Cadre" } } } },
-            { CShop.PrivateTrainingInstructor, new() { { CShop.PrivateTrainingInstructor.AsFull(), new() { "Lead", "Assistant", "Instructor", "Cadre" } } } },
-            { CShop.UTCStaff, new() { { CShop.UTCStaff.AsFull(), new() { "Lead", "Assistant", "Documentation", "Phase Blue Lead", "Chief", "Sr", "Instructor", "Jr" } } } },
-            { CShop.QualTrainingStaff, new() { 
-                { CShop.QualTrainingStaff.AsFull(), new() { "Lead" } },
-                { "RTO", new() { "Lead", "Instructor", "Cadre" } },
-                { "Medical", new() { "Lead", "Instructor", "Cadre" } },
-                { "Assault", new() { "Lead", "Instructor", "Cadre" } },
-                { "Support", new() { "Lead", "Instructor", "Cadre" } },
-                { "Marksman", new() { "Lead", "Instructor", "Cadre" } },
-                { "Grenadier", new() { "Lead", "Instructor", "Cadre" } },
-                { "Jump-Master", new() { "Lead", "Instructor", "Cadre" } },
-                { "Combat Engineer", new() { "Lead", "Instructor", "Cadre" } }
-            } },
-
-            // C7
-            { CShop.ServerManagement, new() { { CShop.ServerManagement.AsFull(), new() { "Lead", "Assistant", "Staff", "Minecraft", "Space Engineers" } } } },
-            { CShop.AuxModTeam, new() { { CShop.AuxModTeam.AsFull(), new() { "Lead Developer", "Developer", "Texture Lead", "Texture Team" } } } },
-
-            // C8
-            { CShop.PublicAffairs, new() { { CShop.PublicAffairs.AsFull(), new() { "Units", "TCW", "Steam" } } } },
-            { CShop.MediaOutreach, new() { 
-                { CShop.MediaOutreach.AsFull(), new() { "Lead", "Assistant", "Mod" } },
-                { "YouTube", new() { "Lead", "Assistant", "Staff" } },
-                { "Reddit", new() { "Staff" } },
-                { "Facebook", new() { "Staff" } },
-                { "Twitter", new() { "Staff" } },
-                { "TikTok", new() { "Lead", "Staff" } }
-            } },
-            { CShop.NewsTeam, new() { { CShop.NewsTeam.AsFull(), new() { "Lead", "Managing Editor", "Copy Editor", "News Editor", "Graphics Editor", "Writer", "Photographer"} } } }
-        };
     }
 }
