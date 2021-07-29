@@ -2,7 +2,7 @@
 !> You need an access code to register an account! New members and returning members need to talk to a [recruiter](get-recruited)/returning member staff. Current members should talk to their CoC for their access code.
 
 ## Account Registration Page
-On the Data Core website, select `Register` in the top right corner, or use [this link](https://s4.501stlegion-a3.com/Identity/Account/Register) to get to the registration page.
+On the Data Core website, select `Register` in the top right corner, or use [this link](https://dc.501stlegion-a3.com/Identity/Account/Register) to get to the registration page.
 
 A registration page like the following will be displayed.
 

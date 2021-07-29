@@ -1,6 +1,6 @@
 <!-- docs/c1/editing-troopers.md -->
 # Editing Troopers
-The edit trooper page can be found from the Roster Clerk and Returning Member home pages in C-1, or with [this link](https://s4.501stlegion-a3.com/c1/roster/edit).
+The edit trooper page can be found from the Roster Clerk and Returning Member home pages in C-1, or with [this link](https://dc.501stlegion-a3.com/c1/roster/edit).
 
 ## Before The Edit
 

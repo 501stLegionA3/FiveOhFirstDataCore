@@ -2,7 +2,7 @@
 # Roster System
 
 ## Overview
-The roster page can be found from the Roster Page on the Home Screen, or with [this link](https://s4.501stlegion-a3.com/roster).
+The roster page can be found from the Roster Page on the Home Screen, or with [this link](https://dc.501stlegion-a3.com/roster).
 
 The roster pages contains 6 tabs.
 

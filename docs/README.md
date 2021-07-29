@@ -6,14 +6,14 @@
 
 !> Current members need to talk to their chain of command to receive their access codes. New members need to talk to a [recruiter](get-recruited).
 
-Registration occurs on [this page](https://s4.501stlegion-a3.com/Identity/Account/Register).
+Registration occurs on [this page](https://dc.501stlegion-a3.com/Identity/Account/Register).
 
 For a more detailed registration guide, see the [registration](register-account) documentation.
 
 ## NCO Guides
 
 ### Access Codes
-To get access codes for your troopers, login to the website and navigate to [this page](https://s4.501stlegion-a3.com/trooper/me/accessgrants).
+To get access codes for your troopers, login to the website and navigate to [this page](https://dc.501stlegion-a3.com/trooper/me/accessgrants).
 
 ## C-Shop Guides
 
