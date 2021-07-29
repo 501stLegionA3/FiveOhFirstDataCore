@@ -1,4 +1,6 @@
-﻿<thead class="table-primary text-center">
+﻿@inherits RosterModel
+
+<thead class="table-primary text-center">
     <tr>
         <th colspan="4">
             @SectionNumber.AsOrdinal() Section, Razor @FlightNumber-@SectionNumber
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(Section.Alpha is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Alpha?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}A"))
         </th>
@@ -14,7 +16,7 @@
             @(Section.Alpha?.WarrantRank is null ? Section.Alpha?.PilotRank?.AsFull() + " " ?? "" : Section.Alpha?.WarrantRank?.AsFull() + " " ?? "")@(Section.Alpha?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Section.Bravo is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Bravo?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}B"))
         </th>
@@ -22,7 +24,7 @@
             @(Section.Bravo?.WarrantRank is null ? Section.Bravo?.PilotRank?.AsFull() + " " ?? "" : Section.Bravo?.WarrantRank?.AsFull() + " " ?? "")@(Section.Bravo?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Section.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Charlie?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}C"))
         </th>
@@ -30,7 +32,7 @@
             @(Section.Charlie?.WarrantRank is null ? Section.Charlie?.PilotRank?.AsFull() + " " ?? "" : Section.Charlie?.WarrantRank?.AsFull() + " " ?? "")@(Section.Charlie?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Section.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Delta?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}D"))
         </th>

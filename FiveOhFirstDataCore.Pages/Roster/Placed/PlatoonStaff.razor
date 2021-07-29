@@ -1,5 +1,7 @@
-﻿<tbody>
-    <tr>
+﻿@inherits RosterModel
+
+<tbody>
+    <tr role="@(Platoon.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Commander?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Commander
         </th>
@@ -7,7 +9,7 @@
             @(Platoon.Commander?.WarrantRank is null ? Platoon.Commander?.Rank?.AsFull() + " " ?? "" : Platoon.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Commander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Platoon.SergeantMajor is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.SergeantMajor?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Sergeant Major
         </th>
@@ -15,7 +17,7 @@
             @(Platoon.SergeantMajor?.WarrantRank is null ? Platoon.SergeantMajor?.Rank?.AsFull() + " " ?? "" : Platoon.SergeantMajor?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.SergeantMajor?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Platoon.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Medic?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Medic
         </th>
@@ -23,7 +25,7 @@
             @(Platoon.Medic?.WarrantRank is null ? Platoon.Medic?.Rank?.AsFull() + " " ?? "" : Platoon.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Medic?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Platoon.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.RT?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Platoon RT
         </th>
@@ -33,7 +35,7 @@
     </tr>
     @if (!Airborne)
     {
-        <tr>
+        <tr role="@(Platoon.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.ARC?.Id)">
             <th scope="row" colspan="2" class="text-end">
                 Platoon ARC
             </th>

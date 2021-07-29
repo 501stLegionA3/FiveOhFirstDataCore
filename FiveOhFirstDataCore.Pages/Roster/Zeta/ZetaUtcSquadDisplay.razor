@@ -1,4 +1,6 @@
-﻿<thead>
+﻿@inherits RosterModel
+
+<thead>
     <tr class="table-dark text-light text-center">
         <th colspan="2">
             @Number.AsOrdinal() Squad
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(UTCSquad.SquadLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSquad.SquadLeader?.Id)">
         <th scope="row" class="text-end">
             Squad Leader
         </th>
@@ -17,12 +19,13 @@
 
     @for(int i = 0; i < UTCSquad.Troopers.Length; i++)
     {
-        <tr>
+        var c = i;
+        <tr role="@(UTCSquad.Troopers[c] is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSquad.Troopers[c]?.Id)">
             <th scope="row" class="text-end">
                 Trooper
             </th>
             <td >
-                @(UTCSquad.Troopers[i]?.WarrantRank is null ? UTCSquad.Troopers[i]?.Rank?.AsFull() + " " ?? "" : UTCSquad.Troopers[i]?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.Troopers[i]?.NickName ?? "TBD")
+                @(UTCSquad.Troopers[c]?.WarrantRank is null ? UTCSquad.Troopers[c]?.Rank?.AsFull() + " " ?? "" : UTCSquad.Troopers[c]?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.Troopers[c]?.NickName ?? "TBD")
             </td>
         </tr>
     }

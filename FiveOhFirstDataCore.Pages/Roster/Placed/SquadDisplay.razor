@@ -1,10 +1,12 @@
-﻿<tbody>
+﻿@inherits RosterModel
+
+<tbody>
     <tr class="table-dark text-light text-center">
         <th colspan="4">
             @Number.AsOrdinal() Squad
         </th>
     </tr>
-    <tr class="table-warning">
+    <tr class="table-warning" role="@(Squad.Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Lead?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Squad Leader
         </th>
@@ -12,7 +14,7 @@
             @(Squad.Lead?.WarrantRank is null ? Squad.Lead?.Rank?.AsFull() + " " ?? "" : Squad.Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Lead?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr class="table-warning">
+    <tr class="table-warning" role="@(Squad.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.RT?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Squad RT
         </th>
@@ -22,45 +24,45 @@
     </tr>
 
     <tr>
-        <th scope="row" class="table-danger text-end mx-auto">
+        <th scope="row" class="table-danger text-end mx-auto" role="@(Squad.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Lead?.Id)">
             Alpha Team Leader
         </th>
-        <td class="table-danger text-start mx-auto">
+        <td class="table-danger text-start mx-auto" role="@(Squad.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Lead?.Id)">
             @(Squad.Teams[0].Lead?.WarrantRank is null ? Squad.Teams[0].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Lead?.NickName ?? "TBD") 
         </td>
-        <th scope="row" class="table-primary text-end mx-auto">
+        <th scope="row" class="table-primary text-end mx-auto" role="@(Squad.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Lead?.Id)">
             Bravo Team Leader
         </th>
-        <td class="table-primary text-start mx-auto">
+        <td class="table-primary text-start mx-auto" role="@(Squad.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Lead?.Id)">
             @(Squad.Teams[1].Lead?.WarrantRank is null ? Squad.Teams[1].Lead?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Lead?.NickName ?? "TBD") 
         </td>
     </tr>
     <tr>
-        <th scope="row" class="table-danger text-end">
+        <th scope="row" class="table-danger text-end" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.Id)">
             Alpha Trooper 
         </th>
-        <td class="table-danger text-start">
+        <td class="table-danger text-start" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.Id)">
             @(AT1?.WarrantRank is null ? AT1?.Rank?.AsFull() + " " ?? "" : AT1?.WarrantRank?.AsFull() + " " ?? "")@(AT1?.NickName ?? "TBD") 
         </td>
-        <th scope="row" class="table-primary text-end">
+        <th scope="row" class="table-primary text-end" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
             Bravo Trooper
         </th>
-        <td class="table-primary text-start">
+        <td class="table-primary text-start" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
             @(BT1?.WarrantRank is null ? BT1?.Rank?.AsFull() + " " ?? "" : BT1?.WarrantRank?.AsFull() + " " ?? "")@(BT1?.NickName ?? "TBD") 
         </td>
     </tr>
 
     <tr>
-        <th scope="row" class="table-danger text-end">
+        <th scope="row" class="table-danger text-end" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.Id)">
             Alpha Trooper 
         </th>
-        <td class="table-danger text-start">
+        <td class="table-danger text-start" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.Id)">
             @(AT2?.WarrantRank is null ? AT2?.Rank?.AsFull() + " " ?? "" : AT2?.WarrantRank?.AsFull() + " " ?? "")@(AT2?.NickName ?? "TBD") 
         </td>
-        <th scope="row" class="table-primary text-end">
+        <th scope="row" class="table-primary text-end" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
             Bravo Trooper
         </th>
-        <td class="table-primary text-start">
+        <td class="table-primary text-start" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
             @(BT2?.WarrantRank is null ? BT2?.Rank?.AsFull() + " " ?? "" : BT2?.WarrantRank?.AsFull() + " " ?? "")@(BT2?.NickName ?? "TBD") 
         </td>
     </tr>
@@ -74,10 +76,10 @@
             <td class="table-danger text-start">
                 
             </td>
-            <th scope="row" class="table-primary text-end">
+            <th scope="row" class="table-primary text-end" role="@(ABT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(ABT1?.Id)">
                 Bravo Trooper
             </th>
-            <td class="table-primary text-start">
+            <td class="table-primary text-start" role="@(ABT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(ABT1?.Id)">
                 @(ABT1?.WarrantRank is null ? ABT1?.Rank?.AsFull() + " " ?? "" : ABT1?.WarrantRank?.AsFull() + " " ?? "")@(ABT1?.NickName ?? "TBD") 
             </td>
         </tr>
@@ -98,38 +100,38 @@
         }
 
         <tr>
-            <th scope="row" class="table-danger text-end">
+            <th scope="row" class="table-danger text-end" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.Id)">
                 Alpha Trooper 
             </th>
-            <td class="table-danger text-start">
+            <td class="table-danger text-start" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.Id)">
                 @(AT3?.WarrantRank is null ? AT3?.Rank?.AsFull() + " " ?? "" : AT3?.WarrantRank?.AsFull() + " " ?? "")@(AT3?.NickName ?? "TBD") 
             </td>
-            <th scope="row" class="table-primary text-end">
+            <th scope="row" class="table-primary text-end" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
                 Bravo Trooper
             </th>
-            <td class="table-primary text-start">
+            <td class="table-primary text-start" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
                 @(BT3?.WarrantRank is null ? BT3?.Rank?.AsFull() + " " ?? "" : BT3?.WarrantRank?.AsFull() + " " ?? "")@(BT3?.NickName ?? "TBD") 
             </td>
         </tr>
     }
 
     <tr>
-        <th scope="row" class="table-danger text-end">
+        <th scope="row" class="table-danger text-end" role="@(Squad.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Medic?.Id)">
             Alpha Medic 
         </th>
-        <td class="table-danger text-start">
+        <td class="table-danger text-start" role="@(Squad.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Medic?.Id)">
             @(Squad.Teams[0].Medic?.WarrantRank is null ? Squad.Teams[0].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[0].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[0].Medic?.NickName ?? "TBD") 
         </td>
-        <th scope="row" class="table-primary text-end">
+        <th scope="row" class="table-primary text-end" role="@(Squad.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Medic?.Id)">
             Bravo Medic
         </th>
-        <td class="table-primary text-start">
+        <td class="table-primary text-start" role="@(Squad.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Medic?.Id)">
             @(Squad.Teams[1].Medic?.WarrantRank is null ? Squad.Teams[1].Medic?.Rank?.AsFull() + " " ?? "" : Squad.Teams[1].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Teams[1].Medic?.NickName ?? "TBD") 
         </td>
     </tr>
     @if (!Airborne)
     {
-        <tr class="table-warning">
+        <tr class="table-warning" role="@(Squad.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.ARC?.Id)">
             <th scope="row" colspan="2" class="text-end">
                 Squad ARC
             </th>

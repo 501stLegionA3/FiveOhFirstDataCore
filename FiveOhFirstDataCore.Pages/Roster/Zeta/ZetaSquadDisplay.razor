@@ -1,4 +1,6 @@
-﻿<thead>
+﻿@inherits RosterModel
+
+<thead>
     <tr class="table-dark text-light text-center">
         <th colspan="2">
             @Number.AsOrdinal() Squad
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(Squad.SquadLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.SquadLeader?.Id)">
         <th scope="row" class="text-end">
             Squad Leader
         </th>
@@ -14,7 +16,7 @@
             @(Squad.SquadLeader?.WarrantRank is null ? Squad.SquadLeader?.Rank?.AsFull() + " " ?? "" : Squad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.SquadLeader?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Squad.Leader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Leader?.Id)">
         <th scope="row" class="text-end">
             Team Leader
         </th>
@@ -22,7 +24,7 @@
             @(Squad.Leader?.WarrantRank is null ? Squad.Leader?.Rank?.AsFull() + " " ?? "" : Squad.Leader?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Leader?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Squad.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.RT?.Id)">
         <th scope="row" class="text-end">
             RT
         </th>
@@ -30,7 +32,7 @@
             @(Squad.RT?.WarrantRank is null ? Squad.RT?.Rank?.AsFull() + " " ?? "" : Squad.RT?.WarrantRank?.AsFull() + " " ?? "")@(Squad.RT?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Squad.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Medic?.Id)">
         <th scope="row" class="text-end">
             Medic
         </th>
@@ -41,12 +43,13 @@
 
     @for(int i = 0; i < Squad.Troopers.Length; i++)
     {
-        <tr>
+        var c = i;
+        <tr role="@(Squad.Troopers[c] is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Troopers[c]?.Id)">
             <th scope="row" class="text-end">
                 Trooper
             </th>
             <td >
-                @(Squad.Troopers[i]?.WarrantRank is null ? Squad.Troopers[i]?.Rank?.AsFull() + " " ?? "" : Squad.Troopers[i]?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Troopers[i]?.NickName ?? "TBD")
+                @(Squad.Troopers[c]?.WarrantRank is null ? Squad.Troopers[c]?.Rank?.AsFull() + " " ?? "" : Squad.Troopers[c]?.WarrantRank?.AsFull() + " " ?? "")@(Squad.Troopers[c]?.NickName ?? "TBD")
             </td>
         </tr>
     }

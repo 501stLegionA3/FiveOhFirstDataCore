@@ -1,4 +1,6 @@
-﻿<thead>
+﻿@inherits RosterModel
+
+<thead>
     <tr>
         <th colspan="4" class="bg-primary text-light text-center">
             501st Legion, 1st Regiment, 3rd Battalion, Bastion Detachment "Mynock"
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(Mynock.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Commander?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Detachment Commander
         </th>
@@ -14,7 +16,7 @@
             @(Mynock.Commander?.WarrantRank is null ? Mynock.Commander?.Rank?.AsFull() + " " ?? "" : Mynock.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Commander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Mynock.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.NCOIC?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Detachment NCOIC
         </th>
@@ -22,7 +24,7 @@
             @(Mynock.NCOIC?.WarrantRank is null ? Mynock.NCOIC?.Rank?.AsFull() + " " ?? "" : Mynock.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.NCOIC?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Mynock.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Medic?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Detachment Medic
         </th>
@@ -30,7 +32,7 @@
             @(Mynock.Medic?.WarrantRank is null ? Mynock.Medic?.Rank?.AsFull() + " " ?? "" : Mynock.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Mynock.Medic?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Mynock.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.RT?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Detachment RT
         </th>

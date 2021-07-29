@@ -1,4 +1,6 @@
-﻿<thead class="table-primary text-center">
+﻿@inherits RosterModel
+
+<thead class="table-primary text-center">
     <tr>
         <th colspan="4">
             Deck Officer - Wardens
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-<tr>
+<tr role="@(Warden.Master is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Master?.Id)">
     <th scope="row" colspan="2" class="text-end">
         Master Warden
     </th>
@@ -14,7 +16,7 @@
         @(Warden.Master?.WarrantRank is null ? Warden.Master?.WardenRank?.AsFull() + " " ?? "" : Warden.Master?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Master?.NickName ?? "TBD")
     </td>
 </tr>
-<tr>
+<tr role="@(Warden.Chief is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Chief?.Id)">
     <th scope="row" colspan="2" class="text-end">
         Chief Warden
     </th>
@@ -25,8 +27,9 @@
 
 @for(int i = 0; i < Warden.Wardens.Length; i++)
 {
-        var c = i + 1;
-        <tr>
+    var c = i + 1;
+    var n = i;
+    <tr role="@(Warden.Wardens[n].SectionLead is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].SectionLead?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Section Lead (@c-1)
         </th>
@@ -34,7 +37,7 @@
             @(Warden.Wardens[i].SectionLead?.WarrantRank is null ? Warden.Wardens[i].SectionLead?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i].SectionLead?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i].SectionLead?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Warden.Wardens[n].WardenTwo is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenTwo?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Warden @c-2
         </th>
@@ -42,7 +45,7 @@
             @(Warden.Wardens[i].WardenTwo?.WarrantRank is null ? Warden.Wardens[i].WardenTwo?.WardenRank?.AsFull() + " " ?? "" : Warden.Wardens[i].WardenTwo?.WarrantRank?.AsFull() + " " ?? "")@(Warden.Wardens[i].WardenTwo?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Warden.Wardens[n].WardenThree is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenThree?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Warden @c-3
         </th>

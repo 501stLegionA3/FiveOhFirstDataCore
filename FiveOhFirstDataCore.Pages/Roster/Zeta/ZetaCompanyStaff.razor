@@ -1,5 +1,7 @@
-﻿<tbody>
-    <tr>
+﻿@inherits RosterModel
+
+<tbody>
+    <tr role="@(Company.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Commander?.Id)">
         <th scope="row" class="text-end">
             Company Commander
         </th>
@@ -7,7 +9,7 @@
             @(Company.Commander?.WarrantRank is null ? Company.Commander?.Rank?.AsFull() + " " ?? "" : Company.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Company.Commander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.XO?.Id)">
         <th scope="row" class="text-end">
             Company Executive Officer
         </th>
@@ -15,7 +17,7 @@
             @(Company.XO?.WarrantRank is null ? Company.XO?.Rank?.AsFull() + " " ?? "" : Company.XO?.WarrantRank?.AsFull() + " " ?? "")@(Company.XO?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.NCOIC?.Id)">
         <th scope="row" class="text-end">
             Company NCOIC
         </th>
@@ -23,7 +25,7 @@
             @(Company.NCOIC?.WarrantRank is null ? Company.NCOIC?.Rank?.AsFull() + " " ?? "" : Company.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Company.NCOIC?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.Adjutant is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Adjutant?.Id)">
         <th scope="row" class="text-end">
             Company Adjutant
         </th>

@@ -1,4 +1,6 @@
-﻿<thead class="bg-primary text-light text-center">
+﻿@inherits RosterModel
+
+<thead class="bg-primary text-light text-center">
     <tr>
         <th colspan="4">
             501st Legion, Razor Squadron
@@ -11,7 +13,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(Razor.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.Commander?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Squadron Commander
         </th>
@@ -19,7 +21,7 @@
             @(Razor.Commander?.WarrantRank is null ? Razor.Commander?.PilotRank?.AsFull() + " " ?? "" : Razor.Commander.WarrantRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Squadron Sub-Commander
         </th>
@@ -27,7 +29,7 @@
             @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.Id)">
         <th scope="row" class="text-end" colspan="2">
             Squadron FOIC
         </th>

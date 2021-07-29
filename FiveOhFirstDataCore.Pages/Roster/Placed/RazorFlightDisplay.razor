@@ -1,4 +1,6 @@
-﻿<thead class="table-dark text-light text-center">
+﻿@inherits RosterModel
+
+<thead class="table-dark text-light text-center">
     <tr>
         <th colspan="4">
             @FlightNumber.AsOrdinal() Flight LAAT
@@ -6,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr>
+    <tr role="@(Flight.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Commander?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Flight Commander
         </th>

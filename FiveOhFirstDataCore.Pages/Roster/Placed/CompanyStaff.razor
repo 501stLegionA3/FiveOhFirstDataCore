@@ -1,8 +1,9 @@
 ﻿@using FiveOhFirstDataCore.Core.Data.Roster
 @using FiveOhFirstDataCore.Core.Data
+@inherits RosterModel
 
 <tbody>
-    <tr>
+    <tr role="@(Company.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Commander?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company Commander
         </th>
@@ -10,7 +11,7 @@
             @(Company.Commander?.WarrantRank is null ? Company.Commander?.Rank?.AsFull() + " " ?? "" : Company.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Company.Commander?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.XO?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company Executive Officer
         </th>
@@ -18,7 +19,7 @@
             @(Company.XO?.WarrantRank is null ? Company.XO?.Rank?.AsFull() + " " ?? "" : Company.XO?.WarrantRank?.AsFull() + " " ?? "")@(Company.XO?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.NCOIC?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company NCOIC
         </th>
@@ -26,7 +27,7 @@
             @(Company.NCOIC?.WarrantRank is null ? Company.NCOIC?.Rank?.AsFull() + " " ?? "" : Company.NCOIC?.WarrantRank?.AsFull() + " " ?? "")@(Company.NCOIC?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Medic?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company Medic
         </th>
@@ -34,7 +35,7 @@
             @(Company.Medic?.WarrantRank is null ? Company.Medic?.Rank?.AsFull() + " " ?? "" : Company.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Company.Medic?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.RT?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company RT
         </th>
@@ -42,7 +43,7 @@
             @(Company.RT?.WarrantRank is null ? Company.RT?.Rank?.AsFull() + " " ?? "" : Company.RT?.WarrantRank?.AsFull() + " " ?? "")@(Company.RT?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.ARC?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company ARC
         </th>
@@ -50,7 +51,7 @@
             @(Company.ARC?.WarrantRank is null ? Company.ARC?.Rank?.AsFull() + " " ?? "" : Company.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Company.ARC?.NickName ?? "TBD")
         </td>
     </tr>
-    <tr>
+    <tr role="@(Company.Adjutant is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Adjutant?.Id)">
         <th scope="row" colspan="2" class="text-end">
             Company Adjutant
         </th>
