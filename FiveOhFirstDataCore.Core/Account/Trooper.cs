@@ -173,14 +173,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if(tag == 0)
                 {
-                    return $"Company {Slot.AsFull()}";
+                    return $"Company {Role.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if(tag == 0)
                     {
-                        return $"Platoon {Slot.AsFull()}";
+                        return $"Platoon {Role.AsFull()}";
                     }
                     else
                     {
@@ -211,14 +211,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"Company {Slot.AsFull()}";
+                    return $"Airborne Company {Role.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"Airborne {Slot.AsFull()}";
+                        return $"Airborne Platoon {Role.AsFull()}";
                     }
                     else
                     {
@@ -226,16 +226,16 @@ namespace FiveOhFirstDataCore.Core.Account
                         {
                             if (Team is null)
                             {
-                                return $"Squad {Role.AsFull()}";
+                                return $"Airborne Squad {Role.AsFull()}";
                             }
                             else
                             {
-                                return $"Team {Role.AsFull()}";
+                                return $"Airborne Team {Role.AsFull()}";
                             }
                         }
                         else if (Role == Role.RTO)
                         {
-                            return $"Squad {Role.AsFull()}";
+                            return $"Airborne Squad {Role.AsFull()}";
                         }
                         else
                         {
@@ -249,7 +249,7 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot % 10;
                 if (tag == 0)
                 {
-                    return $"{Slot.AsFull()}";
+                    return $"Detachement {Role.AsFull()}";
                 }
                 else
                 {
@@ -279,14 +279,14 @@ namespace FiveOhFirstDataCore.Core.Account
                 var tag = (int)Slot / 10 % 10;
                 if (tag == 0)
                 {
-                    return $"{Slot.AsFull()}";
+                    return $"Squadron {Role.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
                     if (tag == 0)
                     {
-                        return $"{Slot.AsFull()}";
+                        return $"Flight {Role.AsFull()}";
                     }
                     else
                     {
