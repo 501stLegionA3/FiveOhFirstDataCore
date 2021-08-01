@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
@@ -100,18 +101,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                                 }
                                 else
                                 {
-                                    var res = await _signInManager.PasswordSignInAsync(user, Input.Password, false, false);
-
-                                    if (res is TrooperSignInResult result)
-                                    {
-                                        if (result.RequiresAccountLinking)
-                                        {
-                                            var token = await _link.StartAsync(user.Id, user.UserName, Input.Password, false);
-                                            returnUrl = $"/api/link/token/{token}";
-                                        }
-                                    }
-
-                                    return Redirect(returnUrl);
+                                    return Redirect($"/Identity/Account/Login?message={WebUtility.HtmlEncode("Your account has been created. Login to link your account.")}");
                                 }
                             }
                             else

@@ -34,6 +34,8 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        public string? Message { get; set; } = null;
+
         [TempData]
         public string ErrorMessage { get; set; }
 
@@ -58,6 +60,8 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
             }
 
             returnUrl ??= Url.Content("~/");
+
+            Message = HttpContext.Request.Query["message"];
 
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
