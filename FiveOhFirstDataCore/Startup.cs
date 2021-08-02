@@ -262,8 +262,6 @@ namespace FiveOhFirstDataCore
                 .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
 
             #region Discord Setup
-            var cshop = Secrets.GetSection("Discord:CShopRoleBindings");
-            var roles = Secrets.GetSection("Discord:RoleBindings");
             services.AddSingleton<DiscordConfiguration>(x => new()
             {
                 Token = Secrets["Discord:Token"],
@@ -273,9 +271,7 @@ namespace FiveOhFirstDataCore
                 .AddSingleton<DiscordRestClient>()
                 .AddSingleton<DiscordBotConfiguration>(x => new()
                 {
-                    HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"]),
-                    CShopRoleBindings = cshop.Get<Dictionary<CShop, Dictionary<string, Dictionary<string, ulong[]>>>>(),
-                    RoleBindings = roles.Get<Dictionary<string, Dictionary<string, DiscordRoleDetails>>>()
+                    HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"])
                 })
                 .AddScoped<IDiscordService, DiscordService>();
             #endregion

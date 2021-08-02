@@ -41,6 +41,9 @@ namespace FiveOhFirstDataCore.Core.Database
         #region Website Settings
         public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
         public DbSet<CShopClaim> CShopClaims { get; internal set; }
+        public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
+        public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
+        public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -82,6 +85,24 @@ namespace FiveOhFirstDataCore.Core.Database
                             )),
                         c => c == null ? null : c.ToDictionary(c => c.Key, c => c.Value)
                     ));
+
+            var cshopRoles = builder.Entity<CShopRoleBinding>();
+            cshopRoles.HasKey(p => p.Key);
+            cshopRoles.HasMany(p => p.Departments)
+                .WithOne(e => e.Parent)
+                .HasForeignKey(p => p.ParentKey);
+
+            var cshopRoleDepartment = builder.Entity<CShopDepartmentBinding>();
+            cshopRoleDepartment.HasKey(p => p.Key);
+            cshopRoleDepartment.HasMany(p => p.Roles)
+                .WithOne(e => e.Parent)
+                .HasForeignKey(p => p.ParentKey);
+
+            var cshopRoleData = builder.Entity<CShopRoleBindingData>();
+            cshopRoleData.HasKey(p => p.Key);
+
+            var discordRoles = builder.Entity<DiscordRoleDetails>();
+            discordRoles.HasKey(p => p.Key);
             #endregion
 
             #region Promotions and Transfers

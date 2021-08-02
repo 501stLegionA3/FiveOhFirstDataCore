@@ -283,6 +283,9 @@ namespace FiveOhFirstDataCore.Core.Data
                 ?.Description ?? "";
         }
 
+        public static string AsQualified<T>(this T value) where T : Enum
+            => $"{value.GetType().Name}.{value}";
+
         public static T? ValueFromString<T>(this string value) where T : Enum
         {
             var type = typeof(T);

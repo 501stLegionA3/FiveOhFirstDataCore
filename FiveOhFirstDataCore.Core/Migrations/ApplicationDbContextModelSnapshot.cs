@@ -483,6 +483,76 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("CShopClaims");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<long>("ParentKey")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ParentKey");
+
+                    b.ToTable("CShopDepartmentBinding");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", b =>
+                {
+                    b.Property<long>("Key")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("CShopRoles");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBindingData", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ParentKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal[]>("Roles")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ParentKey");
+
+                    b.ToTable("CShopRoleData");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.DiscordRoleDetails", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
+
+                    b.Property<decimal[]>("RoleGrants")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.Property<decimal[]>("RoleReplaces")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("DiscordRoles");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
                 {
                     b.Property<Guid>("FlagId")
@@ -1121,6 +1191,28 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("RequestedBy");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", "Parent")
+                        .WithMany("Departments")
+                        .HasForeignKey("ParentKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBindingData", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", "Parent")
+                        .WithMany("Roles")
+                        .HasForeignKey("ParentKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
@@ -1454,6 +1546,16 @@ namespace FiveOhFirstDataCore.Core.Migrations
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
                 {
                     b.Navigation("Notices");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
+                {
+                    b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", b =>
+                {
+                    b.Navigation("Departments");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>

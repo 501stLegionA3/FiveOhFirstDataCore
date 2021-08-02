@@ -64,6 +64,30 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CShopRoles",
+                columns: table => new
+                {
+                    Key = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CShopRoles", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DiscordRoles",
+                columns: table => new
+                {
+                    Key = table.Column<string>(type: "text", nullable: false),
+                    RoleGrants = table.Column<decimal[]>(type: "numeric(20,0)[]", nullable: false),
+                    RoleReplaces = table.Column<decimal[]>(type: "numeric(20,0)[]", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiscordRoles", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PromotionRequirements",
                 columns: table => new
                 {
@@ -148,6 +172,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CShopDepartmentBinding",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: true),
+                    ParentKey = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CShopDepartmentBinding", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_CShopDepartmentBinding_CShopRoles_ParentKey",
+                        column: x => x.ParentKey,
+                        principalTable: "CShopRoles",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PromotionTrooper",
                 columns: table => new
                 {
@@ -171,10 +214,40 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CShopRoleData",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<string>(type: "text", nullable: true),
+                    Roles = table.Column<decimal[]>(type: "numeric(20,0)[]", nullable: false),
+                    ParentKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CShopRoleData", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_CShopRoleData_CShopDepartmentBinding_ParentKey",
+                        column: x => x.ParentKey,
+                        principalTable: "CShopDepartmentBinding",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_RankUpdates_DeniedById",
                 table: "RankUpdates",
                 column: "DeniedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CShopDepartmentBinding_ParentKey",
+                table: "CShopDepartmentBinding",
+                column: "ParentKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CShopRoleData_ParentKey",
+                table: "CShopRoleData",
+                column: "ParentKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Promotions_PromotionForId",
@@ -227,6 +300,12 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "CShopClaims");
 
             migrationBuilder.DropTable(
+                name: "CShopRoleData");
+
+            migrationBuilder.DropTable(
+                name: "DiscordRoles");
+
+            migrationBuilder.DropTable(
                 name: "PromotionRequirements");
 
             migrationBuilder.DropTable(
@@ -236,7 +315,13 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "RankUpdateTrooper");
 
             migrationBuilder.DropTable(
+                name: "CShopDepartmentBinding");
+
+            migrationBuilder.DropTable(
                 name: "Promotions");
+
+            migrationBuilder.DropTable(
+                name: "CShopRoles");
 
             migrationBuilder.DropIndex(
                 name: "IX_RankUpdates_DeniedById",

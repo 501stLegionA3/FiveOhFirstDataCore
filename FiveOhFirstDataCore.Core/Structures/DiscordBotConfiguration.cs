@@ -10,7 +10,5 @@ namespace FiveOhFirstDataCore.Core.Structures
     public class DiscordBotConfiguration
     {
         public ulong HomeGuild { get; set; }
-        public Dictionary<CShop, Dictionary<string, Dictionary<string, ulong[]>>> CShopRoleBindings { get; set; }
-        public Dictionary<string, Dictionary<string, DiscordRoleDetails>> RoleBindings { get; set; }
     }
 }

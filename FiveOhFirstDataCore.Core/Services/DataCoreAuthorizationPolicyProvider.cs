@@ -53,7 +53,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC1":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -67,7 +67,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRosterClerk":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -77,7 +77,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRosterClerkOrReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -88,7 +88,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRecruiter":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -98,7 +98,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRecruiterOrReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -109,7 +109,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C1")
@@ -119,7 +119,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC3":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C3")
@@ -130,7 +130,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC4":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C4")
@@ -140,7 +140,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC5":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C5")
@@ -153,7 +153,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC6":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C6")
@@ -166,7 +166,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireQualificationInstructor":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C6")
@@ -176,7 +176,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC7":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C7")
@@ -187,7 +187,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC8":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
-                        var ClaimsTree = await _s.GetCachedCShopClaimTree();
+                        var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
                         return ctx.User.IsInRole("Admin")
                             || ctx.User.IsInRole("Manager")
                             || ctx.User.HasClaim("Department Lead", "C8")

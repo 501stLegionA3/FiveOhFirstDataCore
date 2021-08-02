@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -919,7 +920,7 @@ namespace FiveOhFirstDataCore.Core.Services
             CShopClaimTree = await GetFullClaimsTreeAsync();
         }
 
-        public async Task<Dictionary<CShop, CShopClaim>> GetCachedCShopClaimTree()
+        public async Task<Dictionary<CShop, CShopClaim>> GetCachedCShopClaimTreeAsync()
         {
             if (CShopClaimTree is null)
                 await ReloadClaimTreeAsync();
@@ -948,6 +949,66 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 item.Value.Key = item.Key;
                 _dbContext.CShopClaims.Add(item.Value);
+
+                // CShop Discord Role Bindings
+                var oldRole = await _dbContext.CShopRoles.FindAsync(item.Key);
+                if (oldRole is not null)
+                    _dbContext.CShopRoles.Remove(oldRole);
+
+                var role = new CShopRoleBinding()
+                {
+                    Key = item.Key
+                };
+
+                foreach(var val in item.Value.ClaimData)
+                {
+                    var set = new CShopDepartmentBinding()
+                    {
+                        Id = val.Key
+                    };
+
+                    foreach (var part in val.Value)
+                        set.Roles.Add(new() { Id = part });
+
+                    role.Departments.Add(set);
+                }
+
+                _dbContext.CShopRoles.Add(role);
+            }
+
+            List<Enum> vals = new();
+            foreach (var i in Enum.GetValues<Role>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<Slot>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<Team>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<Flight>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<TrooperRank>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<RTORank>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<MedicRank>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<PilotRank>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<WarrantRank>())
+                vals.Add(i);
+            foreach (var i in Enum.GetValues<Qualification>())
+                vals.Add(i);
+
+            foreach (Enum item in vals)
+            {
+                var name = item.AsQualified();
+                var old = await _dbContext.FindAsync<DiscordRoleDetails>(name);
+                if (old is not null)
+                    _dbContext.DiscordRoles.Remove(old);
+
+                _dbContext.Add(new DiscordRoleDetails()
+                {
+                    Key = name
+                });
             }
 
             await _dbContext.SaveChangesAsync();
@@ -1070,6 +1131,30 @@ namespace FiveOhFirstDataCore.Core.Services
             var data = await _dbContext.CShopClaims.FindAsync(key);
 
             return data?.ClaimData ?? new();
+        }
+
+        public async Task<IReadOnlyList<ulong>?> GetCshopDiscordRolesAsync(Claim claim)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = _dbContext.CShopRoleData
+                .Where(x => x.Id == claim.Value)
+                .Include(p => p.Parent)
+                .AsAsyncEnumerable();
+
+            await foreach(var item in data)
+            {
+                if (item.Parent.Id == claim.Type)
+                    return item.Roles;
+            }
+
+            return null;
+        }
+
+        public async Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var details = await _dbContext.FindAsync<DiscordRoleDetails>(key.AsQualified());
+            return details;
         }
     }
 }
