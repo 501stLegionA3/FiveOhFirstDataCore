@@ -91,6 +91,8 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
             {
                 PromoteFrom = currentRank,
                 PromoteTo = RequirementsFor,
+                PromotionFor = trooper,
+                PromotionForId = trooper.Id
             };
 
             return true;
