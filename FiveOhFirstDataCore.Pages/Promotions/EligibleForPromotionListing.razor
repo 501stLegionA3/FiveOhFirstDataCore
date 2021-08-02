@@ -318,10 +318,14 @@
     private async Task StartPromotion(Promotion p)
     {
         Promotion = p;
-        await StartPromotion();
+        await StartPromotion(false);
+        _ = EligiblePromotions.Remove(p);
     }
 
     private async Task StartPromotion()
+        => await StartPromotion(true);
+
+    private async Task StartPromotion(bool usedForm = true)
     {
         if (AllowedPromoter)
         {
@@ -333,7 +337,8 @@
                 return;
             }
 
-            ToggleStartPromotionForm();
+            if (usedForm)
+                ToggleStartPromotionForm();
 
             var user = (await AuthStateTask).User;
 

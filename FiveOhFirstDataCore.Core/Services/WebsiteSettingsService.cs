@@ -982,7 +982,12 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     if(req.TryGetPromotion(rankVal, forTrooper, levels, out var promo))
                     {
-                        promotions.Add(promo);
+                        if (!forTrooper.PendingPromotions.Any(x => 
+                            promo.PromoteFrom == x.PromoteFrom 
+                            && promo.PromoteTo == x.PromoteTo))
+                        {
+                            promotions.Add(promo);
+                        }
                     }
                 }
             }
