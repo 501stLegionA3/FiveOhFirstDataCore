@@ -23,5 +23,6 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Dictionary<CShop, CShopClaim>> GetCachedCShopClaimTreeAsync();
         public Task<IReadOnlyList<ulong>?> GetCshopDiscordRolesAsync(Claim claim);
         public Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key);
+        public Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree);
     }
 }

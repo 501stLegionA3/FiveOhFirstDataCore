@@ -943,12 +943,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             foreach(var item in ClaimsTree)
             {
-                var old = await _dbContext.CShopClaims.FindAsync(item.Key);
-                if (old is not null)
-                    _dbContext.CShopClaims.Remove(old);
-
-                item.Value.Key = item.Key;
-                _dbContext.CShopClaims.Add(item.Value);
+                
 
                 // CShop Discord Role Bindings
                 var oldRole = await _dbContext.CShopRoles.FindAsync(item.Key);
@@ -962,6 +957,13 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 foreach(var val in item.Value.ClaimData)
                 {
+                    var old = await _dbContext.CShopClaims.FindAsync(item.Key);
+                    if (old is not null)
+                        _dbContext.CShopClaims.Remove(old);
+
+                    item.Value.Key = item.Key;
+                    _dbContext.CShopClaims.Add(item.Value);
+
                     var set = new CShopDepartmentBinding()
                     {
                         Id = val.Key
@@ -1014,6 +1016,22 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.SaveChangesAsync();
 
             await ReloadClaimTreeAsync();
+        }
+
+        public async Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            foreach (var item in claimTree)
+            {
+                var old = await _dbContext.CShopClaims.FindAsync(item.Key);
+                if (old is not null)
+                    _dbContext.CShopClaims.Remove(old);
+
+                item.Value.Key = item.Key;
+                _dbContext.CShopClaims.Add(item.Value);
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank)
