@@ -1036,6 +1036,8 @@ namespace FiveOhFirstDataCore.Core.Services
                 _dbContext.CShopClaims.Add(item.Value);
             }
 
+            await ReloadClaimTreeAsync();
+
             await _dbContext.SaveChangesAsync();
         }
 
