@@ -122,6 +122,9 @@
     [Parameter]
     public bool Mynock { get; set; } = false;
 
+    [CascadingParameter(Name = "Airborne")]
+    public bool Airborne { get; set; } = false;
+
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
@@ -148,7 +151,12 @@
     {
         if(ConfirmApprove)
         {
-            var res = await _promote.ElevatePromotionAsync(promo, CurrentUser);
+            ConfirmApprove = false;
+
+            int levels = 1;
+            if (BoardLevel == PromotionBoardLevel.Squad && Airborne)
+                levels = 2;
+            var res = await _promote.ElevatePromotionAsync(promo, CurrentUser, levels);
 
             if(!res.GetResult(out var errors))
             {
@@ -167,7 +175,7 @@
                 }
             }
 
-            if (BoardLevel >= PromotionBoardLevel.Compnay
+            if (BoardLevel >= PromotionBoardLevel.Company
                 && BoardLevel < PromotionBoardLevel.Razor)
             {
                 _advRefresh.CallDataReloadRequest("Promotion_Battalion");
@@ -181,9 +189,14 @@
                     _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
                 }
             }
-            if(BoardLevel >= PromotionBoardLevel.Squad 
+            if (BoardLevel >= PromotionBoardLevel.Squad
                 && BoardLevel < PromotionBoardLevel.Razor)
-                _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+            {
+                if (Airborne)
+                    _advRefresh.CallDataReloadRequest("Promotion_Company");
+                else
+                    _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+            }
 
             if (BoardLevel == PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Razor");
@@ -206,6 +219,8 @@
     {
         if(ConfirmDeny)
         {
+            ConfirmDeny = false;
+
             var res = await _promote.CancelPromotionAsync(promo, CurrentUser);
 
             if(!res.GetResult(out var errors))
@@ -220,7 +235,7 @@
             if (BoardLevel >= PromotionBoardLevel.Battalion
                 && BoardLevel < PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-            if(BoardLevel >= PromotionBoardLevel.Compnay 
+            if(BoardLevel >= PromotionBoardLevel.Company 
                 && BoardLevel < PromotionBoardLevel.Razor)
             {
                 _advRefresh.CallDataReloadRequest("Promotion_Company");
@@ -249,7 +264,7 @@
             if (BoardLevel >= PromotionBoardLevel.Battalion
                 && BoardLevel < PromotionBoardLevel.Razor)
                 _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-            if(BoardLevel >= PromotionBoardLevel.Compnay 
+            if(BoardLevel >= PromotionBoardLevel.Company 
                 && BoardLevel < PromotionBoardLevel.Razor)
             {
                 _advRefresh.CallDataReloadRequest("Promotion_Company");

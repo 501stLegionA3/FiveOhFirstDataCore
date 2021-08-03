@@ -3,21 +3,24 @@
 <CascadingValue Value="CanPromote">
 @if(Troopers is not null)
 {
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
+    <PendingPromotionsListing BoardLevel="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Compnay" ActiveTroopers="Troopers" />
+    <EligibleForPromotionListing SendPromotionsTo="Airborne ? PromotionBoardLevel.Battalion : PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
 }
 </CascadingValue>
 
 @code {
     [Parameter]
-    public PlatoonData? Platoon { get; set; }
+    public PlatoonData Platoon { get; set; }
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    [CascadingParameter(Name = "Airborne")]
+    public bool Airborne { get; set; } = false;
 
     public List<Trooper>? Troopers { get; set; } = null;
 

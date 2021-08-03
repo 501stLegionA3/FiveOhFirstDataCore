@@ -258,6 +258,9 @@
 
     [Parameter]
     public bool Mynock { get; set; } = false;
+    
+    [CascadingParameter(Name = "Airborne")]
+    public bool Airborne { get; set; } = false;
 
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
@@ -331,6 +334,9 @@
         {
             Promotion.CurrentBoard = SendPromotionsTo;
 
+            if (Promotion.CurrentBoard == PromotionBoardLevel.Platoon && Airborne)
+                Promotion.CurrentBoard = PromotionBoardLevel.Company;
+
             if(Promotion.PromoteTo <= 0)
             {
                 Errors.Add("No rank was selected to promote to.");
@@ -355,7 +361,7 @@
                 if(SendPromotionsTo >= PromotionBoardLevel.Battalion 
                     && SendPromotionsTo < PromotionBoardLevel.Razor)
                     _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-                if(SendPromotionsTo >= PromotionBoardLevel.Compnay 
+                if(SendPromotionsTo >= PromotionBoardLevel.Company 
                     && SendPromotionsTo < PromotionBoardLevel.Razor)
                 {
                     _advRefresh.CallDataReloadRequest("Promotion_Company");
@@ -364,9 +370,14 @@
                         _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
                     }
                 }
-                if(SendPromotionsTo >= PromotionBoardLevel.Platoon 
+                if (SendPromotionsTo >= PromotionBoardLevel.Platoon
                     && SendPromotionsTo < PromotionBoardLevel.Razor)
-                    _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+                {
+                    if(Airborne)
+                        _advRefresh.CallDataReloadRequest("Promotion_Company");
+                    else
+                        _advRefresh.CallDataReloadRequest("Promotion_Platoon");
+                }
                 if(SendPromotionsTo >= PromotionBoardLevel.Squad 
                     && SendPromotionsTo < PromotionBoardLevel.Razor)
                 {

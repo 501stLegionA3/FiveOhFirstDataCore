@@ -24,7 +24,9 @@
                 <h4>@Slot.AsFull()'s Promotion Board</h4>
                 @if(Data is not null)
                 {
-                    <PlatoonPromotionBoard Platoon="Data" />
+                    <CascadingValue Name="Airborne" Value="Airborne" >
+                        <PlatoonPromotionBoard Platoon="Data" />
+                    </CascadingValue>
                 }
                 else
                 {
@@ -55,6 +57,7 @@ else
     private PlatoonDisplayOption Active { get; set; } = PlatoonDisplayOption.Roster;
     private PlatoonData? Data { get; set; }
     private bool Loaded { get; set; } = false;
+    private bool Airborne { get; set; } = false;
     private Slot Slot { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -77,11 +80,17 @@ else
                 Slot = (Slot)((int)t.Slot / 10 * 10);
             }
 
+            if (Slot >= Slot.AcklayCompany && Slot < Slot.Mynock)
+                Airborne = true;
+
             Loaded = true;
 
             StateHasChanged();
 
-            _advRefresh.AddDataReloadListener("Promotion_Platoon", DataReloadRequested);
+            if(Airborne)
+                _advRefresh.AddDataReloadListener("Promotion_Company", DataReloadRequested);
+            else
+                _advRefresh.AddDataReloadListener("Promotion_Platoon", DataReloadRequested);
         }
     }
 

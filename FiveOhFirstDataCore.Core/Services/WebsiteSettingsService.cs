@@ -37,7 +37,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 RequiredRank = new() { (int)TrooperRank.Trooper },
                 RequiredTimeInGrade = 122,
-                NeededLevel = PromotionBoardLevel.Compnay,
+                NeededLevel = PromotionBoardLevel.Company,
                 CanPromoteTo = new() { (int)TrooperRank.VeteranTrooper, (int)TrooperRank.Corporal }
             },
             [(int)TrooperRank.VeteranTrooper] = new()
