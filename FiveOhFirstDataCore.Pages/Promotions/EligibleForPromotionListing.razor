@@ -36,6 +36,7 @@
         <h4>Troopers Eligible for Promotion</h4>
         @if (Loaded)
         {
+            Counter = 0;
             <table class="table table-hover table-striped">
                 <thead>
                     <tr>
@@ -54,6 +55,7 @@
                     {
                         @foreach(var e in EligiblePromotions)
                         {
+                            var c = Counter++;
                             <tr>
                                 <td>@e.PromotionFor.Id</td>
                                 <td>@e.PromotionFor.NickName</td>
@@ -65,9 +67,9 @@
                                     <td>
                                         <div class="input-group">
                                             <div class="input-group-text bg-success">
-                                                <input type="checkbox" class="form-check-input mt-0" @onclick="TogglePromote" />
+                                                <input type="checkbox" class="form-check-input mt-0" checked="@(ConfirmPromote == c)" @onclick="x => { if(ConfirmPromote == c) ConfirmPromote = -1; else ConfirmPromote = c; }" />
                                             </div>
-                                            <button class="btn btn-outline-success" disabled="@(!ConfirmPromote)" @onclick="async (x) => await StartPromotion(p)">Raise For Promotion</button>
+                                            <button class="btn btn-outline-success" disabled="@(ConfirmPromote != c)" @onclick="async (x) => await StartPromotion(p)">Raise For Promotion</button>
                                         </div>
                                     </td>
                                 }
@@ -269,9 +271,8 @@
 
     public List<Promotion> EligiblePromotions { get; set; } = new();
 
-    protected bool ConfirmPromote { get; set; } = false;
-    public void TogglePromote()
-        => ConfirmPromote = !ConfirmPromote;
+    protected int ConfirmPromote { get; set; } = -1;
+    protected int Counter { get; set; } = 0;
 
     private bool IsPromoting { get; set; } = false;
     private Promotion Promotion { get; set; } = new();

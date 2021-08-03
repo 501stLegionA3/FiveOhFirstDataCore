@@ -48,6 +48,7 @@
             <tbody>
                 @if(ActiveTroopers is not null)
                 {
+                    Counter = 0;
                     foreach(var trooper in ActiveTroopers)
                     {
                         if (trooper is null) continue;
@@ -68,20 +69,21 @@
                                     @if (AllowedPromoter && promo.CurrentBoard == BoardLevel)
                                     {
                                         var p = promo;
+                                        var c = Counter++;
                                         <td>
                                             <div class="input-group">
                                                 <div class="input-group-text bg-success">
-                                                    <input type="checkbox" class="form-check-input mt-0" @onclick="ToggleApprove" />
+                                                    <input type="checkbox" class="form-check-input mt-0" checked="@(ConfirmApprove == c)" @onclick="x => { if(ConfirmApprove == c) ConfirmApprove = -1; else ConfirmApprove = c; }" />
                                                 </div>
-                                                <button class="btn btn-outline-success" disabled="@(!ConfirmApprove)" @onclick="async (x) => await ApprovePromotion(p)">Approve</button>
+                                                <button class="btn btn-outline-success" disabled="@(ConfirmApprove != c)" @onclick="async (x) => await ApprovePromotion(p, c)">Approve</button>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="input-group">
                                                 <div class="input-group-text bg-danger">
-                                                    <input type="checkbox" class="form-check-input mt-0" @onclick="ToggleDeny" />
+                                                    <input type="checkbox" class="form-check-input mt-0" checked="@(ConfirmDeny == c)" @onclick="x => { if(ConfirmDeny == c) ConfirmDeny = -1; else ConfirmDeny = c; }" />
                                                 </div>
-                                                <button class="btn btn-outline-danger" disabled="@(!ConfirmDeny)" @onclick="async (x) => await DenyPromotion(p)">Deny</button>
+                                                <button class="btn btn-outline-danger" disabled="@(ConfirmDeny != c)" @onclick="async (x) => await DenyPromotion(p, c)">Deny</button>
                                             </div>
                                         </td>
                                     }
@@ -128,14 +130,10 @@
     protected string? SuccessMessage { get; set; } = null;
     protected List<string> Errors { get; set; } = new();
 
-    private bool ConfirmApprove { get; set; } = false;
-    private bool ConfirmDeny { get; set; } = false;
+    public int Counter { get; set; } = 0;
 
-    private void ToggleApprove()
-        => ConfirmApprove = !ConfirmApprove;
-
-    private void ToggleDeny()
-        => ConfirmDeny = !ConfirmDeny;
+    private int ConfirmApprove { get; set; } = -1;
+    private int ConfirmDeny { get; set; } = -1;
 
     protected void ClearSuccess()
     {
@@ -147,11 +145,11 @@
         Errors.Clear();   
     }
 
-    protected async Task ApprovePromotion(Promotion promo)
+    protected async Task ApprovePromotion(Promotion promo, int c)
     {
-        if(ConfirmApprove)
+        if(ConfirmApprove == c)
         {
-            ConfirmApprove = false;
+            ConfirmApprove = -1;
 
             int levels = 1;
             if (BoardLevel == PromotionBoardLevel.Squad && Airborne)
@@ -215,11 +213,11 @@
         }
     }
 
-    protected async Task DenyPromotion(Promotion promo)
+    protected async Task DenyPromotion(Promotion promo, int c)
     {
-        if(ConfirmDeny)
+        if(ConfirmDeny == c)
         {
-            ConfirmDeny = false;
+            ConfirmDeny = -1;
 
             var res = await _promote.CancelPromotionAsync(promo, CurrentUser);
 
