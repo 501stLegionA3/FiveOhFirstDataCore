@@ -93,12 +93,12 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 {
                     RequirementsFor = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RequiredRank = table.Column<List<int>>(type: "integer[]", nullable: true),
-                    InherentRankAuth = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    RequiredRank = table.Column<List<int>>(type: "integer[]", nullable: false),
+                    InherentRankAuth = table.Column<List<int>>(type: "integer[]", nullable: false),
                     RankOrHigher = table.Column<bool>(type: "boolean", nullable: false),
                     RequiredTimeInGrade = table.Column<int>(type: "integer", nullable: false),
-                    TiGWaivedFor = table.Column<List<int>>(type: "integer[]", nullable: true),
-                    RequiredBillet = table.Column<int[]>(type: "integer[]", nullable: true),
+                    TiGWaivedFor = table.Column<List<int>>(type: "integer[]", nullable: false),
+                    RequiredBillet = table.Column<int[]>(type: "integer[]", nullable: false),
                     RequiredTimeInBillet = table.Column<int>(type: "integer", nullable: false),
                     DivideEqualsZero = table.Column<int>(type: "integer", nullable: true),
                     SlotMin = table.Column<int>(type: "integer", nullable: true),
@@ -109,7 +109,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     RequiresCShopLeadership = table.Column<bool>(type: "boolean", nullable: false),
                     RequiresCShopCommand = table.Column<bool>(type: "boolean", nullable: false),
                     NeededLevel = table.Column<int>(type: "integer", nullable: false),
-                    CanPromoteTo = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    CanPromoteTo = table.Column<List<int>>(type: "integer[]", nullable: false),
                     DoesNotRequireLinearProgression = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>

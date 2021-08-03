@@ -1,0 +1,70 @@
+﻿<EditForm class="form" Model="this">
+    @if (Billets is not null)
+    {
+        @for (int c = 0; c < Billets.Count; c++)
+        {
+            var num = c;
+            var i = Billets[num].AsFull();
+            <div class="input-group">
+                <InputText @bind-Value="i" class="form-control" disabled="true" />
+                <button class="btn btn-outline-danger" type="button" @onclick="x => RemoveValue(num)">Delete</button>
+            </div>
+            <br /> 
+        } 
+    }
+    <div class="form-group mt-3">
+        <div class="input-group">
+            <InputSelect @bind-Value="ToAdd" class="form-control">
+                <option value="null">n/a</option>
+            @foreach(var group in BilletList)
+            {
+                @if (Billets is null || !Billets.Contains(group))
+                {
+                    <option value="@group">@group.AsFull()</option>
+                }
+            }
+            </InputSelect>
+            <button class="btn btn-outline-success" @onclick="AddSegement">Add Billet</button>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public List<Role>? Billets { get; set; } = new();
+    public List<Role> BilletList { get; set; } = new();
+
+    public Role? ToAdd { get; set; } = null;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        BilletList = new();
+        foreach(var r in Enum.GetValues<Role>())
+            BilletList.Add(r);
+    }
+
+    public void AddSegement()
+    {
+        if(ToAdd is not null)
+        {
+            if(Billets is null)
+                Billets = new();
+
+            Billets.Add(ToAdd.Value);
+        }
+
+        ToAdd = null;
+    }
+
+    public void RemoveValue(int index)
+    {
+        if(Billets is not null)
+        {
+            Billets.RemoveAt(index);
+            if(Billets.Count <= 0)
+                Billets = null;
+        }
+    }
+}

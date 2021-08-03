@@ -14,13 +14,13 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
     {
         public int RequirementsFor { get; set; }
 
-        public List<int>? RequiredRank { get; set; } = null;
-        public List<int>? InherentRankAuth { get; set; } = null;
+        public List<int> RequiredRank { get; set; } = new();
+        public List<int> InherentRankAuth { get; set; } = new();
         public bool RankOrHigher { get; set; } = false;
         public int RequiredTimeInGrade { get; set; } = -1;
-        public List<int>? TiGWaivedFor { get; set; } = null;
+        public List<int> TiGWaivedFor { get; set; } = new();
 
-        public List<Role>? RequiredBillet { get; set; } = null;
+        public List<Role> RequiredBillet { get; set; } = new();
         public int RequiredTimeInBillet { get; set; } = -1;
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
 
         public PromotionBoardLevel NeededLevel { get; set; } = PromotionBoardLevel.Platoon;
 
-        public List<int>? CanPromoteTo { get; set; } = null;
+        public List<int> CanPromoteTo { get; set; } = new();
         public bool DoesNotRequireLinearProgression { get; set; } = false;
 
         public bool TryGetPromotion(int currentRank, Trooper trooper, (bool, bool) cshopLevels,
@@ -49,13 +49,14 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         {
             promotion = null;
 
-            if (RequiredTimeInGrade != -1 && RequiredRank is not null)
+            if (RequiredTimeInGrade != -1 && RequiredRank.Count > 0)
                 if (!RequiredRank.Contains(currentRank)
                     || trooper.LastPromotion.DaysFromToday() < RequiredTimeInGrade)
                     if (!(RankOrHigher && RequiredRank.Min() <= currentRank))
+                        if(TiGWaivedFor.Count <= 0 || !TiGWaivedFor.Contains(currentRank))
                         return false;
 
-            if (RequiredTimeInBillet != -1 && RequiredBillet is not null)
+            if (RequiredTimeInBillet != -1 && RequiredBillet.Count > 0)
                 if (!RequiredBillet.Contains(trooper.Role))
                     return false;
 

@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210802160647_Dev-Soyvolon-Promotions")]
+    [Migration("20210803155951_Dev-Soyvolon-Promotions")]
     partial class DevSoyvolonPromotions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -405,6 +405,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<List<int>>("CanPromoteTo")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<int?>("DivideEqualsZero")
@@ -414,6 +415,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<List<int>>("InherentRankAuth")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<int>("NeededLevel")
@@ -423,12 +425,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int[]>("RequiredBillet")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<long>("RequiredQualifications")
                         .HasColumnType("bigint");
 
                     b.Property<List<int>>("RequiredRank")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.Property<int>("RequiredTimeInBillet")
@@ -456,6 +460,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<List<int>>("TiGWaivedFor")
+                        .IsRequired()
                         .HasColumnType("integer[]");
 
                     b.HasKey("RequirementsFor");

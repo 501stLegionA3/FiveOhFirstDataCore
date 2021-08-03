@@ -1,5 +1,169 @@
-﻿<h3>PromotionRequirementSettingDisplay</h3>
+﻿@inject IWebsiteSettingsService _settings
+
+@if (Loaded)
+{
+    Counter = 0;
+    <div class="row">
+        <div class="col-lg-8 col-md-12">
+            <div class="p-3">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" @onclick="OnSave">Save Changes</button>
+                    <button class="btn btn-danger" @onclick="OnRevert">Revert Changes</button>
+                </div>
+            </div>
+            <div class="accordion mt-2" id="promotions-accordion">
+                @foreach (var item in Bindings)
+                {
+                    Counter++;
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#body-{Counter}")" aria-expanded="false" aria-controls="@($"body-{Counter}")">
+                                @item.Key.GetRank().AsFull()
+                            </button>
+                        </h2>
+                        <div id="@($"body-{Counter}")" class="accordion-collapse collapse" aria-labelledby="@($"header-{Counter}")" data-bs-parent="#promotions-accordion">
+                            <PromotionRequirementDataDisplay Details="item.Value" />
+                        </div>
+                    </div>
+                }
+            </div>
+            <EditForm Model="this" >
+                <div class="form-group mt-3">
+                    <div class="input-group">
+                        <InputSelect @bind-Value="AddNewSegment" class="form-control">
+                        @foreach(var group in Roles)
+                        {
+                            @if (!Bindings.ContainsKey(group.Key))
+                            {
+                                <option value="@group.Key">@group.Value.AsFull()</option>
+                            }
+                        }
+                        </InputSelect>
+                        <button class="btn btn-outline-success" @onclick="AddSegement">Add Group</button>
+                    </div>
+                </div>
+                <div class="form-group mt-3">
+                    <div class="input-group">
+                        <InputSelect @bind-Value="ToDelete" class="form-control">
+                        @foreach(var group in Bindings)
+                        {
+                            <option value="@group.Key">@group.Key.GetRank().AsFull()</option>
+                        }
+                        </InputSelect>
+                        <button class="btn btn-outline-danger" @onclick="DeleteSegement">Delete Group</button>
+                    </div>
+                </div>
+            </EditForm>
+            <br class="m-3" />
+        </div>
+        <div class="col-lg-4 col-md-12">
+            <h4 class="text-wrap text-center">Role to Integer Conversion List</h4>
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var i in Roles)
+                    {
+                        <tr>
+                            <td>@i.Value.AsFull()</td>
+                            <td>@i.Key</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <em>Loading...</em>
+}
 
 @code {
+    public SortedDictionary<int, PromotionDetails> Bindings { get; set; } = new();
+    public SortedList<int, Enum> Roles { get; set; } = new();
+    public int Counter { get; set; } = 0;
+    public bool Loaded { get; set; } = false;
 
+    public int AddNewSegment { get; set; } = -1;
+    public int ToDelete { get; set; } = -1;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            Bindings = new(await _settings.GetSavedPromotionDetails());
+            Loaded = true;
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        Roles = new();
+        List<Enum> roles = new();
+        foreach (var i in Enum.GetValues<TrooperRank>())
+            roles.Add(i);
+        foreach (var i in Enum.GetValues<RTORank>())
+            roles.Add(i);
+        foreach (var i in Enum.GetValues<MedicRank>())
+            roles.Add(i);
+        foreach (var i in Enum.GetValues<PilotRank>())
+            roles.Add(i);
+        foreach (var i in Enum.GetValues<WarrantRank>())
+            roles.Add(i);
+
+        try
+        {
+            foreach (var i in roles)
+                Roles.Add(Convert.ToInt32(i), i);
+        }
+        catch
+        {
+            // Whoops. Something shouldn't have broken.
+        }
+    }
+
+    public async Task OnRevert()
+    {
+        Bindings = new(await _settings.GetSavedPromotionDetails());
+        StateHasChanged();
+    }
+
+    public async Task OnSave()
+    {
+        await _settings.OverridePromotionRequirementsAsync(new(Bindings));
+        await OnRevert();
+    }
+
+    public void AddSegement()
+    {
+        if (AddNewSegment > -1)
+        {
+            Bindings.Add(AddNewSegment, new()
+            {
+                RequirementsFor = AddNewSegment
+            });
+        }
+
+        AddNewSegment = -1;
+    }
+
+    public void DeleteSegement()
+    {
+        if (ToDelete > -1)
+        {
+            Bindings.Remove(ToDelete);
+        }
+
+        ToDelete = -1;
+    }
 }

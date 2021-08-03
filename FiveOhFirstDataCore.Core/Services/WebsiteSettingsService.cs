@@ -931,7 +931,8 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task SetDefaultSettingsAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            foreach(var pair in NeededTimeForPromotion)
+            _dbContext.PromotionRequirements.RemoveRange(_dbContext.PromotionRequirements);
+            foreach (var pair in NeededTimeForPromotion)
             {
                 var old = await _dbContext.PromotionRequirements.FindAsync(pair.Key);
                 if (old is not null)
@@ -941,10 +942,11 @@ namespace FiveOhFirstDataCore.Core.Services
                 _dbContext.PromotionRequirements.Add(pair.Value);
             }
 
-            foreach(var item in ClaimsTree)
-            {
-                
+            _dbContext.CShopRoles.RemoveRange(_dbContext.CShopRoles);
+            _dbContext.CShopClaims.RemoveRange(_dbContext.CShopClaims);
 
+            foreach (var item in ClaimsTree)
+            {
                 // CShop Discord Role Bindings
                 var oldRole = await _dbContext.CShopRoles.FindAsync(item.Key);
                 if (oldRole is not null)
@@ -1000,6 +1002,8 @@ namespace FiveOhFirstDataCore.Core.Services
             foreach (var i in Enum.GetValues<Qualification>())
                 vals.Add(i);
 
+            _dbContext.DiscordRoles.RemoveRange(_dbContext.DiscordRoles);
+
             foreach (Enum item in vals)
             {
                 var name = item.AsQualified();
@@ -1021,6 +1025,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
+            _dbContext.CShopClaims.RemoveRange(_dbContext.CShopClaims);
             foreach (var item in claimTree)
             {
                 var old = await _dbContext.CShopClaims.FindAsync(item.Key);
@@ -1151,7 +1156,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return data?.ClaimData ?? new();
         }
 
-        public async Task<IReadOnlyList<ulong>?> GetCshopDiscordRolesAsync(Claim claim)
+        public async Task<IReadOnlyList<ulong>?> GetCShopDiscordRolesAsync(Claim claim)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = _dbContext.CShopRoleData
@@ -1173,6 +1178,40 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var details = await _dbContext.FindAsync<DiscordRoleDetails>(key.AsQualified());
             return details;
+        }
+
+        public async Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails()
+        {
+            Dictionary<int, PromotionDetails> dict = new(); 
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = _dbContext.PromotionRequirements
+                .AsAsyncEnumerable();
+
+            await foreach(var item in data)
+            {
+                dict.Add(item.RequirementsFor, item);
+            }
+
+            return dict;
+        }
+
+        public async Task OverridePromotionRequirementsAsync(Dictionary<int, PromotionDetails> details)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            _dbContext.PromotionRequirements.RemoveRange(_dbContext.PromotionRequirements);
+
+            foreach (var pair in details)
+            {
+                var old = await _dbContext.PromotionRequirements.FindAsync(pair.Key);
+                if (old is not null)
+                    _dbContext.Remove(old);
+
+                pair.Value.RequirementsFor = pair.Key;
+                _dbContext.PromotionRequirements.Add(pair.Value);
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -87,7 +87,7 @@ namespace FiveOhFirstDataCore.Core.Services
         }
 
         private async Task<IReadOnlyList<ulong>?> GetCShopIdAsync(Claim value)
-            => await _settings.GetCshopDiscordRolesAsync(value);
+            => await _settings.GetCShopDiscordRolesAsync(value);
 
         public async Task UpdateQualificationChangeAsync(QualificationUpdate change, ulong changeFor)
         {

@@ -17,12 +17,14 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task SetDefaultSettingsAsync();
         public Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank);
         public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper);
+        public Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails();
         public Task<Dictionary<CShop, CShopClaim>> GetFullClaimsTreeAsync();
         public Task<Dictionary<string, List<string>>> GetClaimDataForCShopAsync(CShop key);
         public Task ReloadClaimTreeAsync();
         public Task<Dictionary<CShop, CShopClaim>> GetCachedCShopClaimTreeAsync();
-        public Task<IReadOnlyList<ulong>?> GetCshopDiscordRolesAsync(Claim claim);
+        public Task<IReadOnlyList<ulong>?> GetCShopDiscordRolesAsync(Claim claim);
         public Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key);
         public Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree);
+        public Task OverridePromotionRequirementsAsync(Dictionary<int, PromotionDetails> details);
     }
 }
