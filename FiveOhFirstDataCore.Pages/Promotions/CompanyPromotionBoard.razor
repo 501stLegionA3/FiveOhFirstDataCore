@@ -23,38 +23,74 @@
 
     private bool CanPromote { get; set; } = false;
 
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private PromotionType PromoType = PromotionType.Default;
+
+
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Company.RT,
-            Company.ARC,
-            Company.Medic,
-            Company.XO,
-            Company.NCOIC
-        };
+        Troopers = new();
+        if (Company.RT is not null)
+            Troopers.Add(Company.RT);
+        if(Company.ARC is not null)
+            Troopers.Add(Company.ARC);
+        if(Company.Medic is not null)
+            Troopers.Add(Company.Medic);
+        if(Company.XO is not null)
+            Troopers.Add(Company.XO);
+        if (Company.NCOIC is not null)
+            Troopers.Add(Company.NCOIC);
 
         foreach(var platoon in Company.Platoons)
         {
-            Troopers.Add(platoon.Commander);
-            Troopers.Add(platoon.SergeantMajor);
-            Troopers.Add(platoon.ARC);
-            Troopers.Add(platoon.Medic);
-            Troopers.Add(platoon.RT);
+            if(platoon.Commander is not null)
+                Troopers.Add(platoon.Commander);
+            if(platoon.SergeantMajor is not null)
+                Troopers.Add(platoon.SergeantMajor);
+            if(platoon.ARC is not null)
+                Troopers.Add(platoon.ARC);
+            if(platoon.Medic is not null)
+                Troopers.Add(platoon.Medic);
+            if(platoon.RT is not null)
+                Troopers.Add(platoon.RT);
 
             foreach (var squad in platoon.Squads)
             {
-                Troopers.Add(squad.Lead);
-                Troopers.Add(squad.RT);
-                Troopers.Add(squad.ARC);
+                if(squad.Lead is not null)
+                    Troopers.Add(squad.Lead);
+                if(squad.RT is not null)
+                    Troopers.Add(squad.RT);
+                if(squad.ARC is not null)
+                    Troopers.Add(squad.ARC);
 
                 foreach (var t in squad.Teams)
                 {
-                    Troopers.Add(t.Lead);
-                    Troopers.Add(t.Medic);
-                    Troopers.AddRange(t.Troopers);
+                    if(t.Lead is not null)
+                        Troopers.Add(t.Lead);
+                    if(t.Medic is not null)
+                        Troopers.Add(t.Medic);
+
+                    Troopers.AddRange(t.Troopers.Where(x => x != null));
                 }
             }
+        }
+
+        switch(PromoType)
+        {
+            case PromotionType.Default:
+                CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+                break;
+            case PromotionType.RTO:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.RTO)
+                    .ToHashSet(x => x.Id);
+                break;
+            case PromotionType.Medic:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.Medic)
+                    .ToHashSet(x => x.Id);
+                break;
         }
     }
 
@@ -71,6 +107,20 @@
             || (Company?.XO?.Id ?? 0) == CurrentUser?.Id 
             || (Company?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
             
+        if(!CanPromote)
+        {
+            if((Company?.RT?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.RTO;
+            }
+            else if ((Company?.Medic?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.Medic;
+            }
+        }
+
         BuildTrooperList();
     }
 }

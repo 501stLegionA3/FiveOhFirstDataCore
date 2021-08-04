@@ -1,12 +1,14 @@
 ﻿@inject IAuthorizationService _auth
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" />
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
-}
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
+    }
+    </CascadingValue>
 </CascadingValue>
 
 @code {
@@ -23,20 +25,32 @@
 
     private bool CanPromote { get; set; } = false;
 
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private PromotionType PromoType = PromotionType.Default;
+
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Squad.RT,
-            Squad.ARC
-        };
+        Troopers = new();
 
-        foreach(var t in Squad.Teams)
+        if(Squad.Lead is not null)
+            Troopers.Add(Squad.Lead);
+        if(Squad.RT is not null)
+            Troopers.Add(Squad.RT);
+        if(Squad.ARC is not null)
+            Troopers.Add(Squad.ARC);
+
+        foreach (var t in Squad.Teams)
         {
-            Troopers.Add(t.Lead);
-            Troopers.Add(t.Medic);
-            Troopers.AddRange(t.Troopers);
+            if(t.Lead is not null)
+                Troopers.Add(t.Lead);
+            if(t.Medic is not null)
+                Troopers.Add(t.Medic);
+
+            Troopers.AddRange(t.Troopers.Where(x => x != null));
         }
+        // if someone can promote on this board, they can promote anyone on this board.
+        CanPromoteValues = Troopers.ToHashSet(x => x.Id);
     }
 
     protected override async Task OnParametersSetAsync()
@@ -48,7 +62,7 @@
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
         CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser?.Id;
-        
+
         BuildTrooperList();
     }
 }

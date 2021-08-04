@@ -24,6 +24,10 @@
 
     private bool CanPromote { get; set; } = false;
 
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private PromotionType PromoType = PromotionType.Default;
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -37,6 +41,37 @@
             || (Battalion?.XO?.Id ?? 0) == CurrentUser?.Id
             || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
 
+        if(!CanPromote)
+        {
+            if((Battalion?.RT?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.RTO;
+            }
+            else if ((Battalion?.Medic?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.Medic;
+            }
+        }
+
         Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
+
+        switch(PromoType)
+        {
+            case PromotionType.Default:
+                CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+                break;
+            case PromotionType.RTO:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.RTO)
+                    .ToHashSet(x => x.Id);
+                break;
+            case PromotionType.Medic:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.Medic)
+                    .ToHashSet(x => x.Id);
+                break;
+        }
     }
 }

@@ -61,7 +61,7 @@
                                 <td>@e.PromotionFor.NickName</td>
                                 <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
                                 <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>
-                                @if(AllowedPromoter)
+                                @if(AllowedPromoter && CanPromote.Contains(e.PromotionForId))
                                 {
                                     var p = e;
                                     <td>
@@ -109,7 +109,7 @@
                 <div class="row p-2">
                     <div class="col">
                         <h3>To Promote</h3>
-                        <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="ActiveTroopers" class="form-control" />
+                        <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="CanPromoteActual" class="form-control" />
                     </div>
                 </div>
                 @if (Promotion.PromotionFor is not null)
@@ -249,8 +249,13 @@
     [CascadingParameter]
     public bool AllowedPromoter { get; set; }
 
+    [CascadingParameter]
+    public HashSet<int> CanPromote { get; set; } = new();
+
     [Parameter]
     public List<Trooper> ActiveTroopers { get; set; }
+
+    private List<Trooper> CanPromoteActual { get; set; } = new();
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -294,6 +299,10 @@
         if(firstRender)
         {
             await BuildEligiblePromotionsList();
+
+            CanPromoteActual = ActiveTroopers
+                .Where(x => CanPromote.Contains(x.Id))
+                .ToList();
 
             Loaded = true;
             StateHasChanged();
