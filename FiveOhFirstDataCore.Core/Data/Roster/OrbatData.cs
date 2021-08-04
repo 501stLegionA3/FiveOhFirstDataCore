@@ -7,7 +7,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
         public HailstormData Hailstorm { get; set; } = new();
         public CompanyData Avalanche { get; set; } = new(3, 3);
         public CompanyData Cyclone { get; set; } = new(3, 3);
-        public CompanyData Acklay { get; set; } = new(1, 2);
+        public CompanyData Acklay { get; set; } = new(1, 3);
         public MynockDetachmentData Mynock { get; set; } = new();
         public RazorSquadronData Razor { get; set; } = new();
         public MilitaryPolice MilitaryPolice { get; set; } = new();
