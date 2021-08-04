@@ -507,6 +507,23 @@ namespace FiveOhFirstDataCore.Core.Services
                     "Assistant",
                 }
             },
+            [CShop.BigBrother] = new()
+            {
+                ClaimData = new()
+                {
+                    [CShop.BigBrother.AsFull()] = new()
+                    {
+                        "Lead",
+                        "Assistant",
+                        "Staff"
+                    }
+                },
+                CShopLeadership = new()
+                {
+                    "Lead",
+                    "Assistant",
+                }
+            },
 
             // C3
             [CShop.CampaignManagement] = new()
