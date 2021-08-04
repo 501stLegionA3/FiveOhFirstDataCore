@@ -81,6 +81,9 @@ namespace FiveOhFirstDataCore.Core.Data
         // 1 << 21
         [Description("News Team")]
         NewsTeam = 0x0000100000,
+        // 1 << 22
+        [Description("Big Brother")]
+        BigBrother = 0x0000200000
     }
 
     public static class CShopExtensions
@@ -105,6 +108,7 @@ namespace FiveOhFirstDataCore.Core.Data
             { CShop.RecruitingStaff, new() { { CShop.RecruitingStaff.AsFull(), new() { "Lead", "Assistant", "Sr", "Recruiter" } } } },
             { CShop.ReturningMemberStaff, new() { { CShop.ReturningMemberStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
             { CShop.MedalsStaff, new() { { CShop.MedalsStaff.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
+            { CShop.BigBrother, new() { { CShop.BigBrother.AsFull(), new() { "Lead", "Assistant", "Staff" } } } },
 
             // C3
             { CShop.CampaignManagement, new() { 
