@@ -1,12 +1,14 @@
 ﻿@inject IAuthorizationService _auth
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" Mynock="true" />
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" Mynock="true" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Mynock="true" />
-}
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Mynock="true" />
+    }
+    </CascadingValue>
 </CascadingValue>
 
 @code {
@@ -22,6 +24,8 @@
     public List<Trooper>? Troopers { get; set; } = null;
 
     private bool CanPromote { get; set; } = false;
+    private HashSet<int> CanPromoteValues {get;set;} = new();
+    private PromotionType PromoType { get; set; } = PromotionType.Default;
 
     private void BuildTrooperList()
     {
@@ -44,6 +48,23 @@
                 Troopers.AddRange(team.Troopers);
             }
         }
+
+        switch(PromoType)
+        {
+            case PromotionType.Default:
+                CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+                break;
+            case PromotionType.RTO:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.RTO)
+                    .ToHashSet(x => x.Id);
+                break;
+            case PromotionType.Medic:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.Medic)
+                    .ToHashSet(x => x.Id);
+                break;
+        }
     }
 
     protected override async Task OnParametersSetAsync()
@@ -58,6 +79,20 @@
             || (Mynock?.Commander?.Id ?? 0) == CurrentUser?.Id
             || (Mynock?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
         
+        if (!CanPromote)
+        {
+            if ((Mynock?.RT?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.RTO;
+            }
+            else if ((Mynock?.Medic?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.Medic;
+            }
+        }
+
         BuildTrooperList();
     }
 }

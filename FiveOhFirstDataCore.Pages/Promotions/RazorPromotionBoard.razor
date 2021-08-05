@@ -1,12 +1,14 @@
 ﻿@inject IAuthorizationService _auth
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
-}
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+    }
+    </CascadingValue>
 </CascadingValue>
 
 @code {
@@ -22,6 +24,7 @@
     public List<Trooper>? Troopers { get; set; } = null;
 
     private bool CanPromote { get; set; } = false;
+    private HashSet<int> CanPromoteValues { get; set; } = new();
 
     private void BuildTrooperList()
     {
@@ -41,6 +44,9 @@
                 Troopers.Add(section.Delta);
             }
         }
+
+        if (CanPromote)
+            CanPromoteValues = Troopers.ToHashSet(x => x.Id);
     }
 
     protected override async Task OnParametersSetAsync()

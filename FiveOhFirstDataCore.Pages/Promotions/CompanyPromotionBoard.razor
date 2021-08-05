@@ -1,12 +1,14 @@
 ﻿@inject IAuthorizationService _auth
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
-}
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+    }
+    </CascadingValue>
 </CascadingValue>
 
 @code {
