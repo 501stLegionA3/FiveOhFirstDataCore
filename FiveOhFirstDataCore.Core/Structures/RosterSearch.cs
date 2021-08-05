@@ -16,7 +16,7 @@ namespace FiveOhFirstDataCore.Core.Structures
         public string NickNameFilter { get; set; } = "";
 
         public bool UseRankSearch { get; set; } = false;
-        public TrooperRank? RankFilter { get; set; } = null;
+        public int? RankFilter { get; set; } = null;
         public string RankSearch { get; set; } = "";
 
         public bool UseUnitSearch { get; set; } = false;
