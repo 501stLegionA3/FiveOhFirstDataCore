@@ -22,7 +22,7 @@ For example, moving for standard message sending to webhook sending is a breakin
 
 At any point if a change is made to the database objects, a new migration is needed. Every release will have its own migration, that should never be deleted. Deleting a release migration will cause loss of data. Every change to the databse is considered a breaking change.
 
-To add a new migration for your changes, go to the Packet Manager Console in Visual Studio. Type Add-Migration Dev-MyName-MigrationName where MyName is your name and MigrationName is the name of the migration. If at any point you need to revert this, type Remove-Migration. Never remove migrations labeled Release.
+To add a new migration for your changes, go to the Package Manager Console in Visual Studio. Type Add-Migration Dev-MyName-MigrationName where MyName is your name and MigrationName is the name of the migration. If at any point you need to revert this, type Remove-Migration. Never remove migrations labeled Release.
 
 There should only be a single migration per release, so keep your commits to including at most one additional Dev migration. Any new changes should be removed with Remove-Migration and a new migration added. As this breaks the database when the app attempts to update it, make sure to Drop Cascade the Schema and create a new public schema whenever you remove and old migration and add a new migration.
 
