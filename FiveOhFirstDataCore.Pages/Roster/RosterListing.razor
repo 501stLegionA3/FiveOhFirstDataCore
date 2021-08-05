@@ -32,8 +32,29 @@
                         <option value="null">Rank</option>
                         @foreach(TrooperRank r in Enum.GetValues(typeof(TrooperRank)))
                         {
-                            <option value="@r">@r.AsFull()</option>
+                            <option value="@((int)r)">@r.AsFull()</option>
                         }
+                        @foreach(MedicRank r in Enum.GetValues(typeof(MedicRank)))
+                        {
+                            <option value="@((int)r)">@r.AsFull()</option>
+                        }
+                        @foreach(RTORank r in Enum.GetValues(typeof(RTORank)))
+                        {
+                            <option value="@((int)r)">@r.AsFull()</option>
+                        }
+                        @foreach(WarrantRank r in Enum.GetValues(typeof(WarrantRank)))
+                        {
+                            <option value="@((int)r)">@r.AsFull()</option>
+                        }
+                        @foreach(PilotRank r in Enum.GetValues(typeof(PilotRank)))
+                        {
+                            <option value="@((int)r)">@r.AsFull()</option>
+                        }
+                        @foreach(WardenRank r in Enum.GetValues(typeof(WardenRank)))
+                        {
+                            <option value="@((int)r)">@r.AsFull()</option>
+                        }
+
                     </InputSelect>
                     <button class="oi oi-text btn input-group-text" @onclick="(x) => Search.UseRankSearch = true" aria-hidden="true"></button>
                 }
@@ -199,7 +220,39 @@
         {
             if(Search.RankFilter is not null)
             {
-                Filtered = Filtered.Where(x => x.Rank == Search.RankFilter).ToList();   
+                Filtered = Filtered.Where(x =>
+                {
+                    int Rank = (int)Search.RankFilter;
+                    
+                    if (Rank < 100)
+                    {
+                        return x.Rank == (TrooperRank)Rank;                    
+                    }
+                    else if (Rank >= 100 && Rank < 200)
+                    {
+                    return x.MedicRank == (MedicRank)Rank;
+                    }
+                    else if (Rank >= 200 && Rank < 300)
+                    {
+                        return x.RTORank == (RTORank)Rank;
+                    }
+                    else if (Rank >= 300 && Rank < 400)
+                    {
+                        return x.WarrantRank == (WarrantRank)Rank;
+                    }
+                    else if (Rank >= 400 && Rank < 500)
+                    {
+                        return x.PilotRank == (PilotRank)Rank;
+                    }
+                    else if (Rank >= 500)
+                    {
+                        return x.WardenRank == (WardenRank)Rank;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }).ToList();   
             }
         }
 
@@ -348,9 +401,9 @@
     public Task OnRankChange(ChangeEventArgs e)
     {
         var val = ((string?)e.Value) ?? "";
-
+        
         if(val == "null") Search.RankFilter = null;
-        else Search.RankFilter = val.ValueFromString<TrooperRank>();
+        else Search.RankFilter = Int32.Parse(val);
 
         return BuildFilteredList();
     }
