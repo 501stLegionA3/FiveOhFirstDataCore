@@ -1,13 +1,13 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components
 {
@@ -22,7 +22,7 @@ namespace FiveOhFirstDataCore.Core.Components
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if(CurrentValue is not null && CurrentValue.Id != 0)
+            if (CurrentValue is not null && CurrentValue.Id != 0)
             {
                 DisplayValue = CurrentValue.NickName;
                 Valid = true;
@@ -40,7 +40,7 @@ namespace FiveOhFirstDataCore.Core.Components
             {
                 var display = (string?)x.Value ?? "";
 
-                var item = Troopers.FirstOrDefault(x => 
+                var item = Troopers.FirstOrDefault(x =>
                 {
                     if (x is null) return false;
 
@@ -48,15 +48,15 @@ namespace FiveOhFirstDataCore.Core.Components
                         || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase);
                 });
 
-            if (item is not null)
-            {
-                Valid = true;
-                Suggestions.Clear();
-            }
-            else if (!string.IsNullOrWhiteSpace(display))
-            {
-                Valid = false;
-                Suggestions.Clear();
+                if (item is not null)
+                {
+                    Valid = true;
+                    Suggestions.Clear();
+                }
+                else if (!string.IsNullOrWhiteSpace(display))
+                {
+                    Valid = false;
+                    Suggestions.Clear();
                     Suggestions.AddRange(Troopers.Where(x =>
                     {
                         if (x is null) return false;
@@ -72,7 +72,7 @@ namespace FiveOhFirstDataCore.Core.Components
             }));
             builder.CloseElement();
 
-            if(Suggestions.Count > 0)
+            if (Suggestions.Count > 0)
             {
                 builder.OpenElement(8, "div");
                 builder.AddAttribute(9, "class", "position-relative bg-secondary");

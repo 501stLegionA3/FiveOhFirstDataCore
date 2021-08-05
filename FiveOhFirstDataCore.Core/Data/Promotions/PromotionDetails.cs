@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Promotions
 {
@@ -53,8 +51,8 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
                 if (!RequiredRank.Contains(currentRank)
                     || trooper.LastPromotion.DaysFromToday() < RequiredTimeInGrade)
                     if (!(RankOrHigher && RequiredRank.Min() <= currentRank))
-                        if(TiGWaivedFor.Count <= 0 || !TiGWaivedFor.Contains(currentRank))
-                        return false;
+                        if (TiGWaivedFor.Count <= 0 || !TiGWaivedFor.Contains(currentRank))
+                            return false;
 
             if (RequiredTimeInBillet != -1 && RequiredBillet.Count > 0)
                 if (!RequiredBillet.Contains(trooper.Role))

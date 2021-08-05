@@ -1,17 +1,18 @@
 using AngleSharp.Text;
+
 using AspNet.Security.OpenId;
+
 using DSharpPlus;
+
 using FiveOhFirstDataCore.Areas.Identity;
 using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
-using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Mail;
 using FiveOhFirstDataCore.Core.Services;
 using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Auth;
 
 using MailKit.Net.Smtp;
+
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -20,14 +21,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -58,7 +57,7 @@ namespace FiveOhFirstDataCore
                 .EnableDetailedErrors()
 #endif
                 , ServiceLifetime.Singleton);
-            services.AddScoped(p 
+            services.AddScoped(p
                 => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
             services.AddIdentity<Trooper, TrooperRole>()
                 .AddDefaultTokenProviders()
@@ -279,7 +278,7 @@ namespace FiveOhFirstDataCore
             #region Account Tools
             services.AddScoped<InitalAccountPopulationService>();
             #endregion
-           
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

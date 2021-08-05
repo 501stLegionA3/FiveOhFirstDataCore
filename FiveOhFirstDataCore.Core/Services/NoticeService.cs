@@ -4,14 +4,11 @@ using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services

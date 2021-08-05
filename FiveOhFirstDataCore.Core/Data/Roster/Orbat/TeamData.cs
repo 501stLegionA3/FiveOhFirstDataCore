@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+
 using System.Collections.Generic;
 
 namespace FiveOhFirstDataCore.Core.Data.Roster

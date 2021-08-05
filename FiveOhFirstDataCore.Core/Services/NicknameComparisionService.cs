@@ -1,11 +1,11 @@
 ﻿using FiveOhFirstDataCore.Core.Database;
+
 using Lucene.Net.Analysis.Phonetic.Language;
+
 using Microsoft.EntityFrameworkCore;
-using System;
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -33,7 +33,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 if (key is null) return;
 
-                if(Keys.TryGetValue(key, out var list))
+                if (Keys.TryGetValue(key, out var list))
                 {
                     list.Add(x.NickName);
                 }
@@ -49,9 +49,9 @@ namespace FiveOhFirstDataCore.Core.Services
             var meta = new DoubleMetaphone();
             var toMatch = meta.GetDoubleMetaphone(nickname);
             List<string> names = new();
-            foreach(var pair in Keys)
+            foreach (var pair in Keys)
             {
-                if(meta.IsDoubleMetaphoneEqual(pair.Key, toMatch))
+                if (meta.IsDoubleMetaphoneEqual(pair.Key, toMatch))
                 {
                     names.AddRange(pair.Value);
                 }

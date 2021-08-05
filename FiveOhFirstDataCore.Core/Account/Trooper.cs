@@ -4,7 +4,9 @@ using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity;
+
 using System;
 using System.Collections.Generic;
 
@@ -124,7 +126,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRankDesignation()
         {
-            if(Role == Role.RTO)
+            if (Role == Role.RTO)
             {
                 return RTORank?.AsShorthand() ?? "";
             }
@@ -152,7 +154,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRankName()
         {
-            if(Slot >= Slot.Razor && Slot < Slot.Warden)
+            if (Slot >= Slot.Razor && Slot < Slot.Warden)
             {
                 return PilotRank?.AsFull() ?? "";
             }
@@ -182,22 +184,22 @@ namespace FiveOhFirstDataCore.Core.Account
                 || Slot >= Slot.ZetaCompany)
             {
                 var tag = (int)Slot / 10 % 10;
-                if(tag == 0)
+                if (tag == 0)
                 {
                     return $"Company {Role.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
-                    if(tag == 0)
+                    if (tag == 0)
                     {
                         return $"Platoon {Role.AsFull()}";
                     }
                     else
                     {
-                        if(Role == Role.Lead)
+                        if (Role == Role.Lead)
                         {
-                            if(Team is null)
+                            if (Team is null)
                             {
                                 return $"Squad {Role.AsFull()}";
                             }

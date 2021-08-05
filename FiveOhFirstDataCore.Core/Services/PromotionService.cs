@@ -13,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -76,7 +75,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
 
-            if(actual is null)
+            if (actual is null)
             {
                 return new(false, new() { "Promotion was not found in the database." });
             }
@@ -94,8 +93,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (actual.ApprovedBy is null) actual.ApprovedBy = new();
 
-            if(user is not null && !actual.ApprovedBy.Any(x => x.Id == user.Id))
-            user.ApprovedPendingPromotions.Add(actual);
+            if (user is not null && !actual.ApprovedBy.Any(x => x.Id == user.Id))
+                user.ApprovedPendingPromotions.Add(actual);
 
             await _dbContext.SaveChangesAsync();
 
@@ -117,7 +116,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var user = await _dbContext.FindAsync<Trooper>(approver.Id);
 
-            if(user is null)
+            if (user is null)
             {
                 return new(false, new() { "Failed to find an account for the approver" });
             }
@@ -138,7 +137,7 @@ namespace FiveOhFirstDataCore.Core.Services
             user.ApprovedRankUpdates.Add(log);
 
             var rank = actual.PromoteTo.GetRank();
-            switch(rank)
+            switch (rank)
             {
                 case TrooperRank r:
                     actual.PromotionFor.Rank = r;
@@ -201,7 +200,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var identRes = await _userManager.UpdateAsync(trooper);
             if (!identRes.Succeeded)
-        {
+            {
                 List<string> errors = new();
                 foreach (var error in identRes.Errors)
                     errors.Add($"[{error.Code}] {error.Description}");

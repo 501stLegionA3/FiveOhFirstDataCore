@@ -3,8 +3,7 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using System;
-using System.Collections.Concurrent;
+
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 
 namespace FiveOhFirstDataCore.Core.Data
 {
@@ -197,7 +195,7 @@ namespace FiveOhFirstDataCore.Core.Data
 
         public static bool IsSquad(this Slot slot)
         {
-            if(slot >= Slot.AvalancheCompany && slot < Slot.Mynock
+            if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
                 || slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
             {
                 var val = (int)slot % 10;

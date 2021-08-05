@@ -1,15 +1,13 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 
 namespace FiveOhFirstDataCore.Core.Components
 {
@@ -28,15 +26,15 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddMultipleAttributes(1, AdditionalAttributes);
             builder.AddAttribute(2, "class", CssClass);
             builder.AddAttribute(3, "value", BindConverter.FormatValue(CurrentValueAsString));
-            builder.AddAttribute(4, "onchange", EventCallback.Factory.CreateBinder(this, 
-                value => CurrentValueAsString = value, 
-                CurrentValueAsString, 
+            builder.AddAttribute(4, "onchange", EventCallback.Factory.CreateBinder(this,
+                value => CurrentValueAsString = value,
+                CurrentValueAsString,
                 CultureInfo.CurrentCulture));
 
             var typeSet = GetValueType();
             var type = typeSet.Item1;
             bool isNullable = typeSet.Item2;
-            if(isNullable)
+            if (isNullable)
             {
                 builder.OpenElement(5, "option");
 
@@ -68,16 +66,16 @@ namespace FiveOhFirstDataCore.Core.Components
 
         protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out TEnum result, [NotNullWhen(false)] out string? validationErrorMessage)
         {
-            if(BindConverter.TryConvertTo(value, CultureInfo.CurrentCulture, out result))
+            if (BindConverter.TryConvertTo(value, CultureInfo.CurrentCulture, out result))
             {
                 validationErrorMessage = null;
                 return true;
             }
 
-            if(string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
                 var nullable = Nullable.GetUnderlyingType(typeof(TEnum));
-                if(nullable is not null)
+                if (nullable is not null)
                 {
                     result = default;
                     validationErrorMessage = null;

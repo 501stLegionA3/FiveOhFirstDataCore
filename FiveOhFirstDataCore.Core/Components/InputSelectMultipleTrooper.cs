@@ -1,14 +1,14 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components
 {
@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Core.Components
         [Parameter]
         public List<Trooper> Troopers { get; set; } = new();
 
-        private bool ResetDisplay { get; set; } = false; 
+        private bool ResetDisplay { get; set; } = false;
         private List<string> InvalidSearches { get; set; } = new();
         private bool Valid { get; set; } = false;
         private List<Trooper> Suggestions { get; set; } = new();

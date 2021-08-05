@@ -1,13 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data.Roster;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Structures
 {
     public class GetTrooperDataResult

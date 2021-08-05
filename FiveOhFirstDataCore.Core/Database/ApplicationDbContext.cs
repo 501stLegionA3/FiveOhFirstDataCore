@@ -1,10 +1,10 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Components;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -79,7 +79,7 @@ namespace FiveOhFirstDataCore.Core.Database
                     new ValueComparer<Dictionary<string, List<string>>>(
                         (c1, c2) => CompareCShopClaims(c1, c2),
                         c => c.Aggregate(0, (x, y) => HashCode.Combine(
-                            HashCode.Combine(x, y.GetHashCode(), 
+                            HashCode.Combine(x, y.GetHashCode(),
                                 y.Value.Aggregate(0, (z, v) => HashCode.Combine(z, v.GetHashCode()))
                                 )
                             )),
@@ -283,13 +283,13 @@ namespace FiveOhFirstDataCore.Core.Database
             claimData.HasKey(e => e.UpdateKey);
         }
 
-        private bool CompareCShopClaims(Dictionary<string, List<string>>? c1, 
+        private bool CompareCShopClaims(Dictionary<string, List<string>>? c1,
             Dictionary<string, List<string>>? c2)
         {
             if (c1 is null & c2 is null) return true;
             if (c1 is null || c2 is null) return false;
-            if(c1.Count != c2.Count) return false;
-            foreach(var i in c1)
+            if (c1.Count != c2.Count) return false;
+            foreach (var i in c1)
             {
                 if (c2.TryGetValue(i.Key, out var c2Val))
                 {

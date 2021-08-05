@@ -1,17 +1,15 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -248,7 +246,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(e => e.FlagForId == trooper.Id)
                 .LoadAsync();
 
-            if(_dbContext.Entry(trooper).State == EntityState.Detached)
+            if (_dbContext.Entry(trooper).State == EntityState.Detached)
                 _dbContext.Attach(trooper);
 
             await _dbContext.Entry(trooper)
@@ -320,9 +318,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a Plt.
                 if ((slot % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander 
+                    if (t.Role == Data.Role.Commander
                         || t.Role == Data.Role.SergeantMajor
-                        || t.Role == Data.Role.MasterWarden 
+                        || t.Role == Data.Role.MasterWarden
                         || t.Role == Data.Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
@@ -345,7 +343,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a squad
                 else
                 {
-                    if(t.Role == Data.Role.Lead)
+                    if (t.Role == Data.Role.Lead)
                     {
                         if (thisSlot == slot)
                         {
@@ -388,7 +386,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<GetTrooperDataResult?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
-            bool manager = await _userManager.IsInRoleAsync(user, "Admin") 
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetSquadDataFromSlotAsync(user.Slot, manager);
         }

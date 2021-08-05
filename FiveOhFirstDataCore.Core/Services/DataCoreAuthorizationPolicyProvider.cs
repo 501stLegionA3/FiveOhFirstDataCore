@@ -4,11 +4,7 @@ using FiveOhFirstDataCore.Core.Structures.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -33,7 +29,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
-            if(TryGetPolicyBuilder(policyName, out var builder))
+            if (TryGetPolicyBuilder(policyName, out var builder))
             {
                 return builder.Build();
             }
@@ -43,7 +39,7 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        private bool TryGetPolicyBuilder(string policyName, 
+        private bool TryGetPolicyBuilder(string policyName,
             [NotNullWhen(true)] out WebsiteSettingsAuthorizationPolicyBuilder? builder)
         {
             builder = new WebsiteSettingsAuthorizationPolicyBuilder(_settings);

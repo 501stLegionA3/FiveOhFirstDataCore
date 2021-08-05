@@ -2,11 +2,7 @@
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures
 {
@@ -92,7 +88,7 @@ namespace FiveOhFirstDataCore.Core.Structures
         {
             var groups = new List<EditGroups>();
 
-            if(Edit.Rank != Current.Rank
+            if (Edit.Rank != Current.Rank
                 || Edit.RTORank != Current.RTORank
                 || Edit.MedicRank != Current.MedicRank
                 || Edit.PilotRank != Current.PilotRank
@@ -102,7 +98,7 @@ namespace FiveOhFirstDataCore.Core.Structures
                 groups.Add(EditGroups.Rank);
             }
 
-            if(Edit.Slot != Current.Slot
+            if (Edit.Slot != Current.Slot
                 || Edit.Role != Current.Role
                 || Edit.Team != Current.Team
                 || Edit.Flight != Current.Flight)
@@ -115,7 +111,7 @@ namespace FiveOhFirstDataCore.Core.Structures
             if (Edit.Qualifications != Current.Qualifications)
                 groups.Add(EditGroups.Qual);
 
-            if(Edit.LastPromotion != Current.LastPromotion
+            if (Edit.LastPromotion != Current.LastPromotion
                 || Edit.StartOfService != Current.StartOfService
                 || Edit.LastBilletChange != Current.LastBilletChange
                 || Edit.GraduatedBCTOn != Current.GraduatedBCTOn
@@ -124,7 +120,7 @@ namespace FiveOhFirstDataCore.Core.Structures
                 groups.Add(EditGroups.Time);
             }
 
-            if(!(Edit.InitialTraining?.Equals(Current.InitialTraining ?? "") 
+            if (!(Edit.InitialTraining?.Equals(Current.InitialTraining ?? "")
                     ?? (Edit.InitialTraining == Current.InitialTraining))
                 || !(Edit.UTC?.Equals(Current.UTC ?? "")
                     ?? (Edit.UTC == Current.UTC))
@@ -337,7 +333,7 @@ namespace FiveOhFirstDataCore.Core.Structures
                     {
                         MergeResult.InitialTraining = Edit.InitialTraining + " | " + Current.InitialTraining;
                         MergeResult.UTC = Edit.UTC + " | " + Current.UTC;
-                        MergeResult.Notes =  Edit.Notes + ", " + Current.Notes;
+                        MergeResult.Notes = Edit.Notes + ", " + Current.Notes;
                     }
                     else if (EditNotes)
                     {

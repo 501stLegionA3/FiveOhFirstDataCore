@@ -1,14 +1,11 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components
 {

@@ -1,17 +1,15 @@
 ﻿using DSharpPlus;
-using FiveOhFirstDataCore.Core.Account;
+
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using Microsoft.AspNetCore.Identity;
+
 using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task DoRoleChange()
         {
-            while(RoleChanges.TryDequeue(out var change))
+            while (RoleChanges.TryDequeue(out var change))
             {
                 if (change.Item1 == 0 || change.Item2 == 0) continue;
 
@@ -65,21 +63,21 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             if (changeFor == 0) return;
 
-            foreach(var claim in add)
+            foreach (var claim in add)
             {
                 var ids = await GetCShopIdAsync(claim);
 
                 if (ids is null) continue;
-                foreach(var id in ids)
+                foreach (var id in ids)
                     RoleChanges.Enqueue((changeFor, id, true));
             }
 
-            foreach(var claim in remove)
+            foreach (var claim in remove)
             {
                 var ids = await GetCShopIdAsync(claim);
 
                 if (ids is null) continue;
-                foreach(var id in ids)
+                foreach (var id in ids)
                     RoleChanges.Enqueue((changeFor, id, false));
             }
 
@@ -98,14 +96,14 @@ namespace FiveOhFirstDataCore.Core.Services
             var qType = typeof(Qualification);
             foreach (Qualification qual in Enum.GetValues(qType))
             {
-                if((change.Added & qual) == qual)
+                if ((change.Added & qual) == qual)
                 {
                     var grants = await GetAddDelSets(qual, true);
                     add.UnionWith(grants.Item1);
                     del.UnionWith(grants.Item2);
                 }
 
-                if((change.Removed & qual) == qual)
+                if ((change.Removed & qual) == qual)
                 {
                     var grants = await GetAddDelSets(qual, false);
                     add.UnionWith(grants.Item1);
@@ -125,8 +123,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task UpdateRankChangeAsync(RankUpdate change, ulong changeFor)
         {
-            if (changeFor == 0 
-                || change.ChangedFrom == 0 
+            if (changeFor == 0
+                || change.ChangedFrom == 0
                 || change.ChangedTo == 0) return;
 
             HashSet<ulong> add = new();
@@ -162,7 +160,7 @@ namespace FiveOhFirstDataCore.Core.Services
             HashSet<ulong> add = new();
             HashSet<ulong> del = new();
 
-            if(change.NewSlot != change.OldSlot)
+            if (change.NewSlot != change.OldSlot)
             {
                 var oldGrants = await GetAddDelSets(change.OldSlot, false);
                 var newGrants = await GetAddDelSets(change.NewSlot, true);
@@ -174,7 +172,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 del.UnionWith(oldGrants.Item2);
             }
 
-            if(change.NewFlight != change.OldFlight
+            if (change.NewFlight != change.OldFlight
                 && change.NewFlight is not null
                 && change.OldFlight is not null)
             {

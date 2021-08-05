@@ -1,11 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Data.Roster
 {
     public class WardenSection : IAssignable<Trooper>
@@ -20,7 +14,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                 SectionLead = item;
             else if (item.Flight == Flight.Bravo)
                 WardenTwo = item;
-            else if(item.Flight == Flight.Charlie)
+            else if (item.Flight == Flight.Charlie)
                 WardenThree = item;
         }
     }

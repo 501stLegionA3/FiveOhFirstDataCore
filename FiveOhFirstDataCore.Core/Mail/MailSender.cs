@@ -1,13 +1,13 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+
 using MailKit.Net.Smtp;
+
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Logging;
+
 using MimeKit;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
@@ -33,9 +33,9 @@ namespace FiveOhFirstDataCore.Core.Mail
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            if(MailboxAddress.TryParse(_config.Email, out var sender))
+            if (MailboxAddress.TryParse(_config.Email, out var sender))
             {
-                if(MailboxAddress.TryParse(email, out var receiver))
+                if (MailboxAddress.TryParse(email, out var receiver))
                 {
                     var message = new MimeMessage();
                     message.From.Add(sender);
@@ -71,7 +71,7 @@ namespace FiveOhFirstDataCore.Core.Mail
             {
                 throw new Exception("The configured email is invalid.");
             }
-            
+
         }
 
         public async Task TriggerRemoteResetPasswordAsync(string id, string email, string redirectBase)

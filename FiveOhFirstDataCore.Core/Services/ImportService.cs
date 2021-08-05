@@ -3,18 +3,17 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Import;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Esf;
-using Org.BouncyCastle.Math.EC;
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -319,7 +318,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                     if (!int.TryParse(parts[1], out var id))
                     {
-                        if(!string.IsNullOrWhiteSpace(parts[1]))
+                        if (!string.IsNullOrWhiteSpace(parts[1]))
                             warnings.Add($"{parts[1]} was unable to be parsed as an ID");
                         continue;
                     }
@@ -416,11 +415,11 @@ namespace FiveOhFirstDataCore.Core.Services
                     {
                         trooper.Role = Role.Trooper;
                     }
-                    else if(setRole)
+                    else if (setRole)
                     {
                         if (flightNum != 0)
                         {
-                            if(roleString.Equals("Flight Commander"))
+                            if (roleString.Equals("Flight Commander"))
                             {
                                 trooper.Role = Role.Commander;
                                 trooper.Slot = flightNum.GetRazorSlot(0);
@@ -464,7 +463,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         else
                         {
                             Role? role = roleString.GetRole();
-                            if(role is null)
+                            if (role is null)
                             {
                                 role = roleString.Split(' ', StringSplitOptions.RemoveEmptyEntries).LastOrDefault()?.GetRole();
                             }
@@ -472,7 +471,7 @@ namespace FiveOhFirstDataCore.Core.Services
                             if (role is not null)
                             {
                                 trooper.Role = role.Value;
-                                if(role == Role.Warden
+                                if (role == Role.Warden
                                     || role == Role.ChiefWarden
                                     || role == Role.MasterWarden)
                                 {
@@ -491,7 +490,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         }
                     }
 
-                    if(supportingElements.Item1)
+                    if (supportingElements.Item1)
                     {
                         if (parts[4].StartsWith("Mynock"))
                             trooper.Slot = Slot.MynockReserve;
@@ -515,7 +514,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         {
                             trooper.Slot = slot.Value;
                         }
-                        else if(group.Equals("HQ") && parts[4].Equals("Bastion Detachment"))
+                        else if (group.Equals("HQ") && parts[4].Equals("Bastion Detachment"))
                         {
                             trooper.Slot = Slot.Mynock;
                         }
@@ -531,36 +530,36 @@ namespace FiveOhFirstDataCore.Core.Services
                     // last promotion = 8
                     // start of service = 9
                     var lastPromoString = parts[8];
-                    if(DateTime.TryParseExact(lastPromoString, "yyyyMMdd", customCulture, 
+                    if (DateTime.TryParseExact(lastPromoString, "yyyyMMdd", customCulture,
                         DateTimeStyles.AdjustToUniversal, out DateTime lastPromo))
                     {
                         trooper.LastPromotion = lastPromo;
                     }
 
                     var serviceStartString = parts[9];
-                    if(DateTime.TryParseExact(serviceStartString, "yyyyMMdd", customCulture,
+                    if (DateTime.TryParseExact(serviceStartString, "yyyyMMdd", customCulture,
                         DateTimeStyles.AdjustToUniversal, out DateTime serviceStart))
                     {
                         trooper.StartOfService = serviceStart;
                     }
 
                     #region Grants
-                    if(trooper.Rank >= TrooperRank.Corporal)
+                    if (trooper.Rank >= TrooperRank.Corporal)
                     {
                         await _userManager.AddToRoleAsync(trooper, "NCO");
                     }
 
-                    if(trooper.Role == Role.RTO)
+                    if (trooper.Role == Role.RTO)
                     {
                         await _userManager.AddToRoleAsync(trooper, "RTO");
                     }
 
-                    if(trooper.Role == Role.Medic)
+                    if (trooper.Role == Role.Medic)
                     {
                         await _userManager.AddToRoleAsync(trooper, "Medic");
                     }
 
-                    if(trooper.Role == Role.ARC)
+                    if (trooper.Role == Role.ARC)
                     {
                         await _userManager.AddToRoleAsync(trooper, "ARC");
                     }
@@ -656,11 +655,11 @@ namespace FiveOhFirstDataCore.Core.Services
                 List<Trooper> allTroopers = await _dbContext.Users
                     .ToListAsync();
 
-                foreach(var pair in departments)
+                foreach (var pair in departments)
                 {
                     var departmentList = pair.Value;
                     CShop? group = null;
-                    foreach(var segment in departmentList)
+                    foreach (var segment in departmentList)
                     {
                         try
                         {
@@ -682,10 +681,10 @@ namespace FiveOhFirstDataCore.Core.Services
                                 continue;
                             }
 
-                            if(group is not null)
+                            if (group is not null)
                             {
                                 if (segment[1].Equals("TBD", StringComparison.OrdinalIgnoreCase)
-                                    || segment[1].Equals("Closed", StringComparison.OrdinalIgnoreCase)) 
+                                    || segment[1].Equals("Closed", StringComparison.OrdinalIgnoreCase))
                                     continue;
 
                                 var match = GetClosestTrooperMatch(segment[1], allTroopers);
@@ -736,7 +735,7 @@ namespace FiveOhFirstDataCore.Core.Services
                                     await _userManager.AddClaimAsync(match, claim);
                                     await _dbContext.SaveChangesAsync();
                                 }
-                                else 
+                                else
                                     warnings.Add($"Unabled to assign claim for {match.Id} in {group.Value.AsFull()} for {segment[0]}");
                             }
                         }
@@ -745,7 +744,7 @@ namespace FiveOhFirstDataCore.Core.Services
                             warnings.Add($"Failed to properly parse a row of data: {string.Join(", ", segment)}\nwith error: {ex}");
                             continue;
                         }
-                        
+
                     }
                 }
 
@@ -777,7 +776,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 ClaimsTree = await _settings.GetFullClaimsTreeAsync();
 
             // Nothing custom matched, so lets look directly.
-            if(ClaimsTree.TryGetValue(group, out var item))
+            if (ClaimsTree.TryGetValue(group, out var item))
                 foreach (var sets in item.ClaimData)
                     foreach (var value in sets.Value)
                         if (value.Equals(role, StringComparison.OrdinalIgnoreCase))
@@ -896,7 +895,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         continue;
                     }
 
-                    for(int i = 2; i < parts.Length; i++)
+                    for (int i = 2; i < parts.Length; i++)
                     {
                         if (parts[i].Equals("pass", StringComparison.OrdinalIgnoreCase))
                             if (RowQualBindings.TryGetValue(i, out var qual))

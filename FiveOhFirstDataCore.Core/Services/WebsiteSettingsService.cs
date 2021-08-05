@@ -4,14 +4,12 @@ using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -974,7 +972,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     Key = item.Key
                 };
 
-                foreach(var val in item.Value.ClaimData)
+                foreach (var val in item.Value.ClaimData)
                 {
                     var old = await _dbContext.CShopClaims.FindAsync(item.Key);
                     if (old is not null)
@@ -1076,17 +1074,17 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 int rankVal = (int)forTrooper.Rank;
                 var tempDetails = _dbContext.PromotionRequirements
-                    .Where(x => x.DoesNotRequireLinearProgression 
-                        || (x.RequiredRank != null 
+                    .Where(x => x.DoesNotRequireLinearProgression
+                        || (x.RequiredRank != null
                             && x.RequiredRank.Contains(rankVal)))
                     .AsAsyncEnumerable();
 
-                await foreach(var req in tempDetails)
+                await foreach (var req in tempDetails)
                 {
-                    if(req.TryGetPromotion(rankVal, forTrooper, levels, out var promo))
+                    if (req.TryGetPromotion(rankVal, forTrooper, levels, out var promo))
                     {
-                        if (!forTrooper.PendingPromotions.Any(x => 
-                            promo.PromoteFrom == x.PromoteFrom 
+                        if (!forTrooper.PendingPromotions.Any(x =>
+                            promo.PromoteFrom == x.PromoteFrom
                             && promo.PromoteTo == x.PromoteTo))
                         {
                             promotions.Add(promo);
@@ -1154,7 +1152,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.CShopClaims.AsNoTracking().ForEachAsync(x =>
             {
-                if(data.ContainsKey(x.Key))
+                if (data.ContainsKey(x.Key))
                 {
                     data[x.Key] = x;
                 }
@@ -1183,7 +1181,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Include(p => p.Parent)
                 .AsAsyncEnumerable();
 
-            await foreach(var item in data)
+            await foreach (var item in data)
             {
                 if (item.Parent.Id == claim.Type)
                     return item.Roles;
@@ -1201,12 +1199,12 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails()
         {
-            Dictionary<int, PromotionDetails> dict = new(); 
+            Dictionary<int, PromotionDetails> dict = new();
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = _dbContext.PromotionRequirements
                 .AsAsyncEnumerable();
 
-            await foreach(var item in data)
+            await foreach (var item in data)
             {
                 dict.Add(item.RequirementsFor, item);
             }

@@ -1,13 +1,11 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components
 {
@@ -22,7 +20,7 @@ namespace FiveOhFirstDataCore.Core.Components
             builder.AddAttribute(4, "aria-label", "Qualifications button toggle group");
 
             var disabled = false;
-            if (AdditionalAttributes is not null 
+            if (AdditionalAttributes is not null
                 && AdditionalAttributes.TryGetValue("disabled", out var value))
             {
                 try
@@ -37,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Components
 
             var quals = (Qualification[])Enum.GetValues(typeof(Qualification));
 
-            for(int x = 1; x < quals.Length; x += 3)
+            for (int x = 1; x < quals.Length; x += 3)
             {
                 builder.OpenElement(5, "div");
                 builder.AddAttribute(6, "class", "row");

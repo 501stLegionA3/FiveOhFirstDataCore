@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FiveOhFirstDataCore.Core.Account;
+
 using Microsoft.AspNetCore.Authorization;
-using FiveOhFirstDataCore.Core.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 {

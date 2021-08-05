@@ -1,20 +1,17 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Org.BouncyCastle.Crypto.Agreement;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -31,9 +28,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             foreach (var c in rawSet)
             {
-                foreach(var shops in ClaimsTree)
+                foreach (var shops in ClaimsTree)
                 {
-                    if(shops.Value.ClaimData.ContainsKey(c.Type))
+                    if (shops.Value.ClaimData.ContainsKey(c.Type))
                     {
                         if (claimUpdates.TryGetValue(shops.Key, out var list))
                             list.Add(new(c.Type, c.Value));
@@ -173,7 +170,7 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             // MP Update
-            if(primary.MilitaryPolice != edit.MilitaryPolice)
+            if (primary.MilitaryPolice != edit.MilitaryPolice)
             {
                 primary.MilitaryPolice = edit.MilitaryPolice;
 
@@ -213,7 +210,7 @@ namespace FiveOhFirstDataCore.Core.Services
             primary.Notes = edit.Notes;
             // Claim Modification
             List<Claim> remove = new();
-            
+
             var existingClaims = (await GetCShopClaimsAsync(primary)).ToList();
             claimsToRemove.ForEach(x =>
             {
@@ -267,7 +264,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 identResult = await _userManager.UpdateAsync(submitter);
 
-                if(!identResult.Succeeded)
+                if (!identResult.Succeeded)
                 {
                     foreach (var err in identResult.Errors)
                         errors.Add($"[{err.Code}] {err.Description}");
@@ -284,10 +281,10 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        protected static bool UpdateRank(int? primary, int? edit, ref Trooper p, ref Trooper s, 
+        protected static bool UpdateRank(int? primary, int? edit, ref Trooper p, ref Trooper s,
             [NotNullWhen(true)] out RankUpdate? update)
         {
-            if(primary != edit)
+            if (primary != edit)
             {
                 update = new RankUpdate()
                 {
@@ -349,7 +346,7 @@ namespace FiveOhFirstDataCore.Core.Services
         protected static bool UpdateCShop(Trooper edit, ref Trooper primary, ref Trooper submitter,
             [NotNullWhen(true)] out CShopUpdate? update)
         {
-            if(primary.CShops != edit.CShops)
+            if (primary.CShops != edit.CShops)
             {
                 var changes = primary.CShops ^ edit.CShops;
                 var additions = edit.CShops & changes;
@@ -360,7 +357,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     Added = additions,
                     Removed = removals,
                     OldCShops = primary.CShops,
-                    
+
                     SubmittedByRosterClerk = true,
                     ChangedOn = DateTime.UtcNow.ToEst()
                 };
@@ -447,7 +444,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var actualCurrent = await _userManager.GetUserAsync(claims);
             var validPassword = await _userManager.CheckPasswordAsync(actualCurrent, password);
 
-            if(!validPassword)
+            if (!validPassword)
             {
                 return new(false, new() { "The provided password is invalid for your account." });
             }
@@ -471,9 +468,9 @@ namespace FiveOhFirstDataCore.Core.Services
             var oldSet = await GetAllowedNameChangersAsync();
 
             List<string> errors = new();
-            foreach(var t in allowedTroopers)
+            foreach (var t in allowedTroopers)
             {
-                if(!oldSet.Any(x => x.Id == t.Id))
+                if (!oldSet.Any(x => x.Id == t.Id))
                 {
                     var actual = await _userManager.FindByIdAsync(t.Id.ToString());
                     var identResult = await _userManager.AddClaimAsync(actual, new("Change", "Name"));
@@ -486,9 +483,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 }
             }
 
-            foreach(var t in oldSet)
+            foreach (var t in oldSet)
             {
-                if(!allowedTroopers.Any(x => x.Id == t.Id))
+                if (!allowedTroopers.Any(x => x.Id == t.Id))
                 {
                     var actual = await _userManager.FindByIdAsync(t.Id.ToString());
                     var identResult = await _userManager.RemoveClaimAsync(actual, new("Change", "Name"));
@@ -511,8 +508,8 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.FindAsync<Trooper>(trooper.Id);
-            
-            if(actual is null)
+
+            if (actual is null)
             {
                 return new(false, new() { "The Trooper for that ID was not found." });
             }

@@ -1,15 +1,12 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Logging;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -30,7 +27,7 @@ namespace FiveOhFirstDataCore.Core.Services
             perms[2] = claims.HasClaim(x => ClaimsTree[CShop.RecruitingStaff].ClaimData.ContainsKey(x.Type));
             perms[3] = claims.HasClaim(x => ClaimsTree[CShop.ReturningMemberStaff].ClaimData.ContainsKey(x.Type));
             perms[4] = claims.HasClaim(x => ClaimsTree[CShop.MedalsStaff].ClaimData.ContainsKey(x.Type));
-            
+
             return perms;
         }
 
