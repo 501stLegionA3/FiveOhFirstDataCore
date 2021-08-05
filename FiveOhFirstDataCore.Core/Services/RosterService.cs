@@ -361,12 +361,17 @@ namespace FiveOhFirstDataCore.Core.Services
             return sub;
         }
 
-        public async Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<GetTrooperDataResult?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsSquad())
                 return null;
-            
-            var data = new SquadData();
+
+            IAssignable<Trooper> data;
+
+            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
+            if (zeta)
+                data = new ZetaSquadData();
+            else data = new SquadData();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -377,10 +382,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => x.Slot == slot)
                 .ForEachAsync(x => data.Assign(x));
 
-            return data;
+            return new(!zeta, data);
         }
 
-        public async Task<SquadData?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<GetTrooperDataResult?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             bool manager = await _userManager.IsInRoleAsync(user, "Admin") 
@@ -388,12 +393,17 @@ namespace FiveOhFirstDataCore.Core.Services
             return await GetSquadDataFromSlotAsync(user.Slot, manager);
         }
 
-        public async Task<PlatoonData?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<GetTrooperDataResult?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
-            var data = new PlatoonData(3);
+            IAssignable<Trooper> data;
+
+            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
+            if (zeta)
+                data = new ZetaSectionData();
+            else data = new PlatoonData(3);
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -405,10 +415,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => s == ((int)x.Slot / 10))
                 .ForEachAsync(x => data.Assign(x));
 
-            return data;
+            return new(!zeta, data);
         }
 
-        public async Task<PlatoonData?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<GetTrooperDataResult?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
@@ -416,12 +426,17 @@ namespace FiveOhFirstDataCore.Core.Services
             return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
         }
 
-        public async Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<GetTrooperDataResult?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsCompany() && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
-            var data = new CompanyData(3, 3);
+            IAssignable<Trooper> data;
+
+            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
+            if (zeta)
+                data = new ZetaCompanyData();
+            else data = new CompanyData(3, 3);
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -433,10 +448,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => s == ((int)x.Slot / 100))
                 .ForEachAsync(x => data.Assign(x));
 
-            return data;
+            return new(!zeta, data);
         }
 
-        public async Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<GetTrooperDataResult?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")

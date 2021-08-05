@@ -27,12 +27,12 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
-        public Task<SquadData?> GetSquadDataFromSlotAsync(Slot slot, bool manager);
-        public Task<SquadData?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
-        public Task<PlatoonData?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager);
-        public Task<PlatoonData?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
-        public Task<CompanyData?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
-        public Task<CompanyData?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<GetTrooperDataResult?> GetSquadDataFromSlotAsync(Slot slot, bool manager);
+        public Task<GetTrooperDataResult?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<GetTrooperDataResult?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager);
+        public Task<GetTrooperDataResult?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<GetTrooperDataResult?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
+        public Task<GetTrooperDataResult?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
         public Task<HailstormData> GetHailstormDataAsync();
         public Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync();
         public Task<RazorSquadronData> GetRazorDataAsync();

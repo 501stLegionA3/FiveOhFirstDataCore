@@ -13,7 +13,9 @@
 
 @code {
     [Parameter]
-    public PlatoonData Platoon { get; set; }
+    public PlatoonData? Platoon { get; set; }
+    [Parameter]
+    public ZetaSectionData? Zeta { get; set; }
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -35,35 +37,59 @@
     private void BuildTrooperList()
     {
         Troopers = new();
-
-        if(Platoon.Commander is not null)
-            Troopers.Add(Platoon.Commander);
-        if(Platoon.SergeantMajor is not null)
-            Troopers.Add(Platoon.SergeantMajor);
-        if(Platoon.ARC is not null)
-            Troopers.Add(Platoon.ARC);
-        if(Platoon.Medic is not null)
-            Troopers.Add(Platoon.Medic);
-        if(Platoon.RT is not null)
-            Troopers.Add(Platoon.RT);
-
-        foreach (var squad in Platoon.Squads)
+        if (Platoon is not null)
         {
-            if(squad.Lead is not null)
-                Troopers.Add(squad.Lead);
-            if(squad.RT is not null)
-                Troopers.Add(squad.RT);
-            if(squad.ARC is not null)
-                Troopers.Add(squad.ARC);
+            if (Platoon.Commander is not null)
+                Troopers.Add(Platoon.Commander);
+            if (Platoon.SergeantMajor is not null)
+                Troopers.Add(Platoon.SergeantMajor);
+            if (Platoon.ARC is not null)
+                Troopers.Add(Platoon.ARC);
+            if (Platoon.Medic is not null)
+                Troopers.Add(Platoon.Medic);
+            if (Platoon.RT is not null)
+                Troopers.Add(Platoon.RT);
 
-            foreach (var t in squad.Teams)
+            foreach (var squad in Platoon.Squads)
             {
-                if(t.Lead is not null)
-                    Troopers.Add(t.Lead);
-                if(t.Medic is not null)
-                    Troopers.Add(t.Medic);
+                if (squad.Lead is not null)
+                    Troopers.Add(squad.Lead);
+                if (squad.RT is not null)
+                    Troopers.Add(squad.RT);
+                if (squad.ARC is not null)
+                    Troopers.Add(squad.ARC);
 
-                Troopers.AddRange(t.Troopers.Where(x => x != null));
+                foreach (var t in squad.Teams)
+                {
+                    if (t.Lead is not null)
+                        Troopers.Add(t.Lead);
+                    if (t.Medic is not null)
+                        Troopers.Add(t.Medic);
+
+                    Troopers.AddRange(t.Troopers.Where(x => x != null));
+                }
+            }
+        }
+        else if (Zeta is not null)
+        {
+            if(Zeta.Commander is not null)
+                Troopers.Add(Zeta.Commander);
+            if(Zeta.Subordinate is not null)
+                Troopers.Add(Zeta.Subordinate);
+            
+            foreach(var s in Zeta.Squads)
+            {
+                if (s.SquadLeader is not null)
+                    Troopers.Add(s.SquadLeader);
+                if (s.Leader is not null)
+                    Troopers.Add(s.Leader);
+                if (s.RT is not null)
+                    Troopers.Add(s.RT);
+                if (s.Medic is not null)
+                    Troopers.Add(s.Medic);
+                foreach (var t in s.Troopers)
+                    if (t is not null)
+                        Troopers.Add(t);
             }
         }
 
@@ -93,22 +119,31 @@
 
         bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
 
-        CanPromote = manager
-            || (Platoon?.Commander?.Id ?? 0) == CurrentUser?.Id
-            || (Platoon?.SergeantMajor?.Id ?? 0) == CurrentUser?.Id;
-            
-        if(!CanPromote)
+        if (Platoon is not null)
         {
-            if((Platoon?.RT?.Id ?? 0) == CurrentUser?.Id)
+            CanPromote = manager
+                || (Platoon?.Commander?.Id ?? 0) == CurrentUser?.Id
+                || (Platoon?.SergeantMajor?.Id ?? 0) == CurrentUser?.Id;
+
+            if (!CanPromote)
             {
-                CanPromote = true;
-                PromoType = PromotionType.RTO;
+                if ((Platoon?.RT?.Id ?? 0) == CurrentUser?.Id)
+                {
+                    CanPromote = true;
+                    PromoType = PromotionType.RTO;
+                }
+                else if ((Platoon?.Medic?.Id ?? 0) == CurrentUser?.Id)
+                {
+                    CanPromote = true;
+                    PromoType = PromotionType.Medic;
+                }
             }
-            else if ((Platoon?.Medic?.Id ?? 0) == CurrentUser?.Id)
-            {
-                CanPromote = true;
-                PromoType = PromotionType.Medic;
-            }
+        }
+        else if (Zeta is not null)
+        {
+            CanPromote = manager
+                || (Zeta.Commander?.Id ?? 0) == CurrentUser?.Id
+                || (Zeta.Subordinate?.Id ?? 0) == CurrentUser?.Id;
         }
 
         BuildTrooperList();

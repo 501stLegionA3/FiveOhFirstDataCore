@@ -22,10 +22,10 @@
                 break;
             case PlatoonDisplayOption.PromotionBoard:
                 <h4>@Slot.AsFull()'s Promotion Board</h4>
-                @if(Data is not null)
+                @if(Data is not null || ZetaData is not null)
                 {
                     <CascadingValue Name="Airborne" Value="Airborne" >
-                        <PlatoonPromotionBoard Platoon="Data" />
+                        <PlatoonPromotionBoard Platoon="Data" Zeta="ZetaData" />
                     </CascadingValue>
                 }
                 else
@@ -55,7 +55,8 @@ else
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
     private PlatoonDisplayOption Active { get; set; } = PlatoonDisplayOption.Roster;
-    private PlatoonData? Data { get; set; }
+    private PlatoonData? Data { get; set; } = null;
+    private ZetaSectionData? ZetaData { get; set; } = null;
     private bool Loaded { get; set; } = false;
     private bool Airborne { get; set; } = false;
     private Slot Slot { get; set; }
@@ -71,13 +72,26 @@ else
             if (int.TryParse(PlatoonDesignation, out int id))
             {
                 Slot = (Slot)id;
-                Data = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                var dat = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                if (dat is not null)
+                {
+                    if (dat.Slotted)
+                        Data = (PlatoonData)dat.Data;
+                    else ZetaData = (ZetaSectionData)dat.Data;
+                }
             }
             else if (PlatoonDesignation == "me")
             {
-                Data = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+                var dat = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+                if (dat is not null)
+                {
+                    if (dat.Slotted)
+                        Data = (PlatoonData)dat.Data;
+                    else ZetaData = (ZetaSectionData)dat.Data;
+                }
                 var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
-                Slot = (Slot)((int)t.Slot / 10 * 10);
+                if(t is not null)
+                    Slot = (Slot)((int)t.Slot / 10 * 10);
             }
 
             if (Slot >= Slot.AcklayCompany && Slot < Slot.Mynock)
@@ -110,10 +124,25 @@ else
         var user = (await AuthStateTask).User;
 
         if(int.TryParse(PlatoonDesignation, out int id))
-            Data = await _roster.GetPlatoonDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        {
+            var dat = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            if (dat is not null)
+            {
+                if (dat.Slotted)
+                    Data = (PlatoonData)dat.Data;
+                else ZetaData = (ZetaSectionData)dat.Data;
+            }
+        }
         else if (PlatoonDesignation == "me")
-            Data = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
-
+        {
+            var dat = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+            if (dat is not null)
+            {
+                if (dat.Slotted)
+                    Data = (PlatoonData)dat.Data;
+                else ZetaData = (ZetaSectionData)dat.Data;
+            }
+        }
         await CallRefreshRequest();
     }
 

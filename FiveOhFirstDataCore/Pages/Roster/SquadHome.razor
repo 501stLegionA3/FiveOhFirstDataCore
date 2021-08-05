@@ -22,9 +22,9 @@
                 break;
             case SquadDisplayOption.PromotionBoard:
                 <h4>@Slot.AsFull()'s Promotion Board</h4>
-                @if(Data is not null)
+                @if(Data is not null || ZetaData is not null)
                 {
-                    <SquadPromotionBoard Squad="Data" />
+                    <SquadPromotionBoard Squad="Data" Zeta="ZetaData" />
                 }
                 else
                 {
@@ -53,7 +53,8 @@ else
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
     private SquadDisplayOption Active { get; set; } = SquadDisplayOption.Roster;
-    private SquadData? Data { get; set; }
+    private SquadData? Data { get; set; } = null;
+    private ZetaSquadData? ZetaData { get; set; } = null;
     private bool Loaded { get; set; } = false;
     private Slot Slot { get; set; }
 
@@ -68,13 +69,26 @@ else
             if (int.TryParse(SquadDesignation, out int id))
             {
                 Slot = (Slot)id;
-                Data = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                var dat = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                if (dat is not null)
+                {
+                    if (dat.Slotted)
+                        Data = (SquadData)dat.Data;
+                    else ZetaData = (ZetaSquadData)dat.Data;
+                }
             }
             else if (SquadDesignation == "me")
             {
-                Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+                var dat = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+                if (dat is not null)
+                {
+                    if (dat.Slotted)
+                        Data = (SquadData)dat.Data;
+                    else ZetaData = (ZetaSquadData)dat.Data;
+                }
                 var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
-                Slot = t.Slot;
+                if(t is not null)
+                    Slot = t.Slot;
             }
 
             Loaded = true;
@@ -100,10 +114,26 @@ else
     {
         var user = (await AuthStateTask).User;
 
-        if(int.TryParse(SquadDesignation, out int id))
-            Data = await _roster.GetSquadDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+        if (int.TryParse(SquadDesignation, out int id))
+        {
+            var dat = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            if (dat is not null)
+            {
+                if (dat.Slotted)
+                    Data = (SquadData)dat.Data;
+                else ZetaData = (ZetaSquadData)dat.Data;
+            }
+        }
         else if (SquadDesignation == "me")
-            Data = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+        {
+            var dat = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+            if (dat is not null)
+            {
+                if (dat.Slotted)
+                    Data = (SquadData)dat.Data;
+                else ZetaData = (ZetaSquadData)dat.Data;
+            }
+        }
 
         await CallRefreshRequest();
     }
