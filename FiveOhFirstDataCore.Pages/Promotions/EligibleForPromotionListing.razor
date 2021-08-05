@@ -37,58 +37,58 @@
         @if (Loaded)
         {
             Counter = 0;
-            <table class="table table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Id</th>
-                        <th scope="col">NickName</th>
-                        <th scope="col">From Rank</th>
-                        <th scope="col">To Rank</th>
-                        @if (AllowedPromoter)
+            <EditForm Model="this">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">NickName</th>
+                            <th scope="col">From Rank</th>
+                            <th scope="col">To Rank</th>
+                            @if (AllowedPromoter)
+                            {
+                                <th scope="col"></th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (EligiblePromotions.Count > 0)
                         {
-                            <th scope="col"></th>
-                        }
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (EligiblePromotions.Count > 0)
-                    {
-                        @foreach(var e in EligiblePromotions)
-                        {
-                            var c = Counter++;
-                            <tr>
-                                <td>@e.PromotionFor.Id</td>
-                                <td>@e.PromotionFor.NickName</td>
-                                <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
-                                <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>
-                                @if(AllowedPromoter && CanPromote.Contains(e.PromotionForId))
-                                {
-                                    var p = e;
-                                    <td>
-                                        <div class="input-group">
-                                            <div class="input-group-text bg-success">
-                                                <input type="checkbox" class="form-check-input mt-0" checked="@(ConfirmPromote == c)" @onclick="x => { if(ConfirmPromote == c) ConfirmPromote = -1; else ConfirmPromote = c; }" />
+                            @foreach(var e in EligiblePromotions)
+                            {
+                                var c = Counter++;
+                                <tr>
+                                    <td>@e.PromotionFor.Id</td>
+                                    <td>@e.PromotionFor.NickName</td>
+                                    <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
+                                    <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>
+                                    @if(AllowedPromoter && CanPromote.Contains(e.PromotionForId))
+                                    {
+                                        var p = e;
+                                        <td>
+                                            <div class="input-group">
+                                                <div class="input-group-text bg-success">
+                                                    <input type="checkbox" class="form-check-input mt-0" checked="@(ConfirmPromote == c)" @onclick="x => { if(ConfirmPromote == c) ConfirmPromote = -1; else ConfirmPromote = c; }" />
+                                                </div>
+                                                <InputText class="form-control" hidden="@(ConfirmPromote != c)" placeholder="Reason" @bind-Value="PromotionReason" />
+                                                <button class="btn btn-outline-success" disabled="@(ConfirmPromote != c)" @onclick="async (x) => await StartPromotion(p)">Raise For Promotion</button>
                                             </div>
-                                            <button class="btn btn-outline-success" disabled="@(ConfirmPromote != c)" @onclick="async (x) => await StartPromotion(p)">Raise For Promotion</button>
-                                        </div>
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td></td>
-                                }
-                            </tr>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                </tr>
+                            }
                         }
-                    }
-                    else
-                    {
-                        <tr><td colspan="5">No eligible promotions found.</td></tr>
-                    }
-                </tbody>
-            <tbody>
-                
-            </tbody>
-        </table>
+                        else
+                        {
+                            <tr><td colspan="5">No eligible promotions found.</td></tr>
+                        }
+                    </tbody>
+            </table>
+        </EditForm>
         }
         else
         {
@@ -281,6 +281,7 @@
     public List<Promotion> EligiblePromotions { get; set; } = new();
 
     protected int ConfirmPromote { get; set; } = -1;
+    protected string PromotionReason { get; set; } = "";
     protected int Counter { get; set; } = 0;
 
     private bool IsPromoting { get; set; } = false;
@@ -335,6 +336,8 @@
     private async Task StartPromotion(Promotion p)
     {
         Promotion = p;
+        Promotion.Reason = PromotionReason;
+        PromotionReason = "";
         await StartPromotion(false);
         _ = EligiblePromotions.Remove(p);
     }
