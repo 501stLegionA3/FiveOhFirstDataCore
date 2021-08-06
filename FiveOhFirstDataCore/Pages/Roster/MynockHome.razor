@@ -8,12 +8,16 @@
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.Roster)">Roster</button>
     </li>
-    <li class="nav-item col">
-        <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.SectionPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.SectionPromotionBoard)">Section Promotion Board</button>
-    </li>
-    <li class="nav-item col">
-        <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.CommandPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.CommandPromotionBoard)">Command Promotion Board</button>
-    </li>
+    <AuthorizeView Policy="RequireTrooper">
+        <Authorized>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.SectionPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.SectionPromotionBoard)">Section Promotion Board</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.CommandPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.CommandPromotionBoard)">Command Promotion Board</button>
+            </li>
+        </Authorized>
+    </AuthorizeView>
 </ul>
 @if(Loaded)
 {

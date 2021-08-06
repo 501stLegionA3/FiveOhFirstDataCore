@@ -386,6 +386,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<GetTrooperDataResult?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetSquadDataFromSlotAsync(user.Slot, manager);
@@ -419,6 +420,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<GetTrooperDataResult?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
@@ -452,6 +454,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<GetTrooperDataResult?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetCompanyDataFromSlotAsync(user.Slot, manager);
@@ -556,6 +559,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetMynockDataFromSlotAsync(user.Slot, manager);

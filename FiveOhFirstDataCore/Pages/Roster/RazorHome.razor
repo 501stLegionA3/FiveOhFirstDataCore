@@ -8,12 +8,16 @@
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.Roster)">Roster</button>
     </li>
-    <li class="nav-item col">
-        <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.RazorPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.RazorPromotionBoard)">Razor Promotion Board</button>
-    </li>
-    <li class="nav-item col">
-        <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.WardenPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.WardenPromotionBoard)">Warden Promotion Board</button>
-    </li>
+    <AuthorizeView Policy="RequireTrooper">
+        <Authorized>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.RazorPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.RazorPromotionBoard)">Razor Promotion Board</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == RazorDisplayOption.WardenPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(RazorDisplayOption.WardenPromotionBoard)">Warden Promotion Board</button>
+            </li>
+        </Authorized>
+    </AuthorizeView>
 </ul>
 @if(Loaded)
 {

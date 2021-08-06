@@ -8,9 +8,13 @@
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == CompanyDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(CompanyDisplayOption.Roster)">Roster</button>
     </li>
-    <li class="nav-item col">
-        <button class="nav-link w-100 h-100 @(Active == CompanyDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(CompanyDisplayOption.PromotionBoard)">Promotion Board</button>
-    </li>
+    <AuthorizeView Policy="RequireTrooper">
+        <Authorized>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == CompanyDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(CompanyDisplayOption.PromotionBoard)">Promotion Board</button>
+            </li>
+        </Authorized>
+    </AuthorizeView>
 </ul>
 @if(Loaded)
 {
