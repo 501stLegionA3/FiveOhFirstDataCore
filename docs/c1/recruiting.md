@@ -2,7 +2,7 @@
 # Recruiting Home
 Recruiters have access to the C-1 PERSONNEL homepage. From that page, select the Recruiting Staff Home button to navigate to the Recruiting Staff area.
 
-![c-1-home](../_media/recruiting/c1_home_recruiting.png)
+![home-recruiting](../_media/recruiting/home_recruiting.png)
 
 Once in the recruiting home page, there are two pages of importance. The New Recruit Form is where a recruiter creates an account for a new recruit and registers them with the Data Core. The Unregistered Troopers page contains access codes for all non-registered accounts.
 

@@ -7,6 +7,7 @@
     - [Account Registration](register-account)
     - [Getting Recruited](get-recruited)
 - **Leadership Guides**
+    - [Leadership Guides](leadership/lead-home)
 - **C-Shop Guides**
     - [C-1 PERSONNEL](c1/c1-home)
 - **Links**
