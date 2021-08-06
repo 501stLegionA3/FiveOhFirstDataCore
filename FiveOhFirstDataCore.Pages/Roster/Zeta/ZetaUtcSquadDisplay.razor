@@ -9,10 +9,10 @@
 </thead>
 <tbody>
     <tr role="@(UTCSquad.SquadLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSquad.SquadLeader?.Id)">
-        <th scope="row" class="text-end">
+        <th scope="row" class="text-end w-50">
             Squad Leader
         </th>
-        <td >
+        <td class="w-50">
             @(UTCSquad.SquadLeader?.WarrantRank is null ? UTCSquad.SquadLeader?.Rank?.AsFull() + " " ?? "" : UTCSquad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.SquadLeader?.NickName ?? "TBD")
         </td>
     </tr>

@@ -359,17 +359,19 @@ namespace FiveOhFirstDataCore.Core.Services
             return sub;
         }
 
-        public async Task<GetTrooperDataResult?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsSquad())
                 return null;
 
             IAssignable<Trooper> data;
 
-            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
-            if (zeta)
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
                 data = new ZetaSquadData();
-            else data = new SquadData();
+            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+                data = new ZetaUTCSquadData();
+            else 
+                data = new SquadData();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -380,10 +382,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => x.Slot == slot)
                 .ForEachAsync(x => data.Assign(x));
 
-            return new(!zeta, data);
+            return data;
         }
 
-        public async Task<GetTrooperDataResult?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
@@ -392,17 +394,19 @@ namespace FiveOhFirstDataCore.Core.Services
             return await GetSquadDataFromSlotAsync(user.Slot, manager);
         }
 
-        public async Task<GetTrooperDataResult?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
             IAssignable<Trooper> data;
 
-            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
-            if (zeta)
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
                 data = new ZetaSectionData();
-            else data = new PlatoonData(3);
+            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+                data = new ZetaUTCSectionData();
+            else 
+                data = new PlatoonData(3);
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -414,10 +418,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => s == ((int)x.Slot / 10))
                 .ForEachAsync(x => data.Assign(x));
 
-            return new(!zeta, data);
+            return data;
         }
 
-        public async Task<GetTrooperDataResult?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
@@ -426,17 +430,17 @@ namespace FiveOhFirstDataCore.Core.Services
             return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
         }
 
-        public async Task<GetTrooperDataResult?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsCompany() && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
 
             IAssignable<Trooper> data;
 
-            var zeta = slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve;
-            if (zeta)
+            if (slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
                 data = new ZetaCompanyData();
-            else data = new CompanyData(3, 3);
+            else
+                data = new CompanyData(3, 3);
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -448,10 +452,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => s == ((int)x.Slot / 100))
                 .ForEachAsync(x => data.Assign(x));
 
-            return new(!zeta, data);
+            return data;
         }
 
-        public async Task<GetTrooperDataResult?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
@@ -563,6 +567,34 @@ namespace FiveOhFirstDataCore.Core.Services
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
             return await GetMynockDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync()
+        {
+            var data = new ZetaUTCSectionData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Where(x => x.Slot >= Slot.ZetaThree && x.Slot < Slot.InactiveReserve)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<ZetaUTCSquadData> GetZetaUTCSquadFromSlotAsync(Slot slot)
+        {
+            var data = new ZetaUTCSquadData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Where(x => x.Slot == slot && x.Slot >= Slot.ZetaCompany && x.Slot < Slot.InactiveReserve)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
         }
     }
 }
