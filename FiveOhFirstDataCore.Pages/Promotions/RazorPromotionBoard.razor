@@ -28,20 +28,25 @@
 
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Razor.SubCommander,
-        };
+        Troopers = new();
+
+        if (Razor.SubCommander is not null)
+            Troopers.Add(Razor.SubCommander);
 
         foreach(var flight in Razor.Flights)
         {
-            Troopers.Add(flight.Commander);
+            if(flight.Commander is not null)
+                Troopers.Add(flight.Commander);
             foreach(var section in flight.Sections)
             {
-                Troopers.Add(section.Alpha);
-                Troopers.Add(section.Bravo);
-                Troopers.Add(section.Charlie);
-                Troopers.Add(section.Delta);
+                if(section.Alpha is not null)
+                    Troopers.Add(section.Alpha);
+                if(section.Bravo is not null)
+                    Troopers.Add(section.Bravo);
+                if(section.Charlie is not null)
+                    Troopers.Add(section.Charlie);
+                if(section.Delta is not null)
+                    Troopers.Add(section.Delta);
             }
         }
 

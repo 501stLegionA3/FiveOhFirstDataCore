@@ -29,23 +29,32 @@
 
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Mynock.Medic,
-            Mynock.NCOIC,
-            Mynock.RT,
-        };
+        Troopers = new();
+        
+        if(Mynock.Medic is not null)
+            Troopers.Add(Mynock.Medic);
+        if(Mynock.NCOIC is not null)
+            Troopers.Add(Mynock.NCOIC);
+        if(Mynock.RT is not null)
+            Troopers.Add(Mynock.RT);
 
         foreach(var section in Mynock.Sections)
         {
-            Troopers.Add(section.Lead);
-            Troopers.Add(section.RT);
+            if (section.Lead is not null)
+                Troopers.Add(section.Lead);
+            if (section.RT is not null)
+                Troopers.Add(section.RT);
 
             foreach(var team in section.Teams)
             {
-                Troopers.Add(team.Lead);
-                Troopers.Add(team.Medic);
-                Troopers.AddRange(team.Troopers);
+                if(team.Lead is not null)
+                    Troopers.Add(team.Lead);
+                if(team.Medic is not null)
+                    Troopers.Add(team.Medic);
+
+                foreach (var t in team.Troopers)
+                    if (t is not null)
+                        Troopers.Add(t);
             }
         }
 

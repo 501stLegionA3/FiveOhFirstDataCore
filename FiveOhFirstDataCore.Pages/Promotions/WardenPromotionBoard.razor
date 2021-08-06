@@ -28,16 +28,19 @@
 
     private void BuildTrooperList()
     {
-        Troopers = new()
-        {
-            Warden.Chief,
-        };
+        Troopers = new();
+
+        if (Warden.Chief is not null)
+            Troopers.Add(Warden.Chief);
 
         foreach(var warden in Warden.Wardens)
         {
-            Troopers.Add(warden.SectionLead);
-            Troopers.Add(warden.WardenTwo);
-            Troopers.Add(warden.WardenThree);
+            if(warden.SectionLead is not null)
+                Troopers.Add(warden.SectionLead);
+            if(warden.WardenTwo is not null)
+                Troopers.Add(warden.WardenTwo);
+            if(warden.WardenThree is not null)
+                Troopers.Add(warden.WardenThree);
         }
 
         if (CanPromote)
