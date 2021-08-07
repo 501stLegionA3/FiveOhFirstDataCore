@@ -32,10 +32,10 @@
                     </div>
                 </Authorized>
                 <NotAuthorized>
-                    <button id="loginButtons" data-bs-toggle="dropdown" data-bs-target="#login-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                    <button role="button" id="loginButtonsGuest" data-bs-toggle="collapse" data-bs-target="#login-menu-guest" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
                         <strong>Guest</strong>
                     </button>
-                    <div id="login-menu" class="collapse">
+                    <div id="login-menu-guest" class="collapse">
                         <div class="text-small dropdown-menu-dark shadow p-2">
                             <a href="Identity/Account/Login" class="dropdown-item">Log in</a>    
                             <a href="Identity/Account/Register" class="dropdown-item">Register</a>
