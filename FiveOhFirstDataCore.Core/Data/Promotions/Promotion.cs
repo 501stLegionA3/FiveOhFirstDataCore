@@ -24,5 +24,6 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
         public int PromoteTo { get; set; }
 
         public string Reason { get; set; } = "";
+        public bool Forced { get; set; } = false;
     }
 }

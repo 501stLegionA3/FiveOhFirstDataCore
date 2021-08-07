@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210803155951_Dev-Soyvolon-Promotions")]
+    [Migration("20210807190237_Dev-Soyvolon-Promotions")]
     partial class DevSoyvolonPromotions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -368,6 +368,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<int>("CurrentBoard")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("Forced")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("NeededBoard")
                         .HasColumnType("integer");

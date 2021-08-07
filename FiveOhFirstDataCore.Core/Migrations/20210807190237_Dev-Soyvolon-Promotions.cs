@@ -1,9 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
@@ -130,7 +128,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     CurrentBoard = table.Column<int>(type: "integer", nullable: false),
                     PromoteFrom = table.Column<int>(type: "integer", nullable: false),
                     PromoteTo = table.Column<int>(type: "integer", nullable: false),
-                    Reason = table.Column<string>(type: "text", nullable: false)
+                    Reason = table.Column<string>(type: "text", nullable: false),
+                    Forced = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

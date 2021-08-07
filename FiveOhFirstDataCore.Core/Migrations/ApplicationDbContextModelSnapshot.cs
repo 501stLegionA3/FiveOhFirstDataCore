@@ -367,6 +367,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int>("CurrentBoard")
                         .HasColumnType("integer");
 
+                    b.Property<bool>("Forced")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("NeededBoard")
                         .HasColumnType("integer");
 

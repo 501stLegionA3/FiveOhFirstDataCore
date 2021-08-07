@@ -172,7 +172,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Trooper promotionFor,
             PromotionBoardLevel currentBoard,
-            int promotionFrom, int promotionTo, string reason)
+            int promotionFrom, int promotionTo, string reason, bool forced)
         {
             var invoked = await _userManager.GetUserAsync(invoker);
             var trooper = await _userManager.FindByIdAsync(promotionFor.Id.ToString());
@@ -193,7 +193,8 @@ namespace FiveOhFirstDataCore.Core.Services
                 PromoteTo = promotionTo,
                 Reason = reason,
 
-                RequestedById = invoked.Id
+                RequestedById = invoked.Id,
+                Forced = forced
             };
 
             trooper.PendingPromotions.Add(promotion);
@@ -223,6 +224,6 @@ namespace FiveOhFirstDataCore.Core.Services
         public async Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Promotion promotion)
             => await StartPromotionProcessAsync(invoker, promotion.PromotionFor,
                 promotion.CurrentBoard, promotion.PromoteFrom, promotion.PromoteTo,
-                promotion.Reason);
+                promotion.Reason, promotion.Forced);
     }
 }

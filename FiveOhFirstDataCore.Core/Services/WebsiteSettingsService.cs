@@ -1230,5 +1230,16 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task RemoveForcedTagAsync(Promotion promotion)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var promo = await _dbContext.FindAsync<Promotion>(promotion.Id);
+            if (promo is not null)
+            {
+                promo.Forced = false;
+                await _dbContext.SaveChangesAsync();
+            }
+        }
     }
 }

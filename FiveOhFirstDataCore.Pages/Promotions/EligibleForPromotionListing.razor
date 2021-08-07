@@ -31,6 +31,46 @@
 </div>
 }
 
+@if(ModalAlert is not null)
+{
+    <div class="card text-center mb-3">
+        <div class="card-header bg-warning text-dark">
+            <div class="modal-title">
+                Promotion Warning
+            </div>
+        </div>
+        <div class="card-body">
+            <em><b>@(ModalAlert.PromotionFor?.NickName ?? "") has not meet the requirements for this promotion.</b></em>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">NickName</th>
+                        <th scope="col">From Rank</th>
+                        <th scope="col">To Rank</th>
+                        <th scope="col">Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="table-danger">
+                        <td><a href="/trooper/@(ModalAlert.PromotionFor?.Id ?? 0)" target="_blank">@(ModalAlert.PromotionFor?.Id ?? 0)</a></td>
+                        <td>@(ModalAlert.PromotionFor?.NickName ?? "")</td>
+                        <td>@ModalAlert.PromoteFrom.GetRank().AsFull()</td>
+                        <td>@ModalAlert.PromoteTo.GetRank().AsFull()</td>
+                        <td>@ModalAlert.Reason</td>
+                    </tr>
+                </tbody>
+            </table>
+            <br />
+            You can still pass this promotion up, but until @(ModalAlert.PromotionFor?.NickName ?? "") has meet all the requirements it will be marked as a forced promotion.
+        </div>
+        <div class="card-footer d-grid gap-2">
+            <button type="button" class="btn btn-danger" @onclick="OverrideAccept">Promote</button>
+            <button type="button" class="btn btn-secondary" @onclick="OverrideClose">Cancel</button>
+        </div>
+    </div>
+}
+
 <div class="row">
     <div class="col">
         <h4>Troopers Eligible for Promotion</h4>
@@ -58,7 +98,7 @@
                             {
                                 var c = Counter++;
                                 <tr>
-                                    <td>@e.PromotionFor.Id</td>
+                                    <td><a href="/trooper/@e.PromotionFor.Id" target="_blank">@e.PromotionFor.Id</a></td>
                                     <td>@e.PromotionFor.NickName</td>
                                     <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
                                     <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>
@@ -287,6 +327,8 @@
     private bool IsPromoting { get; set; } = false;
     private Promotion Promotion { get; set; } = new();
 
+    private Promotion? ModalAlert { get; set; } = null;
+
     protected void ClearSuccess()
     {
         SuccessMessage = null;
@@ -343,7 +385,20 @@
     }
 
     private async Task StartPromotion()
-        => await StartPromotion(true);
+    {
+        if (EligiblePromotions.Any(x => x.PromotionForId == Promotion.PromotionFor.Id
+             && x.PromoteFrom == Promotion.PromoteFrom
+             && x.PromoteTo == Promotion.PromoteTo))
+        {
+            await StartPromotion(true);
+        }
+        else
+        {
+            AllowedPromoter = false;
+            IsPromoting = false;
+            ModalAlert = Promotion;
+        }
+    }
 
     private async Task StartPromotion(bool usedForm = true)
     {
@@ -411,5 +466,20 @@
             }
             StateHasChanged();
         }
+    }
+
+    private async Task OverrideAccept()
+    {
+        AllowedPromoter = true;
+        ModalAlert = null;
+        Promotion.Forced = true;
+        await StartPromotion(false);
+    }
+
+    private void OverrideClose()
+    {
+        Promotion = new();
+        ModalAlert = null;
+        AllowedPromoter = true;
     }
 }

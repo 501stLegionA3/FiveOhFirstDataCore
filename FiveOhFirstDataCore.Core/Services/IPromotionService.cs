@@ -12,7 +12,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Promotion promotion);
         public Task<PromotionResult> StartPromotionProcessAsync(ClaimsPrincipal invoker, Trooper promotionFor,
             PromotionBoardLevel currentBoard,
-            int promotionFrom, int promotionTo, string reason);
+            int promotionFrom, int promotionTo, string reason, bool forced);
         /// <summary>
         /// Elevates a promotion to the next stage. Will finalize a promotion if able.
         /// </summary>

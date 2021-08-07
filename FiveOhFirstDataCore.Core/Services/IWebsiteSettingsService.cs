@@ -24,5 +24,6 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key);
         public Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree);
         public Task OverridePromotionRequirementsAsync(Dictionary<int, PromotionDetails> details);
+        public Task RemoveForcedTagAsync(Promotion promotion);
     }
 }
