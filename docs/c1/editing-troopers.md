@@ -114,7 +114,7 @@ When this happens the system will display each set of data, and will request the
 
 After you have made the selection you wish to keep, click the `Accept Merge` button, located at the bottom of each section.
 
-!> Please note that all sections must be merged before changes can be saved.
+> Please note that all sections must be merged before changes can be saved.
 
 ## Saving Changes
 

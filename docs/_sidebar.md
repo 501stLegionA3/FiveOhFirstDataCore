@@ -10,6 +10,7 @@
     - [Leadership Guides](leadership/lead-home)
 - **C-Shop Guides**
     - [C-1 PERSONNEL](c1/c1-home)
+- **Administrator Guides**
 - **Links**
     - [Visit the Site](https://dc.501stlegion-a3.com/)
     - [GitHub](https://github.com/501stLegionA3/FiveOhFirstDataCore)
