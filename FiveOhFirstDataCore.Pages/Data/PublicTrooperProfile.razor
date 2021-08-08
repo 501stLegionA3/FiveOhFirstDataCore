@@ -95,7 +95,15 @@
                                             <ul class="mb-1">
                                             @foreach(var pos in positions)
                                             {
-                                                <li class="mb-1">@pos.Key @pos.Value</li>
+                                                if(@pos.Value != "Builder")
+                                                {
+                                                    <li class="mb-1">@pos.Key @pos.Value</li>
+                                                }
+                                                else
+                                                {
+                                                    <li class="mb-1">@pos.Key</li>
+                                                }
+
                                             }
                                             </ul>
                                         }
