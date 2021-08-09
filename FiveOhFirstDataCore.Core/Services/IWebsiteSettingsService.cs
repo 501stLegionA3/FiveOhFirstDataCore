@@ -14,7 +14,7 @@ namespace FiveOhFirstDataCore.Core.Services
     {
         public Task SetDefaultSettingsAsync();
         public Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank);
-        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper);
+        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false);
         public Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails();
         public Task<Dictionary<CShop, CShopClaim>> GetFullClaimsTreeAsync();
         public Task<Dictionary<string, List<string>>> GetClaimDataForCShopAsync(CShop key);
