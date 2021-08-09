@@ -95,6 +95,11 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim, int manager);
         public Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim, int manager);
         public Task<List<Claim>> GetAllClaimsFromTrooperAsync(Trooper trooper);
+        /// <summary>
+        /// Ensures all archived troopers have the Archived role.
+        /// </summary>
+        /// <returns>A Task representing this action.</returns>
+        public Task ValidateArchivedTroopersAsync();
         #endregion
     }
 }

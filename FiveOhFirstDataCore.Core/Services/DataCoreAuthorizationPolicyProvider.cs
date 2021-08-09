@@ -49,10 +49,13 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC1":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.RosterStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.DocMainCom, out dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.RecruitingStaff, out dat) && dat.ClaimData.ContainsKey(x.Type)
@@ -63,20 +66,26 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRosterClerk":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.RosterStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
                     return true;
                 case "RequireRosterClerkOrReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.RosterStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type))
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.ReturningMemberStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
@@ -84,20 +93,23 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRecruiter":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.RecruitingStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
                     return true;
                 case "RequireRecruiterOrReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.RecruitingStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type))
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.ReturningMemberStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
@@ -105,20 +117,26 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireReturningMemberStaff":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.ReturningMemberStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
                     return true;
                 case "RequireC3":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C3")
+                        return ctx.User.HasClaim("Department Lead", "C3")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.CampaignManagement, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.EventManagement, out dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
@@ -126,20 +144,26 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC4":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C4")
+                        return ctx.User.HasClaim("Department Lead", "C4")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.Logistics, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
                     return true;
                 case "RequireC5":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C5")
+                        return ctx.User.HasClaim("Department Lead", "C5")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.TeamSpeakAdmin, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.HolositeSupport, out dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.DiscordManagement, out dat) && dat.ClaimData.ContainsKey(x.Type)
@@ -149,10 +173,13 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC6":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C6")
+                        return ctx.User.HasClaim("Department Lead", "C6")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.BCTStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.PrivateTrainingInstructor, out dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.UTCStaff, out dat) && dat.ClaimData.ContainsKey(x.Type)
@@ -162,20 +189,26 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireQualificationInstructor":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C6")
+                        return ctx.User.HasClaim("Department Lead", "C6")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.QualTrainingStaff, out var dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
                     return true;
                 case "RequireC7":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C7")
+                        return ctx.User.HasClaim("Department Lead", "C7")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.ServerManagement, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.AuxModTeam, out dat) && dat.ClaimData.ContainsKey(x.Type));
                     });
@@ -183,10 +216,13 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireC8":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C8")
+                        return ctx.User.HasClaim("Department Lead", "C8")
                             || ctx.User.HasClaim(x => ClaimsTree.TryGetValue(CShop.PublicAffairs, out var dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.MediaOutreach, out dat) && dat.ClaimData.ContainsKey(x.Type)
                                 || ClaimsTree.TryGetValue(CShop.NewsTeam, out dat) && dat.ClaimData.ContainsKey(x.Type));

@@ -9,6 +9,7 @@
         RTO,
         Medic,
         ARC,
-        NCO
+        NCO,
+        Archived
     }
 }
