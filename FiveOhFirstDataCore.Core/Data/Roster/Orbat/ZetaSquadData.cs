@@ -1,9 +1,4 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Roster
 {
@@ -17,13 +12,13 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
         public void Assign(Trooper item)
         {
-            if(item.Team is null)
+            if (item.Team is null)
             {
                 SquadLeader = item;
             }
             else
             {
-                switch(item.Role)
+                switch (item.Role)
                 {
                     case Role.Lead:
                         Leader = item;
@@ -35,9 +30,9 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
                         Medic = item;
                         break;
                     default:
-                        for(int i = 0; i < Troopers.Length; i++)
+                        for (int i = 0; i < Troopers.Length; i++)
                         {
-                            if(Troopers[i] is null)
+                            if (Troopers[i] is null)
                             {
                                 Troopers[i] = item;
                                 break;
@@ -51,7 +46,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
     public class ZetaUTCSquadData : IAssignable<Trooper>
     {
-        public Trooper SquadLeader { get;set; }
+        public Trooper SquadLeader { get; set; }
         public Trooper[] Troopers { get; private set; } = new Trooper[10];
 
         public void Assign(Trooper item)

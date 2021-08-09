@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures
 {
@@ -12,7 +8,7 @@ namespace FiveOhFirstDataCore.Core.Structures
     /// </summary>
     public class ImportResult : ResultBase
     {
-        protected List<string>? Warnings { get; set; } 
+        protected List<string>? Warnings { get; set; }
 
         public ImportResult(bool success, List<string>? errors = null, List<string>? warnings = null)
             : base(success, errors)
@@ -25,7 +21,7 @@ namespace FiveOhFirstDataCore.Core.Structures
         {
             var res = base.GetResult(out errors);
 
-            if(res)
+            if (res)
             {
                 warnings = Warnings;
                 return res;

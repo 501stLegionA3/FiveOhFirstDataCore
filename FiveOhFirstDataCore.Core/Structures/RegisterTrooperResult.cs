@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Structures
 {
@@ -18,7 +14,7 @@ namespace FiveOhFirstDataCore.Core.Structures
 
         public bool GetResult([NotNullWhen(true)] out string? accessToken, [NotNullWhen(false)] out List<string>? errors)
         {
-            if(Success)
+            if (Success)
             {
                 errors = null;
                 accessToken = AccessToken ?? "";

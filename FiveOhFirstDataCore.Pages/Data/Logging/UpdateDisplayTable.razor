@@ -248,7 +248,7 @@
                         <div class="col"><b>Rank</b></div>
                         <div class="col"><b>Old:</b> @c.ChangedFrom.GetRank()</div>
                         <div class="col"><b>New:</b> @c.ChangedTo.GetRank()</div>
-                        <div class="col">[@c.ChangedById] @c.ChangedBy?.NickName</div>
+                        <div class="col">[@c.RequestedById] @c.RequestedBy?.NickName</div>
                     }
                     else               
                     {
@@ -277,7 +277,7 @@
                                     </table>
                                 </div>
                                 <div class="card-footer btn-toolbar justify-content-between">
-                                    <label class="float-left text-muted">Changed By: [@c.ChangedById] @c.ChangedBy?.NickName</label>
+                                    <label class="float-left text-muted">Changed By: [@c.RequestedById] @c.RequestedBy?.NickName</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-danger" id="confim-addon"><input type="checkbox" @onchange="(x) => ConfirmRevert = (bool?)x.Value ?? false" /></span> 
                                         <button class="btn btn-danger" disabled="@(!ConfirmRevert)" @onclick="async (x) => await OnRevertChanges(update)">Revert Changes</button>

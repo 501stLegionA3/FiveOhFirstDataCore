@@ -1,13 +1,13 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components
 {
@@ -22,7 +22,7 @@ namespace FiveOhFirstDataCore.Core.Components
 
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            if(CurrentValue is not null && CurrentValue.Id != 0)
+            if (CurrentValue is not null && CurrentValue.Id != 0)
             {
                 DisplayValue = CurrentValue.NickName;
                 Valid = true;
@@ -40,22 +40,29 @@ namespace FiveOhFirstDataCore.Core.Components
             {
                 var display = (string?)x.Value ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
-                    || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase));
+                var item = Troopers.FirstOrDefault(x =>
+                {
+                    if (x is null) return false;
 
-                if(item is not null)
+                    return x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
+                        || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase);
+                });
+
+                if (item is not null)
                 {
                     Valid = true;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
-                        || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase)));
                 }
-                else if(!string.IsNullOrWhiteSpace(display))
+                else if (!string.IsNullOrWhiteSpace(display))
                 {
                     Valid = false;
                     Suggestions.Clear();
-                    Suggestions.AddRange(Troopers.Where(x => x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
-                        || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase)));
+                    Suggestions.AddRange(Troopers.Where(x =>
+                    {
+                        if (x is null) return false;
+                        return x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                            || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase);
+                    }));
                 }
                 else
                 {
@@ -65,7 +72,7 @@ namespace FiveOhFirstDataCore.Core.Components
             }));
             builder.CloseElement();
 
-            if(Suggestions.Count > 0)
+            if (Suggestions.Count > 0)
             {
                 builder.OpenElement(8, "div");
                 builder.AddAttribute(9, "class", "position-relative bg-secondary");
@@ -88,6 +95,7 @@ namespace FiveOhFirstDataCore.Core.Components
                         CurrentValue = value;
                         Valid = true;
                         DisplayValue = suggestNick;
+                        Suggestions.Clear();
                     }));
                     builder.AddContent(18, $"{suggest.NickName} - {suggest.Id}");
 

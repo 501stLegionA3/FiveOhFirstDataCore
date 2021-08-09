@@ -1,11 +1,7 @@
-﻿using FiveOhFirstDataCore.Core.Services;
-
+﻿
 using Microsoft.AspNetCore.Components;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components.Base
@@ -33,7 +29,9 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         public int ItemCount { get; set; }
         public bool KnowItemCount { get; set; } = false;
 
-        public int Segments { get
+        public int Segments
+        {
+            get
             {
                 return (int)Math.Ceiling(ItemCount / (double)ItemsPerPage);
             }

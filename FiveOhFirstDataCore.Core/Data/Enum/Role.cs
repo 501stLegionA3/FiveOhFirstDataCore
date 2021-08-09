@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System;
+﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 
 namespace FiveOhFirstDataCore.Core.Data
 {

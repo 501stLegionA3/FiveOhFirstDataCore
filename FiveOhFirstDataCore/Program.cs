@@ -1,18 +1,8 @@
-using FiveOhFirstDataCore.Core.Extensions;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
-
-using Newtonsoft.Json;
-
-using NReco.Logging.File;
-
-using System;
-using System.IO;
-using System.Text;
 
 namespace FiveOhFirstDataCore
 {
@@ -24,9 +14,10 @@ namespace FiveOhFirstDataCore
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
+#pragma warning disable CA1416 // Validate platform compatibility
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
-                {                    
+                {
                     try
                     {
                         services.Configure<EventLogSettings>(settings =>
@@ -41,5 +32,6 @@ namespace FiveOhFirstDataCore
                     webBuilder.UseStartup<Startup>();
                 })
                 .UseWindowsService();
+#pragma warning restore CA1416 // Validate platform compatibility
     }
 }

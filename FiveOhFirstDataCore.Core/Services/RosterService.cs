@@ -1,15 +1,15 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -23,14 +23,16 @@ namespace FiveOhFirstDataCore.Core.Services
         private readonly UserManager<Trooper> _userManager;
         private readonly IDiscordService _discord;
         private readonly ILogger _logger;
+        private readonly IWebsiteSettingsService _settings;
 
         public RosterService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
-            IDiscordService discord, ILogger<RosterService> logger, IServiceProvider provider)
+            IDiscordService discord, ILogger<RosterService> logger, IWebsiteSettingsService settings)
         {
             this._dbContextFactory = dbContextFactory;
             this._userManager = userManager;
             this._discord = discord;
             this._logger = logger;
+            this._settings = settings;
         }
 
         public async Task<List<Trooper>> GetActiveReservesAsync()
@@ -244,7 +246,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(e => e.FlagForId == trooper.Id)
                 .LoadAsync();
 
-            if(_dbContext.Entry(trooper).State == EntityState.Detached)
+            if (_dbContext.Entry(trooper).State == EntityState.Detached)
                 _dbContext.Attach(trooper);
 
             await _dbContext.Entry(trooper)
@@ -316,9 +318,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a Plt.
                 if ((slot % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander 
+                    if (t.Role == Data.Role.Commander
                         || t.Role == Data.Role.SergeantMajor
-                        || t.Role == Data.Role.MasterWarden 
+                        || t.Role == Data.Role.MasterWarden
                         || t.Role == Data.Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
@@ -341,7 +343,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a squad
                 else
                 {
-                    if(t.Role == Data.Role.Lead)
+                    if (t.Role == Data.Role.Lead)
                     {
                         if (thisSlot == slot)
                         {
@@ -355,6 +357,244 @@ namespace FiveOhFirstDataCore.Core.Services
             });
 
             return sub;
+        }
+
+        public async Task<IAssignable<Trooper>?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsSquad())
+                return null;
+
+            IAssignable<Trooper> data;
+
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
+                data = new ZetaSquadData();
+            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+                data = new ZetaUTCSquadData();
+            else 
+                data = new SquadData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => x.Slot == slot)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<IAssignable<Trooper>?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetSquadDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsPlatoon() && !slot.IsSquad())
+                return null;
+
+            IAssignable<Trooper> data;
+
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
+                data = new ZetaSectionData();
+            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+                data = new ZetaUTCSectionData();
+            else 
+                data = new PlatoonData(3);
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var s = (int)slot / 10;
+            await _dbContext.Users
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => s == ((int)x.Slot / 10))
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<IAssignable<Trooper>?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsCompany() && !slot.IsPlatoon() && !slot.IsSquad())
+                return null;
+
+            IAssignable<Trooper> data;
+
+            if (slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
+                data = new ZetaCompanyData();
+            else
+                data = new CompanyData(3, 3);
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var s = (int)slot / 100;
+            await _dbContext.Users
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => s == ((int)x.Slot / 100))
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<IAssignable<Trooper>?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetCompanyDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<HailstormData> GetHailstormDataAsync()
+        {
+            var data = new HailstormData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => x.Slot == Slot.Hailstorm)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var pending = await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.PendingPromotions.Count > 0)
+                .ToListAsync();
+
+            return pending;
+        }
+
+        public async Task<RazorSquadronData> GetRazorDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var razor = new RazorSquadronData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Razor && p.Slot < Slot.Warden)
+                .ForEachAsync(x => razor.Assign(x));
+
+            return razor;
+        }
+
+        public async Task<WardenData> GetWardenDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var warden = new WardenData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Warden && p.Slot < Slot.ZetaCompany)
+                .ForEachAsync(x => warden.Assign(x));
+
+            return warden;
+        }
+
+        public async Task<MynockDetachmentData> GetMynockDataAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var mynock = new MynockDetachmentData();
+
+            await _dbContext.Users
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery()
+                .Where(p => p.Slot >= Slot.Mynock && p.Slot < Slot.Razor)
+                .ForEachAsync(x => mynock.Assign(x));
+
+            return mynock;
+        }
+
+        public async Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager)
+        {
+            if (!manager && !slot.IsSquad())
+                return null;
+
+            var data = new MynockSectionData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .Where(x => x.Slot == slot && x.Slot >= Slot.Mynock && x.Slot < Slot.Razor)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        {
+            var user = await _userManager.GetUserAsync(claims);
+            if (user is null) return null;
+            bool manager = await _userManager.IsInRoleAsync(user, "Admin")
+                || await _userManager.IsInRoleAsync(user, "Manager");
+            return await GetMynockDataFromSlotAsync(user.Slot, manager);
+        }
+
+        public async Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync()
+        {
+            var data = new ZetaUTCSectionData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Where(x => x.Slot >= Slot.ZetaThree && x.Slot < Slot.InactiveReserve)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
+        }
+
+        public async Task<ZetaUTCSquadData> GetZetaUTCSquadFromSlotAsync(Slot slot)
+        {
+            var data = new ZetaUTCSquadData();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            await _dbContext.Users.AsNoTracking()
+                .AsSplitQuery()
+                .Where(x => x.Slot == slot && x.Slot >= Slot.ZetaCompany && x.Slot < Slot.InactiveReserve)
+                .ForEachAsync(x => data.Assign(x));
+
+            return data;
         }
     }
 }

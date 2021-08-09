@@ -1,0 +1,69 @@
+﻿@page "/manager/settings"
+@inject IWebsiteSettingsService _settings
+<AuthorizeView Policy="RequireManager">
+    <Authorized>
+        <BreadcrumbsList Url="Urls" />
+        <h3>Manager Settings</h3>
+        <hr />
+        <ul class="nav nav-tabs row">
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerDisplayOption.CShops ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerDisplayOption.CShops)">C-Shop Config</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerDisplayOption.Discord ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerDisplayOption.Discord)">Discord Config</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerDisplayOption.Promotions ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerDisplayOption.Promotions)">Promotion Requirements</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerDisplayOption.Settings ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerDisplayOption.Settings)">Override Settings</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case ManagerDisplayOption.CShops:
+                    <CShopClaimSettingDisplay />
+                    break;
+                case ManagerDisplayOption.Discord:
+                    <RoleBindingSettingDisplay />
+                    break;
+                case ManagerDisplayOption.Promotions:
+                    <PromotionRequirementSettingDisplay />
+                    break;
+                case ManagerDisplayOption.Settings:
+                    <hr />
+                    <div class="row">
+                        <div class="col d-grid gap-2">
+                            <button class="btn btn-primary" @onclick="async (x) => await _settings.SetDefaultSettingsAsync()">Set Default Website Settings</button>
+                        </div>
+                    </div>
+                    break;
+            }
+        </div>
+
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/settings", "Manager Settings") };
+
+    public enum ManagerDisplayOption
+    {
+        CShops,
+        Discord,
+        Promotions,
+        Settings,
+    }
+
+    public ManagerDisplayOption Active { get; set; }
+
+    private void OnTypeChange(ManagerDisplayOption option)
+    {
+        Active = option;
+        StateHasChanged();
+    }
+}

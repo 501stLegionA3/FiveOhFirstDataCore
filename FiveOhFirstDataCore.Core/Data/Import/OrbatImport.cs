@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Import
@@ -44,14 +40,14 @@ namespace FiveOhFirstDataCore.Core.Data.Import
 
         protected virtual async ValueTask DisposeAsyncCore()
         {
-            if(RosterStream is not null)
-               await RosterStream.DisposeAsync();
+            if (RosterStream is not null)
+                await RosterStream.DisposeAsync();
 
             if (ZetaRosterStream is not null)
                 await ZetaRosterStream.DisposeAsync();
 
             if (CShopStream is not null)
-                await CShopStream .DisposeAsync();
+                await CShopStream.DisposeAsync();
         }
 
         public async ValueTask DisposeAsync()

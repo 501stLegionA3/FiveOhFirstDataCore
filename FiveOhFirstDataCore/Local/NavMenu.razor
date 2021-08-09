@@ -2,160 +2,213 @@
 @inject IConfiguration _config
 @implements IRefreshBase
 @inject IAdvancedRefreshService _advRefresh
+@inject IAuthorizationService _auth
 
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark align-items-stretch position-relative nav-menu-box">
     <div class="top-row pl-4 navbar navbar-dark">
         <div class="container">
             <a class="navbar-brand mx-auto" href="">501st Data Core</a>
-            <button class="navbar-toggler" @onclick="ToggleNavMenu">
+            <button class="navbar-toggler" type="button" data-bs-target=".collapse-main" data-bs-toggle="collapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
     </div>
 
-    <div class="@NavMenuCssClass">
-        <div class="dropdown pt-3">
+    <div class="collapse collapse-main mb-auto">
+        <div class="pt-3">
             <AuthorizeView>
                 <Authorized>
-                    <button id="loginButtons" @onclick="ToggleUserNavMenu" class="@UserNavCssClass w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                    <button role="button" id="loginButtons" data-bs-toggle="collapse" data-bs-target="#login-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
                         <strong>@CurrentUser?.Id @CurrentUser?.NickName</strong>
                     </button>
-                    <div class="@UserNavCssClass w-100 dropdown-menu dropdown-menu-dark text-small shadow">
+                    <div id="login-menu" class="collapse">
+                        <div class="text-small dropdown-menu-dark shadow p-2">
                             <form method="post" action="Identity/Account/LogOut">
                                 <button type="submit" class="dropdown-item">Log out</button>
                             </form>
-                        <hr />
-                        <a href="Identity/Account/Manage" class="dropdown-item">Settings</a>
+                            <hr />
+                            <a href="Identity/Account/Manage" class="dropdown-item">Settings</a>
+                        </div>
                     </div>
                 </Authorized>
                 <NotAuthorized>
-                    <button id="loginButtons" @onclick="ToggleUserNavMenu" class="@UserNavCssClass w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                    <button role="button" id="loginButtonsGuest" data-bs-toggle="collapse" data-bs-target="#login-menu-guest" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
                         <strong>Guest</strong>
                     </button>
-                    <div class="@UserNavCssClass w-100 dropdown-menu dropdown-menu-dark text-small shadow">
-                        <a href="Identity/Account/Login" class="dropdown-item">Log in</a>    
-                        <a href="Identity/Account/Register" class="dropdown-item">Register</a>
+                    <div id="login-menu-guest" class="collapse">
+                        <div class="text-small dropdown-menu-dark shadow p-2">
+                            <a href="Identity/Account/Login" class="dropdown-item">Log in</a>    
+                            <a href="Identity/Account/Register" class="dropdown-item">Register</a>
+                        </div>
                     </div>
                 </NotAuthorized>
             </AuthorizeView>
         </div>
+
+        <div class="mb-auto flex-column">
+            <ul class="nav flex-column nav-pills">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="oi oi-home" aria-hidden="true"></span> Home
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/roster" Match="NavLinkMatch.All">
+                        <span class="oi oi-clipboard" aria-hidden="true"></span> Roster
+                    </NavLink>
+                </li>
+
+                <div class="pt-3">
+                    <button id="mini-roster-data" data-bs-toggle="collapse" data-bs-target="#mini-roster-data-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                        Unit
+                    </button>
+                    <div class="collapse" id="mini-roster-data-menu">
+                        <div class="text-small dropdown-menu-dark shadow p-2">
+                            @if(InSquad)
+                            {
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/squad/me" Match="NavLinkMatch.All">
+                                        <span class="oi oi-compass" aria-hidden="true"></span> My Squad
+                                    </NavLink>
+                                </li>
+                            }
+                            else
+                            {
+                
+                            }
+
+                            @if(InPlatoon)
+                            {
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/platoon/me" Match="NavLinkMatch.All">
+                                        <span class="oi oi-compass" aria-hidden="true"></span> My Platoon
+                                    </NavLink>
+                                </li>
+                            }
+                            else
+                            {
+                
+                            }
+
+                            @if (InCompany)
+                            {
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/company/me" Match="NavLinkMatch.All">
+                                        <span class="oi oi-compass" aria-hidden="true"></span> My Company
+                                    </NavLink>
+                                </li>
+                            }
+                            else
+                            {
+
+                            }
+
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="/hailstorm" Match="NavLinkMatch.All">
+                                    <span class="oi oi-compass" aria-hidden="true"></span> Hailstorm
+                                </NavLink>
+                            </li>
+
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="/razor" Match="NavLinkMatch.All">
+                                    <span class="oi oi-infinity" aria-hidden="true"></span> Razor
+                                </NavLink>
+                            </li>
+
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="/mynock/me" Match="NavLinkMatch.All">
+                                    <span class="oi oi-compass" aria-hidden="true"></span> Mynock
+                                </NavLink>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-3">
+                    <button id="cshops" data-bs-toggle="collapse" data-bs-target="#cshops-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
+                        C-Shops
+                    </button>
+                    <div class="collapse" id="cshops-menu">
+                        <div class="text-small dropdown-menu-dark shadow p-2">
+                            <AuthorizeView Policy="RequireC1">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c1" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-1 PERSONNEL
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC3">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c3" Match="NavLinkMatch.All">
+                                            <span class="oi oi-target" aria-hidden="true"></span> C-3 OPERATIONS
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC4">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c4" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-4 LOGISTICS
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC5">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c5" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-5 COMMUNICATIONS
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC6">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c6" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-6 TRAINING
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC7">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c7" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-7 RESOURCES
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireC8">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/c8" Match="NavLinkMatch.All">
+                                            <span class="oi oi-person" aria-hidden="true"></span> C-8 CIVIL AFFAIRS
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="RequireManager">
+                                <Authorized>
+                                    <li class="nav-item px-3">
+                                        <NavLink class="nav-link" href="/manager" Match="NavLinkMatch.All">
+                                            <span class="oi oi-dashboard" aria-hidden="true"></span> Manager Home
+                                        </NavLink>
+                                    </li>
+                                </Authorized>
+                            </AuthorizeView>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
     </div>
 
-    <div class="@NavMenuCssClass mb-auto flex-column" @onclick="ToggleNavMenu">
-        <ul class="nav flex-column nav-pills">
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Home
-                </NavLink>
-            </li>
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="/roster" Match="NavLinkMatch.All">
-                    <span class="oi oi-clipboard" aria-hidden="true"></span> Roster
-                </NavLink>
-            </li>
-            <AuthorizeView Policy="RequireSquad">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/my/squad" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Squad
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequirePlatoon">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/my/platoon" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Platoon
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireCompany">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/my/company" Match="NavLinkMatch.All">
-                            <span class="oi oi-compass" aria-hidden="true"></span> My Company
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC1">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c1" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-1 PERSONNEL
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC3">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c3" Match="NavLinkMatch.All">
-                            <span class="oi oi-target" aria-hidden="true"></span> C-3 OPERATIONS
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC4">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c4" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-4 LOGISTICS
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC5">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c5" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-5 COMMUNICATIONS
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC6">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c6" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-6 TRAINING
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC7">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c7" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-7 RESOURCES
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireC8">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/c8" Match="NavLinkMatch.All">
-                            <span class="oi oi-person" aria-hidden="true"></span> C-8 CIVIL AFFAIRS
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-            <AuthorizeView Policy="RequireManager">
-                <Authorized>
-                    <li class="nav-item px-3">
-                        <NavLink class="nav-link" href="/manager" Match="NavLinkMatch.All">
-                            <span class="oi oi-dashboard" aria-hidden="true"></span> Manager Home
-                        </NavLink>
-                    </li>
-                </Authorized>
-            </AuthorizeView>
-        </ul>
-    </div>
-
-    <div class="text-center mx-auto @NavMenuCssClass">
+    <div class="text-center mx-auto collapse-main collapse">
         v@(Version)
     </div>
 </div>
@@ -164,35 +217,37 @@
     [CascadingParameter]
     public Trooper? CurrentUser { get; set; }
 
-    private bool collapseNavMenu = true;
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public bool InSquad { get; set; } = false;
+    public bool InPlatoon {get;set;} = false;
+    public bool InCompany { get; set; } = false;
+
     private string Version { get; set; } = "";
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private bool userNavMenu = false;
-    private string UserNavCssClass => userNavMenu ? "show" : null;
-
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        base.OnParametersSet();
+        await base.OnParametersSetAsync();
 
         if(CurrentUser is not null)
         {
             _advRefresh.AddUserSpecificRefreshListener(CurrentUser.Id, 
-                "UserData", CallRefreshRequest);
+                "UserDetails", CallRefreshRequest);
         }
 
         Version = _config["Version"];
-    }
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+        if(CurrentUser is not null)
+        {
+            var user = (await AuthStateTask).User;
 
-    private void ToggleUserNavMenu()
-    {
-        userNavMenu = !userNavMenu;
+            bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+            InSquad = manager || CurrentUser.Slot.IsSquad();
+            InPlatoon = manager || InSquad || CurrentUser.Slot.IsPlatoon();
+            InCompany = manager || InPlatoon || CurrentUser.Slot.IsCompany();
+        }
     }
 
     public async Task CallRefreshRequest()

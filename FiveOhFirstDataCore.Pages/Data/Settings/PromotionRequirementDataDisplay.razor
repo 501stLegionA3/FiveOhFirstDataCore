@@ -1,0 +1,120 @@
+﻿@if(Details is not null)
+{
+    <div class="p-3">
+        <EditForm class="form" Model="Details">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Required Rank</h4>
+                    <StaticIntegerInputList Items="Details.RequiredRank" />
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Inherent Rank Auth</h4>
+                    <StaticIntegerInputList Items="Details.InherentRankAuth" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Required TiG</span>
+                        <InputNumber @bind-Value="Details.RequiredTimeInGrade" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">TiG Waived For</h4>
+                    <StaticIntegerInputList Items="Details.TiGWaivedFor" />
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Required Billet</h4>
+                    <InputRequiredBilletSelector Billets="Details.RequiredBillet" />
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-text">Divide By</span>
+                        <InputNumber @bind-Value="Details.DivideEqualsZero" class="form-control" />
+                        <span class="input-group-text">Equals Zero</span>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <div class="input-group">
+                        <span class="input-group-text">Required TiB</span>
+                        <InputNumber @bind-Value="Details.RequiredTimeInBillet" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Slot Min</h4>
+                    <InputEnumSelect @bind-Value="Details.SlotMin" class="form-control" />
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Slot Max</h4>
+                    <InputEnumSelect @bind-Value="Details.SlotMax" class="form-control" />
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Required Qualifications</h4>
+                    <InputQualificationFlagSelect @bind-Value="Details.RequiredQualifications" />
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">C-Shop Checks</h4>
+                    <div class="form-check">
+                        <InputCheckbox id="rcs" class="form-check-input" @bind-Value="Details.RequiresCShop" />
+                        <label for="rcs" class="form-check-label">Require C-Shop</label>
+                    </div>
+                    <div class="form-check">
+                        <InputCheckbox id="rcsl" class="form-check-input" @bind-Value="Details.RequiresCShopLeadership" />
+                        <label for="rcsl" class="form-check-label">Require C-Shop Leadersip</label>
+                    </div>
+                    <div class="form-check">
+                        <InputCheckbox id="rcsc" class="form-check-input" @bind-Value="Details.RequiresCShopCommand" />
+                        <label for="rcsc" class="form-check-label">Require C-Shop Command</label>
+                    </div>
+                    <hr />
+                    <h4 class="text-center text-wrap">Misc Checks</h4>
+                    <div class="form-check">
+                        <InputCheckbox id="rankOrHigher" class="form-check-input" @bind-Value="Details.RankOrHigher" />
+                        <label for="rankOrHigher" class="form-check-label">Require Rank or Higher</label>
+                    </div>
+                    <div class="form-check">
+                        <InputCheckbox id="tmbn" class="form-check-input" @bind-Value="Details.TeamMustBeNull" />
+                        <label for="tmbn" class="form-check-label">Team Must Be Null</label>
+                    </div>
+                    <div class="form-check">
+                        <InputCheckbox id="dnrlp" class="form-check-input" @bind-Value="Details.DoesNotRequireLinearProgression" />
+                        <label for="dnrlp" class="form-check-label">Does Not Require Linear Progression</label>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Can Promote To</h4>
+                    <StaticIntegerInputList Items="Details.CanPromoteTo" />
+                </div>
+                <div class="col-lg-6 col-md-12">
+                    <h4 class="text-center text-wrap">Needed Promotion Board Level</h4>
+                    <InputEnumSelect @bind-Value="Details.NeededLevel" class="form-control" />
+                </div>
+            </div>
+        </EditForm>
+    </div>
+}
+else
+{
+    <em>No Data Found.</em>
+}
+
+@code {
+    [Parameter]
+    public PromotionDetails? Details { get; set; }
+}

@@ -1,9 +1,4 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Data.Roster
 {
@@ -16,9 +11,9 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
         public void Assign(Trooper item)
         {
             var val = (int)item.Slot % 10;
-            if(val == 0)
+            if (val == 0)
             {
-                switch(item.Role)
+                switch (item.Role)
                 {
                     case Role.Commander:
                         Commander = item;

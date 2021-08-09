@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
@@ -15,7 +16,7 @@ namespace FiveOhFirstDataCore.Core.Account
         public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
         {
             Trooper user;
-            if(int.TryParse(userName, out _))
+            if (int.TryParse(userName, out _))
             {
                 user = await UserManager.FindByIdAsync(userName);
             }

@@ -1,0 +1,91 @@
+﻿@inject IAuthorizationService _auth
+
+<CascadingValue Value="CanPromote">
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" />
+
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
+    }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public SquadData? Squad { get; set; }
+    [Parameter]
+    public ZetaSquadData? Zeta { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private PromotionType PromoType = PromotionType.Default;
+
+    private void BuildTrooperList()
+    {
+        Troopers = new();
+
+        if (Squad is not null)
+        {
+            if (Squad.Lead is not null)
+                Troopers.Add(Squad.Lead);
+            if (Squad.RT is not null)
+                Troopers.Add(Squad.RT);
+            if (Squad.ARC is not null)
+                Troopers.Add(Squad.ARC);
+
+            foreach (var t in Squad.Teams)
+            {
+                if (t.Lead is not null)
+                    Troopers.Add(t.Lead);
+                if (t.Medic is not null)
+                    Troopers.Add(t.Medic);
+
+                Troopers.AddRange(t.Troopers.Where(x => x != null));
+            }
+        }
+        else if (Zeta is not null)
+        {
+            if (Zeta.SquadLeader is not null)
+                Troopers.Add(Zeta.SquadLeader);
+            if (Zeta.Leader is not null)
+                Troopers.Add(Zeta.Leader);
+            if (Zeta.RT is not null)
+                Troopers.Add(Zeta.RT);
+            if (Zeta.Medic is not null)
+                Troopers.Add(Zeta.Medic);
+            foreach (var t in Zeta.Troopers)
+                if (t is not null)
+                    Troopers.Add(t);
+        }
+
+        // if someone can promote on this board, they can promote anyone on this board.
+        CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        if (Squad is not null)
+            CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser?.Id;
+        else if (Zeta is not null)
+            CanPromote = manager || (Zeta?.SquadLeader?.Id ?? 0) == CurrentUser?.Id;
+
+        BuildTrooperList();
+    }
+}

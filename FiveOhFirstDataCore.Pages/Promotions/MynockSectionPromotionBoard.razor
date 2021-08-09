@@ -1,0 +1,67 @@
+﻿@inject IAuthorizationService _auth
+
+<CascadingValue Value="CanPromote">
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" Mynock="true" />
+
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Company" ActiveTroopers="Troopers" Mynock="true" />
+    }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public MynockSectionData Mynock { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private void BuildTrooperList()
+    {
+        Troopers = new();
+
+        if (Mynock.Lead is not null)
+            Troopers.Add(Mynock.Lead);
+        if (Mynock.RT is not null)
+            Troopers.Add(Mynock.RT);
+
+        foreach(var team in Mynock.Teams)
+        {
+            if(team.Lead is not null)
+                Troopers.Add(team.Lead);
+            if(team.Medic is not null)
+                Troopers.Add(team.Medic);
+
+            foreach (var t in team.Troopers)
+                if (t is not null)
+                    Troopers.Add(t);
+        }
+
+        if (CanPromote)
+            CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        CanPromote = manager
+            || (Mynock?.Lead?.Id ?? 0) == CurrentUser?.Id;
+
+        BuildTrooperList();
+    }
+}

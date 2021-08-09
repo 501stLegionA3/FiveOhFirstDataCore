@@ -1,0 +1,107 @@
+﻿@inject IAuthorizationService _auth
+
+<CascadingValue Value="CanPromote">
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" Mynock="true" />
+
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Mynock="true" />
+    }
+    </CascadingValue>
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public MynockDetachmentData Mynock { get; set; }
+
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+    private HashSet<int> CanPromoteValues {get;set;} = new();
+    private PromotionType PromoType { get; set; } = PromotionType.Default;
+
+    private void BuildTrooperList()
+    {
+        Troopers = new();
+        
+        if(Mynock.Medic is not null)
+            Troopers.Add(Mynock.Medic);
+        if(Mynock.NCOIC is not null)
+            Troopers.Add(Mynock.NCOIC);
+        if(Mynock.RT is not null)
+            Troopers.Add(Mynock.RT);
+
+        foreach(var section in Mynock.Sections)
+        {
+            if (section.Lead is not null)
+                Troopers.Add(section.Lead);
+            if (section.RT is not null)
+                Troopers.Add(section.RT);
+
+            foreach(var team in section.Teams)
+            {
+                if(team.Lead is not null)
+                    Troopers.Add(team.Lead);
+                if(team.Medic is not null)
+                    Troopers.Add(team.Medic);
+
+                foreach (var t in team.Troopers)
+                    if (t is not null)
+                        Troopers.Add(t);
+            }
+        }
+
+        switch(PromoType)
+        {
+            case PromotionType.Default:
+                CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+                break;
+            case PromotionType.RTO:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.RTO)
+                    .ToHashSet(x => x.Id);
+                break;
+            case PromotionType.Medic:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.Medic)
+                    .ToHashSet(x => x.Id);
+                break;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        CanPromote = manager 
+            || (Mynock?.Commander?.Id ?? 0) == CurrentUser?.Id
+            || (Mynock?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
+        
+        if (!CanPromote)
+        {
+            if ((Mynock?.RT?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.RTO;
+            }
+            else if ((Mynock?.Medic?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.Medic;
+            }
+        }
+
+        BuildTrooperList();
+    }
+}

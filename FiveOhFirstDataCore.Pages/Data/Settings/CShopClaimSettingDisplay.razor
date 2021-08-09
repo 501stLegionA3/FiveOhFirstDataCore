@@ -1,0 +1,64 @@
+﻿@inject IWebsiteSettingsService _settings
+
+@if (Loaded)
+{
+    Counter = 0;
+    <div class="p-3">
+        <div class="d-grid gap-2">
+            <button class="btn btn-success" @onclick="OnSave">Save Changes</button>
+            <button class="btn btn-danger" @onclick="OnRevert">Revert Changes</button>
+        </div>
+    </div>
+    <div class="accordion mt-2" id="cshop-claims-accordion">
+        @foreach (var item in Bindings)
+        {
+            Counter++;
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#body-{Counter}")" aria-expanded="false" aria-controls="@($"body-{Counter}")">
+                        @item.Key.AsFull()
+                    </button>
+                </h2>
+                <div id="@($"body-{Counter}")" class="accordion-collapse collapse" aria-labelledby="@($"header-{Counter}")" data-bs-parent="#cshop-claims-accordion">
+                    <CShopClaimDataDisplay Claim="item.Value" />
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <em>Loading...</em>
+}
+
+@code {
+    public Dictionary<CShop, CShopClaim> Bindings { get; set; } = new();
+    public int Counter { get; set; } = 0;
+    public bool Loaded { get; set; } = false;
+
+    public string AddNewSegment { get; set; } = "";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            Bindings = await _settings.GetFullClaimsTreeAsync();
+            Loaded = true;
+            StateHasChanged();
+        }
+    }
+
+    public async Task OnRevert()
+    {
+        Bindings = await _settings.GetFullClaimsTreeAsync();
+        StateHasChanged();
+    }
+
+    public async Task OnSave()
+    {
+        await _settings.OverrideCShopClaimSettingsAsync(Bindings);
+        await OnRevert();
+    }
+}

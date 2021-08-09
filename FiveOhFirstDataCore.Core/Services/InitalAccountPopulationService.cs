@@ -1,6 +1,8 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
+
 using Microsoft.AspNetCore.Identity;
+
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -226,7 +228,8 @@ namespace FiveOhFirstDataCore.Core.Services
                         "Trooper"
                     }),
                     (new Trooper()
-                    {Id = 23996,
+                    {
+                        Id = 23996,
                         UserName = "Deytow",
                         NickName = "Deytow",
                         Rank = TrooperRank.SeniorTrooper,

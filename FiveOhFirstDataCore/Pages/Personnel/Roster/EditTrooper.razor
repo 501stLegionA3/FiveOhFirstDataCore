@@ -6,6 +6,7 @@
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 @inject IAdvancedRefreshService _advRefresh
+@inject IWebsiteSettingsService _settings
 
 <AuthorizeView Policy="RequireRosterClerkOrReturningMemberStaff">
     <Authorized>
@@ -137,9 +138,12 @@
                             <div class="row p-2">
                                 <div class="col-lg-5 col-md-12 p-2">
                                     <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Key" disabled="@(Conflicts is not null)" >
-                                    @foreach(var item in CShopExtensions.ClaimsTree[localShop].Keys)
+                                    @if(ClaimsTree.TryGetValue(localShop, out var dat))
                                     {
-                                        <option value="@item">@item</option>
+                                        foreach(var item in dat.ClaimData.Keys)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
                                     }
                                     </InputSelect>
                                 </div>
@@ -147,9 +151,12 @@
                                     @if (!string.IsNullOrWhiteSpace(CShopClaims[localShop][local].Key))
                                     {
                                     <InputSelect class="form-control" @bind-Value="CShopClaims[localShop][local].Value" disabled="@(Conflicts is not null)" >
-                                        @foreach (var item in CShopExtensions.ClaimsTree[localShop][CShopClaims[localShop][local].Key])
+                                        @if(ClaimsTree.TryGetValue(localShop, out var dat))
                                         {
-                                        <option value="@item">@item</option>
+                                            foreach (var item in dat.ClaimData[CShopClaims[localShop][local].Key])
+                                            {
+                                            <option value="@item">@item</option>
+                                            }
                                         }
                                     </InputSelect>
                                     }
@@ -518,9 +525,12 @@
                                                         <div class="row p-2">
                                                             <div class="col-lg-5 col-md-12 p-2">
                                                                 <InputSelect class="form-control" @bind-Value="Conflicts.CShopClaims[localShop][local].Key" >
-                                                                @foreach(var item in CShopExtensions.ClaimsTree[localShop].Keys)
+                                                                @if(ClaimsTree.TryGetValue(localShop, out var dat))
                                                                 {
-                                                                    <option value="@item">@item</option>
+                                                                    foreach(var item in dat.ClaimData.Keys)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
                                                                 }
                                                                 </InputSelect>
                                                             </div>
@@ -528,9 +538,12 @@
                                                                 @if (!string.IsNullOrWhiteSpace(Conflicts.CShopClaims[localShop][local].Key))
                                                                 {
                                                                 <InputSelect class="form-control" @bind-Value="Conflicts.CShopClaims[localShop][local].Value" >
-                                                                    @foreach (var item in CShopExtensions.ClaimsTree[localShop][Conflicts.CShopClaims[localShop][local].Key])
+                                                                    @if(ClaimsTree.TryGetValue(localShop, out var dat))
                                                                     {
-                                                                    <option value="@item">@item</option>
+                                                                        foreach (var item in dat.ClaimData[CShopClaims[localShop][local].Key])
+                                                                        {
+                                                                        <option value="@item">@item</option>
+                                                                        }
                                                                     }
                                                                 </InputSelect>
                                                                 }
@@ -879,6 +892,8 @@
     List<TrooperUpdateConflicts.EditGroups> ConflictGroups { get; set; } = new();
     private TrooperUpdateConflicts? Conflicts { get; set; } = null;
 
+    private Dictionary<CShop, CShopClaim> ClaimsTree { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -978,6 +993,7 @@
             {
                 IsEditing = true;
                 CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+                ClaimsTree = await _settings.GetFullClaimsTreeAsync();
             }
         }
     }

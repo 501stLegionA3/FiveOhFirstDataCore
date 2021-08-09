@@ -3,8 +3,7 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using System;
-using System.Collections.Concurrent;
+
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -27,6 +26,21 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
+        public Task<IAssignable<Trooper>?> GetSquadDataFromSlotAsync(Slot slot, bool manager);
+        public Task<IAssignable<Trooper>?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<IAssignable<Trooper>?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager);
+        public Task<IAssignable<Trooper>?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<IAssignable<Trooper>?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
+        public Task<IAssignable<Trooper>?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<HailstormData> GetHailstormDataAsync();
+        public Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync();
+        public Task<RazorSquadronData> GetRazorDataAsync();
+        public Task<WardenData> GetWardenDataAsync();
+        public Task<MynockDetachmentData> GetMynockDataAsync();
+        public Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager);
+        public Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+        public Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync();
+        public Task<ZetaUTCSquadData> GetZetaUTCSquadFromSlotAsync(Slot slot);
         #endregion
 
         #region Roster Registration

@@ -4,15 +4,14 @@ using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Math.EC.Rfc7748;
+
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -59,7 +58,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var one = await _dbContext
                 .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.ChangedBy)
+                .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
@@ -110,7 +109,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var one = await _dbContext
                 .RankUpdates
-                .Include(p => p.ChangedBy)
+                .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
                 .ToListAsync<UpdateBase>();
@@ -162,19 +161,19 @@ namespace FiveOhFirstDataCore.Core.Services
             return dataList.OrderByDescending(x => x.ChangedOn).ToList();
         }
 
-        public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update) 
+        public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update)
             => update switch
-        {
-            ClaimUpdate u => RevertClaimUpdateAsync(manager, u),
-            CShopUpdate u => RevertCShopUpdateAsync(manager, u),
-            NickNameUpdate u => RevertNickNameUpdateAsync(manager, u),
-            QualificationUpdate u => RevertQualificationUpdateAsync(manager, u),
-            RankUpdate u => RevertRankUpdateAsync(manager, u),
-            RecruitmentUpdate u => RevertRecruitmentUpdateAsync(manager, u),
-            SlotUpdate u => RevertSlotUpdateAsync(manager, u),
-            TimeUpdate u => RevertTimeUpdateAsync(manager, u),
-            _ => Task.FromResult(new ResultBase(false, new() { "No Update of this type has an implemented reversion process." }))
-        };
+            {
+                ClaimUpdate u => RevertClaimUpdateAsync(manager, u),
+                CShopUpdate u => RevertCShopUpdateAsync(manager, u),
+                NickNameUpdate u => RevertNickNameUpdateAsync(manager, u),
+                QualificationUpdate u => RevertQualificationUpdateAsync(manager, u),
+                RankUpdate u => RevertRankUpdateAsync(manager, u),
+                RecruitmentUpdate u => RevertRecruitmentUpdateAsync(manager, u),
+                SlotUpdate u => RevertSlotUpdateAsync(manager, u),
+                TimeUpdate u => RevertTimeUpdateAsync(manager, u),
+                _ => Task.FromResult(new ResultBase(false, new() { "No Update of this type has an implemented reversion process." }))
+            };
 
         private async Task<ResultBase> RevertClaimUpdateAsync(Trooper manager, ClaimUpdate update)
         {
@@ -190,7 +189,7 @@ namespace FiveOhFirstDataCore.Core.Services
             var user = update.ChangedFor;
 
             List<Claim> toRemove = new();
-            foreach(var data in update.Additions)
+            foreach (var data in update.Additions)
             {
                 toRemove.Add(new(data.Key, data.Value));
             }
@@ -205,7 +204,7 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             List<Claim> toAdd = new();
-            foreach(var data in update.Removals)
+            foreach (var data in update.Removals)
             {
                 toAdd.Add(new(data.Key, data.Value));
             }
@@ -300,7 +299,7 @@ namespace FiveOhFirstDataCore.Core.Services
         private async Task<ResultBase> RevertRankUpdateAsync(Trooper manager, RankUpdate update)
         {
             var rank = update.ChangedFrom.GetRank();
-            switch(rank)
+            switch (rank)
             {
                 case TrooperRank r:
                     update.ChangedFor.Rank = r;
@@ -326,7 +325,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 ChangedFrom = update.ChangedTo,
                 ChangedTo = update.ChangedFrom,
-                ChangedById = manager.Id,
+                RequestedById = manager.Id,
                 ChangedOn = DateTime.UtcNow.ToEst(),
                 RevertChange = true
             });
@@ -387,12 +386,12 @@ namespace FiveOhFirstDataCore.Core.Services
 
         private async Task<ResultBase> RevertTimeUpdateAsync(Trooper manager, TimeUpdate update)
         {
-            if(update.OldGraduatedBCT is not null)
+            if (update.OldGraduatedBCT is not null)
             {
                 update.ChangedFor.GraduatedBCTOn = update.OldGraduatedBCT.Value;
             }
 
-            if(update.OldGraduatedUTC is not null)
+            if (update.OldGraduatedUTC is not null)
             {
                 update.ChangedFor.GraduatedUTCOn = update.OldGraduatedUTC.Value;
             }
@@ -407,7 +406,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 update.ChangedFor.LastPromotion = update.OldPromotion.Value;
             }
 
-            if(update.OldStartOfService is not null)
+            if (update.OldStartOfService is not null)
             {
                 update.ChangedFor.StartOfService = update.OldStartOfService.Value;
             }

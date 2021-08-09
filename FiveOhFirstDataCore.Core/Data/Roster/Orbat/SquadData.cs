@@ -11,7 +11,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
 
         public void Assign(Trooper t)
         {
-            switch(t.Role)
+            switch (t.Role)
             {
                 case Role.RTO:
                     RT = t;

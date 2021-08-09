@@ -1,0 +1,77 @@
+﻿@inject IAuthorizationService _auth
+@inject IRosterService _roster
+
+<CascadingValue Value="CanPromote">
+@if(Troopers is not null)
+{
+    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+
+    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+}
+</CascadingValue>
+
+@code {
+    [CascadingParameter]
+    public Trooper CurrentUser { get; set; }
+
+    [Parameter]
+    public HailstormData Battalion { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public List<Trooper>? Troopers { get; set; } = null;
+
+    private bool CanPromote { get; set; } = false;
+
+    private HashSet<int> CanPromoteValues { get; set; } = new();
+
+    private PromotionType PromoType = PromotionType.Default;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        var user = (await AuthStateTask).User;
+
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+
+        CanPromote = manager
+            || (Battalion?.Commander?.Id ?? 0) == CurrentUser?.Id 
+            || (Battalion?.XO?.Id ?? 0) == CurrentUser?.Id
+            || (Battalion?.NCOIC?.Id ?? 0) == CurrentUser?.Id;
+
+        if(!CanPromote)
+        {
+            if((Battalion?.RT?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.RTO;
+            }
+            else if ((Battalion?.Medic?.Id ?? 0) == CurrentUser?.Id)
+            {
+                CanPromote = true;
+                PromoType = PromotionType.Medic;
+            }
+        }
+
+        Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
+
+        switch(PromoType)
+        {
+            case PromotionType.Default:
+                CanPromoteValues = Troopers.ToHashSet(x => x.Id);
+                break;
+            case PromotionType.RTO:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.RTO)
+                    .ToHashSet(x => x.Id);
+                break;
+            case PromotionType.Medic:
+                CanPromoteValues = Troopers.AsQueryable()
+                    .Where(x => x.Role == Role.Medic)
+                    .ToHashSet(x => x.Id);
+                break;
+        }
+    }
+}

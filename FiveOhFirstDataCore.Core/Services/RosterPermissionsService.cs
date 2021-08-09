@@ -1,112 +1,123 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures;
-using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Logging;
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
     public partial class RosterService : IRosterService
     {
-        public Task<bool[]> GetC1PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC1PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false, false, false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true, true, true, true });
+                return new bool[] { true, true, true, true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RosterStaff].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.DocMainCom].ContainsKey(x.Type));
-            perms[2] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.RecruitingStaff].ContainsKey(x.Type));
-            perms[3] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ReturningMemberStaff].ContainsKey(x.Type));
-            perms[4] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.MedalsStaff].ContainsKey(x.Type));
-            
-            return Task.FromResult(perms);
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.RosterStaff].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.DocMainCom].ClaimData.ContainsKey(x.Type));
+            perms[2] = claims.HasClaim(x => ClaimsTree[CShop.RecruitingStaff].ClaimData.ContainsKey(x.Type));
+            perms[3] = claims.HasClaim(x => ClaimsTree[CShop.ReturningMemberStaff].ClaimData.ContainsKey(x.Type));
+            perms[4] = claims.HasClaim(x => ClaimsTree[CShop.MedalsStaff].ClaimData.ContainsKey(x.Type));
+
+            return perms;
         }
 
-        public Task<bool[]> GetC3PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC3PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true });
+                return new bool[] { true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.CampaignManagement].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.EventManagement].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.CampaignManagement].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.EventManagement].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
-        public Task<bool[]> GetC4PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC4PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true });
+                return new bool[] { true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.Logistics].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.Logistics].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
-        public Task<bool[]> GetC5PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC5PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false, false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true, true, true });
+                return new bool[] { true, true, true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.TeamSpeakAdmin].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.HolositeSupport].ContainsKey(x.Type));
-            perms[2] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.DiscordManagement].ContainsKey(x.Type));
-            perms[3] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.TechSupport].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.TeamSpeakAdmin].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.HolositeSupport].ClaimData.ContainsKey(x.Type));
+            perms[2] = claims.HasClaim(x => ClaimsTree[CShop.DiscordManagement].ClaimData.ContainsKey(x.Type));
+            perms[3] = claims.HasClaim(x => ClaimsTree[CShop.TechSupport].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
-        public Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false, false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true, true, true });
+                return new bool[] { true, true, true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.BCTStaff].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.PrivateTrainingInstructor].ContainsKey(x.Type));
-            perms[2] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.UTCStaff].ContainsKey(x.Type));
-            perms[3] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.QualTrainingStaff].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.BCTStaff].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.PrivateTrainingInstructor].ClaimData.ContainsKey(x.Type));
+            perms[2] = claims.HasClaim(x => ClaimsTree[CShop.UTCStaff].ClaimData.ContainsKey(x.Type));
+            perms[3] = claims.HasClaim(x => ClaimsTree[CShop.QualTrainingStaff].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
-        public Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true });
+                return new bool[] { true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.ServerManagement].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.AuxModTeam].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.ServerManagement].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.AuxModTeam].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
-        public Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims)
+        public async Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims)
         {
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
             var perms = new bool[] { false, false, false };
 
             if (claims.IsInRole("Admin") || claims.IsInRole("Manager"))
-                return Task.FromResult(new bool[] { true, true, true });
+                return new bool[] { true, true, true };
 
-            perms[0] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.PublicAffairs].ContainsKey(x.Type));
-            perms[1] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.MediaOutreach].ContainsKey(x.Type));
-            perms[2] = claims.HasClaim(x => CShopExtensions.ClaimsTree[CShop.NewsTeam].ContainsKey(x.Type));
+            perms[0] = claims.HasClaim(x => ClaimsTree[CShop.PublicAffairs].ClaimData.ContainsKey(x.Type));
+            perms[1] = claims.HasClaim(x => ClaimsTree[CShop.MediaOutreach].ClaimData.ContainsKey(x.Type));
+            perms[2] = claims.HasClaim(x => ClaimsTree[CShop.NewsTeam].ClaimData.ContainsKey(x.Type));
 
-            return Task.FromResult(perms);
+            return perms;
         }
 
         public async Task<(bool, bool)> GetAdminAndManagerValuesAsync(string id)

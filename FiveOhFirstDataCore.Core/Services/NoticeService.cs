@@ -4,14 +4,11 @@ using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 
-using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
@@ -19,10 +16,12 @@ namespace FiveOhFirstDataCore.Core.Services
     public class NoticeService : INoticeService
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly IWebsiteSettingsService _settings;
 
-        public NoticeService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        public NoticeService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IWebsiteSettingsService settings)
         {
             _dbContextFactory = dbContextFactory;
+            _settings = settings;
         }
 
         public async Task DeleteNoticeAsync(Notice toRemove, string board)
@@ -67,23 +66,28 @@ namespace FiveOhFirstDataCore.Core.Services
             }
         }
 
-        public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed)
+        public async Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed)
         {
-            foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+            var ClaimsTree = await _settings.GetFullClaimsTreeAsync();
+
+            foreach (CShop shop in Enum.GetValues(typeof(CShop)))
             {
-                if((shop & cshops) == shop)
+                if ((shop & cshops) == shop)
                 {
-                    foreach(var groupName in CShopExtensions.ClaimsTree[shop])
+                    if (ClaimsTree.TryGetValue(shop, out var data))
                     {
-                        if (claims.HasClaim(x => x.Type.Equals(groupName.Key)
-                            && groupName.Value.Contains(x.Value)
-                            && allowed.Contains(x.Value)))
-                            return Task.FromResult(true);
+                        foreach (var groupName in data.ClaimData)
+                        {
+                            if (claims.HasClaim(x => x.Type.Equals(groupName.Key)
+                                && groupName.Value.Contains(x.Value)
+                                && allowed.Contains(x.Value)))
+                                return true;
+                        }
                     }
                 }
             }
 
-            return Task.FromResult(false);
+            return false;
         }
 
         public async Task PostNoticeAsync(Notice newNotice, string board, Trooper user)

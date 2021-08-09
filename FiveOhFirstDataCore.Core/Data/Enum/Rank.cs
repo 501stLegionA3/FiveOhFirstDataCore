@@ -1,6 +1,4 @@
-﻿using Org.BouncyCastle.Utilities.Collections;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -196,7 +194,7 @@ namespace FiveOhFirstDataCore.Core.Data
         {
             if (value == -1) return null;
 
-            foreach(var val in Enum.GetValues(typeof(TrooperRank)))
+            foreach (var val in Enum.GetValues(typeof(TrooperRank)))
             {
                 if ((int)val == value)
                     return (Enum)val;
@@ -283,6 +281,9 @@ namespace FiveOhFirstDataCore.Core.Data
                 ?.Description ?? "";
         }
 
+        public static string AsQualified<T>(this T value) where T : Enum
+            => $"{value.GetType().Name}.{value}";
+
         public static T? ValueFromString<T>(this string value) where T : Enum
         {
             var type = typeof(T);
@@ -292,12 +293,12 @@ namespace FiveOhFirstDataCore.Core.Data
 
                 var name = Enum.GetName(type, v);
 
-                if(name is not null)
+                if (name is not null)
                 {
-                    if(name == value)
+                    if (name == value)
                     {
                         return (T)v;
-                    }   
+                    }
                 }
             }
 

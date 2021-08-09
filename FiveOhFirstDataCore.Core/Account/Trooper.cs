@@ -1,9 +1,12 @@
 ﻿using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity;
+
 using System;
 using System.Collections.Generic;
 
@@ -39,6 +42,10 @@ namespace FiveOhFirstDataCore.Core.Account
         public DateTime LastBilletChange { get; set; }
         public DateTime GraduatedBCTOn { get; set; }
         public DateTime GraduatedUTCOn { get; set; }
+
+        public DateTime? BilletedCShopLeadership { get; set; }
+        public bool IsCShopCommand { get; set; }
+
         #endregion
         #region Notes
         public string? InitialTraining { get; set; }
@@ -60,6 +67,10 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<TrooperFlag> Flags { get; set; } = new();
         public List<TrooperFlag> CreatedFlags { get; set; } = new();
 
+        public List<Promotion> PendingPromotions { get; set; } = new();
+        public List<Promotion> RequestedPromotions { get; set; } = new();
+        public List<Promotion> ApprovedPendingPromotions { get; set; } = new();
+
         #region Logging
         /// <summary>
         /// Rank changes applied to this account.
@@ -69,6 +80,8 @@ namespace FiveOhFirstDataCore.Core.Account
         /// Rank changes submitted by this account for other accounts.
         /// </summary>
         public List<RankUpdate> SubmittedRankUpdates { get; set; } = new();
+        public List<RankUpdate> ApprovedRankUpdates { get; set; } = new();
+        public List<RankUpdate> DeniedRankUpdates { get; set; } = new();
         public List<SlotUpdate> SlotUpdates { get; set; } = new();
         public List<SlotUpdate> ApprovedSlotUpdates { get; set; } = new();
         public List<CShopUpdate> CShopUpdates { get; set; } = new();
@@ -113,7 +126,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRankDesignation()
         {
-            if(Role == Role.RTO)
+            if (Role == Role.RTO)
             {
                 return RTORank?.AsShorthand() ?? "";
             }
@@ -141,7 +154,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRankName()
         {
-            if(Slot >= Slot.Razor && Slot < Slot.Warden)
+            if (Slot >= Slot.Razor && Slot < Slot.Warden)
             {
                 return PilotRank?.AsFull() ?? "";
             }
@@ -171,22 +184,22 @@ namespace FiveOhFirstDataCore.Core.Account
                 || Slot >= Slot.ZetaCompany)
             {
                 var tag = (int)Slot / 10 % 10;
-                if(tag == 0)
+                if (tag == 0)
                 {
                     return $"Company {Role.AsFull()}";
                 }
                 else
                 {
                     tag = (int)Slot % 10;
-                    if(tag == 0)
+                    if (tag == 0)
                     {
                         return $"Platoon {Role.AsFull()}";
                     }
                     else
                     {
-                        if(Role == Role.Lead)
+                        if (Role == Role.Lead)
                         {
-                            if(Team is null)
+                            if (Team is null)
                             {
                                 return $"Squad {Role.AsFull()}";
                             }

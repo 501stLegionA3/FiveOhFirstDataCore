@@ -1,11 +1,19 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Components;
 using FiveOhFirstDataCore.Core.Data.Notice;
+using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+
+using Newtonsoft.Json;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FiveOhFirstDataCore.Core.Database
 {
@@ -28,6 +36,16 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
         public DbSet<Notice> Notices { get; internal set; }
 
+        public DbSet<Promotion> Promotions { get; internal set; }
+
+        #region Website Settings
+        public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
+        public DbSet<CShopClaim> CShopClaims { get; internal set; }
+        public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
+        public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
+        public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
+        #endregion
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -38,23 +56,96 @@ namespace FiveOhFirstDataCore.Core.Database
         {
             base.OnModelCreating(builder);
 
+            #region Account Setup
+
             var recruitStatus = builder.Entity<RecruitStatus>();
             recruitStatus.HasKey(e => e.RecruitStatusId);
             recruitStatus.HasOne(e => e.Trooper)
                 .WithOne(p => p.RecruitStatus)
                 .HasForeignKey<RecruitStatus>(e => e.TrooperId);
 
+            #endregion
+
+            #region Website Settings
+            var promoReq = builder.Entity<PromotionDetails>();
+            promoReq.HasKey(p => p.RequirementsFor);
+
+            var cshopClaims = builder.Entity<CShopClaim>();
+            cshopClaims.HasKey(p => p.Key);
+            cshopClaims.Property(p => p.ClaimData)
+                .HasConversion(
+                    x => JsonConvert.SerializeObject(x),
+                    x => JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(x) ?? new(),
+                    new ValueComparer<Dictionary<string, List<string>>>(
+                        (c1, c2) => CompareCShopClaims(c1, c2),
+                        c => c.Aggregate(0, (x, y) => HashCode.Combine(
+                            HashCode.Combine(x, y.GetHashCode(),
+                                y.Value.Aggregate(0, (z, v) => HashCode.Combine(z, v.GetHashCode()))
+                                )
+                            )),
+                        c => c == null ? null : c.ToDictionary(c => c.Key, c => c.Value)
+                    ));
+
+            var cshopRoles = builder.Entity<CShopRoleBinding>();
+            cshopRoles.HasKey(p => p.Key);
+            cshopRoles.HasMany(p => p.Departments)
+                .WithOne(e => e.Parent)
+                .HasForeignKey(p => p.ParentKey);
+
+            var cshopRoleDepartment = builder.Entity<CShopDepartmentBinding>();
+            cshopRoleDepartment.HasKey(p => p.Key);
+            cshopRoleDepartment.HasMany(p => p.Roles)
+                .WithOne(e => e.Parent)
+                .HasForeignKey(p => p.ParentKey);
+
+            var cshopRoleData = builder.Entity<CShopRoleBindingData>();
+            cshopRoleData.HasKey(p => p.Key);
+
+            var discordRoles = builder.Entity<DiscordRoleDetails>();
+            discordRoles.HasKey(p => p.Key);
+            #endregion
+
+            #region Promotions and Transfers
+
+            var promotion = builder.Entity<Promotion>();
+            promotion.HasKey(p => p.Id);
+            promotion.HasOne(p => p.PromotionFor)
+                .WithMany(e => e.PendingPromotions)
+                .HasForeignKey(p => p.PromotionForId);
+            promotion.HasOne(p => p.RequestedBy)
+                .WithMany(e => e.RequestedPromotions)
+                .HasForeignKey(p => p.RequestedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+            promotion.Property(p => p.RequestedById)
+                .IsRequired(false);
+            promotion.HasMany(p => p.ApprovedBy)
+                .WithMany(e => e.ApprovedPendingPromotions);
+
+            #endregion
+
+            #region Logging
+
             var rankChange = builder.Entity<RankUpdate>();
             rankChange.HasKey(e => e.ChangeId);
             rankChange.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.RankChanges)
                 .HasForeignKey(e => e.ChangedForId);
-            rankChange.HasOne(e => e.ChangedBy)
+            rankChange.HasOne(e => e.RequestedBy)
                 .WithMany(p => p.SubmittedRankUpdates)
-                .HasForeignKey(e => e.ChangedById)
+                .HasForeignKey(e => e.RequestedById)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
-            rankChange.Property(p => p.ChangedById)
+            rankChange.Property(p => p.RequestedById)
+                .IsRequired(false);
+            rankChange.HasMany(e => e.ApprovedBy)
+                .WithMany(p => p.ApprovedRankUpdates);
+            rankChange.HasOne(e => e.DeniedBy)
+                .WithMany(p => p.DeniedRankUpdates)
+                .HasForeignKey(e => e.DeniedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
+            rankChange.Property(p => p.RequestedById)
                 .IsRequired(false);
 
             var slotChange = builder.Entity<SlotUpdate>();
@@ -152,6 +243,10 @@ namespace FiveOhFirstDataCore.Core.Database
             times.Property(p => p.ChangedById)
                 .IsRequired(false);
 
+            #endregion Logging
+
+            #region Boards
+
             var flags = builder.Entity<TrooperFlag>();
             flags.HasKey(e => e.FlagId);
             flags.HasOne(e => e.FlagFor)
@@ -164,9 +259,6 @@ namespace FiveOhFirstDataCore.Core.Database
                 .OnDelete(DeleteBehavior.SetNull);
             flags.Property(p => p.AuthorId)
                 .IsRequired(false);
-
-            var claimData = builder.Entity<ClaimUpdateData>();
-            claimData.HasKey(e => e.UpdateKey);
 
             var noticeBoard = builder.Entity<NoticeBoardData>();
             noticeBoard.HasKey(e => e.Location);
@@ -184,6 +276,29 @@ namespace FiveOhFirstDataCore.Core.Database
             notices.Property(p => p.AuthorId)
                 .IsRequired(false);
             notices.Ignore(e => e.Display);
+
+            #endregion Boards
+
+            var claimData = builder.Entity<ClaimUpdateData>();
+            claimData.HasKey(e => e.UpdateKey);
+        }
+
+        private bool CompareCShopClaims(Dictionary<string, List<string>>? c1,
+            Dictionary<string, List<string>>? c2)
+        {
+            if (c1 is null & c2 is null) return true;
+            if (c1 is null || c2 is null) return false;
+            if (c1.Count != c2.Count) return false;
+            foreach (var i in c1)
+            {
+                if (c2.TryGetValue(i.Key, out var c2Val))
+                {
+                    if (!i.Value.SequenceEqual(c2Val)) return false;
+                }
+                else return false;
+            }
+
+            return true;
         }
     }
 }

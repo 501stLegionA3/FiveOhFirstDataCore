@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FiveOhFirstDataCore.Core.Extensions
+﻿namespace FiveOhFirstDataCore.Core.Extensions
 {
     public static class StringExtensions
     {
         public static bool IsAlphabetical(this string value)
         {
             int nums = 0;
-            foreach(var c in value)
+            foreach (var c in value)
             {
                 if (nums > 0) return false;
 
