@@ -129,7 +129,8 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users.AsNoTracking()
                 .Include(x => x.RecruitStatus)
-                .Where(x => !string.IsNullOrEmpty(x.AccessCode))
+                .Where(x => !string.IsNullOrEmpty(x.AccessCode)
+                    && x.Slot < Slot.Archived)
                 .ToListAsync();
         }
 
