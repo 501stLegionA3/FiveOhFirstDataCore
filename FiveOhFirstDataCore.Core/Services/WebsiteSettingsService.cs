@@ -1109,8 +1109,8 @@ namespace FiveOhFirstDataCore.Core.Services
 
             // Filter out any promotions from trooper to warrant officers
             if (filterOutTrooperToWarrant)
-                promotions = promotions.Where(x => !(x.PromoteFrom < 100 
-                    && x.PromoteTo >= 100))
+                promotions = promotions.Where(x => !((x.PromoteFrom < 300 || x.PromoteFrom >= 400) 
+                    && x.PromoteTo >= 300 && x.PromoteTo < 400))
                     .ToList();
 
             return promotions;
