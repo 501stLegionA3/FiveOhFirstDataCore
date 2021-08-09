@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonPromotions : Migration
+    public partial class ReleaseSoyvolonVersionZeroSevenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
