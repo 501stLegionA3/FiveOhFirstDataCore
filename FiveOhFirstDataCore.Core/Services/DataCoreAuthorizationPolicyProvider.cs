@@ -93,6 +93,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 case "RequireRecruiter":
                     builder.RequireAssertion(async (ctx, _s) =>
                     {
+                        if (ctx.User.IsInRole("Admin")
+                               || ctx.User.IsInRole("Manager")) return true;
+
                         if (ctx.User.IsInRole("Archived")) return false;
 
                         var ClaimsTree = await _s.GetCachedCShopClaimTreeAsync();
