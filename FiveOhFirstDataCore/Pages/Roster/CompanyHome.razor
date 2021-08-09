@@ -48,7 +48,7 @@
                     <h4>@Slot.AsFull()'s Promotion Board</h4>
                     @if(Data is not null || ZetaData is not null)
                     {
-                        <CompanyPromotionBoard Company="Data" Zeta="ZetaData" />
+                        <CompanyPromotionBoard Company="Data" Zeta="ZetaData" Slot="(int)Slot" />
                     }
                     else
                     {

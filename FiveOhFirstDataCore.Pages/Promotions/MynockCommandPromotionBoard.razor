@@ -82,7 +82,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Mynock", "Command");
 
         CanPromote = manager 
             || (Mynock?.Commander?.Id ?? 0) == CurrentUser?.Id

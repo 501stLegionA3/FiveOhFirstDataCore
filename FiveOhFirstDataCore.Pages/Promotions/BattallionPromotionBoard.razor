@@ -16,6 +16,8 @@
 
     [Parameter]
     public HailstormData Battalion { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -34,7 +36,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Battalion", Slot.ToString());
 
         CanPromote = manager
             || (Battalion?.Commander?.Id ?? 0) == CurrentUser?.Id 
