@@ -71,6 +71,9 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<Promotion> RequestedPromotions { get; set; } = new();
         public List<Promotion> ApprovedPendingPromotions { get; set; } = new();
 
+        public List<TrooperDescription> Descriptions { get; set; } = new();
+        public List<TrooperDescription> CreatedDescriptions { get; set; } = new();
+
         #region Logging
         /// <summary>
         /// Rank changes applied to this account.
