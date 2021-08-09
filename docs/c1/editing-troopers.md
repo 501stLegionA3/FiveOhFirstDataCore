@@ -95,6 +95,29 @@ If there is at least one (1) green box for C-Shops, additional settings will app
 - Notes
     - A text filed for any additional notes for this trooper, such as noting a returning member and who they were approved by.
 
+## Overwriting Changes
+
+There may be a time when two people might be editing the same trooper at the same time. In this case, the system will prompt you if you are about to overwrite recent changes. It will look like this.
+
+![overwrite-message](../_media/trooper-edit/overwrite-message.png)
+
+When this happens the system will display each set of data, and will request the person editing to review each section. 
+
+
+
+![overwrite-changes](../_media/trooper-edit/overwrite-changes.png)
+
+1. The left side of the interface displays your current edit.
+2. The right side of the interface displays the data currently saved by the system.
+3. The bottom of the interface displays the result of the Merge based on the selection made.
+4. These check boxes allow you to select which data set you wish to keep. `Take Edit` selects the edit you made, and `Take Current` Selects what is saved with the Data Core.
+
+After you have made the selection you wish to keep, click the `Accept Merge` button, located at the bottom of each section.
+
+> Please note that all sections must be merged before changes can be saved.
+
 ## Saving Changes
 
-The save changes button at the very bottom of the page will save any updates you have made to this trooper. Updates are logged so they can be reverted if absolutely needed. Any changes go into effect immediately, and adding people to C-Shops will grant them access to C-Shop specific pages and resources.
+![save-changes](../_media/trooper-edit/save-changes.png)
+
+The `Save Changes` button at the very bottom of the page will save any updates you have made to this trooper. Updates are logged so they can be reverted if absolutely needed. Any changes go into effect immediately, and adding people to C-Shops will grant them access to C-Shop specific pages and resources.

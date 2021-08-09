@@ -10,7 +10,7 @@ Registration occurs on [this page](https://dc.501stlegion-a3.com/Identity/Accoun
 
 For a more detailed registration guide, see the [registration](register-account) documentation.
 
-## NCO Guides
+## Leadership Guides
 
 ### Access Codes
 To get access codes for your troopers, login to the website and navigate to [this page](https://dc.501stlegion-a3.com/trooper/me/accessgrants).
