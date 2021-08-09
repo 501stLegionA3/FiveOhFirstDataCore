@@ -218,6 +218,9 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.Entry(promo).Reference(e => e.PromotionFor).LoadAsync();
             await _dbContext.Entry(promo).Reference(e => e.RequestedBy).LoadAsync();
 
+            if (currentBoard >= promo.NeededBoard)
+                await FinalizePromotionAsync(promo, invoked);
+
             return new(true, promo, null);
         }
 
