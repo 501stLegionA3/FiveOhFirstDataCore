@@ -2,12 +2,14 @@
 @inject IRosterService _roster
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+    <CascadingValue Value="CanPromoteValues">
+    @if(Troopers is not null)
+    {
+        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
-}
+        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Filter="FiveOhFirstDataCore.Core.Data.Slot.Hailstorm" />
+    }
+    </CascadingValue>
 </CascadingValue>
 
 @code {
@@ -58,7 +60,7 @@
             }
         }
 
-        Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
+        Troopers = await _roster.GetFullRosterAsync();
 
         switch(PromoType)
         {

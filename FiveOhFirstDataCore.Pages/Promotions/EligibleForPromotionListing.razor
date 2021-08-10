@@ -309,7 +309,10 @@
 
     [Parameter]
     public bool Mynock { get; set; } = false;
-    
+
+    [Parameter]
+    public Slot? Filter { get; set; } = null;
+
     [CascadingParameter(Name = "Airborne")]
     public bool Airborne { get; set; } = false;
 
@@ -363,7 +366,8 @@
         foreach(var t in ActiveTroopers)
         {
             if (t is null) continue;
-            EligiblePromotions.AddRange(await _settings.GetEligiblePromotionsAsync(t, true));
+            if (Filter is not null && t.Slot == Filter)
+                EligiblePromotions.AddRange(await _settings.GetEligiblePromotionsAsync(t, true));
         }
     }
 
