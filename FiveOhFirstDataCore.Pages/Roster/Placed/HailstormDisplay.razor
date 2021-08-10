@@ -40,7 +40,7 @@
     </tr>
     <tr role="@(Hailstorm.CShopXO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopXO?.Id)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
-            C-Shope Executive Officer
+            C-Shop Executive Officer
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
               @(Hailstorm.CShopXO?.WarrantRank is null ? Hailstorm.CShopXO?.Rank?.AsFull() + " " ?? "" : Hailstorm.CShopXO?.WarrantRank?.AsFull() + " " ?? "")@(Hailstorm.CShopXO?.NickName ?? "TBD")
