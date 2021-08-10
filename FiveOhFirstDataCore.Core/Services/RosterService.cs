@@ -366,7 +366,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return sub;
         }
 
-        public async Task<IAssignable<Trooper>?> GetSquadDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetSquadDataAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsSquad())
                 return null;
@@ -392,16 +392,16 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<IAssignable<Trooper>?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetSquadDataAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
-            return await GetSquadDataFromSlotAsync(user.Slot, manager);
+            return await GetSquadDataAsync(user.Slot, manager);
         }
 
-        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
@@ -428,16 +428,16 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<IAssignable<Trooper>?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetPlatoonDataAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
-            return await GetPlatoonDataFromSlotAsync(user.Slot, manager);
+            return await GetPlatoonDataAsync(user.Slot, manager);
         }
 
-        public async Task<IAssignable<Trooper>?> GetCompanyDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<IAssignable<Trooper>?> GetCompanyDataAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsCompany() && !slot.IsPlatoon() && !slot.IsSquad())
                 return null;
@@ -462,13 +462,13 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<IAssignable<Trooper>?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<IAssignable<Trooper>?> GetCompanyDataAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
-            return await GetCompanyDataFromSlotAsync(user.Slot, manager);
+            return await GetCompanyDataAsync(user.Slot, manager);
         }
 
         public async Task<HailstormData> GetHailstormDataAsync()
@@ -548,7 +548,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return mynock;
         }
 
-        public async Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager)
+        public async Task<MynockSectionData?> GetMynockSectionDataAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsSquad())
                 return null;
@@ -567,13 +567,13 @@ namespace FiveOhFirstDataCore.Core.Services
             return data;
         }
 
-        public async Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<MynockSectionData?> GetMynockSectionDataAsync(ClaimsPrincipal claims)
         {
             var user = await _userManager.GetUserAsync(claims);
             if (user is null) return null;
             bool manager = await _userManager.IsInRoleAsync(user, "Admin")
                 || await _userManager.IsInRoleAsync(user, "Manager");
-            return await GetMynockDataFromSlotAsync(user.Slot, manager);
+            return await GetMynockSectionDataAsync(user.Slot, manager);
         }
 
         public async Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync()

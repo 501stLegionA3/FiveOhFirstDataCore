@@ -111,11 +111,11 @@ else
             if (int.TryParse(SquadDesignation, out int id))
             {
                 Slot = (Slot)id;
-                dat = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                dat = await _roster.GetSquadDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
             }
             else if (SquadDesignation == "me")
             {
-                dat = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+                dat = await _roster.GetSquadDataAsync(user);
 
                 var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
                 if(t is not null)
@@ -162,11 +162,11 @@ else
         if (int.TryParse(SquadDesignation, out int id))
         {
             Slot = (Slot)id;
-            dat = await _roster.GetSquadDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            dat = await _roster.GetSquadDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
         }
         else if (SquadDesignation == "me")
         {
-            dat = await _roster.GetSquadDataFromClaimPrincipalAsync(user);
+            dat = await _roster.GetSquadDataAsync(user);
 
             var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
             if(t is not null)

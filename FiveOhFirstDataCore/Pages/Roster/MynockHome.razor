@@ -91,11 +91,11 @@ else
 
             if (int.TryParse(SectionDesignation, out int id))
             {
-                SectionData = await _roster.GetMynockDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                SectionData = await _roster.GetMynockSectionDataAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
                 Slot = id;
             }
             else if (SectionDesignation == "me")
-                SectionData = await _roster.GetMynockDataFromClaimPrincipalAsync(user);
+                SectionData = await _roster.GetMynockSectionDataAsync(user);
 
             Loaded = true;
 
@@ -129,9 +129,9 @@ else
         var user = (await AuthStateTask).User;
 
         if(int.TryParse(SectionDesignation, out int id))
-            SectionData = await _roster.GetMynockDataFromSlotAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            SectionData = await _roster.GetMynockSectionDataAsync((Slot)id, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
         else if (SectionDesignation == "me")
-            SectionData = await _roster.GetMynockDataFromClaimPrincipalAsync(user);
+            SectionData = await _roster.GetMynockSectionDataAsync(user);
 
         await CallRefreshRequest();
     }

@@ -97,11 +97,11 @@ else
             if (int.TryParse(CompanyDesignation, out int id))
             {
                 Slot = (Slot)id;
-                dat = await _roster.GetCompanyDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                dat = await _roster.GetCompanyDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
             }
             else if (CompanyDesignation == "me")
             {
-                dat = await _roster.GetCompanyDataFromClaimPrincipalAsync(user);
+                dat = await _roster.GetCompanyDataAsync(user);
 
                 var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
                 if(t is not null)
@@ -142,11 +142,11 @@ else
         if (int.TryParse(CompanyDesignation, out int id))
         {
             Slot = (Slot)id;
-            dat = await _roster.GetCompanyDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            dat = await _roster.GetCompanyDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
         }
         else if (CompanyDesignation == "me")
         {
-            dat = await _roster.GetCompanyDataFromClaimPrincipalAsync(user);
+            dat = await _roster.GetCompanyDataAsync(user);
 
             var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
             if(t is not null)

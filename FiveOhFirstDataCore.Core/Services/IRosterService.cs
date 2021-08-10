@@ -20,24 +20,28 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// where each <see cref="Trooper"/> is in the placed roster.</returns>
         public Task<List<Trooper>> GetPlacedRosterAsync();
+
         /// <summary>
         /// Get all troopers in active reserves.
         /// </summary>
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// where each <see cref="Trooper"/> is in active reserves.</returns>
         public Task<List<Trooper>> GetActiveReservesAsync();
+
         /// <summary>
         /// Get all troopers in inactive reserves.
         /// </summary>
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// where each <see cref="Trooper"/> is in inactive reserves.</returns>
         public Task<List<Trooper>> GetInactiveReservesAsync();
+
         /// <summary>
         /// Get all troopers that are archived..
         /// </summary>
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// where each <see cref="Trooper"/> is archived.</returns>
         public Task<List<Trooper>> GetArchivedTroopersAsync();
+
         /// <summary>
         /// Get all troopers.
         /// </summary>
@@ -45,6 +49,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// containing all troopers.</returns>
         public Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false);
+
         /// <summary>
         /// Get all troopers that are placed or in active reserves.
         /// </summary>
@@ -53,22 +58,26 @@ namespace FiveOhFirstDataCore.Core.Services
         /// request should include promotions. Defaults to false.</param>
         /// where each <see cref="Trooper"/> is placed or in active reserves.</returns>
         public Task<List<Trooper>> GetFullRosterAsync(bool includePromotions = false);
+
         /// <summary>
         /// Get all troopers that have not registered their account and are not archvied.
         /// </summary>
         /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
         /// where each <see cref="Trooper"/> has not registered their account.</returns>
         public Task<List<Trooper>> GetUnregisteredTroopersAsync();
+
         /// <summary>
         /// Get the ORBAT data.
         /// </summary>
         /// <returns>A <see cref="Task"/> that returns <see cref="OrbatData"/> for the ORBAT.</returns>
         public Task<OrbatData> GetOrbatDataAsync();
+
         /// <summary>
         /// Get the Zeta ORBAT data.
         /// </summary>
         /// <returns>A <see cref="Task"/> that retruns <see cref="ZetaOrbatData" /> for the Zeta ORBAT.</returns>
         public Task<ZetaOrbatData> GetZetaOrbatDataAsync();
+
         /// <summary>
         /// Get the in user user data.
         /// </summary>
@@ -79,58 +88,259 @@ namespace FiveOhFirstDataCore.Core.Services
         /// </remarks>
         /// <returns></returns>
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
+
         /// <summary>
-        /// 
+        /// Gets a <see cref="Trooper"/> from a <see cref="ClaimsPrincipal"/>
         /// </summary>
-        /// <param name="claims"></param>
-        /// <returns></returns>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> to get a trooper for.</param>
+        /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Gets a <see cref="Trooper"/> from their ID.
+        /// </summary>
+        /// <param name="id">The ID of the trooper.</param>
+        /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
+
+        /// <summary>
+        /// Get the direct subordinates of a <see cref="Trooper"/>
+        /// </summary>
+        /// <param name="t">The <see cref="Trooper"/> to get subordinates for.</param>
+        /// <returns>A task that returns a <see cref="List{T}"/> of <see cref="Trooper"/>s.</returns>
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
-        public Task<IAssignable<Trooper>?> GetSquadDataFromSlotAsync(Slot slot, bool manager);
-        public Task<IAssignable<Trooper>?> GetSquadDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
-        public Task<IAssignable<Trooper>?> GetPlatoonDataFromSlotAsync(Slot slot, bool manager);
-        public Task<IAssignable<Trooper>?> GetPlatoonDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
-        public Task<IAssignable<Trooper>?> GetCompanyDataFromSlotAsync(Slot slot, bool manager);
-        public Task<IAssignable<Trooper>?> GetCompanyDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get all the troopers in a squad.
+        /// </summary>
+        /// <param name="slot">The <see cref="Slot"/> to get troopers for.</param>
+        /// <param name="manager">A <see cref="bool"/> value indicating if the requester is a manager.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a squad.</returns>
+        public Task<IAssignable<Trooper>?> GetSquadDataAsync(Slot slot, bool manager);
+
+        /// <summary>
+        /// Get all the troopers in a squad.
+        /// </summary>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> of the requester.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a squad.</returns>
+        public Task<IAssignable<Trooper>?> GetSquadDataAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get all the troopers in a platoon.
+        /// </summary>
+        /// <param name="slot">The <see cref="Slot"/> to get troopers for.</param>
+        /// <param name="manager">A <see cref="bool"/> value indicating if the requester is a manager.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a platoon.</returns>
+        public Task<IAssignable<Trooper>?> GetPlatoonDataAsync(Slot slot, bool manager);
+
+        /// <summary>
+        /// Get all the troopers in a platoon.
+        /// </summary>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> of the requester.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a platoon.</returns>
+        public Task<IAssignable<Trooper>?> GetPlatoonDataAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get all the troopers in a company.
+        /// </summary>
+        /// <param name="slot">The <see cref="Slot"/> to get troopers for.</param>
+        /// <param name="manager">A <see cref="bool"/> value indicating if the requester is a manager.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a company.</returns>
+        public Task<IAssignable<Trooper>?> GetCompanyDataAsync(Slot slot, bool manager);
+
+        /// <summary>
+        /// Get all the troopers in a company.
+        /// </summary>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> of the requester.</param>
+        /// <returns>A task that returns an <see cref="IAssignable{T}"/> of <see cref="Trooper"/>s in a company.</returns>
+        public Task<IAssignable<Trooper>?> GetCompanyDataAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Gets the <see cref="HailstormData"/> for the unit.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="HailstormData"/> object.</returns>
         public Task<HailstormData> GetHailstormDataAsync();
+
+        /// <summary>
+        /// Get all troopers that have pending promotions.
+        /// </summary>
+        /// <returns>A <see cref="List{T}"/> of <see cref="Trooper"/>s where each 
+        /// <see cref="Trooper"/> has at least one value in <see cref="Trooper.PendingPromotions"/></returns>
         public Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync();
+
+        /// <summary>
+        /// Gets the <see cref="RazorSquadronData"/> for the unit.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="RazorSquadronData"/> object.</returns>
         public Task<RazorSquadronData> GetRazorDataAsync();
+
+        /// <summary>
+        /// Gets the <see cref="WardenData"/> for the unit.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="WardenData"/> object.</returns>
         public Task<WardenData> GetWardenDataAsync();
+
+        /// <summary>
+        /// Gets the <see cref="MynockDetachmentData"/> for the unit.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="MynockDetachmentData"/> object.</returns>
         public Task<MynockDetachmentData> GetMynockDataAsync();
-        public Task<MynockSectionData?> GetMynockDataFromSlotAsync(Slot slot, bool manager);
-        public Task<MynockSectionData?> GetMynockDataFromClaimPrincipalAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Gets mynock section data for the given <see cref="Slot"/>
+        /// </summary>
+        /// <param name="slot">The <see cref="Slot"/> to get data for.</param>
+        /// <param name="manager">A <see cref="bool"/> value that indicates if the requester is a manager.</param>
+        /// <returns>A task that returns <see cref="MynockSectionData"/> for the provided <paramref name="slot"/></returns>
+        public Task<MynockSectionData?> GetMynockSectionDataAsync(Slot slot, bool manager);
+
+        /// <summary>
+        /// Gets mynock section data for the given <see cref="Slot"/>
+        /// </summary>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> of the requester.</param>
+        /// <returns>A task that returns <see cref="MynockSectionData"/> for the provided <paramref name="slot"/></returns>
+        public Task<MynockSectionData?> GetMynockSectionDataAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get all Zeta UTC section data.
+        /// </summary>
+        /// <returns>A task that returns <see cref="ZetaUTCSectionData"/> for the unit.</returns>
         public Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync();
+
+        /// <summary>
+        /// Get Zeta UTC squad data from the given <paramref name="slot"/>
+        /// </summary>
+        /// <param name="slot">The <see cref="Slot"/> to get data for.</param>
+        /// <returns>A task that returns <see cref="ZetaUTCSquadData"/> for the given <paramref name="slot"/></returns>
         public Task<ZetaUTCSquadData> GetZetaUTCSquadFromSlotAsync(Slot slot);
         #endregion
 
         #region Roster Registration
+        /// <summary>
+        /// Register a new trooper account to the website.
+        /// </summary>
+        /// <remarks>
+        /// This method creates a new account to the database, and does not do inital checks to ensure the user ID is unique.
+        /// Those checks need to be completed before this method is called, or an exception will be thrown.
+        /// </remarks>
+        /// <param name="trooperData">A <see cref="NewTrooperData"/> object that details the inital account information.</param>
+        /// <param name="user">The <see cref="ClaimsPrincipal"/> for the user who initated this action.</param>
+        /// <returns>A task that returns a <see cref="RegisterTrooperResult"/> for this action.</returns>
         public Task<RegisterTrooperResult> RegisterTrooper(NewTrooperData trooperData, ClaimsPrincipal user);
         #endregion
 
         #region Data Updates
+        /// <summary>
+        /// Get the C-Shop claim data for the provided trooper.
+        /// </summary>
+        /// <param name="trooper">A <see cref="Trooper"/> to get claim data from.</param>
+        /// <returns>A <see cref="Task"/> that returns a <see cref="Dictionary{TKey, TValue}"/> of key <see cref="CShop"/> 
+        /// and value <see cref="ClaimUpdateData"/> detailing hte claims for the <paramref name="trooper"/></returns>
         public Task<Dictionary<CShop, List<ClaimUpdateData>>> GetCShopClaimsAsync(Trooper trooper);
-        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitter);
+
+        /// <summary>
+        /// Update a troopers 501st related data.
+        /// </summary>
+        /// <param name="edit">A <see cref="Trooper"/> object with edits made to it. Requires a valid ID to be set.</param>
+        /// <param name="claimsToAdd">A <see cref="List{T}"/> of <see cref="ClaimUpdateData"/> that details claims to add to this <see cref="Trooper"/></param>
+        /// <param name="claimsToRemove">A <see cref="List{T}"/> of <see cref="ClaimUpdateData"/> that details claims to remove from this <see cref="Trooper"/></param>
+        /// <param name="submitter">The <see cref="ClaimsPrincipal"/> of the person who submitted this action.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
+        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, 
+            List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitter);
+
+        /// <summary>
+        /// Saves a new flag to a Trooper.
+        /// </summary>
+        /// <param name="claim">The <see cref="ClaimsPrincipal"/> of the submitter.</param>
+        /// <param name="trooper">The <see cref="Trooper"/> to add a flag to.</param>
+        /// <param name="flag">The <see cref="TrooperFlag"/> to add to <paramref name="trooper"/></param>
+        /// <returns>A task representing this action.</returns>
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
+
+        /// <summary>
+        /// Update the list of allowed name changers.
+        /// </summary>
+        /// <param name="allowedTroopers">A new <see cref="List{T}"/> of <see cref="Trooper"/> that are allowed to change names.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers);
+
+        /// <summary>
+        /// Update the nickcname of a <see cref="Trooper"/>
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to update the nickname for, with the changed nickname.</param>
+        /// <param name="approver">The <see cref="int"/> ID of the submitter.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/></returns>
         public Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver);
+
+        /// <summary>
+        /// Reset an account of its personal information, but not 501st related data.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to reset.</param>
+        /// <returns>A task that returns a <see cref="RegisterTrooperResult"/> that contains the 
+        /// new access code for the provided <paramref name="trooper"/></returns>
         public Task<RegisterTrooperResult> ResetAccountAsync(Trooper trooper);
+
         #endregion
 
         #region Permissions
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C1.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC1PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C3.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC3PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C4.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC4PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C5.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC5PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C6.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC6PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C7.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC7PermissionsAsync(ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Get allowed access values for the provided <paramref name="claims"/> in C8.
+        /// </summary>
+        /// <param name="claims">A <see cref="ClaimsPrincipal"/> of the current user.</param>
+        /// <returns>A task that returns a <see cref="Array"/> of <see cref="bool"/> values.</returns>
         public Task<bool[]> GetC8PermissionsAsync(ClaimsPrincipal claims);
+
         /// <summary>
         /// Checks the premissions of an ID to determine its permission level.
         /// </summary>
         /// <param name="id">ID of a Trooper.</param>
-        /// <returns>Two true or false values for if the user is an admin and if they are a manager. Item1 is for Admin, Item2 is for Manager.</returns>
+        /// <returns>Two true or false values for if the user is an admin and 
+        /// if they are a manager. Item1 is for Admin, Item2 is for Manager.</returns>
         public Task<(bool, bool)> GetAdminAndManagerValuesAsync(string id);
+
         /// <summary>
         /// Updates the permissions of an ID to match the admin and manager roles.
         /// </summary>
@@ -139,6 +349,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="id">The ID representing the Trooper.</param>
         /// <returns>A Task for this operation.</returns>
         public Task SaveAdminAndManagerValuesAsync(bool admin, bool manager, string id);
+
         /// <summary>
         /// Gets the Troopers who are allowed to change names.
         /// </summary>
@@ -147,15 +358,56 @@ namespace FiveOhFirstDataCore.Core.Services
         #endregion
 
         #region Data Loading
+        /// <summary>
+        /// Loads public profile data into the provided <paramref name="trooper"/>.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to load data for.</param>
+        /// <returns>A task representing this action.</returns>
         public Task LoadPublicProfileDataAsync(Trooper trooper);
         #endregion
 
         #region Account Management
+        /// <summary>
+        /// Update the account user name of a <paramref name="trooper"/>.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> with a changed username to update.</param>
+        /// <returns>A task that returns <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> UpdateUserNameAsync(Trooper trooper);
+
+        /// <summary>
+        /// Deletes an account from the website.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to delete.</param>
+        /// <param name="password">The password of the submitter defined in <paramref name="claims"/></param>
+        /// <param name="claims">The <see cref="ClaimsPrincipal"/> of the submitter.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password, ClaimsPrincipal claims);
+
+        /// <summary>
+        /// Add a claim to the <paramref name="trooper"/>'s account.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to add a claim to.</param>
+        /// <param name="claim">The <see cref="Claim"/> to add.</param>
+        /// <param name="manager">The ID of the manager submitting this request.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> AddClaimAsync(Trooper trooper, Claim claim, int manager);
+
+        /// <summary>
+        /// Remove a claim to the <paramref name="trooper"/>'s account.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to remove a claim from.</param>
+        /// <param name="claim">The <see cref="Claim"/> to remove.</param>
+        /// <param name="manager">The ID of the manager submitting this request.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> RemoveClaimAsync(Trooper trooper, Claim claim, int manager);
+
+        /// <summary>
+        /// Get all claims the <paramref name="trooper"/> has on their account.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to get claims for.</param>
+        /// <returns>A task that returns a <see cref="List{T}"/> of <see cref="Claim"/> values.</returns>
         public Task<List<Claim>> GetAllClaimsFromTrooperAsync(Trooper trooper);
+
         /// <summary>
         /// Ensures all archived troopers have the Archived role.
         /// </summary>
