@@ -4,6 +4,7 @@ using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -13,16 +14,76 @@ namespace FiveOhFirstDataCore.Core.Services
     public interface IRosterService
     {
         #region Roster Data
+        /// <summary>
+        /// Get all troopers in the placed roster.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// where each <see cref="Trooper"/> is in the placed roster.</returns>
         public Task<List<Trooper>> GetPlacedRosterAsync();
+        /// <summary>
+        /// Get all troopers in active reserves.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// where each <see cref="Trooper"/> is in active reserves.</returns>
         public Task<List<Trooper>> GetActiveReservesAsync();
+        /// <summary>
+        /// Get all troopers in inactive reserves.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// where each <see cref="Trooper"/> is in inactive reserves.</returns>
         public Task<List<Trooper>> GetInactiveReservesAsync();
+        /// <summary>
+        /// Get all troopers that are archived..
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// where each <see cref="Trooper"/> is archived.</returns>
         public Task<List<Trooper>> GetArchivedTroopersAsync();
+        /// <summary>
+        /// Get all troopers.
+        /// </summary>
+        /// <param name="includeAdmin">If the all trooper list should inlcude the Admin account.</param>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// containing all troopers.</returns>
         public Task<List<Trooper>> GetAllTroopersAsync(bool includeAdmin = false);
-        public Task<List<Trooper>> GetFullRosterAsync();
+        /// <summary>
+        /// Get all troopers that are placed or in active reserves.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/>
+        /// <param name="includePromotions">A <see cref="bool"/> value that deterines if the 
+        /// request should include promotions. Defaults to false.</param>
+        /// where each <see cref="Trooper"/> is placed or in active reserves.</returns>
+        public Task<List<Trooper>> GetFullRosterAsync(bool includePromotions = false);
+        /// <summary>
+        /// Get all troopers that have not registered their account and are not archvied.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="List{T}"/> of type <see cref="Trooper"/> 
+        /// where each <see cref="Trooper"/> has not registered their account.</returns>
         public Task<List<Trooper>> GetUnregisteredTroopersAsync();
+        /// <summary>
+        /// Get the ORBAT data.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that returns <see cref="OrbatData"/> for the ORBAT.</returns>
         public Task<OrbatData> GetOrbatDataAsync();
+        /// <summary>
+        /// Get the Zeta ORBAT data.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> that retruns <see cref="ZetaOrbatData" /> for the Zeta ORBAT.</returns>
         public Task<ZetaOrbatData> GetZetaOrbatDataAsync();
+        /// <summary>
+        /// Get the in user user data.
+        /// </summary>
+        /// <remarks>
+        /// This method returns a <see cref="Tuple{T1, T2}"/> value where T1 is an <see cref="HashSet{T}"/> of <see cref="int"/>s
+        /// and T2 is a <see cref="HashSet{T}"/> of <see cref="string"/>s. T1 is the used User IDs for the unit, while T2 is the
+        /// non-inactive nicknames for the unit.
+        /// </remarks>
+        /// <returns></returns>
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
         public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
         public Task<Trooper?> GetTrooperFromIdAsync(int id);
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);

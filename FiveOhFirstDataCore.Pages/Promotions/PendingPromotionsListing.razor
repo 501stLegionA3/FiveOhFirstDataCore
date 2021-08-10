@@ -123,7 +123,7 @@
     [Parameter]
     public List<Trooper>? ActiveTroopers { get; set; }
 
-    [Parameter]
+    [CascadingParameter]
     public PromotionBoardLevel BoardLevel { get; set; } = PromotionBoardLevel.Squad;
 
     [Parameter]

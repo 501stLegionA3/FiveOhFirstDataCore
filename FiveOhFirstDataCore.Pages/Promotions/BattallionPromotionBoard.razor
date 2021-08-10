@@ -3,12 +3,14 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+        <CascadingValue Value="PromotionBoardLevel.Battalion">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" Filter="FiveOhFirstDataCore.Core.Data.Slot.Hailstorm" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" Filter="FiveOhFirstDataCore.Core.Data.Slot.Hailstorm" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
@@ -60,7 +62,7 @@
             }
         }
 
-        Troopers = await _roster.GetFullRosterAsync();
+        Troopers = await _roster.GetFullRosterAsync(true);
 
         switch(PromoType)
         {

@@ -61,11 +61,17 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => x.Id != -1).ToListAsync();
         }
 
-        public async Task<List<Trooper>> GetFullRosterAsync()
+        public async Task<List<Trooper>> GetFullRosterAsync(bool includePromotions = false)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            return await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot < Data.Slot.Archived).ToListAsync();
+            var data = _dbContext.Users
+                .Where(x => x.Slot < Data.Slot.Archived);
+            if (includePromotions)
+                data = data.Include(p => p.PendingPromotions)
+                .ThenInclude(p => p.RequestedBy)
+                .AsSplitQuery();
+
+            return await data.ToListAsync();
         }
 
         public async Task<List<Trooper>> GetInactiveReservesAsync()

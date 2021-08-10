@@ -304,8 +304,8 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    [Parameter]
-    public PromotionBoardLevel SendPromotionsTo { get; set; }
+    [CascadingParameter]
+    public PromotionBoardLevel BoardLevel { get; set; }
 
     [Parameter]
     public bool Mynock { get; set; } = false;
@@ -408,7 +408,8 @@
     {
         if (AllowedPromoter)
         {
-            Promotion.CurrentBoard = SendPromotionsTo;
+            // Make squad promotions automatically go to platoon level, there is no squad approval process.
+            Promotion.CurrentBoard = BoardLevel == PromotionBoardLevel.Squad ? PromotionBoardLevel.Platoon : BoardLevel;
 
             if (Promotion.CurrentBoard == PromotionBoardLevel.Platoon && Airborne)
                 Promotion.CurrentBoard = PromotionBoardLevel.Company;
@@ -434,11 +435,11 @@
             {
                 SuccessMessage = "Promotion filed successfully!";
 
-                if(SendPromotionsTo >= PromotionBoardLevel.Battalion 
-                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                if(BoardLevel >= PromotionBoardLevel.Battalion 
+                    && BoardLevel < PromotionBoardLevel.Razor)
                     _advRefresh.CallDataReloadRequest("Promotion_Battalion");
-                if(SendPromotionsTo >= PromotionBoardLevel.Company 
-                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                if(BoardLevel >= PromotionBoardLevel.Company 
+                    && BoardLevel < PromotionBoardLevel.Razor)
                 {
                     _advRefresh.CallDataReloadRequest("Promotion_Company");
                     if(Mynock)
@@ -446,16 +447,16 @@
                         _advRefresh.CallDataReloadRequest("Promotion_Mynock_Command");
                     }
                 }
-                if (SendPromotionsTo >= PromotionBoardLevel.Platoon
-                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                if (BoardLevel >= PromotionBoardLevel.Platoon
+                    && BoardLevel < PromotionBoardLevel.Razor)
                 {
                     if(Airborne)
                         _advRefresh.CallDataReloadRequest("Promotion_Company");
                     else
                         _advRefresh.CallDataReloadRequest("Promotion_Platoon");
                 }
-                if(SendPromotionsTo >= PromotionBoardLevel.Squad 
-                    && SendPromotionsTo < PromotionBoardLevel.Razor)
+                if(BoardLevel >= PromotionBoardLevel.Squad 
+                    && BoardLevel < PromotionBoardLevel.Razor)
                 {
                     _advRefresh.CallDataReloadRequest("Promotion_Squad");
                     if(Mynock)
@@ -463,9 +464,9 @@
                         _advRefresh.CallDataReloadRequest("Promotion_Mynock_Section");
                     }
                 }
-                if (SendPromotionsTo == PromotionBoardLevel.Razor)
+                if (BoardLevel == PromotionBoardLevel.Razor)
                     _advRefresh.CallDataReloadRequest("Promotion_Razor");
-                else if (SendPromotionsTo == PromotionBoardLevel.Warden)
+                else if (BoardLevel == PromotionBoardLevel.Warden)
                     _advRefresh.CallDataReloadRequest("Promotion_Warden");
             }
             StateHasChanged();

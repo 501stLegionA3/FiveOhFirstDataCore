@@ -2,12 +2,14 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
+        <CascadingValue Value="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="Airborne ? PromotionBoardLevel.Battalion : PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
