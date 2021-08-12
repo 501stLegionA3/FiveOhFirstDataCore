@@ -262,7 +262,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Saves a new description to a Trooper.
         /// </summary>
         /// <param name="claim">The <see cref="ClaimsPrincipal"/> of the submitter.</param>
-        /// <param name="trooper">The <see cref="Trooper"/> to add a flag to.</param>
+        /// <param name="trooper">The <see cref="Trooper"/> to add a description to.</param>
         /// <param name="description">The <see cref="TrooperDescription"/> to add to <paramref name="trooper"/></param>
         /// <returns>A task representing this action.</returns>
         public Task SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description);
