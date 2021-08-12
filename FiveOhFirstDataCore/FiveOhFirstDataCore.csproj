@@ -11,15 +11,19 @@
     <Compile Remove="Pages\Roster\Company\**" />
     <Compile Remove="Pages\Roster\Platoon\**" />
     <Compile Remove="Pages\Roster\Squad\**" />
+    <Compile Remove="wwwroot\node_modules\**" />
     <Content Remove="Pages\Roster\Company\**" />
     <Content Remove="Pages\Roster\Platoon\**" />
     <Content Remove="Pages\Roster\Squad\**" />
+    <Content Remove="wwwroot\node_modules\**" />
     <EmbeddedResource Remove="Pages\Roster\Company\**" />
     <EmbeddedResource Remove="Pages\Roster\Platoon\**" />
     <EmbeddedResource Remove="Pages\Roster\Squad\**" />
+    <EmbeddedResource Remove="wwwroot\node_modules\**" />
     <None Remove="Pages\Roster\Company\**" />
     <None Remove="Pages\Roster\Platoon\**" />
     <None Remove="Pages\Roster\Squad\**" />
+    <None Remove="wwwroot\node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>

@@ -21,29 +21,22 @@
                         <a href="/c1/roster/names" class="btn btn-info">Name Change Home</a>
                     </div>
                 </div>
-                @if (!Loading)
-                {
-                    <NoticeBoard Name="Roster Clerk"
-                                 CSHopOverride="CShop.RosterStaff"
-                                 AllowedAccess="AllowedAccess" />
-                }
+                <NoticeBoard Name="Roster Clerk"
+                    CSHopOverride="CShop.RosterStaff"
+                    AllowedAccess="AllowedAccess" />
             </div>
             <div class="col-md-4 col-sm-12 overflow-auto container-fluid">
-                @if (Updates is not null)
+                @if (Items.Count > 0)
                 {
                     <PaginationController Controller="this" />
                 }
 
                 <h3 class="text-center">Recent Activity</h3>
-                @if(Updates is not null)
+                @if(Items.Count > 0)
                 {
                     Counter = 0;
-                    var cap = CurrentPageCap;
-                    var start = CurrentPageStart;
-                    @foreach(var update in Updates)
+                    @foreach(var update in Items)
                     {
-                        @if (Counter >= cap || Counter++ < start) continue;
-
                         switch (update)
                         {
                             case CShopUpdate c:
@@ -198,12 +191,6 @@
                         }
                     }
 
-                    if(Counter < CurrentPageCap)
-                    {
-                        KnowItemCount = true;
-                        ItemCount = Counter - 1;
-                    }
-
                     <PaginationController Controller="this" />
                 }
             </div>
@@ -217,8 +204,6 @@
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
-    public bool Loading { get; set; } = true;
-    private IEnumerable<UpdateBase>? Updates { get; set; } = null;
     private int Counter { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -227,13 +212,8 @@
 
         if(firstRender)
         {
-            Updates = await _update.GetRosterUpdatesAsync();
-            ItemCount = Updates.Count();
-            StateHasChanged();
-        }
-        else if (Loading)
-        {
-            Loading = false;
+            await InitalizeAsync(_update.GetRosterUpdates, _update.GetRosterUpdatesCountAsync);
+
             StateHasChanged();
         }
     }

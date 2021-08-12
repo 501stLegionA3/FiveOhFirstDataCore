@@ -1,19 +1,11 @@
 ﻿@page "/manager/logging"
-@inject IUpdateService _update
 
 <AuthorizeView Policy="RequireManager">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
-        @if (!Loading)
-        {
-            <div class="overflow-auto container-fluid">
-                <UpdateDisplayTable Updates="Updates" />
-            </div>
-        }
-        else
-        {
-        <em>Loading...</em>
-        }
+        <div class="overflow-auto container-fluid">
+            <UpdateDisplayTable />
+        </div>
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />
@@ -22,22 +14,4 @@
 
 @code {
     public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/logging", "Action Logs") };
-    public IEnumerable<UpdateBase> Updates { get; set; }
-    public bool Loading = true;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            Updates = await _update.GetAllUpdatesAsync();
-            StateHasChanged();
-        }
-        else if (Loading)
-        {
-            Loading = false;
-            StateHasChanged();
-        }
-    }
 }

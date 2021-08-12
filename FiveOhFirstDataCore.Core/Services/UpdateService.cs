@@ -27,138 +27,241 @@ namespace FiveOhFirstDataCore.Core.Services
             _userManager = userManager;
         }
 
-        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync()
+        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            return await _dbContext
+            var dat = _dbContext
                 .RecruitmentUpdates
                 .Include(p => p.ChangedFor)
                 .Include(p => p.RecruitedBy)
                 .AsSplitQuery()
-                .OrderByDescending(x => x.ChangedOn)
-                .ToListAsync();
+                .OrderByDescending(x => x.ChangedOn);
+
+            if (range is not null)
+                return dat.AsEnumerable().Take(range.Value).ToList();
+
+            return await dat.ToListAsync();
         }
 
-        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync()
+        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(int start, int end)
+            => await GetRecruitmentChangesAsync(new Range(start, end));
+
+        public async Task<int> GetRecruitmentChangesCountAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext
+                .RecruitmentUpdates
+                .CountAsync();
+        }
+
+        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync(Range? range = null)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var dat = _dbContext
                 .SlotUpdates
                 .Where(x => x.OldSlot == Data.Slot.Archived)
                 .Include(p => p.ChangedFor)
                 .Include(p => p.ApprovedBy)
                 .AsSplitQuery()
-                .OrderByDescending(x => x.ChangedOn)
-                .ToListAsync();
+                .OrderByDescending(x => x.ChangedOn);
+
+            if (range is not null)
+                return dat.AsEnumerable().Take(range.Value).ToList();
+
+            return await dat.ToListAsync();
         }
 
-        public async Task<List<UpdateBase>> GetRosterUpdatesAsync()
+        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync(int start, int end)
+            => await GetReturningMemberChangesAsync(new Range(start, end));
+
+        public async Task<int> GetReturningMemberChangesCountAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            var one = await _dbContext
+            return await _dbContext
+                .SlotUpdates
+                .Where(x => x.OldSlot == Data.Slot.Archived)
+                .CountAsync();
+        }
+
+        public List<UpdateBase> GetRosterUpdates(Range? range = null)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var dat = _dbContext
                 .RankUpdates
                 .Where(x => x.SubmittedByRosterClerk)
                 .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .AsEnumerable<UpdateBase>()
+                .Concat(
+                    _dbContext
+                        .CShopUpdates
+                        .Where(x => x.SubmittedByRosterClerk)
+                        .Include(p => p.ChangedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .QualificationUpdates
+                        .Where(x => x.SubmittedByRosterClerk)
+                        .Include(p => p.Instructors)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .SlotUpdates
+                        .Where(x => x.SubmittedByRosterClerk)
+                        .Include(p => p.ApprovedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .TimeUpdates
+                        .Where(x => x.SubmittedByRosterClerk)
+                        .Include(p => p.ChangedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .OrderByDescending(p => p.ChangedOn);
 
-            var two = await _dbContext
+            if (range is not null)
+                return dat.Take(range.Value).ToList();
+
+            return dat.ToList();
+        }
+
+        public List<UpdateBase> GetRosterUpdates(int start, int end)
+            => GetRosterUpdates(new Range(start, end));
+
+        public async Task<int> GetRosterUpdatesCountAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var dat = await _dbContext
+                .RankUpdates
+                .Where(x => x.SubmittedByRosterClerk)
+                .CountAsync();
+
+            dat += await _dbContext
                 .CShopUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.ChangedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var three = await _dbContext
+            dat += await _dbContext
                 .QualificationUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.Instructors)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var four = await _dbContext
+            dat += await _dbContext
                 .SlotUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.ApprovedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var five = await _dbContext
+            dat += await _dbContext
                 .TimeUpdates
                 .Where(x => x.SubmittedByRosterClerk)
-                .Include(p => p.ChangedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            one.AddRange(two);
-            one.AddRange(three);
-            one.AddRange(four);
-            one.AddRange(five);
-            var dataList = one.AsEnumerable();
-
-            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
+            return dat;
         }
 
-        public async Task<List<UpdateBase>> GetAllUpdatesAsync()
+        public List<UpdateBase> GetAllUpdates(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            var one = await _dbContext
+            var dat = _dbContext
                 .RankUpdates
                 .Include(p => p.RequestedBy)
                 .Include(p => p.ChangedFor)
                 .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .AsEnumerable<UpdateBase>()
+                .Concat(
+                    _dbContext
+                        .CShopUpdates
+                        .Include(p => p.ChangedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .QualificationUpdates
+                        .Include(p => p.Instructors)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .SlotUpdates
+                        .Include(p => p.ApprovedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .ClaimUpdates
+                        .Include(p => p.ChangedBy)
+                        .Include(p => p.ChangedFor)
+                        .Include(p => p.Additions)
+                        .Include(p => p.Removals)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .Concat(
+                    _dbContext
+                        .TimeUpdates
+                        .Include(p => p.ChangedBy)
+                        .Include(p => p.ChangedFor)
+                        .AsSplitQuery()
+                        .AsEnumerable<UpdateBase>()
+                )
+                .OrderByDescending(x => x.ChangedOn);
 
-            var two = await _dbContext
+            if (range is not null)
+                return dat.Take(range.Value).ToList();
+
+            return dat.ToList();
+        }
+
+        public List<UpdateBase> GetAllUpdates(int start, int end)
+            => GetAllUpdates(new Range(start, end));
+
+        public async Task<int> GetAllUpdatesCountAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var dat = await _dbContext
+                .RankUpdates
+                .CountAsync();
+
+            dat += await _dbContext
                 .CShopUpdates
-                .Include(p => p.ChangedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var three = await _dbContext
+            dat += await _dbContext
                 .QualificationUpdates
-                .Include(p => p.Instructors)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var four = await _dbContext
+            dat += await _dbContext
                 .SlotUpdates
-                .Include(p => p.ApprovedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var five = await _dbContext
+            dat += await _dbContext
                 .ClaimUpdates
-                .Include(p => p.ChangedBy)
-                .Include(p => p.ChangedFor)
-                .Include(p => p.Additions)
-                .Include(p => p.Removals)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            var six = await _dbContext
+            dat += await _dbContext
                 .TimeUpdates
-                .Include(p => p.ChangedBy)
-                .Include(p => p.ChangedFor)
-                .AsSplitQuery()
-                .ToListAsync<UpdateBase>();
+                .CountAsync();
 
-            one.AddRange(two);
-            one.AddRange(three);
-            one.AddRange(four);
-            one.AddRange(five);
-            one.AddRange(six);
-            var dataList = one.AsEnumerable();
-
-            return dataList.OrderByDescending(x => x.ChangedOn).ToList();
+            return dat;
         }
 
         public Task<ResultBase> RevertUpdateAsync(Trooper manager, UpdateBase update)

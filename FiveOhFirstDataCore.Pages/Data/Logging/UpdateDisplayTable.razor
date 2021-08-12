@@ -2,7 +2,7 @@
 @inject NavigationManager _nav
 @inherits PaginationModel
 
-@if (Updates is not null)
+@if (Items.Count > 0)
 {
     Counter = 0;
 
@@ -40,23 +40,19 @@
         </div>
     </div>
 
-    @foreach (var u in Updates)
+    @foreach (var u in Items)
     {
         var i = Counter;
-        var start = CurrentPageStart;
-        var cap = CurrentPageCap;
 
-        if (Counter >= cap || Counter++ < start) continue;
-
-        var update = u;
+        var update = (UpdateBase)u;
 
         <div class="row border border-bottom p-2">
             @if (ActiveDisplay != i)
             {
-                <div class="col">[@u.ChangedForId] @u.ChangedFor?.NickName</div>
+                <div class="col">[@update.ChangedForId] @update.ChangedFor?.NickName</div>
             }
 
-            @switch (u)
+            @switch (update)
             {
                 case CShopUpdate c:
                     List<string> added = new();
@@ -87,7 +83,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">C-Shop Update for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">C-Shop Update for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -138,7 +134,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">Nickname Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">Nickname Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -205,7 +201,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">Qualification Update for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">Qualification Update for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -255,7 +251,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">Rank Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">Rank Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -322,7 +318,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">Slot Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">Slot Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -407,7 +403,7 @@
                         <div class="col">
                             <div class="card mb-3 w-100 m-3">
                                 <div class="card-header btn-toolbar justify-content-between">
-                                    <h5 class="modal-title">Time Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @u.ChangedOn.ToString("u")</h5>
+                                    <h5 class="modal-title">Time Change for [@c.ChangedForId] @c.ChangedFor?.NickName on @update.ChangedOn.ToString("u")</h5>
                                     <button type="button" class="btn-close oi oi-x btn btn-outline-secondary" @onclick="ResetActive" aria-label="Close">
                                         <span aria-hidden="true"></span>
                                     </button>
@@ -483,16 +479,10 @@
 
             @if (ActiveDisplay != i)
             {
-                <div class="col">@u.ChangedOn.ToString("u")</div>
+                <div class="col">@update.ChangedOn.ToString("u")</div>
                 <div class="col"><a class="oi oi-fullscreen-enter" @onclick="x => { ActiveDisplay = i; StateHasChanged(); }"></a></div>
             }
         </div>
-    }
-
-    if(Counter < CurrentPageCap)
-    {
-        KnowItemCount = true;
-        ItemCount = Counter - 1;
     }
 
     <div class="row pt-3">
@@ -503,9 +493,6 @@
 }
 
 @code {
-    [Parameter]
-    public IEnumerable<UpdateBase> Updates { get; set; }
-
     [CascadingParameter]
     public Trooper? CurrentManager { get; set; }
 
@@ -516,11 +503,14 @@
 
     public List<string> Errors { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        base.OnInitialized();
-        ItemsPerPage = 15;
-        ItemCount = Updates.Count();
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            await InitalizeAsync(_update.GetAllUpdates, _update.GetAllUpdatesCountAsync, 15);
+        }
     }
 
     private void ResetActive(EventArgs e)

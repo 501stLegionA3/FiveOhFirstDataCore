@@ -20,40 +20,28 @@
                         <a href="/c1/recruiter/unregistered" class="btn btn-success">Unregistered Troopers</a>
                     </div>
                 </div>
-                @if (!Loading)
-                {
-                    <NoticeBoard Name="Recruiter"
-                                 CSHopOverride="CShop.RecruitingStaff"
-                                 AllowedAccess="AllowedAccess" />
-                }
+                <NoticeBoard Name="Recruiter"
+                    CSHopOverride="CShop.RecruitingStaff"
+                    AllowedAccess="AllowedAccess" />
             </div>
             <div class="col-md-4 col-sm-12 overflow-auto container-fluid">
-                @if(Changes is not null)
+                @if(Items.Count > 0)
                 {
                     <PaginationController Controller="this" />
                 }
             
                 <h3 class="text-center">Recent Activity</h3>
-                @if(Changes is not null)
+                @if(Items.Count > 0)
                 {
                     Counter = 0;
-                    var cap = CurrentPageCap;
-                    var start = CurrentPageStart;
-                    foreach(var c in Changes)
+                    foreach(RecruitmentUpdate c in Items)
                     {
-                        @if (Counter++ >= cap || Counter < start) continue;
 
                         <div class="alert alert-success">
                             <b class="mb-0">[@c.RecruitedById] @c.RecruitedBy?.NickName recruited [@c.ChangedForId] @c.ChangedFor?.NickName</b>
                             <br />
                             <small>@c.ChangedOn.ToString("f")</small>
                         </div>
-                    }  
-
-                    if(Counter < CurrentPageCap)
-                    {
-                        KnowItemCount = true;
-                        ItemCount = Counter - 1;
                     }
 
                     <PaginationController Controller="this" />
@@ -69,8 +57,6 @@
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
-    public bool Loading { get; set; } = true;
-    public IEnumerable<RecruitmentUpdate>? Changes { get; set; } = null;
     public int Counter { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -79,13 +65,8 @@
 
         if (firstRender)
         {
-            Changes = await _update.GetRecruitmentChangesAsync();
-            ItemCount = Changes.Count();
-            StateHasChanged();
-        }
-        else if (Loading)
-        {
-            Loading = false;
+            await InitalizeAsync(_update.GetRecruitmentChangesAsync, _update.GetRecruitmentChangesCountAsync);
+
             StateHasChanged();
         }
     }

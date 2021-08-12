@@ -18,42 +18,29 @@
                         </div>
                     </div>
                 </div>
-                @if (!Loading)
-                {
                 <NoticeBoard Name="Returning Member Staff"
-                                CSHopOverride="CShop.ReturningMemberStaff"
-                                AllowedAccess="AllowedAccess" />
-                }
+                    CSHopOverride="CShop.ReturningMemberStaff"
+                    AllowedAccess="AllowedAccess" />
             </div>
             <div class="col-md-4 col-sm-12 overflow-auto container-fluid">
 
-                @if(Changes is not null)
+                @if(Items.Count > 0)
                 {
                     <PaginationController Controller="this" />
                 }
                 
                 <h3 class="text-center">Recent Activity</h3>
-                @if(Changes is not null)
+                @if(Items.Count > 0)
                 {
                     Counter = 0;
-                    var cap = CurrentPageCap;
-                    var start = CurrentPageStart;
-                    foreach(var c in Changes)
+                    foreach(SlotUpdate c in Items)
                     {
-                        @if (Counter++ >= cap || Counter < start) continue;
-
                         <div class="alert alert-success">
                             <b class="mb-0">[@c.ChangedForId] @c.ChangedFor?.NickName returned with approval from [@c.ApprovedBy?.FirstOrDefault()?.Id] @c.ApprovedBy?.FirstOrDefault()?.NickName</b>
                             <p class="mb-0">@c.ChangedFor?.NickName was moved to @c.NewSlot.AsFull()</p>
                             <br />
                             <small>@c.ChangedOn.ToString("f")</small>
                         </div>
-                    }
-
-                    if(Counter < CurrentPageCap)
-                    {
-                        KnowItemCount = true;
-                        ItemCount = Counter - 1;
                     }
 
                     <PaginationController Controller="this" />
@@ -69,8 +56,6 @@
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/returning", "Returning Member Staff Home") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
-    public bool Loading { get; set; } = true;
-    public IEnumerable<SlotUpdate>? Changes { get; set; } = null;
     public int Counter { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -79,13 +64,9 @@
 
         if(firstRender)
         {
-            Changes = await _update.GetReturningMemberChangesAsync();
-            ItemCount = Changes.Count();
-            StateHasChanged();
-        }
-        else if (Loading)
-        {
-            Loading = false;
+            await InitalizeAsync(_update.GetReturningMemberChangesAsync, 
+                _update.GetReturningMemberChangesCountAsync);
+
             StateHasChanged();
         }
     }
