@@ -51,6 +51,29 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<Dictionary<CShop, List<ClaimUpdateData>>> GetCShopClaimsAsync(Trooper trooper);
         public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitter);
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
+        /// <summary>
+        /// Saves a new description to a Trooper.
+        /// </summary>
+        /// <param name="claim">The <see cref="ClaimsPrincipal"/> of the submitter.</param>
+        /// <param name="trooper">The <see cref="Trooper"/> to add a flag to.</param>
+        /// <param name="description">The <see cref="TrooperDescription"/> to add to <paramref name="trooper"/></param>
+        /// <returns>A task representing this action.</returns>
+        public Task SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description);
+        /// <summary>
+        /// Moves a description item from one position to the position of another and re-do's the order.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to perform this action on.</param>
+        /// <param name="oldDesc">The <see cref="TrooperDescription"/> that you want to move.</param>
+        /// <param name="newDesc">The <see cref="TrooperDescription"/> that you want to move to.</param>
+        /// <returns>A task representing this action.</returns>
+        public Task UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription oldDesc, TrooperDescription newDesc);
+        /// <summary>
+        /// Delete a description from a Trooper.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to delete a description from.</param>
+        /// <param name="desc">The <see cref="TrooperDescription"/> to delete.</param>
+        /// <returns>A task representing this action.</returns>
+        public Task DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc);
         public Task<ResultBase> UpdateAllowedNameChangersAsync(List<Trooper> allowedTroopers);
         public Task<ResultBase> UpdateNickNameAsync(Trooper trooper, int approver);
         public Task<RegisterTrooperResult> ResetAccountAsync(Trooper trooper);
@@ -87,6 +110,12 @@ namespace FiveOhFirstDataCore.Core.Services
 
         #region Data Loading
         public Task LoadPublicProfileDataAsync(Trooper trooper);
+        /// <summary>
+        /// Loads descriptions into the provided <paramref name="trooper"/>.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to load descriptions for.</param>
+        /// <returns>A task representing this action.</returns>
+        public Task LoadDescriptionsAsync(Trooper trooper);
         #endregion
 
         #region Account Management

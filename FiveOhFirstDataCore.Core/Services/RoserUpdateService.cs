@@ -421,6 +421,46 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var user = await _userManager.GetUserAsync(claim);
+            if (_dbContext.Entry(trooper).State == EntityState.Detached)
+                _dbContext.Attach(trooper);
+
+            description.AuthorId = user.Id;
+            description.CreatedOn = DateTime.UtcNow.ToEst();
+            description.Order = trooper.Descriptions.Count;
+
+            trooper.Descriptions.Add(description);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription oldDesc, TrooperDescription newDesc)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            trooper.Descriptions.RemoveAt(oldDesc.Order);
+            trooper.Descriptions.Insert(newDesc.Order, oldDesc);
+            for (int i = 0; i < trooper.Descriptions.Count; i++)
+            {
+                trooper.Descriptions[i].Order = i;
+            }
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            trooper.Descriptions.Remove(desc);
+            for (int i = 0; i < trooper.Descriptions.Count; i++)
+            {
+                trooper.Descriptions[i].Order = i;
+            }
+            _dbContext.Remove(desc);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<ResultBase> UpdateUserNameAsync(Trooper trooper)
         {
             var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
