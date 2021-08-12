@@ -2,18 +2,22 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" Mynock="true" />
+        <CascadingValue Value="PromotionBoardLevel.Squad">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" Mynock="true" />
 
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Company" ActiveTroopers="Troopers" Mynock="true" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" Mynock="true" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
 @code {
     [Parameter]
     public MynockSectionData Mynock { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -57,7 +61,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Mynock", Slot.ToString());
 
         CanPromote = manager
             || (Mynock?.Lead?.Id ?? 0) == CurrentUser?.Id;

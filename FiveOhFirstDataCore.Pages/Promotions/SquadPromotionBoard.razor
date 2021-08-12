@@ -2,12 +2,14 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Squad" ActiveTroopers="Troopers" />
+        <CascadingValue Value="PromotionBoardLevel.Squad">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
@@ -16,6 +18,8 @@
     public SquadData? Squad { get; set; }
     [Parameter]
     public ZetaSquadData? Zeta { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -79,7 +83,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Squad", Slot.ToString());
 
         if (Squad is not null)
             CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser?.Id;

@@ -46,6 +46,7 @@ namespace FiveOhFirstDataCore.Core.Services
             List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitterClaim)
         {
             var primary = await _userManager.FindByIdAsync(edit.Id.ToString());
+            Slot oldSlot = primary.Slot;
             var submitter = await _userManager.GetUserAsync(submitterClaim);
 
             List<string> errors = new();
@@ -270,6 +271,32 @@ namespace FiveOhFirstDataCore.Core.Services
                         errors.Add($"[{err.Code}] {err.Description}");
 
                     return new(false, errors);
+                }
+
+                if(primary.Slot == Slot.Archived)
+                {
+                    identResult = await _userManager.AddToRoleAsync(primary, "Archived");
+
+                    if (!identResult.Succeeded)
+                    {
+                        foreach (var err in identResult.Errors)
+                            errors.Add($"[{err.Code}] {err.Description}");
+
+                        return new(false, errors);
+                    }
+                }
+                else if (primary.Slot != Slot.Archived 
+                    && oldSlot == Slot.Archived)
+                {
+                    identResult = await _userManager.RemoveFromRoleAsync(primary, "Archived");
+
+                    if (!identResult.Succeeded)
+                    {
+                        foreach (var err in identResult.Errors)
+                            errors.Add($"[{err.Code}] {err.Description}");
+
+                        return new(false, errors);
+                    }
                 }
 
                 return new(true, null);
@@ -701,6 +728,25 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             return new(true, user.AccessCode, null);
+        }
+
+        public async Task ValidateArchivedTroopersAsync()
+        {
+            HashSet<int> ids = new();
+            using (var _dbContext = _dbContextFactory.CreateDbContext())
+            {
+                await _dbContext.Users
+                    .AsNoTracking()
+                    .Where(x => x.Slot == Slot.Archived)
+                    .ForEachAsync(x => ids.Add(x.Id));
+            }
+
+            foreach(int id in ids)
+            {
+                var actual = await _userManager.FindByIdAsync(id.ToString());
+                if (!await _userManager.IsInRoleAsync(actual, "Archived"))
+                    await _userManager.AddToRoleAsync(actual, "Archived");
+            }
         }
     }
 }

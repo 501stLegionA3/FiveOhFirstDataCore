@@ -210,8 +210,9 @@ namespace FiveOhFirstDataCore.Core.Data
             if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
                 || slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
             {
-                var val = (int)slot % 10;
-                if (val == 0) return true;
+                var s = (int)slot;
+                var val = s % 10;
+                if (val == 0 && s % 100 != 0) return true;
             }
 
             return false;

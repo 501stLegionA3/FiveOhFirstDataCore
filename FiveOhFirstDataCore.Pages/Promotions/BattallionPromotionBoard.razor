@@ -2,12 +2,16 @@
 @inject IRosterService _roster
 
 <CascadingValue Value="CanPromote">
-@if(Troopers is not null)
-{
-    <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
+    <CascadingValue Value="CanPromoteValues">
+        <CascadingValue Value="PromotionBoardLevel.Battalion">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-    <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
-}
+            <EligibleForPromotionListing ActiveTroopers="Troopers" Filter="FiveOhFirstDataCore.Core.Data.Slot.Hailstorm" />
+        }
+        </CascadingValue>
+    </CascadingValue>
 </CascadingValue>
 
 @code {
@@ -16,6 +20,8 @@
 
     [Parameter]
     public HailstormData Battalion { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -34,7 +40,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Battalion", Slot.ToString());
 
         CanPromote = manager
             || (Battalion?.Commander?.Id ?? 0) == CurrentUser?.Id 
@@ -55,7 +62,7 @@
             }
         }
 
-        Troopers = await _roster.GetTroopersWithPendingPromotionsAsync();
+        Troopers = await _roster.GetFullRosterAsync(true);
 
         switch(PromoType)
         {

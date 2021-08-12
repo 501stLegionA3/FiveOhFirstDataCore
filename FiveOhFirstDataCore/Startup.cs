@@ -190,7 +190,15 @@ namespace FiveOhFirstDataCore
             {
                 options.AddPolicy("RequireTrooper", policy =>
                 {
-                    policy.RequireRole("Admin", "Manager", "Trooper");
+                    policy.RequireAssertion(ctx =>
+                    {
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
+                        return ctx.User.IsInRole("Trooper");
+                    });
                 });
 
                 options.AddPolicy("RequireManager", policy =>
@@ -207,9 +215,12 @@ namespace FiveOhFirstDataCore
                 {
                     policy.RequireAssertion(ctx =>
                     {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.IsInRole("NCO")
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
+                        return ctx.User.IsInRole("NCO")
                             || ctx.User.HasClaim(x => x.Type == "Grant" && x.Value == "NCO");
                     });
                 });
@@ -218,9 +229,12 @@ namespace FiveOhFirstDataCore
                 {
                     policy.RequireAssertion(ctx =>
                     {
-                        return ctx.User.IsInRole("Admin")
-                            || ctx.User.IsInRole("Manager")
-                            || ctx.User.HasClaim("Department Lead", "C1")
+                        if (ctx.User.IsInRole("Admin")
+                            || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
+                        return ctx.User.HasClaim("Department Lead", "C1")
                             || ctx.User.HasClaim("Change", "Name");
                     });
                 });

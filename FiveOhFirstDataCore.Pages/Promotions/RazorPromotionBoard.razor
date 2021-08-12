@@ -2,18 +2,22 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
+        <CascadingValue Value="PromotionBoardLevel.Razor">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Razor" ActiveTroopers="Troopers" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
 @code {
     [Parameter]
     public RazorSquadronData Razor { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -60,7 +64,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Razor", "Command");
 
         CanPromote = manager 
             || (Razor?.Commander?.Id ?? 0) == CurrentUser?.Id

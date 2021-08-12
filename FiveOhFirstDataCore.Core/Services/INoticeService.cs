@@ -37,13 +37,13 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="claims"><see cref="ClaimsPrincipal"/> for the signed in user.</param>
         /// <param name="cshops">The <see cref="CShop"/> to check agains.</param>
         /// <param name="allowed">A list of grant values needed to be allowed to edit the notices.</param>
-        /// <returns>A <see cref="bool"/> that determines if they can edit notices.</returns>
+        /// <returns>A <see cref="Task"/> that returns a <see cref="bool"/> that determines if they can edit notices.</returns>
         public Task<bool> IsAllowedCShopEditor(ClaimsPrincipal claims, CShop cshops, List<string> allowed);
         /// <summary>
         /// Saves the changes made to a notice.
         /// </summary>
         /// <param name="toSave">The notice to save.</param>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> representing this operation.</returns>
         public Task SaveChangesAsync(Notice toSave);
     }
 }

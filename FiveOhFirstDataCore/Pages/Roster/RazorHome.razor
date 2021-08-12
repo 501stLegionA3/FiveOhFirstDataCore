@@ -85,6 +85,7 @@ else
 
             RazorData = await _roster.GetRazorDataAsync();
             WardenData = await _roster.GetWardenDataAsync();
+            RazorData.Warden = WardenData;
 
             Loaded = true;
 

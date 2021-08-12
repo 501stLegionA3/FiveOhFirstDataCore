@@ -2,12 +2,14 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
+        <CascadingValue Value="PromotionBoardLevel.Company">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="PromotionBoardLevel.Battalion" ActiveTroopers="Troopers" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
@@ -17,6 +19,8 @@
 
     [Parameter]
     public ZetaCompanyData? Zeta { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -142,7 +146,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Company", Slot.ToString());
 
         if(Company is not null)
         {

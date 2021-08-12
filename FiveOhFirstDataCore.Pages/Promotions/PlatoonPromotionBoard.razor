@@ -2,12 +2,14 @@
 
 <CascadingValue Value="CanPromote">
     <CascadingValue Value="CanPromoteValues">
-    @if(Troopers is not null)
-    {
-        <PendingPromotionsListing BoardLevel="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon" ActiveTroopers="Troopers" />
+        <CascadingValue Value="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon">
+        @if(Troopers is not null)
+        {
+            <PendingPromotionsListing ActiveTroopers="Troopers" />
 
-        <EligibleForPromotionListing SendPromotionsTo="Airborne ? PromotionBoardLevel.Battalion : PromotionBoardLevel.Company" ActiveTroopers="Troopers" />
-    }
+            <EligibleForPromotionListing ActiveTroopers="Troopers" />
+        }
+        </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 
@@ -16,6 +18,8 @@
     public PlatoonData? Platoon { get; set; }
     [Parameter]
     public ZetaSectionData? Zeta { get; set; }
+    [Parameter]
+    public int Slot { get; set; } = -1;
 
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
@@ -117,7 +121,8 @@
 
         var user = (await AuthStateTask).User;
 
-        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
+        bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded
+            || user.HasClaim("Promotion.Platoon", Slot.ToString());
 
         if (Platoon is not null)
         {

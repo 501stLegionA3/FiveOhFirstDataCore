@@ -1062,7 +1062,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return await _dbContext.FindAsync<PromotionDetails>(rank);
         }
 
-        public async Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper)
+        public async Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false)
         {
             List<Promotion> promotions = new();
 
@@ -1070,18 +1070,32 @@ namespace FiveOhFirstDataCore.Core.Services
 
             var levels = await GetCshopLevelsAsync(forTrooper.Id);
 
+            List<int> ranks = new();
+
             if (forTrooper.Rank is not null)
+                ranks.Add((int)forTrooper.Rank);
+            if (forTrooper.RTORank is not null)
+                ranks.Add((int)forTrooper.RTORank);
+            if (forTrooper.MedicRank is not null)
+                ranks.Add((int)forTrooper.MedicRank);
+            if (forTrooper.WarrantRank is not null)
+                ranks.Add((int)forTrooper.WarrantRank);
+            if (forTrooper.WardenRank is not null)
+                ranks.Add((int)forTrooper.WardenRank);
+            if (forTrooper.PilotRank is not null)
+                ranks.Add((int)forTrooper.PilotRank);
+
+            foreach (var rank in ranks)
             {
-                int rankVal = (int)forTrooper.Rank;
                 var tempDetails = _dbContext.PromotionRequirements
                     .Where(x => x.DoesNotRequireLinearProgression
                         || (x.RequiredRank != null
-                            && x.RequiredRank.Contains(rankVal)))
+                            && x.RequiredRank.Contains(rank)))
                     .AsAsyncEnumerable();
 
                 await foreach (var req in tempDetails)
                 {
-                    if (req.TryGetPromotion(rankVal, forTrooper, levels, out var promo))
+                    if (req.TryGetPromotion(rank, forTrooper, levels, out var promo))
                     {
                         if (!forTrooper.PendingPromotions.Any(x =>
                             promo.PromoteFrom == x.PromoteFrom
@@ -1092,6 +1106,12 @@ namespace FiveOhFirstDataCore.Core.Services
                     }
                 }
             }
+
+            // Filter out any promotions from trooper to warrant officers
+            if (filterOutTrooperToWarrant)
+                promotions = promotions.Where(x => !((x.PromoteFrom < 300 || x.PromoteFrom >= 400) 
+                    && x.PromoteTo >= 300 && x.PromoteTo < 400))
+                    .ToList();
 
             return promotions;
         }

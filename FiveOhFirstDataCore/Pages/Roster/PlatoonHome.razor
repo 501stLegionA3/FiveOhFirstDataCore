@@ -64,7 +64,7 @@
                 @if(Data is not null || ZetaData is not null)
                 {
                     <CascadingValue Name="Airborne" Value="Airborne" >
-                        <PlatoonPromotionBoard Platoon="Data" Zeta="ZetaData" />
+                        <PlatoonPromotionBoard Platoon="Data" Zeta="ZetaData" Slot="(int)Slot" />
                     </CascadingValue>
                 }
                 else
@@ -116,11 +116,11 @@ else
             if (int.TryParse(PlatoonDesignation, out int id))
             {
                 Slot = (Slot)id;
-                dat = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+                dat = await _roster.GetPlatoonDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
             }
             else if (PlatoonDesignation == "me")
             {
-                dat = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+                dat = await _roster.GetPlatoonDataAsync(user);
 
                 var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
                 if(t is not null)
@@ -173,11 +173,11 @@ else
         if (int.TryParse(PlatoonDesignation, out int id))
         {
             Slot = (Slot)id;
-            dat = await _roster.GetPlatoonDataFromSlotAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
+            dat = await _roster.GetPlatoonDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
         }
         else if (PlatoonDesignation == "me")
         {
-            dat = await _roster.GetPlatoonDataFromClaimPrincipalAsync(user);
+            dat = await _roster.GetPlatoonDataAsync(user);
 
             var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
             if(t is not null)
@@ -187,7 +187,8 @@ else
         if (dat is PlatoonData d)
             Data = d;
         else if (dat is ZetaSectionData z)
-            ZetaData = z;
+            ZetaData = z;
+
         await CallRefreshRequest();
     }
 

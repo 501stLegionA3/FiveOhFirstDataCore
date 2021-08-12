@@ -184,10 +184,17 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, null, new() { "No promotion board data for the rank this trooper is being promoted to." });
             }
 
+            // Put this on the highest needed board in the event this person is
+            // eligible.
+            PromotionBoardLevel neededLevel;
+            if (currentBoard > promoReq.NeededLevel)
+                neededLevel = currentBoard;
+            else neededLevel = promoReq.NeededLevel;
+
             var promotion = new Promotion()
             {
                 CurrentBoard = currentBoard,
-                NeededBoard = promoReq.NeededLevel,
+                NeededBoard = neededLevel,
 
                 PromoteFrom = promotionFrom,
                 PromoteTo = promotionTo,
