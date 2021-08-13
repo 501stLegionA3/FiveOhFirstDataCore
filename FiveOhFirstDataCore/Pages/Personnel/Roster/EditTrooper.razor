@@ -246,6 +246,18 @@
             </div>
         }
         
+        @if(TimeEditConfirmation)
+        {
+            <div class="row">
+                <div class="col p-3">
+                    <div class="alert alert-warning w-100">
+                        You have modified this troopers slot and/or rank without updating any times for them. Press save againt to
+                        confirm this change. If times need to be update, change them, and then hit save.
+                    </div>
+                </div>
+            </div>
+        }
+
         @if(Conflicts is not null)
         {
             <div class="row">
@@ -894,6 +906,8 @@
 
     private Dictionary<CShop, CShopClaim> ClaimsTree { get; set; } = new();
 
+    private bool TimeEditConfirmation { get; set; } = false;
+
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
@@ -1015,6 +1029,25 @@
                     Errors.Add("Unable to get a valid trooper for the current edit.");
                     return;
                 }
+                else if (!TimeEditConfirmation)
+                {
+
+                    if (active.Slot != Trooper.Slot
+                            || active.Role != Trooper.Role
+                            || active.Team != Trooper.Team
+                            || active.Flight != Trooper.Flight
+                            || active.Rank != Trooper.Rank)
+                    {
+                        if (active.LastBilletChange == Trooper.LastBilletChange
+                            && active.LastPromotion == Trooper.LastPromotion)
+                        {
+                            TimeEditConfirmation = true;
+                            return;
+                        }
+                    }
+                }
+
+                TimeEditConfirmation = false;
 
                 if (Trooper.LastUpdate < active.LastUpdate)
                 {
