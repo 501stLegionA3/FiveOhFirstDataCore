@@ -12,6 +12,9 @@ namespace FiveOhFirstDataCore.Core.Components.Base
 {
     public class PaginationModel : ComponentBase
     {
+        /// <summary>
+        /// The current max item indxe for this page
+        /// </summary>
         public int CurrentPageCap
         {
             get
@@ -19,6 +22,9 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return PageIndex * ItemsPerPage;
             }
         }
+        /// <summary>
+        /// The current min item index for this page
+        /// </summary>
         public int CurrentPageStart
         {
             get
@@ -26,21 +32,38 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return CurrentPageCap - ItemsPerPage;
             }
         }
-
+        /// <summary>
+        /// The current page to display
+        /// </summary>
         public int PageIndex { get; private set; } = 1;
+        /// <summary>
+        /// The ammount of items per page
+        /// </summary>
         public int ItemsPerPage { get; set; } = 5;
+        /// <summary>
+        /// The items on this page
+        /// </summary>
         public List<dynamic> Items = new();
-
+        /// <summary>
+        /// The method that is called to load the next batch of items
+        /// </summary>
         private Func<int, int, Task<List<object>>>? LoadNextBatch { get; set; }
+        /// <summary>
+        /// The method that is called to get the total count of items.
+        /// </summary>
         private Func<Task<int>>? GetCount { get; set; }
-
+        /// <summary>
+        /// The item count for all items that can be displayed
+        /// </summary>
         private int ItemCount { get; set; } = 0;
 
         /// <summary>
         /// The ammount of items on either side of the current page.
         /// </summary>
         public int PaginationCounterItemsHalf { get; set; } = 5;
-
+        /// <summary>
+        /// The ammount of pages that can be displayed.
+        /// </summary>
         public int Segments
         {
             get
@@ -48,7 +71,9 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return (int)Math.Ceiling((double)ItemCount / ItemsPerPage);
             }
         }
-
+        /// <summary>
+        /// The start value for the pagination controller
+        /// </summary>
         public int PaginationCounterStart
         {
             get
@@ -58,7 +83,9 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return i;
             }
         }
-
+        /// <summary>
+        /// The end value for the pagination controller
+        /// </summary>
         public int PaginationCounterEnd
         {
             get
@@ -68,7 +95,24 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 return i;
             }
         }
-
+        /// <summary>
+        /// Initalize the Paignation Model.
+        /// </summary>
+        /// <remarks>
+        /// This method calls <see cref="LoadPageAsync"/> and sets the <see cref="LoadNextBatch"/> and <see cref="GetCount"/>
+        /// values for futhre use of the model. It also sets the items per page and starting page index.
+        /// <br /><br />
+        /// This overload expects a function with the return value of <see cref="Task{TResult}"/> where TResult is 
+        /// a <see cref="List{T}"/>.
+        /// </remarks>
+        /// <typeparam name="T">The type of items to batch load.</typeparam>
+        /// <param name="loader">The async fucntion that returns a <see cref="List{T}"/> for the current page.</param>
+        /// <param name="counts">The function that returns an <see cref="int"/> of the total item count</param>
+        /// <param name="itemsPerPage">Sets how many items will be displayed per page. Defaults to 5.</param>
+        /// <param name="startingPage">Sets the starting page index. Must be above 0. Defaults to 1.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         public async Task InitalizeAsync<T>(Func<int, int, Task<List<T>>> loader, Func<Task<int>> counts,
             int itemsPerPage = 5, int startingPage = 1)
         {
@@ -76,27 +120,62 @@ namespace FiveOhFirstDataCore.Core.Components.Base
             SetCountMethod(counts);
 
             ItemsPerPage = itemsPerPage;
+
+            if (startingPage <= 0)
+                throw new ArgumentOutOfRangeException(nameof(startingPage), 
+                    $"Expected starting page to be above 0, found {startingPage}");
+
             PageIndex = startingPage;
 
             await LoadPageAsync();
         }
 
+        /// <summary>
+        /// Initalize the Paignation Model.
+        /// </summary>
+        /// <remarks>
+        /// This method calls <see cref="LoadPageAsync"/> and sets the <see cref="LoadNextBatch"/> and <see cref="GetCount"/>
+        /// values for futhre use of the model. It also sets the items per page and starting page index.
+        /// <br /><br />
+        /// This overload expects a function with the return value of <see cref="List{T}"/>.
+        /// </remarks>
+        /// <typeparam name="T">The type of items to batch load.</typeparam>
+        /// <param name="loader">The fucntion that returns a <see cref="List{T}"/> for the current page.</param>
+        /// <param name="counts">The function that returns an <see cref="int"/> of the total item count</param>
+        /// <param name="itemsPerPage">Sets how many items will be displayed per page. Defaults to 5.</param>
+        /// <param name="startingPage">Sets the starting page index. Must be above 0. Defaults to 1.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         public async Task InitalizeAsync<T>(Func<int, int, List<T>> loader, Func<Task<int>> counts,
             int itemsPerPage = 5, int startingPage = 1)
             => await InitalizeAsync((x, y) => Task.FromResult(loader.Invoke(x, y)), counts, itemsPerPage, startingPage);
-
-        public void ResetPaignation()
+        /// <summary>
+        /// Resets the page index to 1 and reloads the page.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action</returns>
+        public async Task ResetPaignationAsync()
         {
             PageIndex = 1;
-            InvokeAsync(StateHasChanged);
+            await LoadPageAsync();
         }
-
-        public void ChangeItemsPerPage(int newCount)
+        /// <summary>
+        /// Changes the ammoutn of items per page.
+        /// </summary>
+        /// <param name="newCount">The new ammount of items per page.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task represetning this action.</returns>
+        public async Task ChangeItemsPerPageAsync(int newCount)
         {
             ItemsPerPage = newCount;
-            InvokeAsync(StateHasChanged);
+            await LoadPageAsync();
         }
-
+        /// <summary>
+        /// Moves to the next page if there is a next page.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         public virtual async Task NextPage()
         {
             if (PageIndex + 1 <= Segments)
@@ -106,7 +185,11 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 await LoadPageAsync();
             }
         }
-
+        /// <summary>
+        /// Moves to the previous page if there is a previous page.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         public virtual async Task PreviousPage()
         {
             if (PageIndex - 1 > 0)
@@ -116,14 +199,32 @@ namespace FiveOhFirstDataCore.Core.Components.Base
                 await LoadPageAsync();
             }
         }
-
+        /// <summary>
+        /// Sets the page to the given index.
+        /// </summary>
+        /// <param name="index">The page index to move to. Must be above 0 and below or equal to the segments count.</param>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this aciton.</returns>
         public virtual async Task SetPage(int index)
         {
+            if (index > Segments)
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    $"{nameof(index)} was higher than the segemnts count [{Segments}]");
+
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index),
+                    $"{nameof(index)} was lower than 0.");
+
             PageIndex = index;
 
             await LoadPageAsync();
         }
-
+        /// <summary>
+        /// Loads the current page.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         private async Task LoadPageAsync()
         {
             if (LoadNextBatch is not null)
@@ -134,40 +235,40 @@ namespace FiveOhFirstDataCore.Core.Components.Base
             }
             else throw new ArgumentNullException(nameof(LoadNextBatch), "The load next batch value has not been set.");
         }
-
-        public (bool, bool) GetNextPrevSegmentChecks()
-        {
-            return (HasPerviousSegment(), HasNextSegment());
-        }
-
-        public bool HasPerviousSegment()
-        {
-            return PageIndex > 1;
-        }
-
-        public bool HasNextSegment()
-        {
-            return PageIndex < Segments;
-        }
-
+        /// <summary>
+        /// Updates the Item Count variable with the current item counts.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <returns>A task representing this action.</returns>
         private async Task UpdateItemCountAsync()
         {
             if (GetCount is not null)
                 ItemCount = await GetCount.Invoke();
             else throw new ArgumentNullException(nameof(GetCount), "Get count method can not be null");
         }
-
+        /// <summary>
+        /// Invokes <see cref="StateHasChanged"/> on the render thread.
+        /// </summary>
         public void InvokeStateHasChanged()
         {
             InvokeAsync(StateHasChanged);
         }
-
+        /// <summary>
+        /// Sets the batch loader.
+        /// </summary>
+        /// <param name="loader">The async function that loads the current page.</param>
         public void SetBatchLoader(Func<int, int, Task<List<object>>> loader)
             => LoadNextBatch = loader;
-
+        /// <summary>
+        /// Sets the batch loader.
+        /// </summary>
+        /// <param name="loader">The function that loads the current page.</param>
         public void SetBatchLoader(Func<int, int, List<object>> loader)
             => LoadNextBatch = (x, y) => Task.FromResult(loader.Invoke(x, y));
-
+        /// <summary>
+        /// Sets the count method.
+        /// </summary>
+        /// <param name="counts">The async function that gets the current total item count.</param>
         public void SetCountMethod(Func<Task<int>> counts)
             => GetCount = counts;
     }

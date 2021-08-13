@@ -35,13 +35,4 @@
 @code {
     [Parameter]
     public PaginationModel Controller { get; set; }
-
-    public (bool, bool) PrevNext { get; set; }
-
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-
-        PrevNext = Controller.GetNextPrevSegmentChecks();
-    }
 }
