@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonEPAR : Migration
+    public partial class DevSoyvolonepar : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,13 +23,13 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Team = table.Column<int>(type: "integer", nullable: true),
                     Flight = table.Column<int>(type: "integer", nullable: true),
                     Slot = table.Column<int>(type: "integer", nullable: true),
-                    CShops = table.Column<long>(type: "bigint", nullable: true),
-                    Qualifications = table.Column<long>(type: "bigint", nullable: true),
+                    Qualifications = table.Column<long>(type: "bigint", nullable: false),
                     LastPromotion = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     StartOfService = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     LastBilletChange = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     GraduatedBCTOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     GraduatedUTCOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    AdditionalChanges = table.Column<string>(type: "text", nullable: true),
                     Reason = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>

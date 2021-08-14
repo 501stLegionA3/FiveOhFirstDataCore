@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
-    public class TrooperChangeRequest
+    public class TrooperChangeRequestData
     {
         public Guid Key { get; set; }
 
@@ -28,15 +28,15 @@ namespace FiveOhFirstDataCore.Core.Account
         public Flight? Flight { get; set; }
         public Slot? Slot { get; set; }
 
-        public CShop? CShops { get; set; }
-
-        public Qualification? Qualifications { get; set; }
+        public Qualification Qualifications { get; set; }
 
         public DateTime? LastPromotion { get; set; }
         public DateTime? StartOfService { get; set; }
         public DateTime? LastBilletChange { get; set; }
         public DateTime? GraduatedBCTOn { get; set; }
         public DateTime? GraduatedUTCOn { get; set; }
+
+        public string? AdditionalChanges { get; set; }
 
         public string? Reason { get; set; }
     }

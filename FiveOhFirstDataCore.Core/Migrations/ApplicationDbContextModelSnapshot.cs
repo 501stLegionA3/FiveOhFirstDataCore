@@ -285,14 +285,14 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequest", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<long?>("CShops")
-                        .HasColumnType("bigint");
+                    b.Property<string>("AdditionalChanges")
+                        .HasColumnType("text");
 
                     b.Property<int>("ChangeForId")
                         .HasColumnType("integer");
@@ -318,7 +318,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("PilotRank")
                         .HasColumnType("integer");
 
-                    b.Property<long?>("Qualifications")
+                    b.Property<long>("Qualifications")
                         .HasColumnType("bigint");
 
                     b.Property<int?>("RTORank")
@@ -1233,7 +1233,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("Trooper");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequest", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
                         .WithMany("TrooperChangeRequests")
