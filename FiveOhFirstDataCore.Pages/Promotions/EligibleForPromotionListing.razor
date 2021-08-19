@@ -366,7 +366,7 @@
         foreach(var t in ActiveTroopers)
         {
             if (t is null) continue;
-            if (Filter is not null && t.Slot == Filter)
+            if (Filter is null || t.Slot == Filter)
                 EligiblePromotions.AddRange(await _settings.GetEligiblePromotionsAsync(t, true));
         }
     }
