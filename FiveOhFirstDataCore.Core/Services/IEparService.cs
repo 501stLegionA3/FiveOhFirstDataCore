@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Structures;
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Create a new change request and save it to the database.
         /// </summary>
         /// <returns>A task for this action.</returns>
-        public Task CreateChangeRequest();
+        public Task<ResultBase> CreateChangeRequest(TrooperChangeRequestDataBase requestBase, int submitterId);
         /// <summary>
         /// Get all active change requets.
         /// </summary>

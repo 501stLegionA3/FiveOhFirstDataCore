@@ -9,15 +9,18 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
-    public class TrooperChangeRequestData
+    public class TrooperChangeRequestData : TrooperChangeRequestDataBase
     {
         public Guid Key { get; set; }
 
         public Trooper ChangeFor { get; set; }
         public int ChangeForId { get; set; }
+    }
 
+    public class TrooperChangeRequestDataBase
+    {
         public TrooperRank? Rank { get; set; }
-        public RTORank? RTORank{ get; set; }
+        public RTORank? RTORank { get; set; }
         public MedicRank? MedicRank { get; set; }
         public WarrantRank? WarrantRank { get; set; }
         public WardenRank? WardenRank { get; set; }
