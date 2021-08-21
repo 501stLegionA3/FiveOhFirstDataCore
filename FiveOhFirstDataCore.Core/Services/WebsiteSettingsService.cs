@@ -1088,9 +1088,10 @@ namespace FiveOhFirstDataCore.Core.Services
             foreach (var rank in ranks)
             {
                 var tempDetails = _dbContext.PromotionRequirements
-                    .Where(x => x.DoesNotRequireLinearProgression
+                    .Where(x => (x.DoesNotRequireLinearProgression
                         || (x.RequiredRank != null
                             && x.RequiredRank.Contains(rank)))
+                        && x.RequirementsFor > rank)
                     .AsAsyncEnumerable();
 
                 await foreach (var req in tempDetails)

@@ -54,6 +54,12 @@ namespace FiveOhFirstDataCore.Core.Data.Promotions
                         if (TiGWaivedFor.Count <= 0 || !TiGWaivedFor.Contains(currentRank))
                             return false;
 
+            // Test to see if the non-linear promotion is in the same promotion tree
+            // (medic to medic, RTO to RTO).
+            if (DoesNotRequireLinearProgression)
+                if ((currentRank / 100) != (RequirementsFor / 100))
+                    return false;
+
             if (RequiredTimeInBillet != -1 && RequiredBillet.Count > 0)
                 if (!RequiredBillet.Contains(trooper.Role))
                     return false;
