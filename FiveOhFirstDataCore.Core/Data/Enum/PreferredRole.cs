@@ -2,7 +2,7 @@
 
 namespace FiveOhFirstDataCore.Core.Data
 {
-    public enum PrefferedRole
+    public enum PreferredRole
     {
         [Description("Trooper")]
         Trooper,

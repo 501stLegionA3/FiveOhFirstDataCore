@@ -11,6 +11,6 @@ namespace FiveOhFirstDataCore.Core.Structures
         public bool ModsDownloaded { get; set; } = false;
         public bool PossibleTroll { get; set; } = false;
         public int Age { get; set; }
-        public PrefferedRole PreferredRole { get; set; } = PrefferedRole.Trooper;
+        public PreferredRole PreferredRole { get; set; } = PreferredRole.Trooper;
     }
 }

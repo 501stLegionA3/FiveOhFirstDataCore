@@ -603,5 +603,28 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return data;
         }
+
+        public async Task<List<Trooper>> GetNewRecruitsAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.Users
+                .Where(x => x.Rank == TrooperRank.Recruit)
+                .Where(x => x.Slot != Slot.Archived)
+                .Include(x => x.RecruitStatus)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
+
+        public async Task<List<Trooper>> GetCurrentUTCCadets()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.Users
+                .Where(x => x.Rank == TrooperRank.Cadet)
+                .Where(x => x.Slot >= Slot.ZetaThree 
+                    && x.Slot <= Slot.ZetaThreeFour)
+                .Include(x => x.RecruitStatus)
+                .AsSplitQuery()
+                .ToListAsync();
+        }
     }
 }

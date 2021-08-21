@@ -1,0 +1,41 @@
+﻿<EditForm Model="Search" class="form form-inline w-100">
+    <div class="row">
+        <div class="col-12 col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-1">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(0) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(0)"></button>
+                <InputText class="form-control" placeholder="Birth #" @bind-Value="D1" id="id-roster-filter" @oninput="OnIdChange" />
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-1">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(1) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(1)"></button>
+                <InputText class="form-control p-1" placeholder="Nickname" @bind-Value="D2" id="nickname-filter" @oninput="OnNickChange" />
+            </div>
+        </div>
+        <div class="col-12 col-xl-4 col-lg-6 col-md-12 col-sm-12 col-xs-12 p-1">
+            <div class="input-group">
+                <button class="@GetSortButtonClass(2) oi btn input-group-text" aria-hidden="true" @onclick="(x) => OnSearchDirectionChanged(2)"></button>
+                <InputEnumSelect class="form-control p-1" @bind-Value="Search.PreferredRole" id="preffered-filter" @oninput="OnPrefferedChange" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+<div class="height-lock overflow-auto">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Birth #</th>
+                <th scope="col">Nickname</th>
+                <th scope="col">Preffered Role</th>
+                <th scope="col" class="d-none d-md-table-cell">TiS</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var t in Filtered)
+            {
+                <RecruitListingRow Trooper="t" />
+            }
+        </tbody>
+    </table>
+</div>

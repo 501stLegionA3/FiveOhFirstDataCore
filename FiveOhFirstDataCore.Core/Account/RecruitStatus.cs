@@ -11,7 +11,7 @@ namespace FiveOhFirstDataCore.Core.Account
         public int Age { get; set; }
         public bool ModsInstalled { get; set; } = true;
         public bool PossibleTroll { get; set; } = false;
-        public PrefferedRole PreferredRole { get; set; } = PrefferedRole.Trooper;
+        public PreferredRole PreferredRole { get; set; } = PreferredRole.Trooper;
 
         public int TrooperId { get; set; }
         public Trooper Trooper { get; set; }

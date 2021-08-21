@@ -213,6 +213,18 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="slot">The <see cref="Slot"/> to get data for.</param>
         /// <returns>A task that returns <see cref="ZetaUTCSquadData"/> for the given <paramref name="slot"/></returns>
         public Task<ZetaUTCSquadData> GetZetaUTCSquadFromSlotAsync(Slot slot);
+
+        /// <summary>
+        /// Gets all new recruits, and their recruitment data, for the unit.
+        /// </summary>
+        /// <returns>A task that has a <see cref="List{T}"/> of <see cref="Trooper"/> values.</returns>
+        public Task<List<Trooper>> GetNewRecruitsAsync();
+
+        /// <summary>
+        /// Gets the current UTC Cadets and their recruitment data.
+        /// </summary>
+        /// <returns>A task that has a <see cref="List{T}"/> of <see cref="Trooper"/> values.</returns>
+        public Task<List<Trooper>> GetCurrentUTCCadets();
         #endregion
 
         #region Roster Registration
