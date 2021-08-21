@@ -39,9 +39,11 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public Task<IReadOnlyList<TrooperChangeRequestData>> GetActiveChangeRequests()
+        public async Task<IReadOnlyList<TrooperChangeRequestData>> GetActiveChangeRequests()
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            return await _dbContext.ChangeRequests.ToListAsync();
         }
     }
 }
