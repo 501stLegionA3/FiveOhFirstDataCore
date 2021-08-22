@@ -11,4 +11,4 @@ shared:
 - FiveOhFirstDataCore.Pages/**/*
 
 database:
-- FiveOhFirstDataCore/FiveOhFirstDataCore.Core/Database/**/*
+- FiveOhFirstDataCore.Core/Database/**/*
