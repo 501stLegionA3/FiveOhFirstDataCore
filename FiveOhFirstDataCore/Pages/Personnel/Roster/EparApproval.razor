@@ -1,0 +1,107 @@
+﻿@page "/c1/roster/epar"
+@page "/c1/roster/epar/{IdRaw}"
+@inherits PaginationModel
+
+<AuthorizeView Policy="RequireRosterClerk">
+    <Authorized>
+        @if (Data is null)
+        {
+            @if(Errors.Count > 0)
+            {
+            <div class="row">
+                <div class="col p-3">
+                    <div class="alert alert-danger alert-dismissible w-100">
+                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+                        <strong>Something went wrong!</strong>
+                        <ul>
+                        @foreach(var i in Errors)
+                        {
+                            <li>@i</li>
+                        }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            }
+            @if(SuccessMessage is not null)
+            {
+                <div class="row">
+                    <div class="col p-3">
+                        <div class="alert alert-success alert-dismissible w-100">
+                            <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
+                            <strong>@SuccessMessage</strong>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <BreadcrumbsList Url="Urls"  />
+
+            <div class="row">
+                <div class="col">
+                    <a href="/c1/roster" class="btn btn-secondary text-left">
+                        <span class="oi bi bi-arrow-bar-left" aria-hidden="true"></span> Return to Roster Home
+                    </a>
+                    <h4 class="text-center">Active EPAR Requests</h4>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <PaginationController Controller="this" />
+                </div>
+            </div>
+
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <td scope="col">Requester</td>
+                        <td scope="col">Requester ID</td>
+                        <td scope="col">Requested On</td>
+                        <td scope="col">Reason</td>
+                        <td scope="col"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in base.Items)
+                    {
+                        var i = (TrooperChangeRequestData)item;
+                        <tr>
+                            <td>@i.ChangedFor?.NickName</td>
+                            <td>@i.ChangedForId</td>
+                            <td>@i.ChangedOn.ToShortDateString() - @i.ChangedOn.ToShortTimeString()</td>
+                            <td>@i.Reason</td>
+                            <td><a href="/c1/roster/epar/@i.ChangeId" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col">
+                    <PaginationController Controller="this" />
+                </div>
+            </div>
+        }
+        else
+        {
+            <EditForm Context="changeRequestContext" Model="Data">
+                <div>
+                    <a href="/c1/roster/epar" class="btn btn-secondary text-left">
+                        <span class="oi bi bi-arrow-bar-left" aria-hidden="true"></span> Return to Listing
+                    </a>
+                </div>
+                <hr />
+                <ChangeRequestData User="Data.ChangedFor" Model="Data" LockEdit="true" />
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" @onclick="ApproveChangeAsync" disabled="@Data.Finalized">Approve</button>
+                    <button class="btn btn-danger" @onclick="DenyChangeAsync" disabled="@Data.Finalized">Deny</button>
+                </div>
+                <br class="p-3" />
+            </EditForm>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>

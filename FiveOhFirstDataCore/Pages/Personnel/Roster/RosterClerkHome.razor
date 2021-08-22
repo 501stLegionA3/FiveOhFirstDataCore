@@ -1,6 +1,7 @@
 ﻿@page "/c1/roster"
 @inject IUpdateService _update
 @inject IAdvancedRefreshService _advRefresh
+@inject IEparService _epar
 @inherits PaginationModel
 
 <AuthorizeView Policy="RequireRosterClerk">
@@ -19,6 +20,17 @@
                 <div class="row">
                     <div class="col p-2 d-grid gap-2">
                         <a href="/c1/roster/names" class="btn btn-info">Name Change Home</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col p-2 d-grid gap-2">
+                        <a href="/c1/roster/epar" class="btn btn-secondary position-relative">
+                            Active EPAR Requests
+                            @if (EPARCounts > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge roudned-pill bg-danger">@(EPARCounts > 99 ? "+99" : EPARCounts.ToString())</span>
+                            }
+                        </a>
                     </div>
                 </div>
                 <NoticeBoard Name="Roster Clerk"
@@ -205,6 +217,7 @@
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home") };
     public List<string> AllowedAccess { get; } = new() { "Lead", "Assistant", "C1" };
     private int Counter { get; set; } = 0;
+    private int EPARCounts { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -213,6 +226,7 @@
         if(firstRender)
         {
             await InitalizeAsync(_update.GetRosterUpdates, _update.GetRosterUpdatesCountAsync);
+            EPARCounts = await _epar.GetActiveChangeRequestCount();
 
             StateHasChanged();
         }

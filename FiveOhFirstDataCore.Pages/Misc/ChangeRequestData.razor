@@ -1,0 +1,213 @@
+﻿<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span  class="input-group-text" for="current-trooper-rank">Current Trooper Rank</span>
+        <InputEnumSelect @bind-Value="User.Rank" class="form-control" id="current-trooper-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span  class="input-group-text" for="requested-trooper-rank">Requested Trooper Rank</span>
+        <InputEnumSelect @bind-Value="Model.Rank" class="form-control" id="requested-trooper-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span  class="input-group-text" for="current-rto-rank">Current RTO Rank</span>
+        <InputEnumSelect @bind-Value="User.RTORank" class="form-control" id="current-rto-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span  class="input-group-text" for="requested-rto-rank">Requested RTO Rank</span>
+        <InputEnumSelect @bind-Value="Model.RTORank" class="form-control" id="requested-rto-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+</div>
+<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span  class="input-group-text" for="current-medic-rank">Current Medic Rank</span>
+        <InputEnumSelect @bind-Value="User.MedicRank" class="form-control" id="current-medic-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span  class="input-group-text" for="requested-medic-rank">Requested Medic Rank</span>
+        <InputEnumSelect @bind-Value="Model.MedicRank" class="form-control" id="requested-medic-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span  class="input-group-text" for="current-warrant-rank">Current Warrant Rank</span>
+        <InputEnumSelect @bind-Value="User.WarrantRank" class="form-control" id="current-warrant-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span  class="input-group-text" for="requested-warrant-rank">Requested Warrant Rank</span>
+        <InputEnumSelect @bind-Value="Model.WarrantRank" class="form-control" id="requested-warrant-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+</div>
+<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span  class="input-group-text" for="current-warden-rank">Current Warden Rank</span>
+        <InputEnumSelect @bind-Value="User.WardenRank" class="form-control" id="current-warden-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-warden-rank" class="input-group-text">Requested Warden Rank</span>
+        <InputEnumSelect @bind-Value="Model.WardenRank" class="form-control" id="requested-warden-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-pilot-rank" class="input-group-text">Current Pilot Rank</span>
+        <InputEnumSelect @bind-Value="User.PilotRank" class="form-control" id="current-pilot-rank" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-pilot-rank" class="input-group-text">Requested Pilot Rank</span>
+        <InputEnumSelect @bind-Value="Model.PilotRank" class="form-control" id="requested-pilot-rank" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-role" class="input-group-text">Current Role</span>
+        <InputEnumSelect @bind-Value="User.Role" class="form-control" id="current-role" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-role" class="input-group-text">Requested Role</span>
+        <InputEnumSelect @bind-Value="Model.Role" class="form-control" id="requested-role" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-team" class="input-group-text">Current Team</span>
+        <InputEnumSelect @bind-Value="User.Team" class="form-control" id="current-team" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-team" class="input-group-text">Requested Team</span>
+        <InputEnumSelect @bind-Value="Model.Team" class="form-control" id="requested-team" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+</div>
+<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-flight" class="input-group-text">Current Flight</span>
+        <InputEnumSelect @bind-Value="User.Flight" class="form-control" id="current-flight" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-flight" class="input-group-text">Requested Flight</span>
+        <InputEnumSelect @bind-Value="Model.Flight" class="form-control" id="requested-flight" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-slot" class="input-group-text">Current Slot</span>
+        <InputEnumSelect @bind-Value="User.Slot" class="form-control" id="current-slot" disabled="true"></InputEnumSelect>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-slot" class="input-group-text">Requested Slot</span>
+        <InputEnumSelect @bind-Value="Model.Slot" class="form-control" id="requested-slot" disabled="@LockEdit"></InputEnumSelect>
+    </div>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col-lg-6 col-md-12">
+    <div class="input-group">
+        <span for="current-quals" class="input-group-text"><h4>Current<br />Qualifications</h4></span>
+        <InputQualificationFlagSelect @bind-Value="User.Qualifications" class="form-control" id="current-quals" disabled="true" />
+    </div>
+</div>
+<div class="col-lg-6 col-md-12">
+    <div class="input-group">
+        <span for="requested-quals" class="input-group-text"><h4>Requested<br />Qualifications</h4></span>
+        <InputQualificationFlagSelect @bind-Value="Model.Qualifications" class="form-control" id="requested-quals" disabled="@LockEdit" />
+    </div>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-last-promotion" class="input-group-text">Current Last Promotion</span>
+        <InputDate @bind-Value="User.LastPromotion" class="form-control" id="current-last-promotion" disabled="true"></InputDate>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-last-promotion" class="input-group-text">Requested Last Promotion</span>
+        <InputDate @bind-Value="Model.LastPromotion" class="form-control" id="requested-last-promotion" disabled="@LockEdit"></InputDate>
+    </div>
+</div>
+<div class="col-lg-6 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-start-of-service" class="input-group-text">Current Start of Service</span>
+        <InputDate @bind-Value="User.StartOfService" class="form-control" id="current-start-of-service" disabled="true"></InputDate>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-start-of-service" class="input-group-text">Requested Start of Service</span>
+        <InputDate @bind-Value="Model.StartOfService" class="form-control" id="requested-start-of-service" disabled="@LockEdit"></InputDate>
+    </div>
+</div>
+</div>
+<div class="row">
+<div class="col-lg-4 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-last-billet-change" class="input-group-text">Current Last Billet Change</span>
+        <InputDate @bind-Value="User.LastBilletChange" class="form-control" id="current-last-billet-change" disabled="true"></InputDate>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-last-billet-change" class="input-group-text">Requested Last Billet Change</span>
+        <InputDate @bind-Value="Model.LastBilletChange" class="form-control" id="requested-last-billet-change" disabled="@LockEdit"></InputDate>
+    </div>
+</div>
+<div class="col-lg-4 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-bct-grad" class="input-group-text">Current BCT Graduation Date</span>
+        <InputDate @bind-Value="User.GraduatedBCTOn" class="form-control" id="current-bct-grad" disabled="true"></InputDate>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-bct-grad" class="input-group-text">Requested BCT Graduation Date</span>
+        <InputDate @bind-Value="Model.GraduatedBCTOn" class="form-control" id="requested-bct-grad" disabled="@LockEdit"></InputDate>
+    </div>
+</div>
+<div class="col-lg-4 col-md-12 p-2">
+    <div class="input-group">
+        <span for="current-uct-grad" class="input-group-text">Current UTC Graduation Date</span>
+        <InputDate @bind-Value="User.GraduatedUTCOn" class="form-control" id="current-uct-grad" disabled="true"></InputDate>
+    </div>
+    <br />
+    <div class="input-group">
+        <span for="requested-uct-grad" class="input-group-text">Requested UTC Graduation Date</span>
+        <InputDate @bind-Value="Model.GraduatedUTCOn" class="form-control" id="requested-uct-grad" disabled="@LockEdit"></InputDate>
+    </div>
+</div>
+</div>
+<hr />
+<div class="row">
+<div class="col">
+    <h4>Additional Changes</h4>
+    <InputTextArea @bind-Value="Model.AdditionalChanges" class="form-control" 
+        placeholder="Input any additional changes you need made here, such as C-Shop updates." disabled="@LockEdit" />
+</div>
+</div>
+<br />
+<div class="row">
+<div class="col">
+    <h4>Reason for Change Request</h4>
+    <InputTextArea @bind-Value="Model.Reason" class="form-control" 
+        placeholder="I need these changes because..." disabled="@LockEdit" />
+</div>
+</div>
+<hr />

@@ -31,6 +31,8 @@ namespace FiveOhFirstDataCore.Core.Database
 
         public DbSet<ClaimUpdateData> ClaimUpdateData { get; internal set; }
 
+        public DbSet<TrooperChangeRequestData> ChangeRequests { get; internal set; }
+
         public DbSet<DisciplinaryAction> DisciplinaryActions { get; internal set; }
         public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
         public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
@@ -278,6 +280,19 @@ namespace FiveOhFirstDataCore.Core.Database
             notices.Ignore(e => e.Display);
 
             #endregion Boards
+
+            #region Changes
+            var changeReq = builder.Entity<TrooperChangeRequestData>();
+            changeReq.HasKey(e => e.ChangeId);
+            changeReq.HasOne(e => e.ChangedFor)
+                .WithMany(p => p.TrooperChangeRequests)
+                .HasForeignKey(e => e.ChangedForId);
+            changeReq.HasOne(e => e.FinalizedBy)
+                .WithMany(p => p.FinalizedChangeRequests)
+                .HasForeignKey(e => e.FinalizedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            #endregion
 
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);

@@ -117,6 +117,9 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
         #endregion
 
+        public List<TrooperChangeRequestData> TrooperChangeRequests { get; set; } = new();
+        public List<TrooperChangeRequestData> FinalizedChangeRequests { get; set; } = new();
+
         public List<Notice> NoticesWritten { get; set; } = new();
 
         public DateTime LastUpdate { get; set; }
