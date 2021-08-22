@@ -283,10 +283,15 @@ namespace FiveOhFirstDataCore.Core.Database
 
             #region Changes
             var changeReq = builder.Entity<TrooperChangeRequestData>();
-            changeReq.HasKey(e => e.Key);
-            changeReq.HasOne(e => e.ChangeFor)
+            changeReq.HasKey(e => e.ChangeId);
+            changeReq.HasOne(e => e.ChangedFor)
                 .WithMany(p => p.TrooperChangeRequests)
-                .HasForeignKey(e => e.ChangeForId);
+                .HasForeignKey(e => e.ChangedForId);
+            changeReq.HasOne(e => e.FinalizedBy)
+                .WithMany(p => p.FinalizedChangeRequests)
+                .HasForeignKey(e => e.FinalizedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
             #endregion
 
             var claimData = builder.Entity<ClaimUpdateData>();

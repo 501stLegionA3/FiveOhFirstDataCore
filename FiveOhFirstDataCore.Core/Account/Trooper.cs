@@ -118,6 +118,7 @@ namespace FiveOhFirstDataCore.Core.Account
         #endregion
 
         public List<TrooperChangeRequestData> TrooperChangeRequests { get; set; } = new();
+        public List<TrooperChangeRequestData> FinalizedChangeRequests { get; set; } = new();
 
         public List<Notice> NoticesWritten { get; set; } = new();
 

@@ -1,5 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,15 +18,16 @@ namespace FiveOhFirstDataCore.Core.Services
     public class EparService : IEparService
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly IRosterService _roster;
 
-        public EparService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
-            => (_dbContextFactory) = (dbContextFactory);
+        public EparService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRosterService roster)
+            => (_dbContextFactory, _roster) = (dbContextFactory, roster);
 
-        public async Task<ResultBase> CreateChangeRequest(TrooperChangeRequestDataBase requestBase, int submitterId)
+        public async Task<ResultBase> CreateChangeRequest(TrooperChangeRequestData request, int submitterId)
         {
-            TrooperChangeRequestData? request = requestBase as TrooperChangeRequestData;
-
             if (request is null) return new(false, new List<string> { "The request object was null." });
+
+            request.ChangedOn = DateTime.UtcNow.ToEst();
 
             await using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -43,7 +47,117 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
 
-            return await _dbContext.ChangeRequests.ToListAsync();
+            return await _dbContext.ChangeRequests
+                .Where(x => !x.Finalized)
+                .Include(x => x.ChangedFor)
+                .ToListAsync();
+        }
+
+        public async Task<List<TrooperChangeRequestData>> GetActiveChangeRequests(int start, int end)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            return _dbContext.ChangeRequests
+                .Where(x => !x.Finalized)
+                .OrderBy(x => x.ChangedOn)
+                .Include(x => x.ChangedFor)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
+        }
+
+        public async Task<int> GetActiveChangeRequestCount()
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            return await _dbContext.ChangeRequests
+                .Where(x => !x.Finalized)
+                .CountAsync();
+        }
+
+        public async Task<TrooperChangeRequestData?> GetChangeRequestAsync(Guid id)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var item = await _dbContext.FindAsync<TrooperChangeRequestData>(id);
+
+            if (item is null) return null;
+
+            await _dbContext.Entry(item).Reference(e => e.ChangedFor).LoadAsync();
+
+            return item;
+        }
+
+        public async Task<ResultBase> FinalizeChangeRequest(Guid requestId, bool approve, int finalizer, ClaimsPrincipal finalizerClaim)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var item = await _dbContext.FindAsync<TrooperChangeRequestData>(requestId);
+
+            if (item is null) return new(false, new List<string>() { "No change request for the provided ID was found" });
+
+            item.Approved = approve;
+            item.Finalized = true;
+            item.FinalizedById = finalizer;
+
+            await _dbContext.SaveChangesAsync();
+
+            if (approve)
+            {
+                if (item.HasChange(false))
+                    return await ApplyChangeRequest(item.ChangedForId, item, finalizerClaim);
+                else return new(true, null);
+            }
+            else return new(true, null);
+        }
+
+        private async Task<ResultBase> ApplyChangeRequest(int toEdit, TrooperChangeRequestData data, ClaimsPrincipal finalizer)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            var user = await _dbContext.FindAsync<Trooper>(toEdit);
+
+            if (user is null) return new(false, new List<string>() { "No user for the specified ID was found." });
+
+            if (data.Rank is not null)
+                user.Rank = data.Rank;
+            if(data.RTORank is not null)
+                user.RTORank = data.RTORank;
+            if(data.MedicRank is not null)
+                user.MedicRank = data.MedicRank;
+            if(data.WarrantRank is not null)
+                user.WarrantRank = data.WarrantRank;
+            if(data.WardenRank is not null)
+                user.WardenRank = data.WardenRank;
+            if(data.PilotRank is not null)
+                user.PilotRank = data.PilotRank;
+
+            if(data.Role is not null)
+                user.Role = data.Role.Value;
+            if(data.Team is not null)
+                user.Team = data.Team;
+            if(data.Flight is not null)
+                user.Flight = data.Flight;
+            if (data.Slot is not null)
+                user.Slot = data.Slot.Value;
+
+            if (data.Qualifications != Qualification.None)
+                user.Qualifications = data.Qualifications;
+
+            if (data.LastPromotion is not null)
+                user.LastPromotion = data.LastPromotion.Value;
+            if(data.StartOfService is not null)
+                user.StartOfService = data.StartOfService.Value;
+            if(data.LastBilletChange is not null)
+                user.LastBilletChange = data.LastBilletChange.Value;
+            if(data.GraduatedBCTOn is not null)
+                user.GraduatedBCTOn = data.GraduatedBCTOn.Value;
+            if(data.GraduatedUTCOn is not null)
+                user.GraduatedUTCOn = data.GraduatedUTCOn.Value;
+
+            user.LastUpdate = DateTime.UtcNow;
+
+            return await _roster.UpdateAsync(user, new(), new(), finalizer);
         }
     }
 }

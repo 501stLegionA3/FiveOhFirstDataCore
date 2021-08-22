@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevSoyvolonepar : Migration
+    public partial class DevSoyvolonEPAR : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,7 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "ChangeRequests",
                 columns: table => new
                 {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChangeForId = table.Column<int>(type: "integer", nullable: false),
+                    ChangeId = table.Column<Guid>(type: "uuid", nullable: false),
                     Rank = table.Column<int>(type: "integer", nullable: true),
                     RTORank = table.Column<int>(type: "integer", nullable: true),
                     MedicRank = table.Column<int>(type: "integer", nullable: true),
@@ -30,23 +29,41 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     GraduatedBCTOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     GraduatedUTCOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     AdditionalChanges = table.Column<string>(type: "text", nullable: true),
-                    Reason = table.Column<string>(type: "text", nullable: true)
+                    Reason = table.Column<string>(type: "text", nullable: true),
+                    FinalizedById = table.Column<int>(type: "integer", nullable: true),
+                    Finalized = table.Column<bool>(type: "boolean", nullable: false),
+                    Approved = table.Column<bool>(type: "boolean", nullable: false),
+                    ChangedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ChangedForId = table.Column<int>(type: "integer", nullable: false),
+                    SubmittedByRosterClerk = table.Column<bool>(type: "boolean", nullable: false),
+                    RevertChange = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChangeRequests", x => x.Key);
+                    table.PrimaryKey("PK_ChangeRequests", x => x.ChangeId);
                     table.ForeignKey(
-                        name: "FK_ChangeRequests_AspNetUsers_ChangeForId",
-                        column: x => x.ChangeForId,
+                        name: "FK_ChangeRequests_AspNetUsers_ChangedForId",
+                        column: x => x.ChangedForId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChangeRequests_AspNetUsers_FinalizedById",
+                        column: x => x.FinalizedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChangeRequests_ChangeForId",
+                name: "IX_ChangeRequests_ChangedForId",
                 table: "ChangeRequests",
-                column: "ChangeForId");
+                column: "ChangedForId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ChangeRequests_FinalizedById",
+                table: "ChangeRequests",
+                column: "FinalizedById");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

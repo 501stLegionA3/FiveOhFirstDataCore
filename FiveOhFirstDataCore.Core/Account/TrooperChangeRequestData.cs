@@ -9,15 +9,7 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
-    public class TrooperChangeRequestData : TrooperChangeRequestDataBase
-    {
-        public Guid Key { get; set; }
-
-        public Trooper ChangeFor { get; set; }
-        public int ChangeForId { get; set; }
-    }
-
-    public class TrooperChangeRequestDataBase
+    public class TrooperChangeRequestData : UpdateBase
     {
         public TrooperRank? Rank { get; set; }
         public RTORank? RTORank { get; set; }
@@ -42,5 +34,44 @@ namespace FiveOhFirstDataCore.Core.Account
         public string? AdditionalChanges { get; set; }
 
         public string? Reason { get; set; }
+
+        public Trooper? FinalizedBy { get; set; }
+        public int? FinalizedById { get; set; }
+
+        public bool Finalized { get; set; } = false;
+        public bool Approved { get; set; } = false;
+
+        public bool IsValid()
+        {
+            if (Reason is null) return false;
+
+            // If one of these has a value, its a valid change request.
+            return HasChange();
+        }
+
+        public bool HasChange(bool includeAdditionalChanges = true)
+        {
+            var val = !(Rank is null
+                && RTORank is null
+                && MedicRank is null
+                && WarrantRank is null
+                && WardenRank is null
+                && PilotRank is null
+                && Role is null
+                && Team is null
+                && Flight is null
+                && Slot is null
+                && Qualifications == Qualification.None
+                && LastPromotion is null
+                && StartOfService is null
+                && LastBilletChange is null
+                && GraduatedBCTOn is null
+                && GraduatedUTCOn is null);
+
+            if (includeAdditionalChanges)
+                val = val || AdditionalChanges is not null;
+
+            return val;
+        }
     }
 }

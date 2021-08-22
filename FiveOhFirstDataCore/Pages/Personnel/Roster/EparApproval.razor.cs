@@ -1,4 +1,8 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Services;
+
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 using System;
 using System.Collections.Generic;
@@ -9,13 +13,128 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
 {
     public partial class EparApproval
     {
+        [Inject]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public IEparService Epar { get; set; }
+
+        [Inject]
+        public NavigationManager Nav { get; set; }
+
+        [CascadingParameter]
+        public Trooper? CurrentTrooper { get; set; }
+
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthStateTask { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+        [Parameter]
+        public string? IdRaw { get; set; }
+
+        private Guid? _guid { get; set; } = null;
+        private Guid? Id
+        {
+            get
+            {
+                if (IdRaw is null) return null;
+
+                if (_guid is null)
+                {
+                    try
+                    {
+                        return new Guid(IdRaw);
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+
+                return _guid;
+            }
+        }
+
+        private TrooperChangeRequestData? Data { get; set; }
+
         protected List<TrooperChangeRequestData> ChangeRequests { get; set; } = new();
+
+        protected List<string> Errors { get; set; } = new();
+        protected string? SuccessMessage { get; set; } = null;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
 
+            if(firstRender)
+            {
+                await base.InitalizeAsync(Epar.GetActiveChangeRequests, Epar.GetActiveChangeRequestCount, 15);
 
+                StateHasChanged();
+            }
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
+            if(Id is not null)
+            {
+                Data = await Epar.GetChangeRequestAsync(Id.Value);
+            }
+            else
+            {
+                Data = null;
+            }
+        }
+
+        private async Task ApproveChangeAsync()
+        {
+            if(Data is not null && CurrentTrooper is not null)
+            {
+                ClearErrors();
+
+                var res = await Epar.FinalizeChangeRequest(Data.ChangeId, true, CurrentTrooper.Id, (await AuthStateTask).User);
+
+                if (!res.GetResult(out var err))
+                    Errors.AddRange(err);
+                else
+                {
+                    SuccessMessage = $"Change request approved.";
+                    if (!string.IsNullOrWhiteSpace(Data.AdditionalChanges))
+                        SuccessMessage += $" Please note the additional changes:\n\n{Data.AdditionalChanges}";
+                }
+            }
+
+            IdRaw = null;
+            _guid = null;
+            Data = null;
+        }
+
+        private async Task DenyChangeAsync()
+        {
+            if (Data is not null && CurrentTrooper is not null)
+            {
+                ClearErrors();
+
+                var res = await Epar.FinalizeChangeRequest(Data.ChangeId, false, CurrentTrooper.Id, (await AuthStateTask).User);
+
+                if (!res.GetResult(out var err))
+                    Errors.AddRange(err);
+                else SuccessMessage = "Change request denied.";
+            }
+
+            IdRaw = null;
+            _guid = null;
+            Data = null;
+        }
+
+        private void ClearErrors()
+        {
+            Errors.Clear();
+        }
+
+        private void ClearSuccess()
+        {
+            SuccessMessage = null;
         }
     }
 }

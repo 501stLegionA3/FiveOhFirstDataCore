@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210814210608_Dev-Soyvolon-epar")]
-    partial class DevSoyvolonepar
+    [Migration("20210822152525_Dev-Soyvolon-EPAR")]
+    partial class DevSoyvolonEPAR
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -289,14 +289,26 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
                 {
-                    b.Property<Guid>("Key")
+                    b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("AdditionalChanges")
                         .HasColumnType("text");
 
-                    b.Property<int>("ChangeForId")
+                    b.Property<bool>("Approved")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Finalized")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("FinalizedById")
                         .HasColumnType("integer");
 
                     b.Property<int?>("Flight")
@@ -332,6 +344,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<string>("Reason")
                         .HasColumnType("text");
 
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
                     b.Property<int?>("Role")
                         .HasColumnType("integer");
 
@@ -340,6 +355,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Property<DateTime?>("StartOfService")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("Team")
                         .HasColumnType("integer");
@@ -350,9 +368,11 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("WarrantRank")
                         .HasColumnType("integer");
 
-                    b.HasKey("Key");
+                    b.HasKey("ChangeId");
 
-                    b.HasIndex("ChangeForId");
+                    b.HasIndex("ChangedForId");
+
+                    b.HasIndex("FinalizedById");
 
                     b.ToTable("ChangeRequests");
                 });
@@ -1237,13 +1257,20 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangeFor")
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
                         .WithMany("TrooperChangeRequests")
-                        .HasForeignKey("ChangeForId")
+                        .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ChangeFor");
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FinalizedBy")
+                        .WithMany("FinalizedChangeRequests")
+                        .HasForeignKey("FinalizedById")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ChangedFor");
+
+                    b.Navigation("FinalizedBy");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
@@ -1602,6 +1629,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("DisciplinaryActions");
 
                     b.Navigation("FiledDisciplinaryActions");
+
+                    b.Navigation("FinalizedChangeRequests");
 
                     b.Navigation("Flags");
 
