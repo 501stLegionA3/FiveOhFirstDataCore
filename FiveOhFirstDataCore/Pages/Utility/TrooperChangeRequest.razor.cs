@@ -28,6 +28,12 @@ namespace FiveOhFirstDataCore.Pages.Utility
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+            {
+                Model.Qualifications = CurrentUser?.Qualifications ?? Core.Data.Qualification.None;
+                StateHasChanged();
+            }
         }
 
         private async Task OnSubmit()
@@ -40,14 +46,13 @@ namespace FiveOhFirstDataCore.Pages.Utility
                 Errors.Add("You must include a reason in your request.");
             }
 
-            if(!Model.HasChange())
-            {
-                Errors.Add("You must have at least one change in your request.");
-            }
-
-            if(CurrentUser is null)
+            if (CurrentUser is null)
             {
                 Errors.Add("You must be signed in.");
+            }
+            else if (!(Model.HasChange() && Model.Qualifications != CurrentUser.Qualifications))
+            {
+                Errors.Add("You must have at least one change in your request.");
             }
 
             if (Errors.Count > 0) return;
@@ -60,7 +65,10 @@ namespace FiveOhFirstDataCore.Pages.Utility
             }
             else
             {
-                Model = new();
+                Model = new()
+                {
+                    Qualifications = CurrentUser!.Qualifications
+                };
                 SuccessMessage = "Change request has been submitted.";
             }
         }

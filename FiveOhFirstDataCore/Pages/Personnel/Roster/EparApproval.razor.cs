@@ -60,6 +60,9 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         protected List<string> Errors { get; set; } = new();
         protected string? SuccessMessage { get; set; } = null;
 
+        public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home"),
+            ("/c1/roster/epar", "EPAR Home") };
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -107,6 +110,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
             IdRaw = null;
             _guid = null;
             Data = null;
+            await base.SetPage(1);
         }
 
         private async Task DenyChangeAsync()
@@ -125,6 +129,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
             IdRaw = null;
             _guid = null;
             Data = null;
+            await base.SetPage(1);
         }
 
         private void ClearErrors()
