@@ -3,6 +3,7 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 {
                     try
                     {
-                        return new Guid(IdRaw);
+                        _guid = new Guid(IdRaw);
                     }
                     catch
                     {
@@ -52,8 +53,22 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 return _guid;
             }
         }
+        
+        private TrooperChangeRequestData? _data { get; set; }
+        private TrooperChangeRequestData? Data
+        {
+            get
+            {
+                if (Id is null)
+                    _data = null;
 
-        private TrooperChangeRequestData? Data { get; set; }
+                return _data;
+            }
+            set
+            {
+                _data = value;
+            }
+        }
 
         protected List<TrooperChangeRequestData> ChangeRequests { get; set; } = new();
 
@@ -107,10 +122,8 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 }
             }
 
-            IdRaw = null;
-            _guid = null;
-            Data = null;
             await base.SetPage(1);
+            Nav.NavigateTo("/c1/roster/epar");
         }
 
         private async Task DenyChangeAsync()
@@ -126,10 +139,8 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 else SuccessMessage = "Change request denied.";
             }
 
-            IdRaw = null;
-            _guid = null;
-            Data = null;
             await base.SetPage(1);
+            Nav.NavigateTo("/c1/roster/epar");
         }
 
         private void ClearErrors()
