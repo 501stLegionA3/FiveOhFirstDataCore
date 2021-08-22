@@ -1,0 +1,35 @@
+﻿@page "/roster/directory/platoon"
+
+<BreadcrumbsList Url="Urls" />
+
+<h3 class="text-center">Platoon Directory</h3>
+
+<hr />
+
+<EditForm Model="this" class="form">
+    <div class="row">
+        <div clsas="col">
+            <InputText @bind-Value="SearchDummy" @oninput="SearchUpdate" class="form-control"
+                placeholder="Search for a platoon..." />
+        </div>
+    </div>
+</EditForm>
+
+<hr />
+
+<div class="p-3">
+    <div class="d-grid gap-3">
+    @foreach(Slot slot in Enum.GetValues<Slot>())
+    {
+        if(((int)slot / 10 % 10) != 0 && (int)slot % 10 == 0
+            && slot.AsFull().StartsWith(Search)
+            && (slot < Slot.Mynock
+            || slot >= Slot.ZetaCompany
+            && slot < Slot.InactiveReserve)
+            && slot != Slot.AcklayTwo)
+        {
+            <a href="/platoon/@((int)slot)" class="btn btn-outline-primary">@slot.AsFull() Home</a>
+        }
+    }
+    </div>
+</div>

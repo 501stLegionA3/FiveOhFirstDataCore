@@ -74,7 +74,11 @@
                             }
                             else
                             {
-                
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/roster/directory/squad" Match="NavLinkMatch.All">
+                                        <span class="oi bi bi-card-list" aria-hidden="true"></span> Squad Directory
+                                    </NavLink>
+                                </li>
                             }
 
                             @if(InPlatoon)
@@ -87,7 +91,11 @@
                             }
                             else
                             {
-                
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/roster/directory/platoon" Match="NavLinkMatch.All">
+                                        <span class="oi bi bi-card-list" aria-hidden="true"></span> Platoon Directory
+                                    </NavLink>
+                                </li>
                             }
 
                             @if (InCompany)
@@ -100,7 +108,11 @@
                             }
                             else
                             {
-
+                                <li class="nav-item px-3">
+                                    <NavLink class="nav-link" href="/roster/directory/company" Match="NavLinkMatch.All">
+                                        <span class="oi bi bi-card-list" aria-hidden="true"></span> Company Directory
+                                    </NavLink>
+                                </li>
                             }
 
                             <li class="nav-item px-3">
@@ -118,6 +130,14 @@
                             <li class="nav-item px-3">
                                 <NavLink class="nav-link" href="/mynock/me" Match="NavLinkMatch.All">
                                     <span class="oi oi-compass" aria-hidden="true"></span> Mynock
+                                </NavLink>
+                            </li>
+
+                            <hr />
+
+                            <li class="nav-item px-3">
+                                <NavLink class="nav-link" href="/roster/directory" Match="NavLinkMatch.All">
+                                    <span class="oi bi bi-collection" aria-hidden="true"></span> Directories
                                 </NavLink>
                             </li>
                         </div>

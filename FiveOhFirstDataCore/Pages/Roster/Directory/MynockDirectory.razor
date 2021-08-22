@@ -1,0 +1,30 @@
+﻿@page "/roster/directory/mynock"
+
+<BreadcrumbsList Url="Urls" />
+
+<h3 class="text-center">Mynock Directory</h3>
+
+<hr />
+
+<EditForm Model="this" class="form">
+    <div class="row">
+        <div clsas="col">
+            <InputText @bind-Value="SearchDummy" @oninput="SearchUpdate" class="form-control"
+                placeholder="Search for a mynock section..." />
+        </div>
+    </div>
+</EditForm>
+
+<hr />
+
+<div class="p-3">
+    <div class="d-grid gap-3">
+    @foreach(Slot slot in Enum.GetValues<Slot>())
+    {
+        if(slot >= Slot.Mynock && slot < Slot.Razor)
+        {
+            <a href="/mynock@(slot == Slot.Mynock ? "" : $"/{(int)slot}")" class="btn btn-outline-primary">@slot.AsFull() Home</a>
+        }
+    }
+    </div>
+</div>

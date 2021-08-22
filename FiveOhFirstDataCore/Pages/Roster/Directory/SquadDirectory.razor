@@ -1,0 +1,33 @@
+﻿@page "/roster/directory/squad"
+
+<BreadcrumbsList Url="Urls" />
+
+<h3 class="text-center">Squad Directory</h3>
+
+<hr />
+
+<EditForm Model="this" class="form">
+    <div class="row">
+        <div clsas="col">
+            <InputText @bind-Value="SearchDummy" @oninput="SearchUpdate" class="form-control"
+                placeholder="Search for a squad..." />
+        </div>
+    </div>
+</EditForm>
+
+<hr />
+
+<div class="p-3">
+    <div class="d-grid gap-3">
+    @foreach(Slot slot in Enum.GetValues<Slot>())
+    {
+        if(((int)slot % 10) != 0 && slot.AsFull().StartsWith(Search)
+            && (slot < Slot.Mynock
+            || slot >= Slot.ZetaCompany
+            && slot < Slot.InactiveReserve))
+        {
+            <a href="/squad/@((int)slot)" class="btn btn-outline-primary">@slot.AsFull() Home</a>
+        }
+    }
+    </div>
+</div>
