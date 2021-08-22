@@ -50,7 +50,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
             {
                 Errors.Add("You must be signed in.");
             }
-            else if (!(Model.HasChange() && Model.Qualifications != CurrentUser.Qualifications))
+            else if (!(Model.HasChange() || Model.Qualifications != CurrentUser.Qualifications))
             {
                 Errors.Add("You must have at least one change in your request.");
             }

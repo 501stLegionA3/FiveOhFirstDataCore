@@ -94,8 +94,8 @@
                 <hr />
                 <ChangeRequestData User="Data.ChangedFor" Model="Data" LockEdit="true" />
                 <div class="d-grid gap-2">
-                    <button class="btn btn-success" @onclick="ApproveChangeAsync">Approve</button>
-                    <button class="btn btn-danger" @onclick="DenyChangeAsync">Deny</button>
+                    <button class="btn btn-success" @onclick="ApproveChangeAsync" disabled="@Data.Finalized">Approve</button>
+                    <button class="btn btn-danger" @onclick="DenyChangeAsync" disabled="@Data.Finalized">Deny</button>
                 </div>
                 <br class="p-3" />
             </EditForm>

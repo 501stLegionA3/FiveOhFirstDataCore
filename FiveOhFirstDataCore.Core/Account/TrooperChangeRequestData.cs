@@ -61,7 +61,6 @@ namespace FiveOhFirstDataCore.Core.Account
                 && Team is null
                 && Flight is null
                 && Slot is null
-                && Qualifications == Qualification.None
                 && LastPromotion is null
                 && StartOfService is null
                 && LastBilletChange is null
