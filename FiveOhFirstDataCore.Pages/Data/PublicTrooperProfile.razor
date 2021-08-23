@@ -4,6 +4,7 @@
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
 
 @if(Trooper is not null)
 {
@@ -110,15 +111,15 @@
                                     {
                                         @if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
                                         {
-                                                <tr draggable="true" @ondrag="()=>OnDrag(desc)" @ondrop="()=>OnDrop(desc)">
+                                                <tr draggable="true" @ondrag="()=>OnDrag(desc)" @ondrop="async ()=>OnDrop(desc)">
                                                     <td>@desc.Content</td>
                                                     <td>@desc.CreatedOn.ToString("d")</td>
-                                                    <td><button @onclick="()=>DeleteDescription(desc)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
+                                                    <td><button @onclick="async ()=>DeleteDescription(desc)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
                                                 </tr>
                                         }
                                         else
                                         {
-                                                <tr draggable="false" @ondrag="()=>OnDrag(desc)" @ondrop="()=>OnDrop(desc)">
+                                                <tr draggable="false">
                                                     <td>@desc.Content</td>
                                                     <td>@desc.CreatedOn.ToString("d")</td>
                                                 </tr>
@@ -279,6 +280,8 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
+    public bool FirstRender {get; set;} = true;
+
     private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
 
     public string[] ServiceStrings = new string[6];
@@ -298,6 +301,8 @@ else
     {
         await base.OnInitializedAsync();
         _state.OnPersisting += OnPersisting;
+        Console.WriteLine(Trooper.Id);
+        _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "DescriptionData", OnDataRefreshRequest);
 
         QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
         .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
@@ -335,8 +340,7 @@ else
         {
             if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
             {
-                await _roster.LoadPublicProfileDataAsync(Trooper);
-                Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+                await LoadFlags();
                 LoadedAdditional = true;
             }  
         }
@@ -347,8 +351,7 @@ else
         }
         else
         {
-            await _roster.LoadDescriptionsAsync(Trooper);
-            Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+            await LoadDescription();
             LoadedDescriptions = true;
         }
 
@@ -394,7 +397,9 @@ else
         {
             await _roster.SaveNewDescription(user, Trooper, Description);
             Description = new();
-            _refresh.CallRequestRefresh();
+            Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+            Console.WriteLine(Trooper.Id);
+            _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
         }
     }
 
@@ -405,19 +410,40 @@ else
         CurrentDesc = desc;
     }
 
-    private async void OnDrop(TrooperDescription desc)
+    private async Task OnDrop(TrooperDescription desc)
     {
         if (CurrentDesc is not null && desc != CurrentDesc)
-            await _roster.UpdateDescriptionOrderAsync(Trooper, CurrentDesc, desc);
+            await _roster.UpdateDescriptionOrderAsync(Trooper, CurrentDesc, desc.Order);
         CurrentDesc = null;
 
-        _refresh.CallRequestRefresh();
+        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
     }
 
-    private async void DeleteDescription(TrooperDescription desc)
+    private async Task DeleteDescription(TrooperDescription desc)
     {
         await _roster.DeleteDescriptionAsync(Trooper, desc);
-        _refresh.CallRequestRefresh();
+        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
+    }
+
+    public async Task OnDataRefreshRequest()
+    {
+        Trooper = await _roster.GetTrooperFromIdAsync(Trooper.Id);
+        await LoadDescription();
+        await LoadFlags();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadFlags()
+    {
+        await _roster.LoadPublicProfileDataAsync(Trooper);
+        Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+    }
+
+    private async Task LoadDescription()
+    {
+        await _roster.LoadDescriptionsAsync(Trooper);
+        Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
     }
 
 
@@ -425,5 +451,6 @@ else
     {
         _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
+        _advRefresh.RemoveDataReloadListener(OnDataRefreshRequest);
     }
 }

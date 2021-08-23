@@ -265,16 +265,16 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="trooper">The <see cref="Trooper"/> to add a description to.</param>
         /// <param name="description">The <see cref="TrooperDescription"/> to add to <paramref name="trooper"/></param>
         /// <returns>A task representing this action.</returns>
-        public Task SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description);
+        public Task<List<TrooperDescription>> SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description);
       
         /// <summary>
         /// Moves a description item from one position to the position of another and re-do's the order.
         /// </summary>
         /// <param name="trooper">The <see cref="Trooper"/> to perform this action on.</param>
-        /// <param name="oldDesc">The <see cref="TrooperDescription"/> that you want to move.</param>
-        /// <param name="newDesc">The <see cref="TrooperDescription"/> that you want to move to.</param>
+        /// <param name="desc">The <see cref="TrooperDescription"/> that you want to move.</param>
+        /// <param name="index">The <see cref="int"/> that you want to move to.</param>
         /// <returns>A task representing this action.</returns>
-        public Task UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription oldDesc, TrooperDescription newDesc);
+        public Task UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription desc, int index);
       
         /// <summary>
         /// Delete a description from a Trooper.
