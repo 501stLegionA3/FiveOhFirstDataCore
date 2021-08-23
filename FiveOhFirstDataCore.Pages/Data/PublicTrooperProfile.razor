@@ -109,19 +109,20 @@
                                 <tbody class="w-100">
                                     @foreach (var desc in Trooper.Descriptions)
                                     {
-                                        @if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
+                                var d = desc;
+                                if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
                                         {
-                                                <tr draggable="true" @ondrag="()=>OnDrag(desc)" @ondrop="async ()=>OnDrop(desc)">
-                                                    <td>@desc.Content</td>
-                                                    <td>@desc.CreatedOn.ToString("d")</td>
-                                                    <td><button @onclick="async ()=>DeleteDescription(desc)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
+                                                <tr draggable="true" @ondrag="()=>OnDrag(d)" @ondrop="async ()=>await OnDrop(d)">
+                                                    <td>@d.Content</td>
+                                                    <td>@d.CreatedOn.ToString("d")</td>
+                                                    <td><button @onclick="async ()=>await DeleteDescription(d)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
                                                 </tr>
                                         }
                                         else
                                         {
                                                 <tr draggable="false">
-                                                    <td>@desc.Content</td>
-                                                    <td>@desc.CreatedOn.ToString("d")</td>
+                                                    <td>@d.Content</td>
+                                                    <td>@d.CreatedOn.ToString("d")</td>
                                                 </tr>
                                         }
                                     }
