@@ -448,13 +448,13 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<TrooperDescription>> SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description)
+        public async Task<ResultBase> SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var user = await _userManager.GetUserAsync(claim);
             var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
             if (t is null)
-                throw new Exception("Trooper not found");
+                return new(false, new List<string> { "Trooper Not Found" });
             await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
             //Console.WriteLine(t.Descriptions.Count);
 
@@ -466,15 +466,15 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return t.Descriptions;
+            return new(true, null);
         }
 
-        public async Task UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription desc, int index)
+        public async Task<ResultBase> UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription desc, int index)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
             if (t is null)
-                throw new Exception("Trooper not found");
+                return new(false, new List<string> { "Trooper Not Found" });
             await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
             t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
             var d = await _dbContext.FindAsync<TrooperDescription>(desc.Id);
@@ -487,14 +487,15 @@ namespace FiveOhFirstDataCore.Core.Services
             }
 
             await _dbContext.SaveChangesAsync();
+            return new(true, null);
         }
 
-        public async Task DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc)
+        public async Task<ResultBase> DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
             if (t is null)
-                throw new Exception("Trooper not found");
+                return new(false, new List<string> {"Trooper Not Found"});
             await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
             t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
 
@@ -507,6 +508,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _dbContext.Remove(d);
 
             await _dbContext.SaveChangesAsync();
+            return new(true, null);
         }
 
         public async Task<ResultBase> UpdateUserNameAsync(Trooper trooper)
