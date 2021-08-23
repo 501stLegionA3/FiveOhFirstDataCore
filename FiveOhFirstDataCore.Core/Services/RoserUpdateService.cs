@@ -448,6 +448,69 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<ResultBase> SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var user = await _userManager.GetUserAsync(claim);
+            var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
+            if (t is null)
+                return new(false, new List<string> { "Trooper Not Found" });
+            await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
+            //Console.WriteLine(t.Descriptions.Count);
+
+            description.AuthorId = user.Id;
+            description.CreatedOn = DateTime.UtcNow.ToEst();
+            description.Order = t.Descriptions.Count;
+
+            t.Descriptions.Add(description);
+
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription desc, int index)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
+            if (t is null)
+                return new(false, new List<string> { "Trooper Not Found" });
+            await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
+            t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+            var d = await _dbContext.FindAsync<TrooperDescription>(desc.Id);
+            
+            t.Descriptions.RemoveAt(d.Order);
+            t.Descriptions.Insert(index, d);
+            for (int i = 0; i < t.Descriptions.Count; i++)
+            {
+                t.Descriptions[i].Order = i;
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
+            if (t is null)
+                return new(false, new List<string> {"Trooper Not Found"});
+            await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
+            t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+
+            t.Descriptions.RemoveAt(desc.Order);
+            for (int i = 0; i < t.Descriptions.Count; i++)
+            {
+                t.Descriptions[i].Order = i;
+            }
+            var d = await _dbContext.FindAsync<TrooperDescription>(desc.Id);
+            _dbContext.Remove(d);
+
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+
         public async Task<ResultBase> UpdateUserNameAsync(Trooper trooper)
         {
             var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
