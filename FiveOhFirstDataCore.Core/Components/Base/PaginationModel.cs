@@ -47,7 +47,11 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <summary>
         /// The method that is called to load the next batch of items
         /// </summary>
-        private Func<int, int, Task<IReadOnlyList<object>>>? LoadNextBatch { get; set; }
+        private Func<int, int, object[], Task<IReadOnlyList<object>>>? LoadNextBatch { get; set; }
+        /// <summary>
+        /// Extra parameters for the Load Next Batch method.
+        /// </summary>
+        private object[] Params { get; set; }
         /// <summary>
         /// The method that is called to get the total count of items.
         /// </summary>
@@ -108,18 +112,20 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <typeparam name="T">The type of items to batch load.</typeparam>
         /// <param name="loader">The async fucntion that returns a <see cref="IReadOnlyList{T}"/> for the current page.</param>
         /// <param name="counts">The function that returns an <see cref="int"/> of the total item count</param>
+        /// <param name="parameters">Extra parameters for the load next batch function.</param>
         /// <param name="itemsPerPage">Sets how many items will be displayed per page. Defaults to 5.</param>
         /// <param name="startingPage">Sets the starting page index. Must be above 0. Defaults to 1.</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>A task representing this action.</returns>
-        public async Task InitalizeAsync<T>(Func<int, int, Task<IReadOnlyList<T>>> loader, Func<Task<int>> counts,
-            int itemsPerPage = 5, int startingPage = 1)
+        public async Task InitalizeAsync<T>(Func<int, int, object[], IReadOnlyList<List<T>>> loader, Func<Task<int>> counts,
+            object[]? parameters = null, int itemsPerPage = 5, int startingPage = 1)
         {
-            SetBatchLoader(async (x, y) => (await loader.Invoke(x, y)).Cast<object>().ToList());
+            SetBatchLoader(async (x, y, z) => (await loader.Invoke(x, y, z)).Cast<object>().ToList());
             SetCountMethod(counts);
 
             ItemsPerPage = itemsPerPage;
+            Params = parameters ?? Array.Empty<object>();
 
             if (startingPage <= 0)
                 throw new ArgumentOutOfRangeException(nameof(startingPage), 
@@ -142,14 +148,15 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <typeparam name="T">The type of items to batch load.</typeparam>
         /// <param name="loader">The fucntion that returns a <see cref="IReadOnlyList{T}"/> for the current page.</param>
         /// <param name="counts">The function that returns an <see cref="int"/> of the total item count</param>
+        /// <param name="parameters">Extra parameters for the load next batch function.</param>
         /// <param name="itemsPerPage">Sets how many items will be displayed per page. Defaults to 5.</param>
         /// <param name="startingPage">Sets the starting page index. Must be above 0. Defaults to 1.</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>A task representing this action.</returns>
-        public async Task InitalizeAsync<T>(Func<int, int, IReadOnlyList<T>> loader, Func<Task<int>> counts,
-            int itemsPerPage = 5, int startingPage = 1)
-            => await InitalizeAsync((x, y) => Task.FromResult(loader.Invoke(x, y)), counts, itemsPerPage, startingPage);
+        public async Task InitalizeAsync<T>(Func<int, int, object[], IReadOnlyList<T>> loader, Func<Task<int>> counts,
+            object[]? parameters = null, int itemsPerPage = 5, int startingPage = 1)
+            => await InitalizeAsync((x, y, z) => Task.FromResult(loader.Invoke(x, y, z)), counts, parameters, itemsPerPage, startingPage);
         /// <summary>
         /// Resets the page index to 1 and reloads the page.
         /// </summary>
@@ -229,7 +236,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         {
             if (LoadNextBatch is not null)
             {
-                Items = await LoadNextBatch.Invoke(CurrentPageStart, CurrentPageCap);
+                Items = await LoadNextBatch.Invoke(CurrentPageStart, CurrentPageCap, Params);
                 await UpdateItemCountAsync();
                 InvokeStateHasChanged();
             }
@@ -257,14 +264,14 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// Sets the batch loader.
         /// </summary>
         /// <param name="loader">The async function that loads the current page.</param>
-        public void SetBatchLoader(Func<int, int, Task<IReadOnlyList<object>>> loader)
+        public void SetBatchLoader(Func<int, int, object[], Task<IReadOnlyList<object>>> loader)
             => LoadNextBatch = loader;
         /// <summary>
         /// Sets the batch loader.
         /// </summary>
         /// <param name="loader">The function that loads the current page.</param>
-        public void SetBatchLoader(Func<int, int, IReadOnlyList<object>> loader)
-            => LoadNextBatch = (x, y) => Task.FromResult(loader.Invoke(x, y));
+        public void SetBatchLoader(Func<int, int, object[], IReadOnlyList<object>> loader)
+            => LoadNextBatch = (x, y, z) => Task.FromResult(loader.Invoke(x, y, z));
         /// <summary>
         /// Sets the count method.
         /// </summary>

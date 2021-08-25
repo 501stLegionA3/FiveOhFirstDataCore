@@ -53,7 +53,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyList<TrooperChangeRequestData>> GetActiveChangeRequests(int start, int end)
+        public async Task<IReadOnlyList<TrooperChangeRequestData>> GetActiveChangeRequests(int start, int end, object[] args)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
 
