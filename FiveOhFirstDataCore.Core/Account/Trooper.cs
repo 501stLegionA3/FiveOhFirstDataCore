@@ -55,6 +55,7 @@ namespace FiveOhFirstDataCore.Core.Account
         #endregion
         #region MP
         public bool MilitaryPolice { get; set; } = false;
+        public List<TrooperReport> FiledReports { get; set; } = new();
         #endregion
 
         public string? DiscordId { get; set; }
