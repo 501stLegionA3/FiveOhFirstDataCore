@@ -313,7 +313,7 @@
     [Parameter]
     public Slot? Filter { get; set; } = null;
 
-    [CascadingParameter(Name = "Airborne")]
+    [CascadingParameter]
     public bool Airborne { get; set; } = false;
 
     protected string? SuccessMessage { get; set; } = null;
