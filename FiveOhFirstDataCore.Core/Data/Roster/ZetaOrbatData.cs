@@ -6,7 +6,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public HailstormData Hailstorm { get; set; } = new();
 
-        public ZetaCompanyData Zeta { get; set; } = new();
+        public ZetaCompanyData Zeta { get; set; } = new(1, 4, 4);
 
         public void Assign(Trooper item)
         {

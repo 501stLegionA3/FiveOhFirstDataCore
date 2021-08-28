@@ -424,9 +424,9 @@ namespace FiveOhFirstDataCore.Core.Services
             IAssignable<Trooper> data;
 
             if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
-                data = new ZetaSectionData();
+                data = new ZetaSectionData(4);
             else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
-                data = new ZetaUTCSectionData();
+                data = new ZetaUTCSectionData(4);
             else 
                 data = new PlatoonData(3);
 
@@ -460,7 +460,7 @@ namespace FiveOhFirstDataCore.Core.Services
             IAssignable<Trooper> data;
 
             if (slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
-                data = new ZetaCompanyData();
+                data = new ZetaCompanyData(1, 4, 4);
             else
                 data = new CompanyData(3, 3);
 
@@ -593,7 +593,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<ZetaUTCSectionData> GetZetaUTCSectionDataAsync()
         {
-            var data = new ZetaUTCSectionData();
+            var data = new ZetaUTCSectionData(4);
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 

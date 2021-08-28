@@ -6,7 +6,14 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public Trooper Commander { get; set; }
         public Trooper Subordinate { get; set; }
-        public ZetaSquadData[] Squads { get; private set; } = new ZetaSquadData[] { new(), new(), new() };
+        public ZetaSquadData[] Squads { get; private set; } = Array.Empty<ZetaSquadData>();
+
+        public ZetaSectionData(int squads)
+        {
+            Squads = new ZetaSquadData[squads];
+            for (int i = 0; i < Squads.Length; i++)
+                Squads[i] = new();
+        }
 
         public void Assign(Trooper item)
         {
@@ -34,7 +41,14 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public Trooper Commander { get; set; }
         public Trooper Subordinate { get; set; }
-        public ZetaUTCSquadData[] Squads { get; private set; } = new ZetaUTCSquadData[] { new(), new(), new(), new() };
+        public ZetaUTCSquadData[] Squads { get; private set; } = Array.Empty<ZetaUTCSquadData>();
+
+        public ZetaUTCSectionData(int squads)
+        {
+            Squads = new ZetaUTCSquadData[squads];
+            for (int i = 0; i < Squads.Length; i++)
+                Squads[i] = new();
+        }
 
         public void Assign(Trooper item)
         {

@@ -8,8 +8,16 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
         public Trooper XO { get; set; }
         public Trooper NCOIC { get; set; }
         public Trooper Adjutant { get; set; }
-        public ZetaSectionData[] Sections { get; set; } = new ZetaSectionData[] { new(), new() };
-        public ZetaUTCSectionData UTCSection { get; set; } = new();
+        public ZetaSectionData[] Sections { get; set; } = Array.Empty<ZetaSectionData>();
+        public ZetaUTCSectionData UTCSection { get; set; }
+
+        public ZetaCompanyData(int sections, int squads, int utcSquads)
+        {
+            Sections = new ZetaSectionData[sections];
+            for (int i = 0; i < Sections.Length; i++)
+                Sections[i] = new(squads);
+            UTCSection = new(utcSquads);
+        }
 
         public void Assign(Trooper item)
         {
@@ -34,7 +42,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
             }
             else
             {
-                if (val < 3)
+                if (val < Sections.Length)
                 {
                     Sections[val - 1].Assign(item);
                 }
