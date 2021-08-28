@@ -12,11 +12,7 @@ In the event that the change is purely documentation and not modify the way the 
 
 # Breaking Changes
 
-Any changes that prevent all curent users for continuing to use Partner Bot at the time of the update is considered a breaking change.
-PRs with these types of changes need to include why the change is needed, how a user can continue to use Partner Bot, and, if needed,
-a method of updating current user data to whaterver new implementation is there.
-
-For example, moving for standard message sending to webhook sending is a breaking change (we moved from V5.X.X to V6.X.X)
+TODO
 
 ## Database Migrations
 
