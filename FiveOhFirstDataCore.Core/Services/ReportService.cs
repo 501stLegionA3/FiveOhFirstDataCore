@@ -1,5 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 
@@ -36,9 +37,29 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
-        public Task<List<TrooperReport>> GetTrooperReportsAsync(int start, int end, object[] args)
+        public async Task<IReadOnlyList<TrooperReport>> GetTrooperReportsAsync(int start, int end, object[] args)
         {
-            throw new NotImplementedException();
+            Slot? filter = null;
+            if (args.Length > 0)
+            {
+                try
+                {
+                    filter = (Slot)args[0];
+                }
+                catch { /* we have already set filter to null */ }
+            }
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var query = _dbContext.Reports
+                .Where(x => !x.Resolved);
+
+            if (filter is not null)
+                query = query
+                    .Where(x => x.ReportViewableAt == filter || x.ElevatedToBattalion && filter == Slot.Hailstorm);
+
+            return query.AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
         }
     }
 }

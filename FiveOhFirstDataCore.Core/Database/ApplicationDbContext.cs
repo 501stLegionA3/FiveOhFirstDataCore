@@ -41,6 +41,8 @@ namespace FiveOhFirstDataCore.Core.Database
 
         public DbSet<Promotion> Promotions { get; internal set; }
 
+        public DbSet<TrooperReport> Reports { get; internal set; }
+
         #region Website Settings
         public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
         public DbSet<CShopClaim> CShopClaims { get; internal set; }
@@ -307,6 +309,14 @@ namespace FiveOhFirstDataCore.Core.Database
                 .HasForeignKey(e => e.FinalizedById)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+            #endregion
+
+            #region Reports
+            var report = builder.Entity<TrooperReport>();
+            report.HasKey(e => e.Id);
+            report.HasOne(e => e.ReportedBy)
+                .WithMany(p => p.FiledReports)
+                .HasForeignKey(e => e.ReportedById);
             #endregion
 
             var claimData = builder.Entity<ClaimUpdateData>();

@@ -15,7 +15,7 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
         public Trooper ReportedBy { get; set; }
         public int ReportedById { get; set; }
 
-        public Slot ReportedFrom { get; set; }
+        public Slot ReportViewableAt { get; set; }
 
         public bool ElevatedToBattalion { get; set; } = false;
 
