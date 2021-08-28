@@ -15,7 +15,5 @@ namespace FiveOhFirstDataCore.Core.Structures.Notification
         public int NotificationForId { get; set; }
 
         public DateTime LastView { get; set; }
-
-        public Guid TrackerFor { get; set; }
     }
 }

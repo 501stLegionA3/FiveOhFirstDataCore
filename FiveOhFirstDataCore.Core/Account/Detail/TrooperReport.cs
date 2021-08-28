@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,6 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
         public string Summary { get; set; }
 
         public DateTime LastUpdate { get; set; }
+        public List<ReportNotificationTracker> NotificationTrackers { get; set; } = new();
     }
 }

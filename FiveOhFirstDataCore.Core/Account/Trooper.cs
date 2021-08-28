@@ -3,6 +3,7 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
@@ -119,6 +120,10 @@ namespace FiveOhFirstDataCore.Core.Account
         /// Holds the DA's that have been sent to this Trooper for further review. This is not DA's filed against this Trooper.
         /// </summary>
         public List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
+        #endregion
+
+        #region Notifications
+        public List<ReportNotificationTracker> TrooperReportTrackers {  get; set; } = new();
         #endregion
 
         public List<TrooperChangeRequestData> TrooperChangeRequests { get; set; } = new();

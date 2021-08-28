@@ -3,6 +3,7 @@ using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -49,6 +50,10 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
         public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
         public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
+        #endregion
+
+        #region Notifications
+        public DbSet<ReportNotificationTracker> ReportNotificationTrackers { get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -317,6 +322,17 @@ namespace FiveOhFirstDataCore.Core.Database
             report.HasOne(e => e.ReportedBy)
                 .WithMany(p => p.FiledReports)
                 .HasForeignKey(e => e.ReportedById);
+            #endregion
+
+            #region Notifications
+            var reportTracker = builder.Entity<ReportNotificationTracker>();
+            reportTracker.HasKey(e => e.Key);
+            reportTracker.HasOne(e => e.NotificationFor)
+                .WithMany(p => p.TrooperReportTrackers)
+                .HasForeignKey(e => e.NotificationForId);
+            reportTracker.HasOne(e => e.Report)
+                .WithMany(p => p.NotificationTrackers)
+                .HasForeignKey(e => e.ReportId);
             #endregion
 
             var claimData = builder.Entity<ClaimUpdateData>();

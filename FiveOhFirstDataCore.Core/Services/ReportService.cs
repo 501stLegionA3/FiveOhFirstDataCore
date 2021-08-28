@@ -87,5 +87,25 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return filter;
         }
+
+        public Task<IReadOnlyList<TrooperReport>> GetPersonalReportsAsync(int start, int end, object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetPersonalReportCountsAsync(object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<TrooperReport>> GetAllReportsAsync(int start, int end, object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetAllReportCountsAsync(object[] args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
