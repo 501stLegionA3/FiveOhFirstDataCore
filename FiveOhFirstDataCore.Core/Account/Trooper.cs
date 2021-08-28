@@ -136,9 +136,10 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 return RTORank?.AsShorthand() ?? "";
             }
-            else if (Slot >= Slot.Razor && Slot < Slot.Warden)
+            else if (Slot >= Slot.Razor && Slot < Slot.Warden
+                || Slot == Slot.RazorReserve)
             {
-                return PilotRank?.AsShorthand() ?? "";
+                return PilotRank?.AsShorthand() ?? WardenRank?.AsShorthand() ?? "";
             }
             else if (Role == Role.Medic)
             {
@@ -160,9 +161,10 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public string GetRankName()
         {
-            if (Slot >= Slot.Razor && Slot < Slot.Warden)
+            if (Slot >= Slot.Razor && Slot < Slot.Warden
+                || Slot == Slot.RazorReserve)
             {
-                return PilotRank?.AsFull() ?? "";
+                return PilotRank?.AsFull() ?? WardenRank?.AsFull() ?? "";
             }
             else if (Slot >= Slot.Warden && Slot < Slot.ZetaCompany)
             {
