@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevThunderTrooperDescriptions : Migration
+    public partial class ReleaseSoyvolonVersionZeroTenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

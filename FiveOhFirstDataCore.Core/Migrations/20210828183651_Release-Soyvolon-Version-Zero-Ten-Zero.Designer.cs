@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210809174634_Dev-Thunder-TrooperDescriptions")]
-    partial class DevThunderTrooperDescriptions
+    [Migration("20210828183651_Release-Soyvolon-Version-Zero-Ten-Zero")]
+    partial class ReleaseSoyvolonVersionZeroTenZero
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -285,6 +285,96 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
+                {
+                    b.Property<Guid>("ChangeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AdditionalChanges")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ChangedForId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ChangedOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("Finalized")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("FinalizedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Flight")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("GraduatedBCTOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("GraduatedUTCOn")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("LastBilletChange")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("LastPromotion")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int?>("MedicRank")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PilotRank")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("Qualifications")
+                        .HasColumnType("bigint");
+
+                    b.Property<int?>("RTORank")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Rank")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("RevertChange")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("Slot")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("StartOfService")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("SubmittedByRosterClerk")
+                        .HasColumnType("boolean");
+
+                    b.Property<int?>("Team")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("WardenRank")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("WarrantRank")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ChangeId");
+
+                    b.HasIndex("ChangedForId");
+
+                    b.HasIndex("FinalizedById");
+
+                    b.ToTable("ChangeRequests");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperRole", b =>
@@ -1197,6 +1287,24 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("Trooper");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                        .WithMany("TrooperChangeRequests")
+                        .HasForeignKey("ChangedForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FinalizedBy")
+                        .WithMany("FinalizedChangeRequests")
+                        .HasForeignKey("FinalizedById")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ChangedFor");
+
+                    b.Navigation("FinalizedBy");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
@@ -1576,6 +1684,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
 
                     b.Navigation("FiledDisciplinaryActions");
 
+                    b.Navigation("FinalizedChangeRequests");
+
                     b.Navigation("Flags");
 
                     b.Navigation("NickNameUpdates");
@@ -1605,6 +1715,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("SubmittedRankUpdates");
 
                     b.Navigation("TimeUpdates");
+
+                    b.Navigation("TrooperChangeRequests");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
