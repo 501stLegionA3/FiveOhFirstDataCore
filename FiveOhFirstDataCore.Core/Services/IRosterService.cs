@@ -271,6 +271,32 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task SaveNewFlag(ClaimsPrincipal claim, Trooper trooper, TrooperFlag flag);
 
         /// <summary>
+        /// Saves a new description to a Trooper.
+        /// </summary>
+        /// <param name="claim">The <see cref="ClaimsPrincipal"/> of the submitter.</param>
+        /// <param name="trooper">The <see cref="Trooper"/> to add a description to.</param>
+        /// <param name="description">The <see cref="TrooperDescription"/> to add to <paramref name="trooper"/></param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
+        public Task<ResultBase> SaveNewDescription(ClaimsPrincipal claim, Trooper trooper, TrooperDescription description);
+
+        /// <summary>
+        /// Moves a description item from one position to the position of another and re-do's the order.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to perform this action on.</param>
+        /// <param name="desc">The <see cref="TrooperDescription"/> that you want to move.</param>
+        /// <param name="index">The <see cref="int"/> that you want to move to.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
+        public Task<ResultBase> UpdateDescriptionOrderAsync(Trooper trooper, TrooperDescription desc, int index);
+
+        /// <summary>
+        /// Delete a description from a Trooper.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to delete a description from.</param>
+        /// <param name="desc">The <see cref="TrooperDescription"/> to delete.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
+        public Task<ResultBase> DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc);
+      
+        /// <summary>
         /// Update the list of allowed name changers.
         /// </summary>
         /// <param name="allowedTroopers">A new <see cref="List{T}"/> of <see cref="Trooper"/> that are allowed to change names.</param>
@@ -376,6 +402,13 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="trooper">The <see cref="Trooper"/> to load data for.</param>
         /// <returns>A task representing this action.</returns>
         public Task LoadPublicProfileDataAsync(Trooper trooper);
+      
+        /// <summary>
+        /// Loads descriptions into the provided <paramref name="trooper"/>.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> to load descriptions for.</param>
+        /// <returns>A task representing this action.</returns>
+        public Task LoadDescriptionsAsync(Trooper trooper);
         #endregion
 
         #region Account Management

@@ -4,6 +4,7 @@
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
+@inject IAdvancedRefreshService _advRefresh
 
 @if(Trooper is not null)
 {
@@ -74,6 +75,60 @@
                     </tr>
                 </table>
             </div>
+        </div>
+        <hr />
+        <div class="row">
+            <strong>Description</strong>
+                        <EditForm Context="descriptionFormContext" class="form form-inline" Model="Description">
+                            <table class="table table-hover" ondragover="event.preventDefault();">
+                                <thead>
+                                    <AuthorizeView Policy="RequireNCO">
+                                        <Authorized>
+                                            @if((LoggedIn?.Id ?? 0) != Trooper.Id)
+                                            {
+                                                <tr>
+                                                    <td colspan="1">
+                                                        <InputText @bind-Value="Description.Content" class="form-control" placeholder="Description Contents" />
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-primary" @onclick="SaveDescription">Save</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </Authorized>
+                                    </AuthorizeView>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Date</th>
+                                        @if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
+                                        {
+                                            <th>Delete</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody class="w-100">
+                                    @foreach (var desc in Trooper.Descriptions)
+                                    {
+                                var d = desc;
+                                if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
+                                        {
+                                                <tr draggable="true" @ondrag="()=>OnDrag(d)" @ondrop="async ()=>await OnDrop(d)">
+                                                    <td>@d.Content</td>
+                                                    <td>@d.CreatedOn.ToString("d")</td>
+                                                    <td><button @onclick="async ()=>await DeleteDescription(d)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
+                                                </tr>
+                                        }
+                                        else
+                                        {
+                                                <tr draggable="false">
+                                                    <td>@d.Content</td>
+                                                    <td>@d.CreatedOn.ToString("d")</td>
+                                                </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </EditForm>
         </div>
     </div>
     <div class="col-md-9 col-sm-12">
@@ -226,12 +281,17 @@ else
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
+    public bool FirstRender {get; set;} = true;
+
     private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
 
     public string[] ServiceStrings = new string[6];
 
     private TrooperFlag Flag { get; set; } = new();
     private bool LoadedAdditional { get; set; } = false;
+
+    private TrooperDescription Description {get; set;} = new();
+    private bool LoadedDescriptions { get; set; } = false;
 
     [CascadingParameter]
     private Trooper? LoggedIn { get; set; } = new();
@@ -242,6 +302,8 @@ else
     {
         await base.OnInitializedAsync();
         _state.OnPersisting += OnPersisting;
+        Console.WriteLine(Trooper.Id);
+        _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "DescriptionData", OnDataRefreshRequest);
 
         QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
         .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
@@ -279,10 +341,19 @@ else
         {
             if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
             {
-                await _roster.LoadPublicProfileDataAsync(Trooper);
-                Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+                await LoadFlags();
                 LoadedAdditional = true;
             }  
+        }
+
+        if(_state.TryTakeAsJson<bool>("loaded_descriptions", out var loadDesc))
+        {
+            LoadedDescriptions = loadDesc;
+        }
+        else
+        {
+            await LoadDescription();
+            LoadedDescriptions = true;
         }
 
         _refresh.RefreshRequested += RefreshMe;
@@ -293,6 +364,7 @@ else
         _state.PersistAsJson("shop_positions", ShopPositions);
         _state.PersistAsJson("service_strings", ServiceStrings);
         _state.PersistAsJson("loaded_additional", LoadedAdditional);
+        _state.PersistAsJson("loaded_descriptions", LoadedDescriptions);
         return Task.CompletedTask;
     }
 
@@ -315,9 +387,71 @@ else
         }
     }
 
+    // Description Methods
+
+    private async Task SaveDescription(EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(Description.Content)) return;
+
+        var user = (await AuthStateTask).User;
+        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
+        {
+            await _roster.SaveNewDescription(user, Trooper, Description);
+            Description = new();
+            Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+            Console.WriteLine(Trooper.Id);
+            _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
+        }
+    }
+
+    private TrooperDescription? CurrentDesc { get; set; }
+
+    private void OnDrag(TrooperDescription desc)
+    {
+        CurrentDesc = desc;
+    }
+
+    private async Task OnDrop(TrooperDescription desc)
+    {
+        if (CurrentDesc is not null && desc != CurrentDesc)
+            await _roster.UpdateDescriptionOrderAsync(Trooper, CurrentDesc, desc.Order);
+        CurrentDesc = null;
+
+        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
+    }
+
+    private async Task DeleteDescription(TrooperDescription desc)
+    {
+        await _roster.DeleteDescriptionAsync(Trooper, desc);
+        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
+    }
+
+    public async Task OnDataRefreshRequest()
+    {
+        Trooper = await _roster.GetTrooperFromIdAsync(Trooper.Id);
+        await LoadDescription();
+        await LoadFlags();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task LoadFlags()
+    {
+        await _roster.LoadPublicProfileDataAsync(Trooper);
+        Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
+    }
+
+    private async Task LoadDescription()
+    {
+        await _roster.LoadDescriptionsAsync(Trooper);
+        Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
+    }
+
+
     void IDisposable.Dispose()
     {
         _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
+        _advRefresh.RemoveDataReloadListener(OnDataRefreshRequest);
     }
 }
