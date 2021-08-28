@@ -3,7 +3,24 @@
 
 <AuthorizeView Policy="RequireTrooper">
     <Authorized>
+        <PaginationController Model="this" />
 
+        <table>
+            <thead>
+                <tr>
+                    <th>Submitter</th>
+                    <th>Last Update</th>
+                    <th>Submitted On</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var item in base.Items)
+            {
+
+            }
+            </tbody>
+        </table>
+        <PaginationController Model="this" />
     </Authorized>
     <NotAuthorized>
         <NotAuthorizedMessage />

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,16 @@ namespace FiveOhFirstDataCore.Pages.Utility
             {
                 
             }
+        }
+
+        private enum Selection
+        {
+            [Description("My Reports")]
+            Mine,
+            [Description("Viewable Reports")]
+            Viewable,
+            [Description("Participated Reports")]
+            Particiapted
         }
     }
 }

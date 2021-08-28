@@ -272,6 +272,7 @@ namespace FiveOhFirstDataCore
                 .AddScoped<INoticeService, NoticeService>()
                 .AddScoped<IPromotionService, PromotionService>()
                 .AddScoped<IEparService, EparService>()
+                .AddScoped<IReportService, ReportService>()
                 .AddSingleton<IWebsiteSettingsService, WebsiteSettingsService>()
                 .AddSingleton<IAdvancedRefreshService, AdvancedRefreshService>();
 

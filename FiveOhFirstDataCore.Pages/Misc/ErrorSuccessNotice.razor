@@ -1,0 +1,28 @@
+﻿@if(Errors.Count > 0)
+{
+<div class="row">
+    <div class="col p-3">
+        <div class="alert alert-danger alert-dismissible w-100">
+            <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
+            <strong>Something went wrong!</strong>
+            <ul>
+            @foreach(var i in Errors)
+            {
+                <li>@i</li>
+            }
+            </ul>
+        </div>
+    </div>
+</div>
+}
+@if(SuccessMessage is not null)
+{
+    <div class="row">
+        <div class="col p-3">
+            <div class="alert alert-success alert-dismissible w-100">
+                <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
+                <strong>@SuccessMessage</strong>
+            </div>
+        </div>
+    </div>
+}

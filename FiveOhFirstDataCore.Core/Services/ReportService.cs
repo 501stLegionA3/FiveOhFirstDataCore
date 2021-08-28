@@ -3,6 +3,7 @@ using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 
 using Lucene.Net.Search;
 
@@ -34,6 +35,14 @@ namespace FiveOhFirstDataCore.Core.Services
 
             actual.FiledReports.Add(report);
 
+            var tracker = new ReportNotificationTracker()
+            {
+                LastView = report.LastUpdate
+            };
+
+            report.NotificationTrackers.Add(tracker);
+            actual.TrooperReportTrackers.Add(tracker);
+
             await _dbContext.SaveChangesAsync();
 
             return new(true, null);
@@ -59,14 +68,14 @@ namespace FiveOhFirstDataCore.Core.Services
             Slot? filter = GetReportArgs(args);
 
             await using var _dbContext = _dbContextFactory.CreateDbContext();
-            var query = _dbContext.Reports
-                .Where(x => !x.Resolved);
+            var query = _dbContext.Reports.AsQueryable();
 
             if (filter is not null)
                 query = query
                     .Where(x => x.ReportViewableAt == filter || x.ElevatedToBattalion && filter == Slot.Hailstorm);
 
             return query
+                .OrderBy(x => x.Resolved)
                 .OrderBy(x => x.LastUpdate)
                 .AsEnumerable()
                 .Take(new Range(start, end))
