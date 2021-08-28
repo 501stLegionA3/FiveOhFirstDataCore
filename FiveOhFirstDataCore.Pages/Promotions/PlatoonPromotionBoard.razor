@@ -1,6 +1,6 @@
 ﻿@inject IAuthorizationService _auth
 
-<CascadingValue Value="CanPromote">
+<CascadingValue Value="CanPromote" Name="CanPromote">
     <CascadingValue Value="CanPromoteValues">
         <CascadingValue Value="Airborne ? PromotionBoardLevel.Company : PromotionBoardLevel.Platoon">
         @if(Troopers is not null)
