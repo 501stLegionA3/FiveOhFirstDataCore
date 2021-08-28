@@ -1,7 +1,7 @@
 ﻿@inject IAuthorizationService _auth
 @inject IRosterService _roster
 
-<CascadingValue Value="CanPromote">
+<CascadingValue Value="CanPromote" Name="CanPromote">
     <CascadingValue Value="CanPromoteValues">
         <CascadingValue Value="PromotionBoardLevel.Battalion">
         @if(Troopers is not null)

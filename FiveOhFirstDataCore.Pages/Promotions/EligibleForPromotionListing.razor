@@ -290,7 +290,7 @@
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
 
-    [CascadingParameter]
+    [CascadingParameter(Name = "CanPromote")]
     public bool AllowedPromoter { get; set; }
 
     [CascadingParameter]
@@ -313,7 +313,7 @@
     [Parameter]
     public Slot? Filter { get; set; } = null;
 
-    [CascadingParameter]
+    [CascadingParameter(Name = "Airborne")]
     public bool Airborne { get; set; } = false;
 
     protected string? SuccessMessage { get; set; } = null;

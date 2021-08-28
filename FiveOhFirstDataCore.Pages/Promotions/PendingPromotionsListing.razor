@@ -114,7 +114,7 @@
     [CascadingParameter]
     public Trooper CurrentUser { get; set; }
 
-    [CascadingParameter]
+    [CascadingParameter(Name = "CanPromote")]
     public bool AllowedPromoter { get; set; }
 
     [CascadingParameter]

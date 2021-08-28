@@ -42,7 +42,7 @@
                                 <th colspan="4">@Slot.AsFull()</th>
                             </tr>
                         </thead>
-                        <CascadingValue Value="Airborne">
+                        <CascadingValue Value="Airborne" Name="Airborne">
                             <SquadDisplay Squad="Data" Number="Number" />
                         </CascadingValue>
                     }
@@ -61,7 +61,9 @@
                 <h4>@Slot.AsFull()'s Promotion Board</h4>
                 @if(Data is not null || ZetaData is not null)
                 {
-                    <SquadPromotionBoard Squad="Data" Zeta="ZetaData" Slot="(int)Slot" />
+                    <CascadingValue Value="Airborne" Name="Airborne">
+                        <SquadPromotionBoard Squad="Data" Zeta="ZetaData" Slot="(int)Slot" />
+                    </CascadingValue>
                 }
                 else
                 {
