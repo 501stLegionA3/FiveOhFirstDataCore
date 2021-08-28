@@ -27,7 +27,7 @@ namespace FiveOhFirstDataCore.Core.Services
             _userManager = userManager;
         }
 
-        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(Range? range = null)
+        public async Task<IReadOnlyList<RecruitmentUpdate>> GetRecruitmentChangesAsync(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var dat = _dbContext
@@ -43,7 +43,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return await dat.ToListAsync();
         }
 
-        public async Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(int start, int end)
+        public async Task<IReadOnlyList<RecruitmentUpdate>> GetRecruitmentChangesAsync(int start, int end)
             => await GetRecruitmentChangesAsync(new Range(start, end));
 
         public async Task<int> GetRecruitmentChangesCountAsync()
@@ -54,7 +54,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .CountAsync();
         }
 
-        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync(Range? range = null)
+        public async Task<IReadOnlyList<SlotUpdate>> GetReturningMemberChangesAsync(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var dat = _dbContext
@@ -71,7 +71,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return await dat.ToListAsync();
         }
 
-        public async Task<List<SlotUpdate>> GetReturningMemberChangesAsync(int start, int end)
+        public async Task<IReadOnlyList<SlotUpdate>> GetReturningMemberChangesAsync(int start, int end)
             => await GetReturningMemberChangesAsync(new Range(start, end));
 
         public async Task<int> GetReturningMemberChangesCountAsync()
@@ -83,7 +83,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .CountAsync();
         }
 
-        public List<UpdateBase> GetRosterUpdates(Range? range = null)
+        public IReadOnlyList<UpdateBase> GetRosterUpdates(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
@@ -138,7 +138,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return dat.ToList();
         }
 
-        public List<UpdateBase> GetRosterUpdates(int start, int end)
+        public IReadOnlyList<UpdateBase> GetRosterUpdates(int start, int end)
             => GetRosterUpdates(new Range(start, end));
 
         public async Task<int> GetRosterUpdatesCountAsync()
@@ -172,7 +172,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return dat;
         }
 
-        public List<UpdateBase> GetAllUpdates(Range? range = null)
+        public IReadOnlyList<UpdateBase> GetAllUpdates(Range? range = null)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var dat = _dbContext
@@ -231,7 +231,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return dat.ToList();
         }
 
-        public List<UpdateBase> GetAllUpdates(int start, int end)
+        public IReadOnlyList<UpdateBase> GetAllUpdates(int start, int end)
             => GetAllUpdates(new Range(start, end));
 
         public async Task<int> GetAllUpdatesCountAsync()

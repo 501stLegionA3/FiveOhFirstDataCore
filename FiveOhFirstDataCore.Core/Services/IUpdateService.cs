@@ -14,15 +14,15 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Get <see cref="UpdateBase"/> objcets related to roster updates.
         /// </summary>
         /// <param name="range">A range of items to take from the database. Leave as null to take all values.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="UpdateBase"/> objects.</returns>
-        public List<UpdateBase> GetRosterUpdates(Range? range = null);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="UpdateBase"/> objects.</returns>
+        public IReadOnlyList<UpdateBase> GetRosterUpdates(Range? range = null);
         /// <summary>
         /// Get <see cref="UpdateBase"/> objcets related to roster updates.
         /// </summary>
         /// <param name="start">The start index, where 0 is the latest update.</param>
         /// <param name="end">The end index.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="UpdateBase"/> objects.</returns>
-        public List<UpdateBase> GetRosterUpdates(int start, int end);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="UpdateBase"/> objects.</returns>
+        public IReadOnlyList<UpdateBase> GetRosterUpdates(int start, int end);
         /// <summary>
         /// Gets the ammount of roster updates saved in the database.
         /// </summary>
@@ -33,15 +33,15 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Get <see cref="RecruitmentUpdate"/> objects.
         /// </summary>
         /// <param name="range">A range of items to take from the database. Leave as null to take all values.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="RecruitmentUpdate"/> objects.</returns>
-        public Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(Range? range = null);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="RecruitmentUpdate"/> objects.</returns>
+        public Task<IReadOnlyList<RecruitmentUpdate>> GetRecruitmentChangesAsync(Range? range = null);
         /// <summary>
         /// Get <see cref="SlotUpdate"/> objects.
         /// </summary>
         /// <param name="start">The start index, where 0 is the latest update.</param>
         /// <param name="end">The end index.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
-        public Task<List<RecruitmentUpdate>> GetRecruitmentChangesAsync(int strat, int end);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
+        public Task<IReadOnlyList<RecruitmentUpdate>> GetRecruitmentChangesAsync(int strat, int end);
         /// <summary>
         /// Get the ammount of recruitment changes saved in the database.
         /// </summary>
@@ -52,15 +52,15 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Get <see cref="SlotUpdate"/> objects for returning members.
         /// </summary>
         /// <param name="range">A range of items to take from the database. Leave as null to take all values.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
-        public Task<List<SlotUpdate>> GetReturningMemberChangesAsync(Range? range = null);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
+        public Task<IReadOnlyList<SlotUpdate>> GetReturningMemberChangesAsync(Range? range = null);
         /// <summary>
         /// Get <see cref="SlotUpdate"/> objects for returning members.
         /// </summary>
         /// <param name="start">The start index, where 0 is the latest update.</param>
         /// <param name="end">The end index.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
-        public Task<List<SlotUpdate>> GetReturningMemberChangesAsync(int start, int end);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="SlotUpdate"/> objects.</returns>
+        public Task<IReadOnlyList<SlotUpdate>> GetReturningMemberChangesAsync(int start, int end);
         /// <summary>
         /// Get the ammount of returning member changes in the database.
         /// </summary>
@@ -71,15 +71,15 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Get all updates in the database.
         /// </summary>
         /// <param name="range">A range of items to take from the database. Leave as null to take all values.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="UpdateBase"/> objects.</returns>
-        public List<UpdateBase> GetAllUpdates(Range? range = null);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="UpdateBase"/> objects.</returns>
+        public IReadOnlyList<UpdateBase> GetAllUpdates(Range? range = null);
         /// <summary>
         /// Get all updates in the database.
         /// </summary>
         /// <param name="start">The start index, where 0 is the latest update.</param>
         /// <param name="end">The end index.</param>
-        /// <returns>A <see cref="Task"/> that returns a <see cref="List{T}"/> of <see cref="UpdateBase"/> objects.</returns>
-        public List<UpdateBase> GetAllUpdates(int start, int end);
+        /// <returns>A <see cref="Task"/> that returns a <see cref="IReadOnlyList{T}"/> of <see cref="UpdateBase"/> objects.</returns>
+        public IReadOnlyList<UpdateBase> GetAllUpdates(int start, int end);
         /// <summary>
         /// Get the ammount of updates in the database.
         /// </summary>

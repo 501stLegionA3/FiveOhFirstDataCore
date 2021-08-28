@@ -30,7 +30,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="end">Ending <see cref="int"/>, where 0 is the first item submitted.</param>
         /// <returns>A task for this action that returns a <see cref="IReadOnlyList{T}"/> of type
         /// <see cref="TrooperChangeRequestData"/></returns>
-        public Task<List<TrooperChangeRequestData>> GetActiveChangeRequests(int start, int end);
+        public Task<IReadOnlyList<TrooperChangeRequestData>> GetActiveChangeRequests(int start, int end);
         /// <summary>
         /// Gets the count of active change requests in the system.
         /// </summary>
