@@ -37,6 +37,7 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<TrooperFlag> TrooperFlags { get; internal set; }
         public DbSet<NoticeBoardData> NoticeBoards { get; internal set; }
         public DbSet<Notice> Notices { get; internal set; }
+        public DbSet<TrooperDescription> TrooperDescriptions { get; internal set; }
 
         public DbSet<Promotion> Promotions { get; internal set; }
 
@@ -248,6 +249,20 @@ namespace FiveOhFirstDataCore.Core.Database
             #endregion Logging
 
             #region Boards
+
+            var descriptions = builder.Entity<TrooperDescription>();
+            descriptions.HasKey(e => e.Id);
+            descriptions.HasOne(e => e.DescriptionFor)
+                .WithMany(p => p.Descriptions)
+                .HasForeignKey(e => e.DescriptionForId);
+            descriptions.HasOne(e => e.Author)
+                .WithMany(p => p.CreatedDescriptions)
+                .HasForeignKey(e => e.AuthorId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            descriptions.Property(p => p.AuthorId)
+                .IsRequired(true);
+
 
             var flags = builder.Entity<TrooperFlag>();
             flags.HasKey(e => e.FlagId);

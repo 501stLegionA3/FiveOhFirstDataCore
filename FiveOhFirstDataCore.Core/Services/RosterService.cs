@@ -264,6 +264,21 @@ namespace FiveOhFirstDataCore.Core.Services
                 .LoadAsync();
         }
 
+        public async Task LoadDescriptionsAsync(Trooper trooper)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.TrooperDescriptions
+                .Where(e => e.DescriptionForId == trooper.Id)
+                .LoadAsync();
+
+            if (_dbContext.Entry(trooper).State == EntityState.Detached)
+                _dbContext.Attach(trooper);
+
+            await _dbContext.Entry(trooper)
+                .Collection(e => e.Descriptions)
+                .LoadAsync();
+        }
+
         public async Task<List<Trooper>> GetDirectSubordinates(Trooper t)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
