@@ -1018,7 +1018,7 @@
 
         var user = (await AuthStateTask).User;
 
-        if ((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+        if ((await _auth.AuthorizeAsync(user, "RequireRosterClerkOrReturningMemberStaff")).Succeeded)
         {
             if (!isMerge || Conflicts is null)
             {
