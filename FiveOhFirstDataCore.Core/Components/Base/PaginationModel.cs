@@ -118,7 +118,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>A task representing this action.</returns>
-        public async Task InitalizeAsync<T>(Func<int, int, object[], IReadOnlyList<List<T>>> loader, Func<Task<int>> counts,
+        public async Task InitalizeAsync<T>(Func<int, int, object[], Task<IReadOnlyList<T>>> loader, Func<Task<int>> counts,
             object[]? parameters = null, int itemsPerPage = 5, int startingPage = 1)
         {
             SetBatchLoader(async (x, y, z) => (await loader.Invoke(x, y, z)).Cast<object>().ToList());

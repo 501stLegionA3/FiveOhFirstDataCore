@@ -100,7 +100,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 Data = null;
             }
 
-            await base.InitalizeAsync(Epar.GetActiveChangeRequests, Epar.GetActiveChangeRequestCount, 15);
+            await base.InitalizeAsync(Epar.GetActiveChangeRequests, Epar.GetActiveChangeRequestCount, itemsPerPage: 15);
 
             StateHasChanged();
         }
