@@ -49,6 +49,10 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                         return null;
                     }
                 }
+                else if (_guid.ToString() != IdRaw)
+                {
+                    _guid = new Guid(IdRaw);
+                }
 
                 return _guid;
             }
@@ -81,13 +85,6 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
-
-            if(firstRender)
-            {
-                await base.InitalizeAsync(Epar.GetActiveChangeRequests, Epar.GetActiveChangeRequestCount, 15);
-
-                StateHasChanged();
-            }
         }
 
         protected override async Task OnParametersSetAsync()
@@ -102,6 +99,10 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
             {
                 Data = null;
             }
+
+            await base.InitalizeAsync(Epar.GetActiveChangeRequests, Epar.GetActiveChangeRequestCount, 15);
+
+            StateHasChanged();
         }
 
         private async Task ApproveChangeAsync()
