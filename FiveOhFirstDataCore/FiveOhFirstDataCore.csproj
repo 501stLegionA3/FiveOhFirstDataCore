@@ -60,9 +60,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Config\test_set.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Update="Config\website_config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

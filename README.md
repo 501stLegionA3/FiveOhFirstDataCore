@@ -75,9 +75,7 @@ Clone the repo from github using your favorite code editor (or other method). On
     "ClientId": "837347779545792603",
     "HomeGuild": 843853804059099197,
     "ClientSecret": "X_qDGc8fK_r8lxATGiWyn_Xy405UzK95",
-    "Token": "ODM3MzQ3Nzc5NTQ1NzkyNjAz.YIrO4w.oppk3qeSb1n3qvaxq5XV0VI1_AY",
-    "CShopRoleBindings": ...,
-    "RoleBindings": ...
+    "Token": "ODM3MzQ3Nzc5NTQ1NzkyNjAz.YIrO4w.oppk3qeSb1n3qvaxq5XV0VI1_AY"
   }
 }
 ```
@@ -98,10 +96,6 @@ To explain this:
 - `HomeGuild` - This is the home server for the bot. Using [these instructions](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-) get the server ID for the server you created in the previous step.
 - `ClientSecret` - This is the secret for your bot. On the Discord Developer portal, under OAuth2, click copy for the Client Secret (top right). **DO NOT SHARE THIS VALUE. At any point if you share this vale on accident, click the Regenerate button.**
 - `Token` - This is your bot token. Under the `Bot` tab in the Discord Developer portal, click Copy. **DO NOT SHARE THIS VALUE. At any point if you share this value on accident, click the Regenerate button.**
-- `CShopRoleBindings` - A list of CShops and the Discord roles a user should be given when they are apart of that CShop. This is not displayed here as it is long, so please download the file below to fill this in. Each section has a list of Discord Role IDs, which you get much the same as the server ID, for granting to users. Copy and paste any IDs where the `0` is, separating values with commas. If there is no grant, leave it as `0`.
-- `RoleBindings` - A list of Roles and the Discord roles a user should be given when they get this role. This is not displayed here as it is long, so please download the file below to fill this in. The Role Bindings have two lists, one for grants and one for Replacements. A grant is giving the role, and a replacement is a role to replace. For example, RTO qualified grants the RTO qualified role and replaces the RTO Basic role. If there is no grant or replace, leave it as `0`.
-
-### [Example Config File](https://github.com/Soyvolon/FiveOhFirstDataCore/blob/aab6abe0067275f48df5dd9e05294266e5e838d6/example_website_config.json)
 
 ## Final Notes
 To make sure everything is running, just start the startup project from Visual Studio (or your code editor).
@@ -114,4 +108,4 @@ To add a new migration for your changes, go to the Packet Manager Console in Vis
 There should only be a single migration per release, so keep your commits to including at most one additional `Dev` migration. Any new changes should be removed with `Remove-Migration` and a new migration added. As this breaks the database when the app attempts to update it, make sure to `Drop Cascade` the `Schema` and create a new `public` schema whenever you remove and old migration and add a new migration.
 
 ### Testing Accounts
-There is a few testing accounts you can find in the [`TestDataService`](). The development admin account is `Soyvolon`. All development account passwords are `foo`.
+There is a few testing accounts you can find in the [`InitalAccountPopulationService`](https://github.com/501stLegionA3/FiveOhFirstDataCore/blob/6c7107e18b447d50693bc9a41a5ea956a0b28c85/FiveOhFirstDataCore.Core/Services/InitalAccountPopulationService.cs). The development admin account is `Soyvolon`. All development account passwords are `foo`.
