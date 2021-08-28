@@ -1,2 +1,11 @@
-﻿@inherits PaginationModel
+﻿@page "/trooper/me/report/viewer"
+@inherits PaginationModel
 
+<AuthorizeView Policy="RequireTrooper">
+    <Authorized>
+
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>

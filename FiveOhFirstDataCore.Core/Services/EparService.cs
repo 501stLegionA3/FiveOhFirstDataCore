@@ -66,7 +66,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToList();
         }
 
-        public async Task<int> GetActiveChangeRequestCount()
+        public async Task<int> GetActiveChangeRequestCount(object[] args)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
 

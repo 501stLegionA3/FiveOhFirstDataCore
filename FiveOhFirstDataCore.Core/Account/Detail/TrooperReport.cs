@@ -19,7 +19,7 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
 
         public bool ElevatedToBattalion { get; set; } = false;
 
-        public bool PublicReport { get; set; } = false;
+        public bool Public { get; set; } = false;
 
         public List<string> Responses { get; set; } = new();
 

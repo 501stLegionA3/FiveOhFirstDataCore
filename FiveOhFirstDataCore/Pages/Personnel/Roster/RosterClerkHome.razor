@@ -226,7 +226,7 @@
         if(firstRender)
         {
             await InitalizeAsync(_update.GetRosterUpdates, _update.GetRosterUpdatesCountAsync);
-            EPARCounts = await _epar.GetActiveChangeRequestCount();
+            EPARCounts = await _epar.GetActiveChangeRequestCount(Array.Empty<object>());
 
             StateHasChanged();
         }

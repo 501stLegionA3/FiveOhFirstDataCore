@@ -27,8 +27,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Gets the ammount of roster updates saved in the database.
         /// </summary>
+        /// <param name="args">Optional arguments</param>
         /// <returns>The ammount of roster updates.</returns>
-        public Task<int> GetRosterUpdatesCountAsync();
+        public Task<int> GetRosterUpdatesCountAsync(object[] args);
 
         /// <summary>
         /// Get <see cref="RecruitmentUpdate"/> objects.
@@ -47,8 +48,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Get the ammount of recruitment changes saved in the database.
         /// </summary>
+        /// <param name="args">Optional arguments</param>
         /// <returns>The ammount of recruitment changes.</returns>
-        public Task<int> GetRecruitmentChangesCountAsync();
+        public Task<int> GetRecruitmentChangesCountAsync(object[] args);
 
         /// <summary>
         /// Get <see cref="SlotUpdate"/> objects for returning members.
@@ -67,8 +69,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Get the ammount of returning member changes in the database.
         /// </summary>
+        /// <param name="args">Optional arguments</param>
         /// <returns>The ammount of returning member changes.</returns>
-        public Task<int> GetReturningMemberChangesCountAsync();
+        public Task<int> GetReturningMemberChangesCountAsync(object[] args);
 
         /// <summary>
         /// Get all updates in the database.
@@ -87,8 +90,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Get the ammount of updates in the database.
         /// </summary>
+        /// <param name="args">Optional arguments</param>
         /// <returns>The ammount of updates.</returns>
-        public Task<int> GetAllUpdatesCountAsync();
+        public Task<int> GetAllUpdatesCountAsync(object[] args);
 
         /// <summary>
         /// Reverts a change.

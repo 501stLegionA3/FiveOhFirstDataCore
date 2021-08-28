@@ -4,6 +4,8 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Structures;
 
+using Lucene.Net.Search;
+
 using Microsoft.EntityFrameworkCore;
 
 using System;
@@ -37,7 +39,41 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
+        public async Task<int> GetTrooperReportCountsAsync(object[] args)
+        {
+            Slot? filter = GetReportArgs(args);
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var query = _dbContext.Reports
+                .Where(x => !x.Resolved);
+
+            if (filter is not null)
+                query = query
+                    .Where(x => x.ReportViewableAt == filter || x.ElevatedToBattalion && filter == Slot.Hailstorm);
+
+            return await query.CountAsync();
+        }
+
         public async Task<IReadOnlyList<TrooperReport>> GetTrooperReportsAsync(int start, int end, object[] args)
+        {
+            Slot? filter = GetReportArgs(args);
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var query = _dbContext.Reports
+                .Where(x => !x.Resolved);
+
+            if (filter is not null)
+                query = query
+                    .Where(x => x.ReportViewableAt == filter || x.ElevatedToBattalion && filter == Slot.Hailstorm);
+
+            return query
+                .OrderBy(x => x.LastUpdate)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
+        }
+
+        private static Slot? GetReportArgs(object[] args)
         {
             Slot? filter = null;
             if (args.Length > 0)
@@ -49,17 +85,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 catch { /* we have already set filter to null */ }
             }
 
-            await using var _dbContext = _dbContextFactory.CreateDbContext();
-            var query = _dbContext.Reports
-                .Where(x => !x.Resolved);
-
-            if (filter is not null)
-                query = query
-                    .Where(x => x.ReportViewableAt == filter || x.ElevatedToBattalion && filter == Slot.Hailstorm);
-
-            return query.AsEnumerable()
-                .Take(new Range(start, end))
-                .ToList();
+            return filter;
         }
     }
 }

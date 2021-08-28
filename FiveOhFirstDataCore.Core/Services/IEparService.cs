@@ -34,8 +34,9 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <summary>
         /// Gets the count of active change requests in the system.
         /// </summary>
+        /// <param name="args">Optional Arguments</param>
         /// <returns>A task that returns a <see cref="int"/> value for the ammount of active change requests.</returns>
-        public Task<int> GetActiveChangeRequestCount();
+        public Task<int> GetActiveChangeRequestCount(object[] args);
         /// <summary>
         /// Gets a specified change request.
         /// </summary>

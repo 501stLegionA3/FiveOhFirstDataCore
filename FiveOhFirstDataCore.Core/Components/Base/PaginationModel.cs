@@ -51,11 +51,11 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <summary>
         /// Extra parameters for the Load Next Batch method.
         /// </summary>
-        private object[] Params { get; set; }
+        private object[] Params { get; set; } = Array.Empty<object>();
         /// <summary>
         /// The method that is called to get the total count of items.
         /// </summary>
-        private Func<Task<int>>? GetCount { get; set; }
+        private Func<object[], Task<int>>? GetCount { get; set; }
         /// <summary>
         /// The item count for all items that can be displayed
         /// </summary>
@@ -118,7 +118,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>A task representing this action.</returns>
-        public async Task InitalizeAsync<T>(Func<int, int, object[], Task<IReadOnlyList<T>>> loader, Func<Task<int>> counts,
+        public async Task InitalizeAsync<T>(Func<int, int, object[], Task<IReadOnlyList<T>>> loader, Func<object[], Task<int>> counts,
             object[]? parameters = null, int itemsPerPage = 5, int startingPage = 1)
         {
             SetBatchLoader(async (x, y, z) => (await loader.Invoke(x, y, z)).Cast<object>().ToList());
@@ -154,7 +154,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         /// <exception cref="ArgumentNullException"></exception>
         /// <returns>A task representing this action.</returns>
-        public async Task InitalizeAsync<T>(Func<int, int, object[], IReadOnlyList<T>> loader, Func<Task<int>> counts,
+        public async Task InitalizeAsync<T>(Func<int, int, object[], IReadOnlyList<T>> loader, Func<object[], Task<int>> counts,
             object[]? parameters = null, int itemsPerPage = 5, int startingPage = 1)
             => await InitalizeAsync((x, y, z) => Task.FromResult(loader.Invoke(x, y, z)), counts, parameters, itemsPerPage, startingPage);
         /// <summary>
@@ -250,7 +250,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         private async Task UpdateItemCountAsync()
         {
             if (GetCount is not null)
-                ItemCount = await GetCount.Invoke();
+                ItemCount = await GetCount.Invoke(Params);
             else throw new ArgumentNullException(nameof(GetCount), "Get count method can not be null");
         }
         /// <summary>
@@ -276,7 +276,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
         /// Sets the count method.
         /// </summary>
         /// <param name="counts">The async function that gets the current total item count.</param>
-        public void SetCountMethod(Func<Task<int>> counts)
+        public void SetCountMethod(Func<object[], Task<int>> counts)
             => GetCount = counts;
     }
 }
