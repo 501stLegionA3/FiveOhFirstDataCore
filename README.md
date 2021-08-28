@@ -17,7 +17,7 @@ This project is built with the latest versions on .NET and Visual Studio 2019 - 
 You will need to install both the [.NET Preview](https://dotnet.microsoft.com/download/dotnet/6.0) and the [Visual Studio Preview](https://visualstudio.microsoft.com/vs/preview/). If you already have the Visual Studio Installer, you can get the Visual Studio preview from the installer.
 
 ## Installing and setting up the Database
-The application uses a PostgreSQL database to store all of its information. You can install it from [here](https://www.postgresql.org/download/). You need the latest version, and should also install pgAdmin from the installer as well. pgAdmin is used to manage Postgre databases.
+The application uses a `PostgreSQL 12` database to store all of its information. You can install it from [here](https://www.postgresql.org/download/). You need the latest version, and should also install pgAdmin from the installer as well. pgAdmin is used to manage Postgre databases.
 
 Once the installer is running, you will be walked through the setup of the local database. Make sure to remember the password you use for it. While you can change it later if you forget, its more difficult to do.
 
