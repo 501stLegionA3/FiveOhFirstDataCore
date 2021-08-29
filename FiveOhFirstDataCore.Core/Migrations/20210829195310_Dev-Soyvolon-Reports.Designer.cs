@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210828190043_Dev-Soyvolon-Reports")]
+    [Migration("20210829195310_Dev-Soyvolon-Reports")]
     partial class DevSoyvolonReports
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,6 +126,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<List<string>>("Responses")
                         .IsRequired()
                         .HasColumnType("text[]");
+
+                    b.Property<DateTime>("SubmittedOn")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Summary")
                         .IsRequired()

@@ -125,6 +125,9 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired()
                         .HasColumnType("text[]");
 
+                    b.Property<DateTime>("SubmittedOn")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<string>("Summary")
                         .IsRequired()
                         .HasColumnType("text");

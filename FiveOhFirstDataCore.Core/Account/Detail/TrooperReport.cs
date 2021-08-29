@@ -29,6 +29,7 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
         public string Summary { get; set; }
 
         public DateTime LastUpdate { get; set; }
+        public DateTime SubmittedOn { get; set; }
         public List<ReportNotificationTracker> NotificationTrackers { get; set; } = new();
     }
 }

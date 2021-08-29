@@ -2,6 +2,7 @@
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Database;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 
@@ -32,6 +33,14 @@ namespace FiveOhFirstDataCore.Core.Services
                 return new(false, new List<string>() { $"Unable to find a trooper for {submitter}" });
 
             report.LastUpdate = DateTime.UtcNow;
+            report.SubmittedOn = report.LastUpdate;
+
+            // Get the company for this report.
+            report.ReportViewableAt = (Slot)((int)actual.Slot / 100 * 100);
+
+            // Send inactive reserves and other like reports up to hailstorm.
+            if (report.ReportViewableAt >= Slot.InactiveReserve)
+                report.ReportViewableAt = Slot.Hailstorm;
 
             actual.FiledReports.Add(report);
 
@@ -77,6 +86,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return query
                 .OrderBy(x => x.Resolved)
                 .OrderBy(x => x.LastUpdate)
+                .Include(x => x.ReportedBy)
                 .AsEnumerable()
                 .Take(new Range(start, end))
                 .ToList();
@@ -97,24 +107,89 @@ namespace FiveOhFirstDataCore.Core.Services
             return filter;
         }
 
-        public Task<IReadOnlyList<TrooperReport>> GetPersonalReportsAsync(int start, int end, object[] args)
+        public async Task<IReadOnlyList<TrooperReport>> GetPersonalReportsAsync(int start, int end, object[] args)
         {
-            throw new NotImplementedException();
+            var id = GetPersonalArgs(args);
+
+            if(id == 0) return Array.Empty<TrooperReport>();
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return _dbContext.Reports
+                .Where(x => x.ReportedById == id)
+                .OrderBy(x => x.Resolved)
+                .OrderBy(x => x.LastUpdate)
+                .Include(x => x.ReportedBy)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
         }
 
-        public Task<int> GetPersonalReportCountsAsync(object[] args)
+        public async Task<int> GetPersonalReportCountsAsync(object[] args)
         {
-            throw new NotImplementedException();
+            var id = GetPersonalArgs(args);
+
+            if (id == 0) return 0;
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.Reports
+                .Where(x => x.ReportedById == id)
+                .CountAsync();
         }
 
-        public Task<IReadOnlyList<TrooperReport>> GetAllReportsAsync(int start, int end, object[] args)
+        private static int GetPersonalArgs(object[] args)
         {
-            throw new NotImplementedException();
+            int id = 0;
+            if (args.Length > 0)
+            {
+                try
+                {
+                    id = Convert.ToInt32(args[0]);
+                }
+                catch {  /* we already have a default value */ }
+            }
+
+            return id;
         }
 
-        public Task<int> GetAllReportCountsAsync(object[] args)
+        public async Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args)
         {
-            throw new NotImplementedException();
+            var id = GetPersonalArgs(args);
+
+            if (id == 0) return Array.Empty<TrooperReport>();
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<Trooper>(id);
+
+            if (actual is null) return Array.Empty<TrooperReport>();
+
+            await _dbContext.Entry(actual).Collection(x => x.TrooperReportTrackers).LoadAsync();
+            var participation = actual.TrooperReportTrackers.ToList(x => x.ReportId);
+            return _dbContext.Reports
+                .Where(x => participation.Contains(x.Id))
+                .OrderBy(x => x.Resolved)
+                .OrderBy(x => x.LastUpdate)
+                .Include(x => x.ReportedBy)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
+        }
+
+        public async Task<int> GetParticipatingReportCountsAsync(object[] args)
+        {
+            var id = GetPersonalArgs(args);
+
+            if (id == 0) return 0;
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<Trooper>(id);
+
+            if (actual is null) return 0;
+
+            await _dbContext.Entry(actual).Collection(x => x.TrooperReportTrackers).LoadAsync();
+            var participation = actual.TrooperReportTrackers.ToList(x => x.ReportId);
+            return await _dbContext.Reports
+                .Where(x => participation.Contains(x.Id))
+                .CountAsync();
         }
     }
 }

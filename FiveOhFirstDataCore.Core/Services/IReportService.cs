@@ -38,7 +38,7 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<IReadOnlyList<TrooperReport>> GetPersonalReportsAsync(int start, int end, object[] args);
         public Task<int> GetPersonalReportCountsAsync(object[] args);
 
-        public Task<IReadOnlyList<TrooperReport>> GetAllReportsAsync(int start, int end, object[] args);
-        public Task<int> GetAllReportCountsAsync(object[] args);
+        public Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args);
+        public Task<int> GetParticipatingReportCountsAsync(object[] args);
     }
 }

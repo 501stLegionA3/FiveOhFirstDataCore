@@ -20,7 +20,8 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     Responses = table.Column<List<string>>(type: "text[]", nullable: false),
                     Resolved = table.Column<bool>(type: "boolean", nullable: false),
                     Summary = table.Column<string>(type: "text", nullable: false),
-                    LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    SubmittedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
