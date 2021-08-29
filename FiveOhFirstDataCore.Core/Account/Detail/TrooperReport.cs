@@ -1,4 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 
 using System;
@@ -22,7 +23,7 @@ namespace FiveOhFirstDataCore.Core.Account.Detail
 
         public bool Public { get; set; } = false;
 
-        public List<string> Responses { get; set; } = new();
+        public List<TrooperMessage> Responses { get; set; } = new();
 
         public bool Resolved { get; set; } = false;
 

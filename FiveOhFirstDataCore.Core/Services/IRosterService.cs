@@ -93,15 +93,17 @@ namespace FiveOhFirstDataCore.Core.Services
         /// Gets a <see cref="Trooper"/> from a <see cref="ClaimsPrincipal"/>
         /// </summary>
         /// <param name="claims">The <see cref="ClaimsPrincipal"/> to get a trooper for.</param>
+        /// <param name="loadNotificationTrackers">If this action should load trooper notification trackers.</param>
         /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
-        public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims);
+        public Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims, bool loadNotificationTrackers = false);
 
         /// <summary>
         /// Gets a <see cref="Trooper"/> from their ID.
         /// </summary>
         /// <param name="id">The ID of the trooper.</param>
+        /// <param name="loadNotificationTrackers">If this action should load trooper notification trackers.</param>
         /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
-        public Task<Trooper?> GetTrooperFromIdAsync(int id);
+        public Task<Trooper?> GetTrooperFromIdAsync(int id, bool loadNotificationTrackers = false);
 
         /// <summary>
         /// Get the direct subordinates of a <see cref="Trooper"/>

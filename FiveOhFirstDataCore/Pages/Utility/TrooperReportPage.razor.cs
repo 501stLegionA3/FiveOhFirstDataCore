@@ -46,7 +46,12 @@ namespace FiveOhFirstDataCore.Pages.Utility
             if (Errors.Count > 0)
                 return;
 
-            Report.Responses.Add(FirstReportMessage);
+            Report.Responses.Add(new()
+            {
+                Message = FirstReportMessage,
+                CreatedOn = DateTime.UtcNow,
+                AuthorId = CurrentUser.Id
+            });
 
             var res = await ReportService.CreateReportAsync(CurrentUser.Id, Report);
 

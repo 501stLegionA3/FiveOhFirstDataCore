@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
@@ -17,7 +16,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     ReportViewableAt = table.Column<int>(type: "integer", nullable: false),
                     ElevatedToBattalion = table.Column<bool>(type: "boolean", nullable: false),
                     Public = table.Column<bool>(type: "boolean", nullable: false),
-                    Responses = table.Column<List<string>>(type: "text[]", nullable: false),
                     Resolved = table.Column<bool>(type: "boolean", nullable: false),
                     Summary = table.Column<string>(type: "text", nullable: false),
                     LastUpdate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -60,6 +58,33 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "TrooperMessages",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    MessageFor = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TrooperMessages", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_TrooperMessages_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TrooperMessages_Reports_MessageFor",
+                        column: x => x.MessageFor,
+                        principalTable: "Reports",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ReportNotificationTrackers_NotificationForId",
                 table: "ReportNotificationTrackers",
@@ -74,12 +99,25 @@ namespace FiveOhFirstDataCore.Core.Migrations
                 name: "IX_Reports_ReportedById",
                 table: "Reports",
                 column: "ReportedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrooperMessages_AuthorId",
+                table: "TrooperMessages",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TrooperMessages_MessageFor",
+                table: "TrooperMessages",
+                column: "MessageFor");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "ReportNotificationTrackers");
+
+            migrationBuilder.DropTable(
+                name: "TrooperMessages");
 
             migrationBuilder.DropTable(
                 name: "Reports");

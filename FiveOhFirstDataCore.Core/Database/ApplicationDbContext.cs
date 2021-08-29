@@ -1,5 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
@@ -43,6 +44,8 @@ namespace FiveOhFirstDataCore.Core.Database
         public DbSet<Promotion> Promotions { get; internal set; }
 
         public DbSet<TrooperReport> Reports { get; internal set; }
+
+        public DbSet<TrooperMessage> TrooperMessages { get; internal set; }
 
         #region Website Settings
         public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
@@ -322,6 +325,9 @@ namespace FiveOhFirstDataCore.Core.Database
             report.HasOne(e => e.ReportedBy)
                 .WithMany(p => p.FiledReports)
                 .HasForeignKey(e => e.ReportedById);
+            report.HasMany(e => e.Responses)
+                .WithOne()
+                .HasForeignKey(p => p.MessageFor);
             #endregion
 
             #region Notifications
@@ -337,6 +343,12 @@ namespace FiveOhFirstDataCore.Core.Database
 
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);
+
+            var tmsg = builder.Entity<TrooperMessage>();
+            tmsg.HasKey(e => e.Key);
+            tmsg.HasOne(e => e.Author)
+                .WithMany(p => p.TrooperMessages)
+                .HasForeignKey(e => e.AuthorId);
         }
 
         private bool CompareCShopClaims(Dictionary<string, List<string>>? c1,

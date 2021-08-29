@@ -1,5 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
@@ -130,6 +131,7 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<TrooperChangeRequestData> FinalizedChangeRequests { get; set; } = new();
 
         public List<Notice> NoticesWritten { get; set; } = new();
+        public List<TrooperMessage> TrooperMessages { get; set; } = new();
 
         public DateTime LastUpdate { get; set; }
 

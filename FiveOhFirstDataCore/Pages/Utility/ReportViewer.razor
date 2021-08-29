@@ -39,7 +39,12 @@
                     <td>@i.LastUpdate.ToEst().ToShortDateString() - @i.LastUpdate.ToEst().ToShortTimeString()</td>
                     <td>@i.SubmittedOn.ToEst().ToShortDateString() - @i.SubmittedOn.ToEst().ToShortTimeString()</td>
                     <td>@i.Summary</td>
-                    <td></td>
+                    <td>
+                        <a href="/trooper/me/report/viewer/@i.Id" class="btn btn-secondary position-relative">
+                            View
+
+                        </a>
+					</td>
 				</tr>
             }
             </tbody>

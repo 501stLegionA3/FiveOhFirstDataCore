@@ -38,7 +38,7 @@
         var claims = (await AuthStateTask).User;
 
         if(GetTrooperFromClaimTask is null)
-            GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims);
+            GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims, true);
 
         CurrentUser = await GetTrooperFromClaimTask;
 
@@ -59,7 +59,7 @@
     {
         var claims = (await AuthStateTask).User;
         
-        GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims);
+        GetTrooperFromClaimTask = _roster.GetTrooperFromClaimsPrincipalAsync(claims, true);
 
         CurrentUser = await GetTrooperFromClaimTask;
 
