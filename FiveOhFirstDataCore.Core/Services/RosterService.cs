@@ -388,9 +388,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             IAssignable<Trooper> data;
 
-            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaTwo)
                 data = new ZetaSquadData();
-            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+            else if (slot >= Slot.ZetaTwo && slot < Slot.InactiveReserve)
                 data = new ZetaUTCSquadData();
             else 
                 data = new SquadData();
@@ -423,9 +423,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             IAssignable<Trooper> data;
 
-            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaThree)
+            if (slot >= Slot.ZetaCompany && slot < Slot.ZetaTwo)
                 data = new ZetaSectionData(4);
-            else if (slot >= Slot.ZetaThree && slot < Slot.InactiveReserve)
+            else if (slot >= Slot.ZetaTwo && slot < Slot.InactiveReserve)
                 data = new ZetaUTCSectionData(4);
             else 
                 data = new PlatoonData(3);
@@ -599,7 +599,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await _dbContext.Users.AsNoTracking()
                 .AsSplitQuery()
-                .Where(x => x.Slot >= Slot.ZetaThree && x.Slot < Slot.InactiveReserve)
+                .Where(x => x.Slot >= Slot.ZetaTwo && x.Slot < Slot.InactiveReserve)
                 .ForEachAsync(x => data.Assign(x));
 
             return data;
@@ -635,8 +635,8 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users
                 .Where(x => x.Rank == TrooperRank.Cadet)
-                .Where(x => x.Slot >= Slot.ZetaThree 
-                    && x.Slot <= Slot.ZetaThreeFour)
+                .Where(x => x.Slot >= Slot.ZetaTwo 
+                    && x.Slot <= Slot.ZetaTwoFour)
                 .Include(x => x.RecruitStatus)
                 .AsSplitQuery()
                 .ToListAsync();

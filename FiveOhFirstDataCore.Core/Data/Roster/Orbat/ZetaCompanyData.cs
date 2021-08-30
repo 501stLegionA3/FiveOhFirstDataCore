@@ -42,7 +42,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
             }
             else
             {
-                if (val < Sections.Length)
+                if (val <= Sections.Length)
                 {
                     Sections[val - 1].Assign(item);
                 }

@@ -142,6 +142,8 @@ namespace FiveOhFirstDataCore.Core.Data
         ZetaOneTwo,
         [Description("Zeta 1-3")]
         ZetaOneThree,
+        [Description("Zeta 1-4")]
+        ZetaOneFour,
         [Description("Zeta 2 HQ")]
         ZetaTwo = 620,
         [Description("Zeta 2-1")]
@@ -150,16 +152,8 @@ namespace FiveOhFirstDataCore.Core.Data
         ZetaTwoTwo,
         [Description("Zeta 2-3")]
         ZetaTwoThree,
-        [Description("Zeta 3 HQ")]
-        ZetaThree = 630,
-        [Description("Zeta 3-1")]
-        ZetaThreeOne,
-        [Description("Zeta 3-2")]
-        ZetaThreeTwo,
-        [Description("Zeta 3-3")]
-        ZetaThreeThree,
-        [Description("Zeta 3-4")]
-        ZetaThreeFour,
+        [Description("Zeta 2-4")]
+        ZetaTwoFour,
         // Inactive
         [Description("Inactive Reserves")]
         InactiveReserve = 700,
