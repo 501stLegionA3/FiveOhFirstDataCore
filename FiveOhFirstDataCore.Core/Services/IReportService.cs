@@ -40,5 +40,15 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args);
         public Task<int> GetParticipatingReportCountsAsync(object[] args);
+
+        /// <summary>
+        /// Get a trooper report for a user to view if they have permission to do so.
+        /// </summary>
+        /// <param name="report">The <see cref="Guid"/> of the report to view.</param>
+        /// <param name="viewer">The <see cref="int"/> ID of the trooper wanting to view the report.</param>
+        /// <param name="manager"></param>
+        /// <returns>the <see cref="TrooperReport"/> for the provided <paramref name="report"/> ID
+        /// if the viewer has authorization to view the report.</returns>
+        public Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false);
     }
 }

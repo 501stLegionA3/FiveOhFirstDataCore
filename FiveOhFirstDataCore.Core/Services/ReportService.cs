@@ -191,5 +191,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Where(x => participation.Contains(x.Id))
                 .CountAsync();
         }
+
+        public Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -27,7 +27,8 @@
             @foreach(var item in base.Items)
             {
                 var i = (TrooperReport)item;
-                <tr>
+                    var nCount = GetNotificationCount(i.Id);
+                    <tr>
                     @if(item.Public)
                     {
                         <td>[@i.ReportedById] @i.ReportedBy?.NickName</td>
@@ -42,7 +43,10 @@
                     <td>
                         <a href="/trooper/me/report/viewer/@i.Id" class="btn btn-secondary position-relative">
                             View
-
+                            @if (nCount > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge roudned-pill bg-danger">@(nCount > 99 ? "+99" : nCount.ToString())</span>
+                            }
                         </a>
 					</td>
 				</tr>

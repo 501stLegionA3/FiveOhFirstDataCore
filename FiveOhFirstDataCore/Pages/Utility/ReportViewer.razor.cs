@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
@@ -18,6 +19,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
     {
         [Inject]
         public IReportService ReportService { get; set; }
+        [Inject]
+        public INotificationService NotificationService { get; set; }
 
         [CascadingParameter]
         public Trooper? CurrentUser { get; set; }
@@ -25,6 +28,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
         protected TrooperReport Report { get; set; }
 
         private Selection ReportListing { get; set; } = Selection.Mine;
+
+        private IReadOnlyDictionary<Guid, int>? Notifications { get; set; } = null;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -59,6 +64,21 @@ namespace FiveOhFirstDataCore.Pages.Utility
                         new object[] { CurrentUser?.Id ?? 0 }, 15);
                     break;
             }
+
+            List<Guid> ids = new();
+            foreach (var i in Items)
+                ids.Add(((TrooperReport)i).Id);
+
+            Notifications = await NotificationService
+                .GetReportNotificationCountsAsync(CurrentUser?.Id ?? 0, ids.ToArray());
+        }
+
+        private int GetNotificationCount(Guid id)
+        {
+            int count = 0;
+            _ = Notifications?.TryGetValue(id, out count);
+
+            return count;
         }
 
         private async Task SelectionChanged(ChangeEventArgs e)
