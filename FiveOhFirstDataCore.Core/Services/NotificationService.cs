@@ -48,5 +48,17 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return notif;
         }
+
+        public async Task UpdateReportViewDateTimeAsync(Guid report, int user)
+        {
+            var view = DateTime.UtcNow;
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.ReportNotificationTrackers
+                .Where(x => x.NotificationForId == user)
+                .Where(x => x.ReportId == report)
+                .ForEachAsync(x => x.LastView = view);
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

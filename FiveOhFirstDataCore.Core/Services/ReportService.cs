@@ -1,6 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
@@ -192,9 +193,36 @@ namespace FiveOhFirstDataCore.Core.Services
                 .CountAsync();
         }
 
-        public Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false)
+        public async Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false)
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<TrooperReport>(report);
+            var viewerActual = await _dbContext.FindAsync<Trooper>(viewer);
+            var viewerClaims = await _dbContext.UserClaims
+                .Where(x => x.UserId == viewer)
+                .ToListAsync();
+
+            if (actual is null || viewerActual is null) return null;
+            // If they are a maanager, pass the report up.
+            if (manager) return actual;
+            // If they are MP, pass the report up.
+            if (viewerActual.MilitaryPolice)
+                return actual;
+            // if they are battalion, and this report is at battalion,
+            // pass the report up.
+            if (actual.ElevatedToBattalion && viewerActual.Slot == Slot.Hailstorm)
+                return actual;
+            // If they are in the slot that is viewable by this report,
+            // pass the report up.
+            if (actual.ReportViewableAt == viewerActual.Slot)
+                return actual;
+            // If they have a claim to view this report level,
+            // pass the report up.
+            if (viewerClaims.Where(x => x.ClaimType == "Trooper.Report")
+                .Any(x => x.ClaimValue == ((int)actual.ReportViewableAt).ToString()))
+                return actual;
+            // Otherwise return null.
+            return null;
         }
     }
 }

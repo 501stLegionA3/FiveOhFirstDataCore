@@ -1,4 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
+using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Components.Base;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
@@ -12,8 +14,10 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Utility
 {
-    public partial class ReportDetails
+    public partial class ReportDetails : INotificationBase
     {
+        private bool disposedValue;
+
         [Parameter]
         public string ReportId {  get; set; }
 
@@ -37,6 +41,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
         [CascadingParameter]
         public Task<AuthenticationState> AuthStateTask { get; set; }
 
+        public TrooperReport? Report { get; set; } = null;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -50,10 +56,51 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         private async Task LoadReportData()
         {
-            var user = (await AuthStateTask).User;
-            var manager = user.IsInRole("Manager") || user.IsInRole("Admin");
+            Guid? id = Id;
+            if (CurrentUser is not null && id is not null)
+            {
+                var user = (await AuthStateTask).User;
+                var manager = user.IsInRole("Manager") || user.IsInRole("Admin");
 
+                Report = await ReportService.GetTrooperReportIfAuthorized(id.Value, CurrentUser.Id, manager);
+                if(Report is not null)
+                    TriggerNotificationUpdate();
+            }
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    TriggerNotificationUpdate();
+                }
+
+                Report = null;
+                ReportId = null;
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+
+        public void TriggerNotificationUpdate()
+        {
+            if (Report is not null)
+            {
+                var rid = Report.Id;
+                var cid = CurrentUser?.Id ?? 0;
+                _ = Task.Run(async () =>
+                {
+                    await NotificationService.UpdateReportViewDateTimeAsync(rid, cid);
+                });
+            }
         }
     }
 }
