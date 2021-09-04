@@ -250,7 +250,7 @@
 
         Errors.Clear();
 
-        if((await _auth.AuthorizeAsync(claim, "RequireRecruiter")).Succeeded)
+        if((await _auth.AuthorizeAsync(claim, "RequireRecruiterOrReturningMemberStaff")).Succeeded)
         {
             var res = await _roster.RegisterTrooper(TrooperData, claim);
 
