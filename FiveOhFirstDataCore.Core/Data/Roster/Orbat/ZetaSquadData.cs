@@ -8,7 +8,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
         public Trooper Leader { get; set; }
         public Trooper RT { get; set; }
         public Trooper Medic { get; set; }
-        public Trooper[] Troopers { get; private set; } = new Trooper[7];
+        public Trooper[] Troopers { get; private set; } = new Trooper[11];
 
         public void Assign(Trooper item)
         {
