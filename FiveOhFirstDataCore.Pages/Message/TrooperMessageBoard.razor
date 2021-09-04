@@ -1,1 +1,50 @@
 ﻿@inherits PaginationModel
+
+<div class="row p-3">
+	<div class="col">
+		<PaginationController Controller="this" />
+	</div>
+</div>
+
+@foreach(var item in base.Items)
+{
+	var i = (TrooperMessage)item;
+	<div class="row">
+		<div class="col-sm-3">
+			<figure>
+				<blockquote class="blockquote">
+					@if(AnonId == i.AuthorId)
+					{
+						<p>Anonymous</p>
+					}
+					else
+					{
+						<p>[@i.AuthorId] @i.Author?.NickName</p>
+					}
+				</blockquote>
+				<figcaption class="blockquote-footer">
+					Posted On <cite title="Source Title">@i.CreatedOn.ToEst().ToShortDateString():@i.CreatedOn.ToEst().ToShortTimeString()</cite>
+				</figcaption>
+			</figure>
+		</div>
+		<div class="col-sm-9">
+			@i.Message
+		</div>
+	</div>
+}
+
+<div class="row p-3">
+	<div class="col">
+		<PaginationController Controller="this" />
+	</div>
+</div>
+
+<hr />
+
+<div class="row p-3">
+	<div class="col">
+		<EditForm Model="this">
+
+		</EditForm>
+	</div>
+</div>

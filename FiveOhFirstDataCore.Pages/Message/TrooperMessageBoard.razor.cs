@@ -15,6 +15,8 @@ namespace FiveOhFirstDataCore.Pages.Message
     {
         [Parameter]
         public Guid BoardFor { get; set; }
+        [Parameter]
+        public int AnonId { get; set; } = 0;
 
         [Inject]
         public IMessageService MessageService { get; set; }
@@ -25,11 +27,10 @@ namespace FiveOhFirstDataCore.Pages.Message
 
             if(firstRender)
             {
-
+                await base.InitalizeAsync(MessageService.GetTrooperMessagesAsync,
+                    MessageService.GetTrooperMessageCountsAsync, new object[] { BoardFor });
                 StateHasChanged();
             }
         }
-
-
     }
 }

@@ -37,7 +37,12 @@ namespace FiveOhFirstDataCore.Core.Services
             if (id is null) return Array.Empty<TrooperMessage>();
 
             await using var _dbContext = _dbContextFactory.CreateDbContext();
-
+            return _dbContext.TrooperMessages
+                .Where(x => x.MessageFor == id.Value)
+                .OrderBy(x => x.CreatedOn)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
         }
 
         public async Task<ResultBase> PostMessageAsync(TrooperMessage message)

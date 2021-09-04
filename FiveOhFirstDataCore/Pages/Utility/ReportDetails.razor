@@ -1,3 +1,25 @@
 ﻿@page "/trooper/me/report/viewer/{ReportID}"
 @implements INotificationBase
 
+<div class="row">
+	<div class="col-auto m-0 p-0">
+		<a class="btn btn-outline-secondary" href="/trooper/me/report/viewer">Go Back</a>
+	</div>
+	@if(Report is not null)
+	{
+		<div class="col-auto me-auto">
+			@Report.Summary
+		</div>
+	}
+</div>
+
+<hr />
+
+@if(Id is not null && Report is not null)
+{
+	<TrooperMessageBoard BoardFor="Id.Value" AnonId="(Report.Public ? 0 : Report.ReportedById)" />
+}
+else
+{
+	<em>No report found or you are not authorized to view this report. <a href="/trooper/me/report/viewer">Go Back.</a></em>
+}
