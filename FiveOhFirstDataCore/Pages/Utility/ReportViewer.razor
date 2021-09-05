@@ -27,8 +27,8 @@
             @foreach(var item in base.Items)
             {
                 var i = (TrooperReport)item;
-                    var nCount = GetNotificationCount(i.Id);
-                    <tr>
+                var nCount = GetNotificationCount(i.Id);
+                <tr class="@(i.Resolved ? "table-info" : "")">
                     @if(item.Public)
                     {
                         <td>[@i.ReportedById] @i.ReportedBy?.NickName</td>

@@ -9,8 +9,8 @@
 @foreach(var item in base.Items)
 {
 	var i = (TrooperMessage)item;
-	<div class="row">
-		<div class="col-sm-3">
+	<div class="row p-3">
+		<div class="col-sm-3 border-end border-secondary">
 			<figure>
 				<blockquote class="blockquote">
 					@if(AnonId == i.AuthorId)
@@ -23,12 +23,12 @@
 					}
 				</blockquote>
 				<figcaption class="blockquote-footer">
-					Posted On <cite title="Source Title">@i.CreatedOn.ToEst().ToShortDateString():@i.CreatedOn.ToEst().ToShortTimeString()</cite>
+					Posted On <cite title="Source Title">@i.CreatedOn.ToEst().ToShortDateString() - @i.CreatedOn.ToEst().ToShortTimeString()</cite>
 				</figcaption>
 			</figure>
 		</div>
 		<div class="col-sm-9">
-			@i.Message
+			@i.Display
 		</div>
 	</div>
 }
@@ -39,12 +39,22 @@
 	</div>
 </div>
 
-<hr />
+<AuthorizeView Policy="RequireTrooper">
+	<Authorized>
+		<hr />
 
-<div class="row p-3">
-	<div class="col">
-		<EditForm Model="this">
+		<ErrorSuccessNotice Errors="Errors" SuccessMessage="@Success" ClearErrors="ClearErrors" ClearSuccess="ClearSuccess" />
 
-		</EditForm>
-	</div>
-</div>
+		<div class="row p-3">
+			<div class="col">
+				<EditForm Context="newMessageForContext" Model="this" class="form">
+					<h4 class="text-center">Post Message</h4>
+					<InputRichText @bind-Value="NewMessage" class="form-control" rows="4" />
+					<div class="p-3 d-grid gap-3">
+						<button class="btn btn-outline-success" @onclick="PostMessage">Post Message</button> 
+					</div>
+				</EditForm>
+			</div>
+		</div>
+	</Authorized>
+</AuthorizeView>

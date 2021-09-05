@@ -38,6 +38,9 @@ namespace FiveOhFirstDataCore.Core.Services
         public Task<IReadOnlyList<TrooperReport>> GetPersonalReportsAsync(int start, int end, object[] args);
         public Task<int> GetPersonalReportCountsAsync(object[] args);
 
+        public Task<IReadOnlyList<TrooperReport>> GetNotifyingReportsAsync(int start, int end, object[] args);
+        public Task<int> GetNotifyingReportCountsAsync(object[] args);
+
         public Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args);
         public Task<int> GetParticipatingReportCountsAsync(object[] args);
 
@@ -50,5 +53,17 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>the <see cref="TrooperReport"/> for the provided <paramref name="report"/> ID
         /// if the viewer has authorization to view the report.</returns>
         public Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false);
+        /// <summary>
+        /// Sets the last update for a report to <see cref="DateTime"/>.UtcNow
+        /// </summary>
+        /// <param name="report">The report to update.</param>
+        /// <returns>A task for this action.</returns>
+        public Task UpdateReportLastUpdateAsync(Guid report);
+        /// <summary>
+        /// Toggles the resolved state of a report.
+        /// </summary>
+        /// <param name="report">The report to toggle.</param>
+        /// <returns>A task the retruns the report object after modification.</returns>
+        public Task<TrooperReport?> ToggleResolvedAsync(Guid report);
     }
 }

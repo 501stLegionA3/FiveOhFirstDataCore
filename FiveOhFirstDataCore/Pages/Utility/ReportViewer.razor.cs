@@ -5,6 +5,7 @@ using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         [CascadingParameter]
         public Trooper? CurrentUser { get; set; }
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthStateTask { get; set; }
 
         protected TrooperReport Report { get; set; }
 
@@ -47,11 +50,22 @@ namespace FiveOhFirstDataCore.Pages.Utility
             switch (ReportListing)
             {
                 case Selection.Viewable:
+                    var user = (await AuthStateTask).User;
+                    var fullAccess = user.IsInRole("Manager") || user.IsInRole("Admin") || user.IsInRole("MP");
+
+                    object[] args = Array.Empty<object>();
+                    if (!fullAccess)
+                        args = new object[] { CurrentUser?.Slot ?? Slot.Archived };
+
                     await base.InitalizeAsync(ReportService.GetTrooperReportsAsync,
-                        ReportService.GetTrooperReportCountsAsync,
-                        new object[] { CurrentUser?.Slot ?? Slot.Archived }, 15);
+                        ReportService.GetTrooperReportCountsAsync, args, 15);
                     break;
-                case Selection.Particiapted:
+                case Selection.Notifying:
+                    await base.InitalizeAsync(ReportService.GetNotifyingReportsAsync,
+                        ReportService.GetNotifyingReportCountsAsync,
+                        new object[] { CurrentUser?.Id ?? 0 }, 15);
+                    break;
+                case Selection.Participated:
                     await base.InitalizeAsync(ReportService.GetParticipatingReportsAsync,
                         ReportService.GetParticipatingReportCountsAsync,
                         new object[] { CurrentUser?.Id ?? 0 }, 15);
@@ -94,7 +108,9 @@ namespace FiveOhFirstDataCore.Pages.Utility
             [Description("Viewable Reports")]
             Viewable,
             [Description("Participated Reports")]
-            Particiapted
+            Participated,
+            [Description("Notifying Reports")]
+            Notifying
         }
     }
 }

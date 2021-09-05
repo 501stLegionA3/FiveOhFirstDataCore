@@ -1,5 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 
+using Microsoft.AspNetCore.Components;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace FiveOhFirstDataCore.Core.Data.Message
         public int AuthorId { get; set; }
 
         public string Message { get; set; }
+        public MarkupString Display => new(Message ?? "");
         public DateTime CreatedOn { get; set; }
         public Guid MessageFor { get; set; }
     }

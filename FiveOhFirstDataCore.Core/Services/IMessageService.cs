@@ -29,6 +29,10 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <remarks>
         /// This method is desigend to be used with the <see cref="PaginationModel"/> and registered
         /// to the model during initalization. This should not be used on its own.
+        /// <br /><br />
+        /// There is an optional second and argument for the args list, an <see cref="int"/> value
+        /// that is a trooper id and, if set, will update that troopers notification tracker to the date
+        /// of the last retrived message.
         /// </remarks>
         /// <param name="start">The starting message.</param>
         /// <param name="end">The ending message.</param>

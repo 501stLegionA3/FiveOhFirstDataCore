@@ -14,10 +14,8 @@ using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Utility
 {
-    public partial class ReportDetails : INotificationBase
+    public partial class ReportDetails
     {
-        private bool disposedValue;
-
         [Parameter]
         public string ReportId {  get; set; }
 
@@ -43,6 +41,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         public TrooperReport? Report { get; set; } = null;
 
+        private bool IsNotified { get; set; } = false;
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             await base.OnAfterRenderAsync(firstRender);
@@ -63,44 +63,25 @@ namespace FiveOhFirstDataCore.Pages.Utility
                 var manager = user.IsInRole("Manager") || user.IsInRole("Admin");
 
                 Report = await ReportService.GetTrooperReportIfAuthorized(id.Value, CurrentUser.Id, manager);
-                if(Report is not null)
-                    TriggerNotificationUpdate();
             }
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    TriggerNotificationUpdate();
-                }
-
-                Report = null;
-                ReportId = null;
-                disposedValue = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public void TriggerNotificationUpdate()
+        public async Task OnAfterPostAsync()
         {
             if (Report is not null)
             {
                 var rid = Report.Id;
                 var cid = CurrentUser?.Id ?? 0;
-                _ = Task.Run(async () =>
-                {
-                    await NotificationService.UpdateReportViewDateTimeAsync(rid, cid);
-                });
+                await NotificationService.UpdateReportViewDateTimeAsync(rid, cid);
+
+                await ReportService.UpdateReportLastUpdateAsync(rid);
             }
         }
+
+        private async Task OnNotifyChanged()
+            => IsNotified = await NotificationService.ToggleReportNotificationTracker(Report!.Id, CurrentUser!.Id);
+
+        private async Task OnFinalizeChanged()
+            => Report = await ReportService.ToggleResolvedAsync(Report!.Id);
     }
 }

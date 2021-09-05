@@ -16,9 +16,11 @@ namespace FiveOhFirstDataCore.Core.Services
     public class MessageService : IMessageService
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+        private readonly INotificationService _notification;
 
-        public MessageService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
-            => (_dbContextFactory) = (dbContextFactory);
+        public MessageService(IDbContextFactory<ApplicationDbContext> dbContextFactory,
+            INotificationService notification)
+            => (_dbContextFactory, _notification) = (dbContextFactory, notification);
 
         public async Task<int> GetTrooperMessageCountsAsync(object[]? args = null)
         {
@@ -37,12 +39,25 @@ namespace FiveOhFirstDataCore.Core.Services
             if (id is null) return Array.Empty<TrooperMessage>();
 
             await using var _dbContext = _dbContextFactory.CreateDbContext();
-            return _dbContext.TrooperMessages
+            var set = _dbContext.TrooperMessages
                 .Where(x => x.MessageFor == id.Value)
+                .Include(x => x.Author)
                 .OrderBy(x => x.CreatedOn)
                 .AsEnumerable()
                 .Take(new Range(start, end))
                 .ToList();
+
+            if(args!.Length > 1)
+            {
+                var userId = args.GetArgument<int>(1);
+                if (userId != default)
+                {
+                    _ = Task.Run(async () 
+                        => await _notification.UpdateReportViewDateTimeAsync(id.Value, userId, set[set.Count - 1].CreatedOn));
+                }
+            }
+
+            return set;
         }
 
         public async Task<ResultBase> PostMessageAsync(TrooperMessage message)

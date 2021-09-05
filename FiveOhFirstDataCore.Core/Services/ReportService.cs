@@ -86,7 +86,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             return query
                 .OrderBy(x => x.Resolved)
-                .OrderBy(x => x.LastUpdate)
+                .ThenByDescending(x => x.LastUpdate)
                 .Include(x => x.ReportedBy)
                 .AsEnumerable()
                 .Take(new Range(start, end))
@@ -118,7 +118,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return _dbContext.Reports
                 .Where(x => x.ReportedById == id)
                 .OrderBy(x => x.Resolved)
-                .OrderBy(x => x.LastUpdate)
+                .ThenByDescending(x => x.LastUpdate)
                 .Include(x => x.ReportedBy)
                 .AsEnumerable()
                 .Take(new Range(start, end))
@@ -152,7 +152,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return id;
         }
 
-        public async Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args)
+        public async Task<IReadOnlyList<TrooperReport>> GetNotifyingReportsAsync(int start, int end, object[] args)
         {
             var id = GetPersonalArgs(args);
 
@@ -168,14 +168,14 @@ namespace FiveOhFirstDataCore.Core.Services
             return _dbContext.Reports
                 .Where(x => participation.Contains(x.Id))
                 .OrderBy(x => x.Resolved)
-                .OrderBy(x => x.LastUpdate)
+                .ThenByDescending(x => x.LastUpdate)
                 .Include(x => x.ReportedBy)
                 .AsEnumerable()
                 .Take(new Range(start, end))
                 .ToList();
         }
 
-        public async Task<int> GetParticipatingReportCountsAsync(object[] args)
+        public async Task<int> GetNotifyingReportCountsAsync(object[] args)
         {
             var id = GetPersonalArgs(args);
 
@@ -193,6 +193,42 @@ namespace FiveOhFirstDataCore.Core.Services
                 .CountAsync();
         }
 
+        public async Task<IReadOnlyList<TrooperReport>> GetParticipatingReportsAsync(int start, int end, object[] args)
+        {
+            var id = args.GetArgument<int>(0);
+
+            if (id == default) return Array.Empty<TrooperReport>();
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var participation = (await _dbContext.TrooperMessages
+                .Where(x => x.AuthorId == id)
+                .ToListAsync()).ToList(x => x.MessageFor);
+            return _dbContext.Reports
+                .Where(x => participation.Contains(x.Id))
+                .OrderBy(x => x.Resolved)
+                .ThenByDescending(x => x.LastUpdate)
+                .Include(x => x.ReportedBy)
+                .AsEnumerable()
+                .Take(new Range(start, end))
+                .ToList();
+        }
+
+        public async Task<int> GetParticipatingReportCountsAsync(object[] args)
+        {
+            var id = args.GetArgument<int>(0);
+
+            if (id == default) return 0;
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var participation = (await _dbContext.TrooperMessages
+                .Where(x => x.AuthorId == id)
+                .ToListAsync()).ToList(x => x.MessageFor);
+
+            return await _dbContext.Reports
+                .Where(x => participation.Contains(x.Id))
+                .CountAsync();
+        }
+
         public async Task<TrooperReport?> GetTrooperReportIfAuthorized(Guid report, int viewer, bool manager = false)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
@@ -205,6 +241,8 @@ namespace FiveOhFirstDataCore.Core.Services
             if (actual is null || viewerActual is null) return null;
             // If they are a maanager, pass the report up.
             if (manager) return actual;
+            // It's their report.
+            if (actual.ReportedById == viewer) return actual;
             // If they are MP, pass the report up.
             if (viewerActual.MilitaryPolice)
                 return actual;
@@ -222,6 +260,31 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Any(x => x.ClaimValue == ((int)actual.ReportViewableAt).ToString()))
                 return actual;
             // Otherwise return null.
+            return null;
+        }
+
+        public async Task UpdateReportLastUpdateAsync(Guid report)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<TrooperReport>(report);
+            if (actual is not null)
+            {
+                actual.LastUpdate = DateTime.UtcNow;
+                await _dbContext.SaveChangesAsync();
+            }
+        }
+
+        public async Task<TrooperReport?> ToggleResolvedAsync(Guid report)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<TrooperReport>(report);
+            if (actual is not null)
+            {
+                actual.Resolved = !actual.Resolved;
+                await _dbContext.SaveChangesAsync();
+                return actual;
+            }
+
             return null;
         }
     }

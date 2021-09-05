@@ -23,5 +23,21 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="user">The user to update notification trackers for.</param>
         /// <returns>A task for this action.</returns>
         public Task UpdateReportViewDateTimeAsync(Guid report, int user);
+        /// <summary>
+        /// Update the last viewed date time for report notification trackers.
+        /// </summary>
+        /// <param name="report">The report to find trackers in.</param>
+        /// <param name="user">The user to update notification trackers for.</param>
+        /// <param name="view">The date time to set the last view time to.</param>
+        /// <returns>A task for this action.</returns>
+        public Task UpdateReportViewDateTimeAsync(Guid report, int user, DateTime view);
+        /// <summary>
+        /// Toggles a report listener for a report.
+        /// </summary>
+        /// <param name="report">The report record notification data for.</param>
+        /// <param name="user">The user to toggle the notification tracker for.</param>
+        /// <returns>A task for this action that returns a <see cref="bool"/> that is true
+        /// if the notification is being tracked.</returns>
+        public Task<bool> ToggleReportNotificationTracker(Guid report, int user);
     }
 }
