@@ -84,5 +84,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         private async Task OnFinalizeChanged()
             => Report = await ReportService.ToggleResolvedAsync(Report!.Id);
+
+        private async Task OnElevateChanged()
+            => Report = await ReportService.ElevateToBattalionAsync(Report!.Id);
     }
 }

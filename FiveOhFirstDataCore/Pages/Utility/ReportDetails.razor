@@ -29,6 +29,13 @@
 					Mark Report as Resolved
 				</label>
 			</div>
+			<div class="form-check">
+				<InputCheckbox class="form-check-input" type="checkbox" id="battalionCheck" @bind-Value="Report.ElevatedToBattalion" @onclick="OnElevateChanged"
+					 disabled="@(Report.ElevatedToBattalion || Report.Resolved || CurrentUser!.Id == Report.ReportedById)" />
+				<label class="form-check-label" for="battalionCheck">
+					Elevate to Battalion
+				</label>
+			</div>
 		</div>
 	</div>
 	}

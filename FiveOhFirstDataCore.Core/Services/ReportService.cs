@@ -39,6 +39,34 @@ namespace FiveOhFirstDataCore.Core.Services
             // Get the company for this report.
             report.ReportViewableAt = (Slot)((int)actual.Slot / 100 * 100);
 
+            // Modify some special cases.
+            switch(report.ReportViewableAt)
+			{
+                case Slot.AcklayCompany:
+                    report.ReportViewableAt = Slot.AcklayOne;
+                    break;
+                case Slot.InactiveReserve:
+                    report.ReportViewableAt = Slot.Hailstorm;
+                    break;
+			}
+
+            switch(actual.Slot)
+			{
+                case Slot.AcklayReserve:
+                    report.ReportViewableAt = Slot.AcklayOne;
+                    break;
+                case Slot.RazorReserve:
+                    report.ReportViewableAt = Slot.Razor;
+                    break;
+                case Slot.MynockReserve:
+                    report.ReportViewableAt = Slot.Mynock;
+                    break;
+            }
+
+            // Move company reports to battalion.
+            if (actual.Slot == report.ReportViewableAt)
+                report.ReportViewableAt = Slot.Hailstorm;
+
             // Send inactive reserves and other like reports up to hailstorm.
             if (report.ReportViewableAt >= Slot.InactiveReserve)
                 report.ReportViewableAt = Slot.Hailstorm;
@@ -281,6 +309,20 @@ namespace FiveOhFirstDataCore.Core.Services
             if (actual is not null)
             {
                 actual.Resolved = !actual.Resolved;
+                await _dbContext.SaveChangesAsync();
+                return actual;
+            }
+
+            return null;
+        }
+
+        public async Task<TrooperReport?> ElevateToBattalionAsync(Guid report)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<TrooperReport>(report);
+            if (actual is not null)
+            {
+                actual.ElevatedToBattalion = true;
                 await _dbContext.SaveChangesAsync();
                 return actual;
             }

@@ -65,5 +65,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="report">The report to toggle.</param>
         /// <returns>A task the retruns the report object after modification.</returns>
         public Task<TrooperReport?> ToggleResolvedAsync(Guid report);
+        /// <summary>
+        /// Elevates a trooper report to battalion.
+        /// </summary>
+        /// <param name="report">The report to elevate.</param>
+        /// <returns>A task that returns the report object after modification.</returns>
+        public Task<TrooperReport?> ElevateToBattalionAsync(Guid report);
     }
 }
