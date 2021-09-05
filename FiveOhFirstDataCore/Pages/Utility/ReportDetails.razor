@@ -1,0 +1,54 @@
+﻿@page "/utility/report/viewer/{ReportID}"
+
+<h1 class="text-center display-6">Trooper Report Details</h1>
+
+<EditForm Model="this">
+	<div class="row mb-3">
+		<a class="btn btn-outline-secondary" type="submit" href="/utility/report/viewer">Go Back</a>
+	</div>
+	@if(Report is not null)
+	{
+	<div class="row mb-3">
+		<label class="col-sm-2" for="summaryInput">Summary</label>
+		<div class="col-sm-10">
+			<InputText class="form-control" disabled="true" @bind-Value="Report.Summary" id="summaryInput" />
+		</div>
+	</div>
+	<div class="row mb-3">
+		<label class="col-form-label col-sm-2 pt-0">Settings</label>
+		<div class="col-sm-10">
+			<div class="form-check">
+				<InputCheckbox class="form-check-input" type="checkbox" id="notifCheck" @bind-Value="IsNotified" @onclick="OnNotifyChanged" />
+				<label class="form-check-label" for="notifCheck">
+					Receive Notifications
+				</label>
+			</div>
+			<div class="form-check">
+				<InputCheckbox class="form-check-input" type="checkbox" id="resolvedCheck" @bind-Value="Report.Resolved" @onclick="OnFinalizeChanged" />
+				<label class="form-check-label" for="resolvedCheck">
+					Mark Report as Resolved
+				</label>
+			</div>
+			<div class="form-check">
+				<InputCheckbox class="form-check-input" type="checkbox" id="battalionCheck" @bind-Value="Report.ElevatedToBattalion" @onclick="OnElevateChanged"
+					 disabled="@(Report.ElevatedToBattalion || Report.Resolved || CurrentUser!.Id == Report.ReportedById)" />
+				<label class="form-check-label" for="battalionCheck">
+					Elevate to Battalion
+				</label>
+			</div>
+		</div>
+	</div>
+	}
+</EditForm>
+
+<hr />
+
+@if(Id is not null && Report is not null)
+{
+	<TrooperMessageBoard BoardFor="Id.Value" AnonId="(Report.Public ? 0 : Report.ReportedById)"
+		OnAfterMessagePostAsync="OnAfterPostAsync" />
+}
+else
+{
+	<em>No report found or you are not authorized to view this report. <a href="/trooper/me/report/viewer">Go Back.</a></em>
+}

@@ -117,17 +117,23 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync();
         }
 
-        public async Task<Trooper?> GetTrooperFromIdAsync(int id)
+        public async Task<Trooper?> GetTrooperFromIdAsync(int id, bool loadNotificaitonTrackers = false)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var trooper = await _dbContext.FindAsync<Trooper>(id);
+            if (loadNotificaitonTrackers)
+            {
+                await _dbContext.Entry(trooper).Collection(e => e.TrooperReportTrackers).LoadAsync();
+
+            }
+
             return trooper;
         }
 
-        public async Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims)
+        public async Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims, bool loadNotificationTrackers = false)
         {
             _ = int.TryParse(_userManager.GetUserId(claims), out int id);
-            return await GetTrooperFromIdAsync(id);
+            return await GetTrooperFromIdAsync(id, loadNotificationTrackers);
         }
 
         public async Task<List<Trooper>> GetUnregisteredTroopersAsync()

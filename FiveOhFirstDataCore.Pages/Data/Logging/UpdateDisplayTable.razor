@@ -509,7 +509,7 @@
 
         if(firstRender)
         {
-            await InitalizeAsync(_update.GetAllUpdates, _update.GetAllUpdatesCountAsync, 15);
+            await InitalizeAsync(_update.GetAllUpdates, _update.GetAllUpdatesCountAsync, itemsPerPage: 15);
         }
     }
 

@@ -1,0 +1,63 @@
+﻿@page "/utility/report/viewer"
+@inherits PaginationModel
+
+<h1 class="text-center display-6">Trooper Report Listing</h1>
+
+<AuthorizeView Policy="RequireTrooper">
+    <Authorized>
+        <PaginationController Controller="this" />
+
+        <EditForm Model="this" Context="reportViewTypeContext">
+            <div class="row">
+                <div class="col">
+                    <InputEnumSelect class="form-control" @bind-Value="ReportListing" @oninput="SelectionChanged" />
+				</div>
+		    </div>
+        </EditForm>
+
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Submitter</th>
+                    <th scope="col">Last Update</th>
+                    <th scope="col">Submitted On</th>
+                    <th scope="col">Summary</th>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach(var item in base.Items)
+            {
+                var i = (TrooperReport)item;
+                var nCount = GetNotificationCount(i.Id);
+                <tr class="@(i.Resolved ? "table-info" : "")">
+                    @if(item.Public)
+                    {
+                        <td>[@i.ReportedById] @i.ReportedBy?.NickName</td>
+                    }
+                    else
+                    {
+                        <td>Anonymous</td>
+                    }
+                    <td>@i.LastUpdate.ToEst().ToShortDateString() - @i.LastUpdate.ToEst().ToShortTimeString()</td>
+                    <td>@i.SubmittedOn.ToEst().ToShortDateString() - @i.SubmittedOn.ToEst().ToShortTimeString()</td>
+                    <td>@i.Summary</td>
+                    <td>
+                        <a href="/utility/report/viewer/@i.Id" class="btn btn-secondary position-relative">
+                            View
+                            @if (nCount > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge roudned-pill bg-danger">@(nCount > 99 ? "+99" : nCount.ToString())</span>
+                            }
+                        </a>
+					</td>
+				</tr>
+            }
+            </tbody>
+        </table>
+        <PaginationController Controller="this" />
+    </Authorized>
+    <NotAuthorized>
+        <NotAuthorizedMessage />
+    </NotAuthorized>
+</AuthorizeView>

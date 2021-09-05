@@ -1,8 +1,10 @@
 ﻿using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
@@ -55,6 +57,7 @@ namespace FiveOhFirstDataCore.Core.Account
         #endregion
         #region MP
         public bool MilitaryPolice { get; set; } = false;
+        public List<TrooperReport> FiledReports { get; set; } = new();
         #endregion
 
         public string? DiscordId { get; set; }
@@ -120,10 +123,15 @@ namespace FiveOhFirstDataCore.Core.Account
         public List<DisciplinaryAction> DisciplinaryActionInbox { get; set; } = new();
         #endregion
 
+        #region Notifications
+        public List<ReportNotificationTracker> TrooperReportTrackers {  get; set; } = new();
+        #endregion
+
         public List<TrooperChangeRequestData> TrooperChangeRequests { get; set; } = new();
         public List<TrooperChangeRequestData> FinalizedChangeRequests { get; set; } = new();
 
         public List<Notice> NoticesWritten { get; set; } = new();
+        public List<TrooperMessage> TrooperMessages { get; set; } = new();
 
         public DateTime LastUpdate { get; set; }
 

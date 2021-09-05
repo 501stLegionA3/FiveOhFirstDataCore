@@ -1,8 +1,10 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
+using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -41,12 +43,20 @@ namespace FiveOhFirstDataCore.Core.Database
 
         public DbSet<Promotion> Promotions { get; internal set; }
 
+        public DbSet<TrooperReport> Reports { get; internal set; }
+
+        public DbSet<TrooperMessage> TrooperMessages { get; internal set; }
+
         #region Website Settings
         public DbSet<PromotionDetails> PromotionRequirements { get; internal set; }
         public DbSet<CShopClaim> CShopClaims { get; internal set; }
         public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
         public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
         public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
+        #endregion
+
+        #region Notifications
+        public DbSet<ReportNotificationTracker> ReportNotificationTrackers { get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -309,8 +319,36 @@ namespace FiveOhFirstDataCore.Core.Database
                 .OnDelete(DeleteBehavior.SetNull);
             #endregion
 
+            #region Reports
+            var report = builder.Entity<TrooperReport>();
+            report.HasKey(e => e.Id);
+            report.HasOne(e => e.ReportedBy)
+                .WithMany(p => p.FiledReports)
+                .HasForeignKey(e => e.ReportedById);
+            report.HasMany(e => e.Responses)
+                .WithOne()
+                .HasForeignKey(p => p.MessageFor);
+            #endregion
+
+            #region Notifications
+            var reportTracker = builder.Entity<ReportNotificationTracker>();
+            reportTracker.HasKey(e => e.Key);
+            reportTracker.HasOne(e => e.NotificationFor)
+                .WithMany(p => p.TrooperReportTrackers)
+                .HasForeignKey(e => e.NotificationForId);
+            reportTracker.HasOne(e => e.Report)
+                .WithMany(p => p.NotificationTrackers)
+                .HasForeignKey(e => e.ReportId);
+            #endregion
+
             var claimData = builder.Entity<ClaimUpdateData>();
             claimData.HasKey(e => e.UpdateKey);
+
+            var tmsg = builder.Entity<TrooperMessage>();
+            tmsg.HasKey(e => e.Key);
+            tmsg.HasOne(e => e.Author)
+                .WithMany(p => p.TrooperMessages)
+                .HasForeignKey(e => e.AuthorId);
         }
 
         private bool CompareCShopClaims(Dictionary<string, List<string>>? c1,
