@@ -9,7 +9,10 @@
 @if(Board is not null)
 {
 <div id="@Name">
+    @if(!HideName)
+    {
     <h3>@Name Notice Board</h3>
+    }
     @if (IsEditor)
     {
         <EditForm Model="ToEdit">
@@ -107,8 +110,6 @@ else
     <em>Loading @Name Notice Board...</em>
 }
 
-    
-
 @code {
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
@@ -118,6 +119,8 @@ else
     public CShop CSHopOverride { get; set; } = CShop.None;
     [Parameter]
     public List<string> AllowedAccess { get; set; } = new();
+    [Parameter]
+    public bool HideName { get; set; } = false;
 
     private bool IsEditor { get; set; } = false;
     private bool IsEditing { get; set; } = false;

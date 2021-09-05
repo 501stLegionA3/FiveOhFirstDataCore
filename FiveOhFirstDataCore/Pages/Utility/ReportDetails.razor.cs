@@ -63,6 +63,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
                 var manager = user.IsInRole("Manager") || user.IsInRole("Admin");
 
                 Report = await ReportService.GetTrooperReportIfAuthorized(id.Value, CurrentUser.Id, manager);
+                IsNotified = await NotificationService.IsTrooperNotifiedForReportAsync(id.Value, CurrentUser.Id);
             }
         }
 

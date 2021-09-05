@@ -39,5 +39,14 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>A task for this action that returns a <see cref="bool"/> that is true
         /// if the notification is being tracked.</returns>
         public Task<bool> ToggleReportNotificationTracker(Guid report, int user);
+        /// <summary>
+        /// Gets if the trooper is currently notified about a report.
+        /// </summary>
+        /// <param name="report">Report to check.</param>
+        /// <param name="user">User to check.</param>
+        /// <returns>A task that returns a <see cref="bool"/> that is true if the 
+        /// <see cref="Account.Trooper"/> is 
+        /// notified about the <see cref="Account.Detail.TrooperReport"/></returns>
+        public Task<bool> IsTrooperNotifiedForReportAsync(Guid report, int user);
     }
 }

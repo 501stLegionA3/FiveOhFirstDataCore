@@ -1,5 +1,7 @@
-﻿@page "/trooper/me/report/viewer"
+﻿@page "/utility/report/viewer"
 @inherits PaginationModel
+
+<h1 class="text-center display-6">Trooper Report Listing</h1>
 
 <AuthorizeView Policy="RequireTrooper">
     <Authorized>
@@ -41,7 +43,7 @@
                     <td>@i.SubmittedOn.ToEst().ToShortDateString() - @i.SubmittedOn.ToEst().ToShortTimeString()</td>
                     <td>@i.Summary</td>
                     <td>
-                        <a href="/trooper/me/report/viewer/@i.Id" class="btn btn-secondary position-relative">
+                        <a href="/utility/report/viewer/@i.Id" class="btn btn-secondary position-relative">
                             View
                             @if (nCount > 0)
                             {

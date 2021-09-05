@@ -1,14 +1,14 @@
-﻿@page "/trooper/me/report"
+﻿@page "/utility/report"
 
 <AuthorizeView Policy="RequireTrooper">
     <Authorized>
         <div class="row">
             <div class="col">
-                <h3 class="text-center">
+                <h1 class="text-center display-6">
                     Anonymous Report Page
-                </h3>
+                </h1>
                 <hr />
-                <NoticeBoard Name="TrooperReportPageNoticeBoard" />
+                <NoticeBoard Name="TrooperReportPageNoticeBoard" HideName="true" />
             </div>
         </div>
 

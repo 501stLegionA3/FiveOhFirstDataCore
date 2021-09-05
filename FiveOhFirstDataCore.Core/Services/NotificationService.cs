@@ -47,7 +47,18 @@ namespace FiveOhFirstDataCore.Core.Services
             return notif;
         }
 
-        public async Task<bool> ToggleReportNotificationTracker(Guid report, int user)
+		public async Task<bool> IsTrooperNotifiedForReportAsync(Guid report, int user)
+		{
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var notices = await _dbContext.ReportNotificationTrackers
+                .Where(x => x.NotificationForId == user)
+                .Where(x => x.ReportId == report)
+                .ToListAsync();
+
+            return notices.Count > 0;
+        }
+
+		public async Task<bool> ToggleReportNotificationTracker(Guid report, int user)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             var notice = await _dbContext.ReportNotificationTrackers
