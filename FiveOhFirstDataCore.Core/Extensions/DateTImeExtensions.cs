@@ -21,9 +21,9 @@ namespace FiveOhFirstDataCore.Core.Extensions
             return TimeZoneInfo.ConvertTimeFromUtc(utc, TimeZone);
         }
 
-        public static int DaysFromToday(this DateTime toady)
+        public static int DaysFromToday(this DateTime today)
         {
-            return DateTime.UtcNow.Subtract(toady).Days;
+            return DateTime.UtcNow.Subtract(today).Days;
         }
     }
 }
