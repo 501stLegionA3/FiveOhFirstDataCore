@@ -7,6 +7,7 @@
 @inject INicknameComparisonService _nicks
 @inject IAdvancedRefreshService _advRefresh
 @inject IRosterService _roster
+@inject IAlertService _alert
 
 <AuthorizeView Policy="RequireRecruiterOrReturningMemberStaff" Context="authContext">
     <Authorized>
@@ -257,6 +258,11 @@
             if(res.GetResult(out var token, out var errors))
             {
                 SuccessMessage = $"New trooper added. Their Access Code is: {token}";
+                _alert.PostAlert(this, new()
+                {
+                    Content = SuccessMessage,
+                    Level = AlertLevel.Success
+                });
                 _advRefresh.CallDataReloadRequest("UserData");
                 TrooperData = new();
             }
