@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FiveOhFirstDataCore.Core.Extensions
+﻿namespace FiveOhFirstDataCore.Core.Extensions
 {
     public static class DateTImeExtensions
     {

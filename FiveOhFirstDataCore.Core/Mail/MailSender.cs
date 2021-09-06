@@ -7,9 +7,7 @@ using Microsoft.Extensions.Logging;
 
 using MimeKit;
 
-using System;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Mail
 {

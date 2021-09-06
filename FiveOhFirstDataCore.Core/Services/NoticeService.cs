@@ -6,10 +6,7 @@ using FiveOhFirstDataCore.Core.Extensions;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

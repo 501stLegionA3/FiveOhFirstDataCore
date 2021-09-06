@@ -13,10 +13,6 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using Newtonsoft.Json;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace FiveOhFirstDataCore.Core.Database
 {
     public class ApplicationDbContext : IdentityDbContext<Trooper, TrooperRole, int>

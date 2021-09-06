@@ -3,11 +3,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-using System;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Account
 {
@@ -25,7 +22,7 @@ namespace FiveOhFirstDataCore.Core.Account
 
         public AccountLinkService(IServiceProvider services)
         {
-            this._services = services;
+            _services = services;
             LinkingController = new();
         }
 

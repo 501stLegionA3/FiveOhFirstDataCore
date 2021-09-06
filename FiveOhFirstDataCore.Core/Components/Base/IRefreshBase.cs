@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace FiveOhFirstDataCore.Core.Components.Base
+﻿namespace FiveOhFirstDataCore.Core.Components.Base
 {
     public interface IRefreshBase : IDisposable
     {

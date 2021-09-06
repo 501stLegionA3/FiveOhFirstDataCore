@@ -19,7 +19,7 @@ namespace FiveOhFirstDataCore.Core.Data.Notice
         [Description("Light")]
         LightOutline,
         [Description("Dark")]
-        DarkOutline, 
+        DarkOutline,
     }
 
     public enum AlertLevel

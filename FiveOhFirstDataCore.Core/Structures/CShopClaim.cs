@@ -1,7 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
 
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Structures
 {
     public class CShopClaim

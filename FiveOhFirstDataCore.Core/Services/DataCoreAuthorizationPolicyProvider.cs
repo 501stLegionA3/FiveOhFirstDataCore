@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

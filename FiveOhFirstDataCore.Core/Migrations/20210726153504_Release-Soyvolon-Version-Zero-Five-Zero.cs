@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-using System;
-
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     public partial class ReleaseSoyvolonVersionZeroFiveZero : Migration

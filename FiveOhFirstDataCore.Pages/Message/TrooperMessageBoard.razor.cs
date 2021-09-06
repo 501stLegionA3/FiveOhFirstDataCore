@@ -1,14 +1,7 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Message
 {
@@ -37,7 +30,7 @@ namespace FiveOhFirstDataCore.Pages.Message
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if(firstRender)
+            if (firstRender)
             {
                 object[] args;
                 if (UpdateNotificationTrackers)

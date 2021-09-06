@@ -4,12 +4,6 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Pages.Utility
 {
     public partial class TrooperReportPage
@@ -55,7 +49,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
             var res = await ReportService.CreateReportAsync(CurrentUser.Id, Report);
 
-            if(!res.GetResult(out var err))
+            if (!res.GetResult(out var err))
             {
                 AlertService.PostAlert(this, err);
             }

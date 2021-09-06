@@ -1,8 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 
-using System;
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
     public class ClaimUpdate : UpdateBase

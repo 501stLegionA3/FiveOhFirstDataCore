@@ -4,10 +4,7 @@ using FiveOhFirstDataCore.Core.Data.Roster;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -260,7 +257,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="claimsToRemove">A <see cref="List{T}"/> of <see cref="ClaimUpdateData"/> that details claims to remove from this <see cref="Trooper"/></param>
         /// <param name="submitter">The <see cref="ClaimsPrincipal"/> of the person who submitted this action.</param>
         /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
-        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd, 
+        public Task<ResultBase> UpdateAsync(Trooper edit, List<ClaimUpdateData> claimsToAdd,
             List<ClaimUpdateData> claimsToRemove, ClaimsPrincipal submitter);
 
         /// <summary>
@@ -297,7 +294,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="desc">The <see cref="TrooperDescription"/> to delete.</param>
         /// <returns>A task that returns a <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> DeleteDescriptionAsync(Trooper trooper, TrooperDescription desc);
-      
+
         /// <summary>
         /// Update the list of allowed name changers.
         /// </summary>
@@ -404,7 +401,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="trooper">The <see cref="Trooper"/> to load data for.</param>
         /// <returns>A task representing this action.</returns>
         public Task LoadPublicProfileDataAsync(Trooper trooper);
-      
+
         /// <summary>
         /// Loads descriptions into the provided <paramref name="trooper"/>.
         /// </summary>

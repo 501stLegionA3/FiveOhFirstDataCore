@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-
-[assembly: HostingStartup(typeof(FiveOhFirstDataCore.Areas.Identity.IdentityHostingStartup))]
+﻿[assembly: HostingStartup(typeof(FiveOhFirstDataCore.Areas.Identity.IdentityHostingStartup))]
 namespace FiveOhFirstDataCore.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup

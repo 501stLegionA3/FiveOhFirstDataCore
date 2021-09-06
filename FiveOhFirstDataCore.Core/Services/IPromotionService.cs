@@ -3,7 +3,6 @@ using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

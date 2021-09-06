@@ -1,7 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 
-using System;
-
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
     public class TimeUpdate : UpdateBase

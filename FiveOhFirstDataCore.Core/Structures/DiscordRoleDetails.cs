@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Structures
 {
     public class DiscordRoleDetails

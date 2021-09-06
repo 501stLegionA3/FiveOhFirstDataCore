@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 
-using System;
 using System.Globalization;
 
 namespace FiveOhFirstDataCore.Core.Components

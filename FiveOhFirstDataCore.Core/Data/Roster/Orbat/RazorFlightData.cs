@@ -6,7 +6,7 @@ namespace FiveOhFirstDataCore.Core.Data.Roster
     {
         public Trooper Commander { get; set; }
         public RazorSectionData[] Sections { get; set; } = new RazorSectionData[] { new(), new() };
-        
+
         public void Assign(Trooper t)
         {
             if (t.Role == Role.Commander)

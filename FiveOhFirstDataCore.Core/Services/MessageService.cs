@@ -5,12 +5,6 @@ using FiveOhFirstDataCore.Core.Structures;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Services
 {
     public class MessageService : IMessageService
@@ -47,12 +41,12 @@ namespace FiveOhFirstDataCore.Core.Services
                 .Take(new Range(start, end))
                 .ToList();
 
-            if(args!.Length > 1)
+            if (args!.Length > 1)
             {
                 var userId = args.GetArgument<int>(1);
                 if (userId != default)
                 {
-                    _ = Task.Run(async () 
+                    _ = Task.Run(async ()
                         => await _notification.UpdateReportViewDateTimeAsync(id.Value, userId, set[set.Count - 1].CreatedOn));
                 }
             }

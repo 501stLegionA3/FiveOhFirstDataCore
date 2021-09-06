@@ -1,18 +1,12 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Utility
 {
@@ -38,7 +32,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if(firstRender)
+            if (firstRender)
             {
                 await InitPagination();
                 StateHasChanged();

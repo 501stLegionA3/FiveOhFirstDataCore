@@ -5,8 +5,6 @@ using Lucene.Net.Analysis.Phonetic.Language;
 using Microsoft.EntityFrameworkCore;
 
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

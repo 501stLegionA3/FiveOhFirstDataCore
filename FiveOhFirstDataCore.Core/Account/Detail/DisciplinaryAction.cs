@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FiveOhFirstDataCore.Core.Account.Detail
+﻿namespace FiveOhFirstDataCore.Core.Account.Detail
 {
     public class DisciplinaryAction
     {

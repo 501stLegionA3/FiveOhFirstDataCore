@@ -1,7 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
     public class RankUpdate : UpdateBase

@@ -1,11 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Structures;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Services
 {
     public class AlertService : IAlertService
@@ -28,7 +22,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             string data = "<strong>Something went wrong!</strong>\n" +
                 "<ul>";
-            foreach(var i in errors)
+            foreach (var i in errors)
             {
                 data += $"<li>{i}</li>\n";
             }

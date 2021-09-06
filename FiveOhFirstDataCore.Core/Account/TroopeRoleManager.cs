@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Account
 {
     public class TrooperRoleManager : RoleManager<TrooperRole>

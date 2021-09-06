@@ -2,8 +2,6 @@
 
 using Microsoft.AspNetCore.Components;
 
-using System;
-
 namespace FiveOhFirstDataCore.Core.Data.Notice
 {
     public class Notice

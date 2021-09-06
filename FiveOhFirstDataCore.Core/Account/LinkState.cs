@@ -1,6 +1,4 @@
-﻿using System.Threading;
-
-namespace FiveOhFirstDataCore.Core.Account
+﻿namespace FiveOhFirstDataCore.Core.Account
 {
     public class LinkState
     {

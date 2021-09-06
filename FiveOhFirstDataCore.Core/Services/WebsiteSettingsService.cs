@@ -6,11 +6,7 @@ using FiveOhFirstDataCore.Core.Structures;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -1110,7 +1106,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
             // Filter out any promotions from trooper to warrant officers
             if (filterOutTrooperToWarrant)
-                promotions = promotions.Where(x => !((x.PromoteFrom < 300 || x.PromoteFrom >= 400) 
+                promotions = promotions.Where(x => !((x.PromoteFrom < 300 || x.PromoteFrom >= 400)
                     && x.PromoteTo >= 300 && x.PromoteTo < 400))
                     .ToList();
 

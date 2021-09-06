@@ -2,10 +2,6 @@
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Updates;
 
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Services
 {
     public interface IUpdateService

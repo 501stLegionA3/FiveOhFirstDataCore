@@ -6,12 +6,7 @@ using FiveOhFirstDataCore.Core.Structures;
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -121,22 +116,22 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (data.Rank is not null)
                 user.Rank = data.Rank;
-            if(data.RTORank is not null)
+            if (data.RTORank is not null)
                 user.RTORank = data.RTORank;
-            if(data.MedicRank is not null)
+            if (data.MedicRank is not null)
                 user.MedicRank = data.MedicRank;
-            if(data.WarrantRank is not null)
+            if (data.WarrantRank is not null)
                 user.WarrantRank = data.WarrantRank;
-            if(data.WardenRank is not null)
+            if (data.WardenRank is not null)
                 user.WardenRank = data.WardenRank;
-            if(data.PilotRank is not null)
+            if (data.PilotRank is not null)
                 user.PilotRank = data.PilotRank;
 
-            if(data.Role is not null)
+            if (data.Role is not null)
                 user.Role = data.Role.Value;
-            if(data.Team is not null)
+            if (data.Team is not null)
                 user.Team = data.Team;
-            if(data.Flight is not null)
+            if (data.Flight is not null)
                 user.Flight = data.Flight;
             if (data.Slot is not null)
                 user.Slot = data.Slot.Value;
@@ -146,13 +141,13 @@ namespace FiveOhFirstDataCore.Core.Services
 
             if (data.LastPromotion is not null)
                 user.LastPromotion = data.LastPromotion.Value;
-            if(data.StartOfService is not null)
+            if (data.StartOfService is not null)
                 user.StartOfService = data.StartOfService.Value;
-            if(data.LastBilletChange is not null)
+            if (data.LastBilletChange is not null)
                 user.LastBilletChange = data.LastBilletChange.Value;
-            if(data.GraduatedBCTOn is not null)
+            if (data.GraduatedBCTOn is not null)
                 user.GraduatedBCTOn = data.GraduatedBCTOn.Value;
-            if(data.GraduatedUTCOn is not null)
+            if (data.GraduatedUTCOn is not null)
                 user.GraduatedUTCOn = data.GraduatedUTCOn.Value;
 
             user.LastUpdate = DateTime.UtcNow;

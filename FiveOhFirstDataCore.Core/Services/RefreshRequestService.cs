@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FiveOhFirstDataCore.Core.Services
+﻿namespace FiveOhFirstDataCore.Core.Services
 {
     public class RefreshRequestService : IRefreshRequestService
     {

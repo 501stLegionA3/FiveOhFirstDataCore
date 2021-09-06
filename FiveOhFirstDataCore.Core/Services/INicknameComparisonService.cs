@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace FiveOhFirstDataCore.Core.Services
+﻿namespace FiveOhFirstDataCore.Core.Services
 {
     public interface INicknameComparisonService
     {

@@ -2,9 +2,6 @@
 
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-using System;
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     public partial class PhaseOneInit : Migration

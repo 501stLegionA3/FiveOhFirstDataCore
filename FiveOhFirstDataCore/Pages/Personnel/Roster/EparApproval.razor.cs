@@ -3,12 +3,6 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Mvc;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Personnel.Roster
 {
@@ -59,7 +53,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
                 return _guid;
             }
         }
-        
+
         private TrooperChangeRequestData? _data { get; set; }
         private TrooperChangeRequestData? Data
         {
@@ -77,8 +71,13 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         }
 
         protected List<TrooperChangeRequestData> ChangeRequests { get; set; } = new();
-        public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home"),
-            ("/c1/roster/epar", "EPAR Home") };
+        public List<(string, string)> Urls { get; set; } = new()
+        {
+            ("/", "Home"),
+            ("/c1", "C-1 PERSONNEL"),
+            ("/c1/roster", "Roster Staff Home"),
+            ("/c1/roster/epar", "EPAR Home")
+        };
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -89,7 +88,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         {
             await base.OnParametersSetAsync();
 
-            if(Id is not null)
+            if (Id is not null)
             {
                 Data = await Epar.GetChangeRequestAsync(Id.Value);
             }
@@ -105,7 +104,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
 
         private async Task ApproveChangeAsync()
         {
-            if(Data is not null && CurrentTrooper is not null)
+            if (Data is not null && CurrentTrooper is not null)
             {
                 var res = await Epar.FinalizeChangeRequest(Data.ChangeId, true, CurrentTrooper.Id, (await AuthStateTask).User);
 
@@ -132,7 +131,7 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
 
                 if (!res.GetResult(out var err))
                     AlertService.PostAlert(this, err);
-                else 
+                else
                     AlertService.PostAlert(this, "Change request denied.");
             }
 

@@ -1,8 +1,6 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Data;
 
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Structures.Updates
 {
     public class QualificationUpdate : UpdateBase

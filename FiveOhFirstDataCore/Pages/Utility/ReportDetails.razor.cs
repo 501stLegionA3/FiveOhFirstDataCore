@@ -1,27 +1,21 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Components.Base;
 using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Pages.Utility
 {
     public partial class ReportDetails
     {
         [Parameter]
-        public string ReportId {  get; set; }
+        public string ReportId { get; set; }
 
         private Guid? Id
         {
-            get {
+            get
+            {
                 if (Guid.TryParse(ReportId, out Guid res))
                     return res;
                 else return null;
@@ -47,7 +41,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if(firstRender)
+            if (firstRender)
             {
                 await LoadReportData();
                 StateHasChanged();

@@ -3,12 +3,6 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Pages.Recruits
 {
     public partial class CRCListing
@@ -25,7 +19,7 @@ namespace FiveOhFirstDataCore.Pages.Recruits
         {
             await base.OnAfterRenderAsync(firstRender);
 
-            if(firstRender)
+            if (firstRender)
             {
                 await BuildTrooperListsAsync();
                 StateHasChanged();

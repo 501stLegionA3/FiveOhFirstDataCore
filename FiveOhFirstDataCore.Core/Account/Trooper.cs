@@ -9,9 +9,6 @@ using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
 
-using System;
-using System.Collections.Generic;
-
 namespace FiveOhFirstDataCore.Core.Account
 {
     public class Trooper : IdentityUser<int>
@@ -124,7 +121,7 @@ namespace FiveOhFirstDataCore.Core.Account
         #endregion
 
         #region Notifications
-        public List<ReportNotificationTracker> TrooperReportTrackers {  get; set; } = new();
+        public List<ReportNotificationTracker> TrooperReportTrackers { get; set; } = new();
         #endregion
 
         public List<TrooperChangeRequestData> TrooperChangeRequests { get; set; } = new();

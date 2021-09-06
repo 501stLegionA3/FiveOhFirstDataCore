@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-using System;
-
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 {
     public static class ManageNavPages

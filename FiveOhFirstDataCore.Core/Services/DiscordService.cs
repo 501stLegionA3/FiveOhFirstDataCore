@@ -6,12 +6,8 @@ using FiveOhFirstDataCore.Core.Structures.Updates;
 
 using Microsoft.Extensions.Logging;
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

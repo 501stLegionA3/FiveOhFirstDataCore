@@ -3,11 +3,6 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Pages.Utility
 {
     public partial class TrooperChangeRequest

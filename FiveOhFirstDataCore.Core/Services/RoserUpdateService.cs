@@ -7,12 +7,8 @@ using FiveOhFirstDataCore.Core.Structures.Updates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -273,7 +269,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     return new(false, errors);
                 }
 
-                if(primary.Slot == Slot.Archived)
+                if (primary.Slot == Slot.Archived)
                 {
                     identResult = await _userManager.AddToRoleAsync(primary, "Archived");
 
@@ -285,7 +281,7 @@ namespace FiveOhFirstDataCore.Core.Services
                         return new(false, errors);
                     }
                 }
-                else if (primary.Slot != Slot.Archived 
+                else if (primary.Slot != Slot.Archived
                     && oldSlot == Slot.Archived)
                 {
                     identResult = await _userManager.RemoveFromRoleAsync(primary, "Archived");
@@ -478,7 +474,7 @@ namespace FiveOhFirstDataCore.Core.Services
             await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
             t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
             var d = await _dbContext.FindAsync<TrooperDescription>(desc.Id);
-            
+
             t.Descriptions.RemoveAt(d.Order);
             t.Descriptions.Insert(index, d);
             for (int i = 0; i < t.Descriptions.Count; i++)
@@ -495,7 +491,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var t = await _dbContext.FindAsync<Trooper>(trooper.Id);
             if (t is null)
-                return new(false, new List<string> {"Trooper Not Found"});
+                return new(false, new List<string> { "Trooper Not Found" });
             await _dbContext.Entry(t).Collection(e => e.Descriptions).LoadAsync();
             t.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
 
@@ -764,7 +760,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     .ForEachAsync(x => ids.Add(x.Id));
             }
 
-            foreach(int id in ids)
+            foreach (int id in ids)
             {
                 var actual = await _userManager.FindByIdAsync(id.ToString());
                 if (!await _userManager.IsInRoleAsync(actual, "Archived"))

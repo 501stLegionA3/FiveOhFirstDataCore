@@ -2,9 +2,6 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-using System;
-using System.Threading.Tasks;
-
 namespace FiveOhFirstDataCore.Core.Structures.Auth
 {
     public class WebsiteSettingsAuthorizationPolicyBuilder : AuthorizationPolicyBuilder

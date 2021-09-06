@@ -2,12 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -35,9 +30,9 @@ namespace FiveOhFirstDataCore.Core.Services
 
             await foreach (var item in data)
             {
-                for (int i = item.Report.Responses.Count - 1;  i >= 0; i--)
+                for (int i = item.Report.Responses.Count - 1; i >= 0; i--)
                 {
-                    if(item.Report.Responses[i].CreatedOn > item.LastView)
+                    if (item.Report.Responses[i].CreatedOn > item.LastView)
                     {
                         notif.AddOrUpdate(item.ReportId, 1, (x, y) => y + 1);
                     }
@@ -47,8 +42,8 @@ namespace FiveOhFirstDataCore.Core.Services
             return notif;
         }
 
-		public async Task<bool> IsTrooperNotifiedForReportAsync(Guid report, int user)
-		{
+        public async Task<bool> IsTrooperNotifiedForReportAsync(Guid report, int user)
+        {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             var notices = await _dbContext.ReportNotificationTrackers
                 .Where(x => x.NotificationForId == user)
@@ -58,7 +53,7 @@ namespace FiveOhFirstDataCore.Core.Services
             return notices.Count > 0;
         }
 
-		public async Task<bool> ToggleReportNotificationTracker(Guid report, int user)
+        public async Task<bool> ToggleReportNotificationTracker(Guid report, int user)
         {
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             var notice = await _dbContext.ReportNotificationTrackers
@@ -67,7 +62,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 .ToListAsync();
 
             bool tracking;
-            if(notice.Count <= 0)
+            if (notice.Count <= 0)
             {
                 await _dbContext.ReportNotificationTrackers.AddAsync(new()
                 {

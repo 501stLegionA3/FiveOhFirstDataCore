@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.WebUtilities;
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
 {

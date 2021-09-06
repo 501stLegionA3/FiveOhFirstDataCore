@@ -1,5 +1,4 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
-using System;
 
 namespace FiveOhFirstDataCore.Core.Structures
 {

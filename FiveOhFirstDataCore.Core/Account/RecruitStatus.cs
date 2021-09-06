@@ -1,7 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Data;
 
-using System;
-
 namespace FiveOhFirstDataCore.Core.Account
 {
     public class RecruitStatus

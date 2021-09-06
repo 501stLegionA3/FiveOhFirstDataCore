@@ -1,21 +1,12 @@
 ﻿using FiveOhFirstDataCore.Core.Account;
 using FiveOhFirstDataCore.Core.Account.Detail;
 using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Database;
 using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 
-using Lucene.Net.Search;
-
 using Microsoft.EntityFrameworkCore;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {
@@ -40,18 +31,18 @@ namespace FiveOhFirstDataCore.Core.Services
             report.ReportViewableAt = (Slot)((int)actual.Slot / 100 * 100);
 
             // Modify some special cases.
-            switch(report.ReportViewableAt)
-			{
+            switch (report.ReportViewableAt)
+            {
                 case Slot.AcklayCompany:
                     report.ReportViewableAt = Slot.AcklayOne;
                     break;
                 case Slot.InactiveReserve:
                     report.ReportViewableAt = Slot.Hailstorm;
                     break;
-			}
+            }
 
-            switch(actual.Slot)
-			{
+            switch (actual.Slot)
+            {
                 case Slot.AcklayReserve:
                     report.ReportViewableAt = Slot.AcklayOne;
                     break;
@@ -140,7 +131,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             var id = GetPersonalArgs(args);
 
-            if(id == 0) return Array.Empty<TrooperReport>();
+            if (id == 0) return Array.Empty<TrooperReport>();
 
             await using var _dbContext = _dbContextFactory.CreateDbContext();
             return _dbContext.Reports

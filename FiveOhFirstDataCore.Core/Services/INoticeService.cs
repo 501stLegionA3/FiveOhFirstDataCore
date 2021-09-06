@@ -2,9 +2,7 @@
 using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Notice;
 
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Services
 {

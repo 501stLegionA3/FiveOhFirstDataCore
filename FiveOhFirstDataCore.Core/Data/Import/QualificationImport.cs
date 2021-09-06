@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-
-namespace FiveOhFirstDataCore.Core.Data.Import
+﻿namespace FiveOhFirstDataCore.Core.Data.Import
 {
     public class QualificationImport : IDisposable, IAsyncDisposable
     {

@@ -1,12 +1,5 @@
 ﻿
-using FiveOhFirstDataCore.Core.Structures.Updates;
-
 using Microsoft.AspNetCore.Components;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace FiveOhFirstDataCore.Core.Components.Base
 {
@@ -128,7 +121,7 @@ namespace FiveOhFirstDataCore.Core.Components.Base
             Params = parameters ?? Array.Empty<object>();
 
             if (startingPage <= 0)
-                throw new ArgumentOutOfRangeException(nameof(startingPage), 
+                throw new ArgumentOutOfRangeException(nameof(startingPage),
                     $"Expected starting page to be above 0, found {startingPage}");
 
             PageIndex = startingPage;

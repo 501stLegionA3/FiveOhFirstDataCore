@@ -1,6 +1,5 @@
 ﻿using FiveOhFirstDataCore.Core.Data.Promotions;
 
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace FiveOhFirstDataCore.Core.Structures
