@@ -184,6 +184,11 @@
                                                     <option value="@ri">@r.AsFull()</option>
                                                 }
                                             }
+                                            if(Promotion.PromoteFrom >= (int)TrooperRank.Trooper)
+                                            {
+                                                @* allow troopers to be promoted to CW *@
+                                                <option value="@((int)WarrantRank.Chief)">@WarrantRank.Chief.AsFull()</option>
+                                            }
                                         break;
                                         case 1:
                                             foreach (MedicRank r in Enum.GetValues(typeof(MedicRank)))
