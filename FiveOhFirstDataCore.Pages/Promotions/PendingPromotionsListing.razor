@@ -1,35 +1,7 @@
 ﻿@inject IPromotionService _promote
 @inject IAdvancedRefreshService _advRefresh
 @inject IWebsiteSettingsService _settings
-
-@if(Errors.Count > 0)
-{
-<div class="row">
-    <div class="col p-3">
-        <div class="alert alert-danger alert-dismissible w-100">
-            <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
-            <strong>Something went wrong!</strong>
-            <ul>
-            @foreach(var i in Errors)
-            {
-                <li>@i</li>
-            }
-            </ul>
-        </div>
-    </div>
-</div>
-}
-@if(SuccessMessage is not null)
-{
-<div class="row">
-    <div class="col p-3">
-        <div class="alert alert-success alert-dismissible w-100">
-            <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
-            <p>@SuccessMessage</p>
-        </div>
-    </div>
-</div>
-}
+@inject IAlertService _alert
 
 <div class="row">
     <div class="col">
@@ -132,25 +104,12 @@
     [CascadingParameter(Name = "Airborne")]
     public bool Airborne { get; set; } = false;
 
-    protected string? SuccessMessage { get; set; } = null;
-    protected List<string> Errors { get; set; } = new();
-
     public int Counter { get; set; } = 0;
 
     private int ConfirmApprove { get; set; } = -1;
     private int ConfirmDeny { get; set; } = -1;
 
     private HashSet<Guid> ForcedPromotions { get; set; } = new();
-
-    protected void ClearSuccess()
-    {
-        SuccessMessage = null;
-    }
-
-    protected void ClearErrors()
-    {
-        Errors.Clear();   
-    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -195,18 +154,18 @@
 
             if(!res.GetResult(out var errors))
             {
-                Errors.AddRange(errors);
+                _alert.PostAlert(this, errors);
             }
             else
             {
                 if(promo.NeededBoard == BoardLevel
                     || (promo.NeededBoard >= BoardLevel && promo.NeededBoard < PromotionBoardLevel.Razor))
                 {
-                    SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is complete.";
+                    _alert.PostAlert(this, $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is complete.");
                 }
                 else
                 {
-                    SuccessMessage = $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is has been passed up.";
+                    _alert.PostAlert(this, $"Approved the promotion for {promo.PromotionFor?.NickName}. This promotion is has been passed up.");
                 }
             }
 
@@ -260,11 +219,11 @@
 
             if(!res.GetResult(out var errors))
             {
-                Errors.AddRange(errors);
+                _alert.PostAlert(this, errors);
             }
             else
             {
-                SuccessMessage = $"Denied the promotion for {promo.PromotionFor?.NickName}.";
+                _alert.PostAlert(this, $"Denied the promotion for {promo.PromotionFor?.NickName}.");
             }
 
             if (BoardLevel >= PromotionBoardLevel.Battalion

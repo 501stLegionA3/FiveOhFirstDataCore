@@ -20,31 +20,31 @@ namespace FiveOhFirstDataCore.Pages.Utility
         private TrooperReport Report { get; set; } = new();
         public string FirstReportMessage { get; set; } = "";
 
-        public List<string> Errors { get; set; } = new();
-        public string? SuccessMessage { get; set; } = null;
-
         [Inject]
         public IReportService ReportService { get; set; }
+        [Inject]
+        public IAlertService AlertService { get; set; }
 
         private async Task OnSubmit()
         {
+            var errors = new List<string>();
             if (CurrentUser is null)
             {
-                Errors.Add("No trooper is logged in.");
+                errors.Add("No trooper is logged in.");
                 return;
             }
 
-            ClearErrors();
-            ClearSuccess();
-
             if (string.IsNullOrWhiteSpace(FirstReportMessage))
-                Errors.Add("Report message can not be blank");
+                errors.Add("Report message can not be blank");
 
             if (string.IsNullOrWhiteSpace(Report.Summary))
-                Errors.Add("Report summary can not be blank");
+                errors.Add("Report summary can not be blank");
 
-            if (Errors.Count > 0)
+            if (errors.Count > 0)
+            {
+                AlertService.PostAlert(this, errors);
                 return;
+            }
 
             Report.Responses.Add(new()
             {
@@ -57,11 +57,11 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
             if(!res.GetResult(out var err))
             {
-                Errors = err;
+                AlertService.PostAlert(this, err);
             }
             else
             {
-                SuccessMessage = "Report submitted.";
+                AlertService.PostAlert(this, "Report submitted.");
 
                 Report = new();
                 FirstReportMessage = "";
@@ -72,16 +72,6 @@ namespace FiveOhFirstDataCore.Pages.Utility
         {
             Report = new();
             FirstReportMessage = "";
-        }
-
-        private void ClearErrors()
-        {
-            Errors.Clear();
-        }
-
-        private void ClearSuccess()
-        {
-            SuccessMessage = null;
         }
     }
 }

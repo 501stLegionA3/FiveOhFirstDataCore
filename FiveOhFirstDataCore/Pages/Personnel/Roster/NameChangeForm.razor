@@ -7,39 +7,12 @@
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 @inject IAdvancedRefreshService _advRefresh
+@inject IAlertService _alert
 
 <AuthorizeView Policy="RequireNameChange">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="nameChangeContext" Model="Trooper" class="pb-3">
-            @if(Message is not null)
-            {
-            <div class="row">
-                <div class="col p-3">
-                    <div class="alert alert-success alert-dismissible w-100">
-                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearMessage"></button>
-                        <strong>@Message</strong>
-                    </div>
-                </div>
-            </div>
-            }
-            @if(Errors.Count > 0)
-            {
-            <div class="row">
-                <div class="col p-3">
-                    <div class="alert alert-danger alert-dismissible w-100">
-                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
-                        <strong>Something went wrong!</strong>
-                        <ul>
-                        @foreach(var i in Errors)
-                        {
-                            <li>@i</li>
-                        }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            }
             <div class="row">
                 <div class="col form-group">
                 <label for="trooperSelection">Trooper To Edit</label>
@@ -118,9 +91,6 @@
     public Trooper? CurrentUser { get; set; } = new();
 
     private bool IsEditing { get; set; } = false;
-    private List<string> Errors {get;set;} = new();
-
-    public string? Message { get; set; } = null;
 
     private string OldName { get; set; } = "";
 
@@ -221,18 +191,6 @@
         InvokeAsync(() => StateHasChanged());
     }
 
-    private void ClearErrors(EventArgs e)
-    {
-        Errors.Clear();
-        _refresh.CallRequestRefresh();
-    }
-
-    private void ClearMessage(EventArgs e)
-    {
-        Message = null;
-        _refresh.CallRequestRefresh();
-    }
-
     protected async Task StartEdit(EventArgs e)
     {
         if(Trooper is not null && Trooper.Id != 0)
@@ -249,26 +207,24 @@
 
     protected async Task SaveChanges(EventArgs e)
     {
-        Errors.Clear();
-
         if(CurrentUser is not null && CurrentUser.Id != 0)
         {
             var res = await _roster.UpdateNickNameAsync(Trooper, CurrentUser.Id);
 
             if(!res.GetResult(out var errors))
             {
-                Errors = errors;
+                _alert.PostAlert(this, errors);
             }
             
             _advRefresh.CallDataReloadRequest("UserDetails", Trooper.Id);
 
             IsEditing = false;
             Trooper = new();
-            Message = "Name changed successfully.";
+            _alert.PostAlert(this, "Name changed successfully.");
         }
         else
         {
-            Errors.Add("The current user is invalid");
+            _alert.PostAlert(this, new List<string>() { "The current user is invalid" });
         }
 
         _refresh.CallRequestRefresh();

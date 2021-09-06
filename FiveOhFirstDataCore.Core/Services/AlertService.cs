@@ -23,5 +23,29 @@ namespace FiveOhFirstDataCore.Core.Services
                 // do nothing, as we have nothing listening.
             }
         }
+
+        public void PostAlert(object sender, List<string> errors)
+        {
+            string data = "<strong>Something went wrong!</strong>\n" +
+                "<ul>";
+            foreach(var i in errors)
+            {
+                data += $"<li>{i}</li>\n";
+            }
+            data += "</ul>";
+
+            PostAlert(sender, new AlertData()
+            {
+                Content = data,
+                Level = Data.Notice.AlertLevel.Danger
+            });
+        }
+
+        public void PostAlert(object sender, string success)
+            => PostAlert(sender, new AlertData()
+            {
+                Content = success,
+                Level = Data.Notice.AlertLevel.Success
+            });
     }
 }

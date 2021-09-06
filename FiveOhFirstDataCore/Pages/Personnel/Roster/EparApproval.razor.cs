@@ -20,6 +20,8 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
 
         [Inject]
         public NavigationManager Nav { get; set; }
+        [Inject]
+        public IAlertService AlertService { get; set; }
 
         [CascadingParameter]
         public Trooper? CurrentTrooper { get; set; }
@@ -75,10 +77,6 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         }
 
         protected List<TrooperChangeRequestData> ChangeRequests { get; set; } = new();
-
-        protected List<string> Errors { get; set; } = new();
-        protected string? SuccessMessage { get; set; } = null;
-
         public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home"),
             ("/c1/roster/epar", "EPAR Home") };
 
@@ -109,17 +107,16 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         {
             if(Data is not null && CurrentTrooper is not null)
             {
-                ClearErrors();
-
                 var res = await Epar.FinalizeChangeRequest(Data.ChangeId, true, CurrentTrooper.Id, (await AuthStateTask).User);
 
                 if (!res.GetResult(out var err))
-                    Errors.AddRange(err);
+                    AlertService.PostAlert(this, err);
                 else
                 {
-                    SuccessMessage = $"Change request approved.";
+                    var successMessage = $"Change request approved.";
                     if (!string.IsNullOrWhiteSpace(Data.AdditionalChanges))
-                        SuccessMessage += $" Please note the additional changes:\n\n{Data.AdditionalChanges}";
+                        successMessage += $" Please note the additional changes:\n\n{Data.AdditionalChanges}";
+                    AlertService.PostAlert(this, successMessage);
                 }
             }
 
@@ -131,27 +128,16 @@ namespace FiveOhFirstDataCore.Pages.Personnel.Roster
         {
             if (Data is not null && CurrentTrooper is not null)
             {
-                ClearErrors();
-
                 var res = await Epar.FinalizeChangeRequest(Data.ChangeId, false, CurrentTrooper.Id, (await AuthStateTask).User);
 
                 if (!res.GetResult(out var err))
-                    Errors.AddRange(err);
-                else SuccessMessage = "Change request denied.";
+                    AlertService.PostAlert(this, err);
+                else 
+                    AlertService.PostAlert(this, "Change request denied.");
             }
 
             await base.SetPage(1);
             Nav.NavigateTo("/c1/roster/epar");
-        }
-
-        private void ClearErrors()
-        {
-            Errors.Clear();
-        }
-
-        private void ClearSuccess()
-        {
-            SuccessMessage = null;
         }
     }
 }

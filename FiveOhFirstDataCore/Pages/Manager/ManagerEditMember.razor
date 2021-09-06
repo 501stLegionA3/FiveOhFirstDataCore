@@ -6,39 +6,12 @@
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
 @inject ICustomMailSender _mail
+@inject IAlertService _alert
 
 <AuthorizeView Policy="RequireManager">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Model="Trooper" class="form pb-3" Context="modifyTrooperDataContext">
-        @if(Message is not null)
-        {
-        <div class="row">
-            <div class="col p-3">
-                <div class="alert alert-success alert-dismissible w-100">
-                    <button type="button" class="btn oi oi-x float-right" @onclick="ClearMessage"></button>
-                    <strong>@Message</strong>
-                </div>
-            </div>
-        </div>
-        }
-        @if(Errors.Count > 0)
-        {
-        <div class="row">
-            <div class="col p-3">
-                <div class="alert alert-danger alert-dismissible w-100">
-                    <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
-                    <strong>Something went wrong!</strong>
-                    <ul>
-                    @foreach(var i in Errors)
-                    {
-                        <li>@i</li>
-                    }
-                    </ul>
-                </div>
-            </div>
-        </div>
-        }
         <div class="row">
             <div class="col form-group">
             <label for="trooperSelection">Trooper To Edit</label>
@@ -242,9 +215,6 @@
     public List<Trooper> AllTroopers { get; set; } = new();
 
     protected int ToEdit { get; set; } = 0;
-    protected string? Message { get; set; } = null;
-
-    public List<string> Errors { get; set; } = new();
     public bool IsEditing { get; set; } = false;
 
     private string OldUserName { get; set; } = "";
@@ -299,20 +269,6 @@
             } 
         }
 
-        if(_state.TryTakeAsJson<string>("message", out var message))
-        {
-            Message = message;
-        }
-        else
-        {
-            var querys = _nav.ToAbsoluteUri(_nav.Uri).Query;
-            if(QueryHelpers.ParseQuery(querys)
-                .TryGetValue("message", out var msg))
-            {
-                Message = msg;
-            }
-        }
-
         _refresh.RefreshRequested += RefreshMe;
     }
 
@@ -320,7 +276,6 @@
     {
         _state.PersistAsJson("editing", IsEditing);
         _state.PersistAsJson("to_edit", ToEdit);
-        _state.PersistAsJson("message", Message);
         return Task.CompletedTask;
     }
 
@@ -389,18 +344,6 @@
         }
     }
 
-    private void ClearErrors(EventArgs e)
-    {
-        Errors.Clear();
-        _refresh.CallRequestRefresh();
-    }
-
-    private void ClearMessage(EventArgs e)
-    {
-        Message = null;
-        _refresh.CallRequestRefresh();
-    }
-
     private void RefreshMe()
     {
         InvokeAsync(() => StateHasChanged());
@@ -445,13 +388,12 @@
     {
         if(ValidUserName)
        {
-            Errors.Clear();
             EditingUserName = false;
 
             var res = await _roster.UpdateUserNameAsync(Trooper);
             if(!res.GetResult(out var errors))
             {
-                Errors = errors;
+                _alert.PostAlert(this, errors);
                 Trooper.UserName = OldUserName;
             }
         }
@@ -463,11 +405,10 @@
     #region Claim Management
     private async Task AddClaimAsync(EventArgs e)
     {
-        Errors.Clear();
         if(string.IsNullOrWhiteSpace(NewClaimType)
             || string.IsNullOrWhiteSpace(NewClaimValue))
         {
-            Errors.Add("Claim must have a Type and a Value.");
+            _alert.PostAlert(this, new List<string>() { "Claim must have a Type and a Value." });
             return;
         }
 
@@ -476,7 +417,7 @@
 
         if(!res.GetResult(out var errors))
         {
-            Errors = errors;
+            _alert.PostAlert(this, errors);
         }
         else
         {
@@ -494,7 +435,7 @@
 
         if(!res.GetResult(out var errors))
         {
-            Errors = errors;
+            _alert.PostAlert(this, errors);
         }
         else
         {
@@ -530,7 +471,7 @@
             var res = await _roster.ResetAccountAsync(Trooper);
             if(!res.GetResult(out var code, out var errors))
             {
-                Errors = errors;
+                _alert.PostAlert(this, errors);
                 ReadyToDelete = false;
                 Password = "";
                 _refresh.CallRequestRefresh();
@@ -586,8 +527,6 @@
     #region Delete
     private async Task OnDeleteAccount(EventArgs e)
     {
-        Errors.Clear();
-
         if(Trooper.Id != (CurrentUser?.Id ?? 0)
             && CanDelete)
         {
@@ -595,7 +534,7 @@
             var res = await _roster.DeleteAccountAsync(Trooper, Password, claims);
             if(!res.GetResult(out var errors))
             {
-                Errors = errors;
+                _alert.PostAlert(this, errors);
                 ReadyToDelete = false;
                 Password = "";
                 _refresh.CallRequestRefresh();

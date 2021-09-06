@@ -16,34 +16,6 @@
             <h1 class="col">New Recruit Form</h1>
         </div>
         <EditForm Model="TrooperData" Context="trooperDataContext">
-            @if(Errors.Count > 0)
-            {
-            <div class="row">
-                <div class="col p-3">
-                    <div class="alert alert-danger alert-dismissible w-100">
-                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
-                        <strong>Something went wrong!</strong>
-                        <ul>
-                        @foreach(var i in Errors)
-                        {
-                            <li>@i</li>
-                        }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            }
-            @if(SuccessMessage is not null)
-            {
-            <div class="row">
-                <div class="col p-3">
-                    <div class="alert alert-success alert-dismissible w-100">
-                        <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
-                        <p>@SuccessMessage</p>
-                    </div>
-                </div>
-            </div>
-            }
             <div class="row">
                 <div class="col-lg-6 col-md-12 col-sm-12 form-group @(ValidNewId ? "has-success" : "has-danger")">
                     <label for="idSetter">Birth Number</label>
@@ -231,20 +203,6 @@
         _refresh.CallRequestRefresh();
     }
 
-    protected void ClearErrors(EventArgs e)
-    {
-        Errors.Clear();
-
-        _refresh.CallRequestRefresh();
-    }
-
-    protected void ClearSuccess(EventArgs e)
-    {
-        SuccessMessage = null;
-
-        _refresh.CallRequestRefresh();
-    }
-
     protected async Task SubmitNewMember()
     {
         var claim = (await AuthStateTask).User;
@@ -257,12 +215,7 @@
 
             if(res.GetResult(out var token, out var errors))
             {
-                SuccessMessage = $"New trooper added. Their Access Code is: {token}";
-                _alert.PostAlert(this, new()
-                {
-                    Content = SuccessMessage,
-                    Level = AlertLevel.Success
-                });
+                _alert.PostAlert(this, $"New trooper added. Their Access Code is: {token}");
                 _advRefresh.CallDataReloadRequest("UserData");
                 TrooperData = new();
             }
@@ -275,6 +228,9 @@
         {
             Errors.Add("You are not Authorized to submit this form.");
         }
+
+        if(Errors.Count > 0)
+            _alert.PostAlert(this, Errors);
 
         _refresh.CallRequestRefresh();
     }

@@ -17,12 +17,11 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         public TrooperChangeRequestData Model { get; set; } = new();
 
-        public List<string> Errors { get; set; } = new();
-        public string? SuccessMessage { get; set; } = null;
-
         [Inject]
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public IEparService Epar { get; set; }
+        [Inject]
+        public IAlertService AlertService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -38,30 +37,32 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
         private async Task OnSubmit()
         {
-            ClearErrors();
-            ClearSuccess();
-
+            List<string> errors = new();
             if (Model.Reason is null)
             {
-                Errors.Add("You must include a reason in your request.");
+                errors.Add("You must include a reason in your request.");
             }
 
             if (CurrentUser is null)
             {
-                Errors.Add("You must be signed in.");
+                errors.Add("You must be signed in.");
             }
             else if (!(Model.HasChange() || Model.Qualifications != CurrentUser.Qualifications))
             {
-                Errors.Add("You must have at least one change in your request.");
+                errors.Add("You must have at least one change in your request.");
             }
 
-            if (Errors.Count > 0) return;
+            if (errors.Count > 0)
+            {
+                AlertService.PostAlert(this, errors);
+                return;
+            }
 
             var res = await Epar.CreateChangeRequest(Model, CurrentUser!.Id);
 
             if (!res.GetResult(out var err))
             {
-                Errors.AddRange(err);
+                AlertService.PostAlert(this, err);
             }
             else
             {
@@ -69,18 +70,8 @@ namespace FiveOhFirstDataCore.Pages.Utility
                 {
                     Qualifications = CurrentUser!.Qualifications
                 };
-                SuccessMessage = "Change request has been submitted.";
+                AlertService.PostAlert(this, "Change request has been submitted.");
             }
-        }
-
-        private void ClearErrors()
-        {
-            Errors.Clear();
-        }
-
-        private void ClearSuccess()
-        {
-            SuccessMessage = null;
         }
     }
 }

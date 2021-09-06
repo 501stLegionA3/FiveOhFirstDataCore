@@ -1,35 +1,7 @@
 ﻿@inject IPromotionService _promotion
 @inject IAdvancedRefreshService _advRefresh
 @inject IWebsiteSettingsService _settings
-
-@if(Errors.Count > 0)
-{
-<div class="row">
-    <div class="col p-3">
-        <div class="alert alert-danger alert-dismissible w-100">
-            <button type="button" class="btn oi oi-x float-right" @onclick="ClearErrors"></button>
-            <strong>Something went wrong!</strong>
-            <ul>
-            @foreach(var i in Errors)
-            {
-                <li>@i</li>
-            }
-            </ul>
-        </div>
-    </div>
-</div>
-}
-@if(SuccessMessage is not null)
-{
-<div class="row">
-    <div class="col p-3">
-        <div class="alert alert-success alert-dismissible w-100">
-            <button type="button" class="btn oi oi-x float-right" @onclick="ClearSuccess"></button>
-            <p>@SuccessMessage</p>
-        </div>
-    </div>
-</div>
-}
+@inject IAlertService _alert
 
 @if(ModalAlert is not null)
 {
@@ -316,9 +288,6 @@
     [CascadingParameter(Name = "Airborne")]
     public bool Airborne { get; set; } = false;
 
-    protected string? SuccessMessage { get; set; } = null;
-    protected List<string> Errors { get; set; } = new();
-
     public bool Loaded { get; set; } = false;
 
     public List<Promotion> EligiblePromotions { get; set; } = new();
@@ -331,16 +300,6 @@
     private Promotion Promotion { get; set; } = new();
 
     private Promotion? ModalAlert { get; set; } = null;
-
-    protected void ClearSuccess()
-    {
-        SuccessMessage = null;
-    }
-
-    protected void ClearErrors()
-    {
-        Errors.Clear();   
-    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -416,7 +375,7 @@
 
             if(Promotion.PromoteTo <= 0)
             {
-                Errors.Add("No rank was selected to promote to.");
+                _alert.PostAlert(this, new List<string>() { "No rank was selected to promote to." });
                 return;
             }
 
@@ -429,11 +388,11 @@
 
             if (!res.GetResult(out var errors))
             {
-                Errors.AddRange(errors);
+                _alert.PostAlert(this, errors);
             }
             else
             {
-                SuccessMessage = "Promotion filed successfully!";
+                _alert.PostAlert(this, "Promotion filed successfully!");
 
                 if(BoardLevel >= PromotionBoardLevel.Battalion 
                     && BoardLevel < PromotionBoardLevel.Razor)

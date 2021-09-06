@@ -11,7 +11,7 @@
     </Router>
 </CascadingAuthenticationState>
 
-<div class="position-absolute top-0 end-0 p-2">
+<div class="position-fixed top-0 end-0 p-2">
 @if(Alerts is not null)
 {
     Counter = 0;
@@ -22,7 +22,7 @@
 
         <div class="@item.Level.GetAlertClasses() alert-dismissible fade show" role="alert">
             @item.Display
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+            <button type="button" class="btn-close" aria-label="Close"
                 @onclick="() => OnAlertRemoved(i)"></button>
         </div>
     }

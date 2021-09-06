@@ -28,11 +28,10 @@ namespace FiveOhFirstDataCore.Pages.Message
 
         [Inject]
         public IMessageService MessageService { get; set; }
+        [Inject]
+        public IAlertService AlertService { get; set; }
 
         public string NewMessage { get; set; }
-
-        private List<string> Errors { get; set; } = new();
-        private string? Success { get; set; } = null;
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -54,6 +53,7 @@ namespace FiveOhFirstDataCore.Pages.Message
 
         protected async Task PostMessage()
         {
+            List<string> errors = new();
             if (!string.IsNullOrWhiteSpace(NewMessage))
             {
                 var res = await MessageService.PostMessageAsync(new()
@@ -64,10 +64,10 @@ namespace FiveOhFirstDataCore.Pages.Message
                 });
 
                 if (!res.GetResult(out var err))
-                    Errors.AddRange(err);
+                    errors.AddRange(err);
                 else
                 {
-                    Success = "Message posted.";
+                    AlertService.PostAlert(this, "Message posted.");
                     await base.SetPage(base.Segments);
                     if (OnAfterMessagePostAsync is not null)
                         await OnAfterMessagePostAsync.Invoke();
@@ -75,18 +75,11 @@ namespace FiveOhFirstDataCore.Pages.Message
             }
             else
             {
-                Errors.Add("The message can not be empty!");
+                errors.Add("The message can not be empty!");
             }
-        }
 
-        protected void ClearErrors()
-        {
-            Errors.Clear();
-        }
-
-        protected void ClearSuccess()
-        {
-            Success = null;
+            if (errors.Count > 0)
+                AlertService.PostAlert(this, errors);
         }
     }
 }
