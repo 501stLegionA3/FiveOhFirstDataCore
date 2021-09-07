@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using FiveOhFirstDataCore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210906221206_Dev-Power-Bday")]
+    partial class DevPowerBday
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,44 +97,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasIndex("FiledToId");
 
                     b.ToTable("DisciplinaryActions");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<bool>("ElevatedToBattalion")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<bool>("Public")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("ReportViewableAt")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ReportedById")
-                        .HasColumnType("integer");
-
-                    b.Property<bool>("Resolved")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("SubmittedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Summary")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportedById");
-
-                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
@@ -447,34 +411,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Message.TrooperMessage", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("MessageFor")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("MessageFor");
-
-                    b.ToTable("TrooperMessages");
-                });
-
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
                 {
                     b.Property<Guid>("NoticeId")
@@ -721,30 +657,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.HasKey("Key");
 
                     b.ToTable("DiscordRoles");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Notification.ReportNotificationTracker", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("LastView")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("NotificationForId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("NotificationForId");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("ReportNotificationTrackers");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperDescription", b =>
@@ -1370,17 +1282,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("FiledTo");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ReportedBy")
-                        .WithMany("FiledReports")
-                        .HasForeignKey("ReportedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ReportedBy");
-                });
-
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Trooper")
@@ -1408,23 +1309,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("ChangedFor");
 
                     b.Navigation("FinalizedBy");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Message.TrooperMessage", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
-                        .WithMany("TrooperMessages")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", null)
-                        .WithMany("Responses")
-                        .HasForeignKey("MessageFor")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
@@ -1483,25 +1367,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired();
 
                     b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Notification.ReportNotificationTracker", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "NotificationFor")
-                        .WithMany("TrooperReportTrackers")
-                        .HasForeignKey("NotificationForId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", "Report")
-                        .WithMany("NotificationTrackers")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("NotificationFor");
-
-                    b.Navigation("Report");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperDescription", b =>
@@ -1799,13 +1664,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
-                {
-                    b.Navigation("NotificationTrackers");
-
-                    b.Navigation("Responses");
-                });
-
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
                 {
                     b.Navigation("ApprovedNickNameUpdates");
@@ -1831,8 +1689,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("DisciplinaryActions");
 
                     b.Navigation("FiledDisciplinaryActions");
-
-                    b.Navigation("FiledReports");
 
                     b.Navigation("FinalizedChangeRequests");
 
@@ -1867,10 +1723,6 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Navigation("TimeUpdates");
 
                     b.Navigation("TrooperChangeRequests");
-
-                    b.Navigation("TrooperMessages");
-
-                    b.Navigation("TrooperReportTrackers");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>

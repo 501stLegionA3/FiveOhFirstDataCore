@@ -6,6 +6,7 @@ using FiveOhFirstDataCore.Core.Data.Promotions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
+using FiveOhFirstDataCore.Core.Extensions;
 
 using Microsoft.AspNetCore.Identity;
 
@@ -41,6 +42,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public DateTime LastBilletChange { get; set; }
         public DateTime GraduatedBCTOn { get; set; }
         public DateTime GraduatedUTCOn { get; set; }
+        public DateTime RealBirthday { get; set; }
+        public Boolean ShowBirthday { get; set; }
 
         public DateTime? BilletedCShopLeadership { get; set; }
         public bool IsCShopCommand { get; set; }
@@ -324,6 +327,16 @@ namespace FiveOhFirstDataCore.Core.Account
             {
                 return "";
             }
+        }
+
+        public Boolean IsRealBirthday()
+        {
+            return DateTImeExtensions.IsAnniversary(RealBirthday, DateTime.Now);
+        }
+
+        public Boolean IsCloneBirthday()
+        {
+            return DateTImeExtensions.IsAnniversary(StartOfService,DateTime.Now);
         }
 
         public string DisplayRankName()

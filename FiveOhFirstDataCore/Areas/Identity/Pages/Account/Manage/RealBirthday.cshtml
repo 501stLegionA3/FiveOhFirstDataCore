@@ -1,0 +1,35 @@
+﻿@page
+@model RealBirthdayModel
+@{
+    ViewData["Title"] = "Change Birthday";
+    ViewData["ActivePage"] = ManageNavPages.RealBirthday;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="RealBirthday-form" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+                <input asp-for="Input.NewShowBirthday" type="checkbox"/>
+                <label asp-for="Input.NewShowBirthday"></label>
+            <div class="form-group">
+                <label asp-for="RealBirthday"></label>
+                <input asp-for="Input.NewBirthday" class="form-control" type="date" aria-required="true" disabled="true" />
+                <span asp-validation-for="Input.NewBirthday" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Input.NewBirthday"></label>
+                <input asp-for="Input.NewBirthday" class="form-control" type="date" aria-required="true" />
+                <span asp-validation-for="Input.NewBirthday" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Update Birthday</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

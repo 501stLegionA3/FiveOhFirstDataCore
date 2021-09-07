@@ -10,11 +10,15 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 
         public static string ChangePassword => "ChangePassword";
 
+        public static string RealBirthday => "RealBirthday";
+
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
 
         public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+
+        public static string RealBirthdayNavClass(ViewContext viewContext) => PageNavClass(viewContext, RealBirthday);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {
