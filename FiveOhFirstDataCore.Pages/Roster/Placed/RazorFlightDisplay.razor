@@ -13,7 +13,7 @@
             Flight Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Flight.Commander?.WarrantRank is null ? Flight.Commander?.PilotRank?.AsFull() + " " ?? "" : Flight.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Flight.Commander?.NickName ?? "TBD")
+            @(Flight.Commander?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 </tbody>
