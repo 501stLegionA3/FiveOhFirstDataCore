@@ -339,29 +339,27 @@ namespace FiveOhFirstDataCore.Core.Account
             return DateTImeExtensions.IsAnniversary(StartOfService,DateTime.Now);
         }
 
+        private string BirthdayCake()
+        {
+            if (IsCloneBirthday())
+            {
+                return "🎂";
+            }
+            if (IsRealBirthday() && ShowBirthday)
+            {
+                return "🎂🎂🎂";
+            }
+            return "";
+        }
+
         public string DisplayRankName()
         {
             string name = "";
-            if (WarrantRank is not null)
-            {
-                name = name + (WarrantRank?.AsFull() + " " ?? "");
-                name = name + NickName;
-                return name;
-            }
-            if (PilotRank is not null)
-            {
-                name = name + (PilotRank?.AsFull() + " " ?? "");
-                name = name + NickName;
-                return name;
-            }
-            if (WardenRank is not null)
-            {
-                name = name + (WardenRank?.AsFull() + " " ?? "");
-                name = name + NickName;
-                return name;
-            }
+            name = name + (WarrantRank?.AsFull() + " " ?? "");
+            name = name + (PilotRank?.AsFull() + " " ?? "");
+            name = name + (WardenRank?.AsFull() + " " ?? "");
             name = name + (Rank?.AsFull() + " " ?? "");
-            name = name + NickName + ":)";
+            name = name + NickName + " " + BirthdayCake();
             return name;
         }
     }
