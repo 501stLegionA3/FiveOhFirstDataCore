@@ -321,7 +321,7 @@ namespace FiveOhFirstDataCore.Core.Account
             }
         }
 
-        public string DisplayName()
+        public string DisplayRankName()
         {
             string name = "";
             if (WarrantRank is not null)
@@ -343,7 +343,7 @@ namespace FiveOhFirstDataCore.Core.Account
                 return name;
             }
             name = name + (Rank?.AsFull() + " " ?? "");
-            name = name + NickName;
+            name = name + NickName + ":)";
             return name;
         }
     }

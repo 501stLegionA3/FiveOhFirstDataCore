@@ -6,7 +6,7 @@
             Platoon Commander
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.Commander?.WarrantRank is null ? Platoon.Commander?.Rank?.AsFull() + " " ?? "" : Platoon.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Commander?.NickName ?? "TBD")
+            @(Platoon.Commander?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Platoon.SergeantMajor is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.SergeantMajor?.Id)">
@@ -14,7 +14,7 @@
             Platoon Sergeant Major
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.SergeantMajor?.WarrantRank is null ? Platoon.SergeantMajor?.Rank?.AsFull() + " " ?? "" : Platoon.SergeantMajor?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.SergeantMajor?.NickName ?? "TBD")
+            @(Platoon.SergeantMajor?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Platoon.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Medic?.Id)">
@@ -22,7 +22,7 @@
             Platoon Medic
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.Medic?.WarrantRank is null ? Platoon.Medic?.Rank?.AsFull() + " " ?? "" : Platoon.Medic?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.Medic?.NickName ?? "TBD")
+            @(Platoon.Medic?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Platoon.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.RT?.Id)">
@@ -30,7 +30,7 @@
             Platoon RT
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.RT?.WarrantRank is null ? Platoon.RT?.Rank?.AsFull() + " " ?? "" : Platoon.RT?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.RT?.NickName ?? "TBD")
+            @(Platoon.RT?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     @if (!Airborne)
@@ -40,7 +40,7 @@
                 Platoon ARC
             </th>
             <td colspan="2" class="text-start">
-                @(Platoon.ARC?.WarrantRank is null ? Platoon.ARC?.Rank?.AsFull() + " " ?? "" : Platoon.ARC?.WarrantRank?.AsFull() + " " ?? "")@(Platoon.ARC?.NickName ?? "TBD")
+                @(Platoon.ARC?.DisplayRankName() ?? "TBD")
             </td>
         </tr> 
     }

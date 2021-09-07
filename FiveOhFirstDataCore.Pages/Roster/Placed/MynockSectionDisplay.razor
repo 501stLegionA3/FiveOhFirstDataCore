@@ -13,7 +13,7 @@
             Section Leader
         </th>
         <td colspan="2" class="text-start">
-            @(Section.Lead?.WarrantRank is null ? Section.Lead?.Rank?.AsFull() + " " ?? "" : Section.Lead?.WarrantRank?.AsFull() + " " ?? "")@(Section.Lead?.NickName ?? "TBD")
+            @(Section.Lead?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr class="table-warning" role="@(Section.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.RT?.Id)">
@@ -21,7 +21,7 @@
             Section RT
         </th>
         <td colspan="2" class="text-start">
-            @(Section.RT?.WarrantRank is null ? Section.RT?.Rank?.AsFull() + " " ?? "" : Section.RT?.WarrantRank?.AsFull() + " " ?? "")@(Section.RT?.NickName ?? "TBD")
+            @(Section.RT?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 
@@ -30,13 +30,13 @@
             Alpha Team Leader
         </th>
         <td class="table-danger text-start" role="@(Section.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Lead?.Id)">
-            @(Section.Teams[0].Lead?.WarrantRank is null ? Section.Teams[0].Lead?.Rank?.AsFull() + " " ?? "" : Section.Teams[0].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Section.Teams[0].Lead?.NickName ?? "TBD") 
+            @(Section.Teams[0].Lead?.DisplayRankName() ?? "TBD")
         </td>
         <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.Id)">
             Bravo Team Leader
         </th>
         <td class="table-primary text-start" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.Id)">
-            @(Section.Teams[1].Lead?.WarrantRank is null ? Section.Teams[1].Lead?.Rank?.AsFull() + " " ?? "" : Section.Teams[1].Lead?.WarrantRank?.AsFull() + " " ?? "")@(Section.Teams[1].Lead?.NickName ?? "TBD") 
+            @(Section.Teams[1].Lead?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr>
@@ -44,13 +44,13 @@
             Alpha Trooper 
         </th>
         <td class="table-danger text-start" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.Id)">
-            @(AT1?.WarrantRank is null ? AT1?.Rank?.AsFull() + " " ?? "" : AT1?.WarrantRank?.AsFull() + " " ?? "")@(AT1?.NickName ?? "TBD") 
+            @(AT1?.DisplayRankName() ?? "TBD")
         </td>
         <th scope="row" class="table-primary text-end" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
             Bravo Trooper
         </th>
         <td class="table-primary text-start" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
-            @(BT1?.WarrantRank is null ? BT1?.Rank?.AsFull() + " " ?? "" : BT1?.WarrantRank?.AsFull() + " " ?? "")@(BT1?.NickName ?? "TBD") 
+            @(BT1?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 
@@ -59,13 +59,13 @@
             Alpha Trooper 
         </th>
         <td class="table-danger text-start" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.Id)">
-            @(AT2?.WarrantRank is null ? AT2?.Rank?.AsFull() + " " ?? "" : AT2?.WarrantRank?.AsFull() + " " ?? "")@(AT2?.NickName ?? "TBD") 
+            @(AT2?.DisplayRankName() ?? "TBD")
         </td>
         <th scope="row" class="table-primary text-end" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
             Bravo Trooper
         </th>
         <td class="table-primary text-start" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
-            @(BT2?.WarrantRank is null ? BT2?.Rank?.AsFull() + " " ?? "" : BT2?.WarrantRank?.AsFull() + " " ?? "")@(BT2?.NickName ?? "TBD") 
+            @(BT2?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 
@@ -88,13 +88,13 @@
                 Alpha Trooper 
             </th>
             <td class="table-danger text-start" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.Id)">
-                @(AT3?.WarrantRank is null ? AT3?.Rank?.AsFull() + " " ?? "" : AT3?.WarrantRank?.AsFull() + " " ?? "")@(AT3?.NickName ?? "TBD") 
+                @(AT3?.DisplayRankName() ?? "TBD")
             </td>
             <th scope="row" class="table-primary text-end" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
                 Bravo Trooper
             </th>
             <td class="table-primary text-start" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
-                @(BT3?.WarrantRank is null ? BT3?.Rank?.AsFull() + " " ?? "" : BT3?.WarrantRank?.AsFull() + " " ?? "")@(BT3?.NickName ?? "TBD") 
+                @(BT3?.DisplayRankName() ?? "TBD")
             </td>
         </tr>
     }
@@ -104,13 +104,13 @@
             Alpha Medic 
         </th>
         <td class="table-danger text-start" role="@(Section.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Medic?.Id)">
-            @(Section.Teams[0].Medic?.WarrantRank is null ? Section.Teams[0].Medic?.Rank?.AsFull() + " " ?? "" : Section.Teams[0].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Section.Teams[0].Medic?.NickName ?? "TBD") 
+            @(Section.Teams[0].Medic?.DisplayRankName() ?? "TBD")
         </td>
         <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.Id)">
             Bravo Medic
         </th>
         <td class="table-primary text-start" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.Id)">
-            @(Section.Teams[1].Medic?.WarrantRank is null ? Section.Teams[1].Medic?.Rank?.AsFull() + " " ?? "" : Section.Teams[1].Medic?.WarrantRank?.AsFull() + " " ?? "")@(Section.Teams[1].Medic?.NickName ?? "TBD") 
+            @(Section.Teams[1].Medic?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 </tbody>

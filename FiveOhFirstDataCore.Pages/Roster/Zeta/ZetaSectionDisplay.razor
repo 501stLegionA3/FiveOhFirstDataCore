@@ -18,7 +18,7 @@
         Section Commander
     </th>
     <td class="text-start">
-        @(Section.Commander?.WarrantRank is null ? Section.Commander?.Rank?.AsFull() + " " ?? "" : Section.Commander?.WarrantRank?.AsFull() + " " ?? "")@(Section.Commander?.NickName ?? "TBD")
+        @(Section.Commander?.DisplayRankName() ?? "TBD")
     </td>
 </tr>
 <tr class="table-warning" role="@(Section.Subordinate is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Subordinate?.Id)">
@@ -26,7 +26,7 @@
         Section Subordinate
     </th>
     <td class="text-start">
-        @(Section.Subordinate?.WarrantRank is null ? Section.Subordinate?.Rank?.AsFull() + " " ?? "" : Section.Subordinate?.WarrantRank?.AsFull() + " " ?? "")@(Section.Subordinate?.NickName ?? "TBD")
+        @(Section.Subordinate?.DisplayRankName() ?? "TBD")
     </td>
 </tr>
 </tbody>

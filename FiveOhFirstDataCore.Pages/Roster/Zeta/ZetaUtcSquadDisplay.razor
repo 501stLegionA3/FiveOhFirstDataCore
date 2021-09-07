@@ -13,7 +13,7 @@
             Squad Leader
         </th>
         <td class="w-50">
-            @(UTCSquad.SquadLeader?.WarrantRank is null ? UTCSquad.SquadLeader?.Rank?.AsFull() + " " ?? "" : UTCSquad.SquadLeader?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.SquadLeader?.NickName ?? "TBD")
+            @(UTCSquad.SquadLeader?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 
@@ -25,7 +25,7 @@
                 Trooper
             </th>
             <td >
-                @(UTCSquad.Troopers[c]?.WarrantRank is null ? UTCSquad.Troopers[c]?.Rank?.AsFull() + " " ?? "" : UTCSquad.Troopers[c]?.WarrantRank?.AsFull() + " " ?? "")@(UTCSquad.Troopers[c]?.NickName ?? "TBD")
+               @(UTCSquad.Troopers[c]?.DisplayRankName() ?? "TBD")
             </td>
         </tr>
     }

@@ -13,7 +13,7 @@
         Master Warden
     </th>
     <td scope="row" colspan="2">
-        @(Warden.Master?.DisplayName() ?? "TBD")
+        @(Warden.Master?.DisplayRankName() ?? "TBD")
     </td>
 </tr>
 <tr role="@(Warden.Chief is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Chief?.Id)">
@@ -21,7 +21,7 @@
         Chief Warden
     </th>
     <td scope="row" colspan="2">
-        @(Warden.Chief?.DisplayName() ?? "TBD")
+        @(Warden.Chief?.DisplayRankName() ?? "TBD")
     </td>
 </tr>
 
@@ -34,7 +34,7 @@
             Section Lead (@c-1)
         </th>
         <td scope="row" colspan="2">
-            @(Warden.Wardens[i].SectionLead?.DisplayName() ?? "TBD")
+            @(Warden.Wardens[i].SectionLead?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Warden.Wardens[n].WardenTwo is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenTwo?.Id)">
@@ -42,7 +42,7 @@
             Warden @c-2
         </th>
         <td scope="row" colspan="2">
-            @(Warden.Wardens[i].WardenTwo?.DisplayName() ?? "TBD")
+            @(Warden.Wardens[i].WardenTwo?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Warden.Wardens[n].WardenThree is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenThree?.Id)">
@@ -50,7 +50,7 @@
             Warden @c-3
         </th>
         <td scope="row" colspan="2">
-            @(Warden.Wardens[i].WardenThree?.DisplayName() ?? "TBD")
+            @(Warden.Wardens[i].WardenThree?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 }

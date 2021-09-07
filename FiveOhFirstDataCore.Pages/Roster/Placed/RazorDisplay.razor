@@ -18,7 +18,7 @@
             Squadron Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.Commander?.WarrantRank is null ? Razor.Commander?.PilotRank?.AsFull() + " " ?? "" : Razor.Commander.WarrantRank?.AsFull() + " " ?? "")@(Razor.Commander?.NickName ?? "TBD")
+            @(Razor.Commander?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.Id)">
@@ -26,7 +26,7 @@
             Squadron Sub-Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.SubCommander?.WarrantRank is null ? Razor.SubCommander?.PilotRank?.AsFull() + " " ?? "" : Razor.SubCommander.WarrantRank?.AsFull() + " " ?? "")@(Razor.SubCommander?.NickName ?? "TBD")
+            @(Razor.SubCommander?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
     <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.Id)">
@@ -34,7 +34,7 @@
             Squadron FOIC
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.FOIC?.WarrantRank is null ? Razor.FOIC?.PilotRank?.AsFull() + " " ?? "" : Razor.FOIC.WarrantRank?.AsFull() + " " ?? "")@(Razor.FOIC?.NickName ?? "TBD")
+            @(Razor.FOIC?.DisplayRankName() ?? "TBD")
         </td>
     </tr>
 </tbody>
