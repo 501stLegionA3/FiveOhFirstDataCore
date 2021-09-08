@@ -3,8 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "font-awesome@5.15.4",
-      "destination": "wwwroot/lib/font-awesome/"
     }
   ]
 }

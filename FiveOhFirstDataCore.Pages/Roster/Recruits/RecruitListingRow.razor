@@ -1,6 +1,6 @@
 ﻿<tr>
     <td>@Trooper.Id</td>
-    <td>@Trooper.NickName</td>
+    <td>@Trooper.NickName @Trooper.BirthdayCake()</td>
     <td>@Trooper.RecruitStatus?.PreferredRole.AsFull()</td>
     <td class="d-none d-md-table-cell">@((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)</td>
     <td>
