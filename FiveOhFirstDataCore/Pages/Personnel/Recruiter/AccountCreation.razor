@@ -156,8 +156,6 @@
     protected void IdChanged(ChangeEventArgs e)
     {
         string str = (string?)e.Value ?? "";
-        if (System.Text.RegularExpressions.Regex.IsMatch(str, @"\d\d\d\d\d"))
-        {
             if (int.TryParse(str, out int val))
             {
                 if (TakenIds.Contains(val) || val == 0)
@@ -174,11 +172,6 @@
             {
                 ValidNewId = false;
             }
-        }
-        else
-        {
-            ValidNewId = false;
-        }
 
         _refresh.CallRequestRefresh();
     }
@@ -237,12 +230,12 @@
                 }
                 else
                 {
-                    _alert.PostAlert(this, $"Trooper name is invalid");
+                    Errors.Add("Trooper name is invalid");
                 }
             }
             else
             {
-                _alert.PostAlert(this, $"Trooper ID is invalid");
+                Errors.Add("Trooper ID is invalid");
             }
         }
         else
