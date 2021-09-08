@@ -4,7 +4,7 @@
 @inject IAdvancedRefreshService _advRefresh
 @inject IAuthorizationService _auth
 
-<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark align-items-stretch position-relative nav-menu-box">
+<div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark align-items-stretch position-relative nav-menu-box"> 
     <div class="top-row pl-4 navbar navbar-dark">
         <div class="container">
             <a class="navbar-brand mx-auto" href="">501st Data Core</a>
@@ -19,7 +19,11 @@
             <AuthorizeView>
                 <Authorized>
                     <button role="button" id="loginButtons" data-bs-toggle="collapse" data-bs-target="#login-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
-                        <strong>@CurrentUser?.Id @CurrentUser?.NickName</strong>
+                        <strong>@CurrentUser?.Id @CurrentUser?.NickName 
+                            @if (@CurrentUser is not null) {
+                                @CurrentUser.BirthdayCake()
+                            }
+                        </strong>
                     </button>
                     <div id="login-menu" class="collapse">
                         <div class="text-small dropdown-menu-dark shadow p-2">
