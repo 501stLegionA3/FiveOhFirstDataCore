@@ -13,7 +13,14 @@
             Detachment Commander
         </th>
         <td colspan="2" class="text-start">
-            @(Mynock.Commander?.DisplayRankName() ?? "TBD")
+            @if (Mynock.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Mynock.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Mynock.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.NCOIC?.Id)">
@@ -21,7 +28,14 @@
             Detachment NCOIC
         </th>
         <td colspan="2" class="text-start">
-            @(Mynock.NCOIC?.DisplayRankName() ?? "TBD")
+            @if (Mynock.NCOIC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Mynock.NCOIC.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Mynock.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Medic?.Id)">
@@ -29,7 +43,14 @@
             Detachment Medic
         </th>
         <td colspan="2" class="text-start">
-            @(Mynock.Medic?.DisplayRankName() ?? "TBD")
+            @if (Mynock.Medic is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Mynock.Medic.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Mynock.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.RT?.Id)">
@@ -37,7 +58,14 @@
             Detachment RT
         </th>
         <td colspan="2" class="text-start">
-            @(Mynock.RT?.DisplayRankName() ?? "TBD")
+            @if (Mynock.RT is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Mynock.RT.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

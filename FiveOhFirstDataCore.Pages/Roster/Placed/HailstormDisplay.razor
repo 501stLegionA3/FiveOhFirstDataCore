@@ -19,7 +19,14 @@
             Battalion Commander
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start w-50">
-            @(Hailstorm.Commander?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.XO?.Id)">
@@ -27,7 +34,14 @@
             Battalion Executive Officer
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.XO?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.XO is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.XO.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.CShopCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopCommander?.Id)">
@@ -35,7 +49,14 @@
             Battalion C-Shop Commander
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.CShopCommander?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.CShopCommander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.CShopCommander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.CShopXO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopXO?.Id)">
@@ -43,7 +64,14 @@
             C-Shop Executive Officer
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.CShopXO?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.CShopXO is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.CShopXO.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.NCOIC?.Id)">
@@ -51,7 +79,14 @@
             Battalion NCOIC
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.NCOIC?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.NCOIC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.NCOIC.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.Medic?.Id)">
@@ -59,7 +94,14 @@
             Battalion Medic
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.Medic?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.Medic is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.Medic.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Hailstorm.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.RT?.Id)">
@@ -67,7 +109,14 @@
             Battalion RT
         </th>
         <td colspan="@(Single ? 1 : 2)" class="text-start">
-            @(Hailstorm.RT?.DisplayRankName() ?? "TBD")
+            @if (Hailstorm.RT is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.RT.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

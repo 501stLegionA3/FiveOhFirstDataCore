@@ -6,7 +6,14 @@
             Platoon Commander
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.Commander?.DisplayRankName() ?? "TBD")
+            @if (Platoon.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Platoon.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Platoon.SergeantMajor is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.SergeantMajor?.Id)">
@@ -14,7 +21,14 @@
             Platoon Sergeant Major
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.SergeantMajor?.DisplayRankName() ?? "TBD")
+            @if (Platoon.SergeantMajor is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Platoon.SergeantMajor.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Platoon.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Medic?.Id)">
@@ -22,7 +36,14 @@
             Platoon Medic
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.Medic?.DisplayRankName() ?? "TBD")
+            @if (Platoon.Medic is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Platoon.Medic.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Platoon.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.RT?.Id)">
@@ -30,7 +51,14 @@
             Platoon RT
         </th>
         <td colspan="2" class="text-start">
-            @(Platoon.RT?.DisplayRankName() ?? "TBD")
+            @if (Platoon.RT is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Platoon.RT.DisplayRankName()                
+            }
         </td>
     </tr>
     @if (!Airborne)
@@ -40,7 +68,14 @@
                 Platoon ARC
             </th>
             <td colspan="2" class="text-start">
-                @(Platoon.ARC?.DisplayRankName() ?? "TBD")
+                @if (Platoon.ARC is null)
+                {
+                    <span>TBD</span>
+                }
+                else
+                {
+                    @Platoon.ARC.DisplayRankName()                
+                }
             </td>
         </tr> 
     }

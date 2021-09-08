@@ -277,11 +277,17 @@ namespace FiveOhFirstDataCore.Core.Migrations
                     b.Property<int?>("Rank")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("RealBirthday")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
+
+                    b.Property<bool>("ShowBirthday")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("Slot")
                         .HasColumnType("integer");
