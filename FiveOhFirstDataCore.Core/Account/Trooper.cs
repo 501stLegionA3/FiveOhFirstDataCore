@@ -345,11 +345,11 @@ namespace FiveOhFirstDataCore.Core.Account
             string name = "";
             if (IsRealBirthday())
             {
-                name += " " + "<i class=\"fas fa-birthday-cake\"></i><i class=\"fas fa-birthday-cake\"></i><i class=\"fas fa-birthday-cake\"></i>";
+                name += " " + "<span class=\"fas fa-birthday-cake\"></span><span class=\"fas fa-birthday-cake\"></span><span class=\"fas fa-birthday-cake\"></span>";
             }
             if (IsCloneBirthday())
             {
-                name += " " + "<i class=\"fas fa-birthday-cake\"></i>";
+                name += " " + "<span class=\"fas fa-birthday-cake\"></span>";
             }
             return new MarkupString(name);
         }
