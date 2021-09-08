@@ -7,8 +7,8 @@ using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace FiveOhFirstDataCore.Core.Account
