@@ -81,7 +81,7 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <remarks>
         /// This method returns a <see cref="Tuple{T1, T2}"/> value where T1 is an <see cref="HashSet{T}"/> of <see cref="int"/>s
         /// and T2 is a <see cref="HashSet{T}"/> of <see cref="string"/>s. T1 is the used User IDs for the unit, while T2 is the
-        /// non-inactive nicknames for the unit.
+        /// non-archived nicknames for the unit.
         /// </remarks>
         /// <returns></returns>
         public Task<(HashSet<int>, HashSet<string>)> GetInUseUserDataAsync();
