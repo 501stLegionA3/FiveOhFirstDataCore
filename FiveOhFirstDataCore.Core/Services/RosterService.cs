@@ -87,7 +87,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 ids.Add(x.Id);
 
-                if (x.Slot < Data.Slot.InactiveReserve)
+                if (x.Slot < Data.Slot.Archived)
                     nicknames.Add(x.NickName);
             });
 

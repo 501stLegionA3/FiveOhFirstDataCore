@@ -156,22 +156,22 @@
     protected void IdChanged(ChangeEventArgs e)
     {
         string str = (string?)e.Value ?? "";
-        if(int.TryParse(str, out int val))
-        {
-            if(TakenIds.Contains(val))
+            if (int.TryParse(str, out int val))
             {
-                ValidNewId = false;
+                if (TakenIds.Contains(val) || val == 0)
+                {
+                    ValidNewId = false;
+                }
+                else
+                {
+                    TrooperData.Id = val;
+                    ValidNewId = true;
+                }
             }
             else
             {
-                TrooperData.Id = val;
-                ValidNewId = true;
+                ValidNewId = false;
             }
-        }
-        else
-        {
-            ValidNewId = false;
-        }
 
         _refresh.CallRequestRefresh();
     }
@@ -211,17 +211,31 @@
 
         if((await _auth.AuthorizeAsync(claim, "RequireRecruiterOrReturningMemberStaff")).Succeeded)
         {
-            var res = await _roster.RegisterTrooper(TrooperData, claim);
-
-            if(res.GetResult(out var token, out var errors))
+            if (ValidNewId)
             {
-                _alert.PostAlert(this, $"New trooper added. Their Access Code is: {token}");
-                _advRefresh.CallDataReloadRequest("UserData");
-                TrooperData = new();
+                if (ValidNewNickname)
+                {
+                    var res = await _roster.RegisterTrooper(TrooperData, claim);
+
+                    if (res.GetResult(out var token, out var errors))
+                    {
+                        _alert.PostAlert(this, $"New trooper added. Their Access Code is: {token}");
+                        _advRefresh.CallDataReloadRequest("UserData");
+                        TrooperData = new();
+                    }
+                    else
+                    {
+                        Errors.AddRange(errors);
+                    }  
+                }
+                else
+                {
+                    Errors.Add("Trooper name is invalid");
+                }
             }
             else
             {
-                Errors.AddRange(errors);
+                Errors.Add("Trooper ID is invalid");
             }
         }
         else
