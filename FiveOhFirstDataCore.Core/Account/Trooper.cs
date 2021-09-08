@@ -3,12 +3,13 @@ using FiveOhFirstDataCore.Core.Data;
 using FiveOhFirstDataCore.Core.Data.Message;
 using FiveOhFirstDataCore.Core.Data.Notice;
 using FiveOhFirstDataCore.Core.Data.Promotions;
+using FiveOhFirstDataCore.Core.Extensions;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Structures.Notification;
 using FiveOhFirstDataCore.Core.Structures.Updates;
-using FiveOhFirstDataCore.Core.Extensions;
-
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Components;
+
 
 namespace FiveOhFirstDataCore.Core.Account
 {
@@ -329,38 +330,40 @@ namespace FiveOhFirstDataCore.Core.Account
             }
         }
 
-        public Boolean IsRealBirthday()
+        public bool IsRealBirthday()
         {
-            return DateTImeExtensions.IsAnniversary(RealBirthday, DateTime.Now);
+            return RealBirthday.IsAnniversary(DateTime.Now);
         }
 
-        public Boolean IsCloneBirthday()
+        public bool IsCloneBirthday()
         {
-            return DateTImeExtensions.IsAnniversary(StartOfService,DateTime.Now);
+            return StartOfService.IsAnniversary(DateTime.Now);
         }
 
-        private string BirthdayCake()
-        {
-            if (IsCloneBirthday())
-            {
-                return "🎂";
-            }
-            if (IsRealBirthday() && ShowBirthday)
-            {
-                return "🎂🎂🎂";
-            }
-            return "";
-        }
-
-        public string DisplayRankName()
+        public MarkupString BirthdayCake()
         {
             string name = "";
-            name = name + (WarrantRank?.AsFull() + " " ?? "");
-            name = name + (PilotRank?.AsFull() + " " ?? "");
-            name = name + (WardenRank?.AsFull() + " " ?? "");
-            name = name + (Rank?.AsFull() + " " ?? "");
-            name = name + NickName + " " + BirthdayCake();
-            return name;
+            if (IsRealBirthday())
+            {
+                name += " " + "<i class=\"fas fa-birthday-cake\"></i><i class=\"fas fa-birthday-cake\"></i><i class=\"fas fa-birthday-cake\"></i>";
+            }
+            if (IsCloneBirthday())
+            {
+                name += " " + "<i class=\"fas fa-birthday-cake\"></i>";
+            }
+            return new MarkupString(name);
+        }
+
+        public MarkupString DisplayRankName()
+        {
+            string name = "";
+            name += (WarrantRank?.AsFull() + " " ?? "");
+            name += (PilotRank?.AsFull() + " " ?? "");
+            name += (WardenRank?.AsFull() + " " ?? "");
+            name += (Rank?.AsFull() + " " ?? "");
+            name += NickName;
+
+            return new MarkupString(name + BirthdayCake().Value);
         }
     }
 }

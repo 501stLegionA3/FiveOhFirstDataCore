@@ -24,7 +24,7 @@
             return DateTime.UtcNow.Subtract(today).Days;
         }
 
-        public static Boolean IsAnniversary(DateTime date1, DateTime date2)
+        public static bool IsAnniversary(this DateTime date1, DateTime date2)
         {
             int date1Month = date1.Month;
             int date1Day = date1.Day;
@@ -34,7 +34,7 @@
             {
                 return true;
             }
-                    
+
             return false;
         }
     }

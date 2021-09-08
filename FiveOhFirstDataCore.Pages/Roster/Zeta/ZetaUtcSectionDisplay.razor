@@ -18,7 +18,14 @@
             Section Commander
         </th>
         <td class="text-start">
-            @(UTCSection.Commander?.DisplayRankName() ?? "TBD")
+            @if (UTCSection.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @UTCSection.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr class="table-warning" role="@(UTCSection.Subordinate is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSection.Subordinate?.Id)">
@@ -26,7 +33,14 @@
             Section Subordinate
         </th>
         <td  class="text-start">
-            @(UTCSection.Subordinate?.DisplayRankName() ?? "TBD")
+            @if (UTCSection.Subordinate is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @UTCSection.Subordinate.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

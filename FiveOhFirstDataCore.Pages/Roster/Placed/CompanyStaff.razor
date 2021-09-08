@@ -8,7 +8,14 @@
             Company Commander
         </th>
         <td colspan="2" class="text-start">
-            @(Company.Commander?.DisplayRankName() ?? "TBD")
+            @if (Company.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.XO?.Id)">
@@ -16,7 +23,14 @@
             Company Executive Officer
         </th>
         <td colspan="2" class="text-start">
-            @(Company.XO?.DisplayRankName() ?? "TBD")
+            @if (Company.XO is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.XO.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.NCOIC?.Id)">
@@ -24,7 +38,14 @@
             Company NCOIC
         </th>
         <td colspan="2" class="text-start">
-            @(Company.NCOIC?.DisplayRankName() ?? "TBD")
+            @if (Company.NCOIC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.NCOIC.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Medic?.Id)">
@@ -32,7 +53,14 @@
             Company Medic
         </th>
         <td colspan="2" class="text-start">
-            @(Company.Medic?.DisplayRankName() ?? "TBD")
+            @if (Company.Medic is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.Medic.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.RT?.Id)">
@@ -40,7 +68,14 @@
             Company RT
         </th>
         <td colspan="2" class="text-start">
-            @(Company.RT?.DisplayRankName() ?? "TBD")
+            @if (Company.RT is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.RT.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.ARC?.Id)">
@@ -48,7 +83,14 @@
             Company ARC
         </th>
         <td colspan="2" class="text-start">
-            @(Company.ARC?.DisplayRankName() ?? "TBD")
+            @if (Company.ARC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.ARC.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Company.Adjutant is null ? "" : "button")" @onclick="(x) => TrooperNav(Company.Adjutant?.Id)">
@@ -56,7 +98,14 @@
             Company Adjutant
         </th>
         <td colspan="2" class="text-start">
-            @(Company.Adjutant?.DisplayRankName() ?? "TBD")
+            @if (Company.Adjutant is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Company.Adjutant.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

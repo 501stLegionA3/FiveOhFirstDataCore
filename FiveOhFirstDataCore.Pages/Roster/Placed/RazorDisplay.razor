@@ -18,7 +18,14 @@
             Squadron Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.Commander?.DisplayRankName() ?? "TBD")
+            @if (Razor.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Razor.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.Id)">
@@ -26,7 +33,14 @@
             Squadron Sub-Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.SubCommander?.DisplayRankName() ?? "TBD")
+            @if (Razor.SubCommander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Razor.SubCommander.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.Id)">
@@ -34,7 +48,14 @@
             Squadron FOIC
         </th>
         <td class="text-start" colspan="2">
-            @(Razor.FOIC?.DisplayRankName() ?? "TBD")
+            @if (Razor.FOIC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Razor.FOIC.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

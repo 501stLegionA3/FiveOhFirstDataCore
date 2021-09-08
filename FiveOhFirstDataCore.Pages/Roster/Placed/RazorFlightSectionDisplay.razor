@@ -13,7 +13,14 @@
             Pilot (@($"{SectionNumber}A"))
         </th>
         <td class="text-start" colspan="2">
-            @(Section.Alpha?.DisplayRankName() ?? "TBD")
+            @if (Section.Alpha is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Section.Alpha.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Section.Bravo is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Bravo?.Id)">
@@ -21,7 +28,14 @@
             Pilot (@($"{SectionNumber}B"))
         </th>
         <td class="text-start" colspan="2">
-            @(Section.Bravo?.DisplayRankName() ?? "TBD")
+            @if (Section.Bravo is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Section.Bravo.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Section.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Charlie?.Id)">
@@ -29,7 +43,14 @@
             Pilot (@($"{SectionNumber}C"))
         </th>
         <td class="text-start" colspan="2">
-            @(Section.Charlie?.DisplayRankName() ?? "TBD")
+            @if (Section.Charlie is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Section.Charlie.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Section.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Delta?.Id)">
@@ -37,7 +58,14 @@
             Pilot (@($"{SectionNumber}D"))
         </th>
         <td class="text-start" colspan="2">
-            @(Section.Delta?.DisplayRankName() ?? "TBD")
+            @if (Section.Delta is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Section.Delta.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

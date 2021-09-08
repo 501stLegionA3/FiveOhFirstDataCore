@@ -13,7 +13,14 @@
             Flight Commander
         </th>
         <td class="text-start" colspan="2">
-            @(Flight.Commander?.DisplayRankName() ?? "TBD")
+            @if (Flight.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Flight.Commander.DisplayRankName()                
+            }
         </td>
     </tr>
 </tbody>

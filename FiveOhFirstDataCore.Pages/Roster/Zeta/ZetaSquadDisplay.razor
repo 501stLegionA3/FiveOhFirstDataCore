@@ -13,7 +13,14 @@
             Squad Leader
         </th>
         <td class="w-50">
-            @(Squad.SquadLeader?.DisplayRankName() ?? "TBD")
+            @if (Squad.SquadLeader is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squad.SquadLeader.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Squad.Leader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Leader?.Id)">
@@ -21,7 +28,14 @@
             Team Leader
         </th>
         <td >
-            @(Squad.Leader?.DisplayRankName() ?? "TBD")
+            @if (Squad.Leader is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squad.Leader.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Squad.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.RT?.Id)">
@@ -29,7 +43,14 @@
             RT
         </th>
         <td >
-            @(Squad.RT?.DisplayRankName() ?? "TBD")
+            @if (Squad.RT is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squad.RT.DisplayRankName()                
+            }
         </td>
     </tr>
     <tr role="@(Squad.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Medic?.Id)">
@@ -37,7 +58,14 @@
             Medic
         </th>
         <td >
-            @(Squad.Medic?.DisplayRankName() ?? "TBD")
+            @if (Squad.Medic is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squad.Medic.DisplayRankName()                
+            }
         </td>
     </tr>
 
@@ -49,7 +77,14 @@
                 Trooper
             </th>
             <td >
-                @(Squad.Troopers[c]?.DisplayRankName() ?? "TBD")
+                @if (Squad.Troopers[c] is null)
+                {
+                    <span>TBD</span>
+                }
+                else
+                {
+                    @Squad.Troopers[c].DisplayRankName()                
+                }
             </td>
         </tr>
     }
