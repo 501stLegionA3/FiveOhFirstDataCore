@@ -53,3 +53,24 @@ a, .btn-link {
 .bi {
     font-size: 1.25rem;
 }
+
+.pt-6 {
+    padding-top: 5rem !important;
+}
+.pb-6 {
+    padding-bottom: 5rem !important;
+}
+.ps-6 {
+    padding-left: 5rem !important;
+}
+.pe-6 {
+    padding-right: 5rem !important;
+}
+.px-6 {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+}
+.py-6 {
+    padding-top: 5rem !important;
+    padding-bottom: 5rem !important;
+}

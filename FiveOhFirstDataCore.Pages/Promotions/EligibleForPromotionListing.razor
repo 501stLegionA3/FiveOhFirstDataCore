@@ -113,9 +113,9 @@
     @if (!IsPromoting)
     {
         <div class="row">
-            <dvi class="col d-grid gap-2">
+            <div class="col d-grid gap-2 pb-6">
                 <button class="btn btn-primary" @onclick="ToggleStartPromotionForm">Start Promotion Process</button>
-            </dvi>
+            </div>
         </div>
     }
     else
@@ -123,10 +123,19 @@
         <EditForm Model="Promotion" class="form">
             <div class="form-group text-center">
                 <div class="row p-2">
-                    <div class="col">
+                    <div class="col pt-4 pb-6">
                         <h3>To Promote</h3>
                         <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="CanPromoteActual" class="form-control" />
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col py-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col py-6"></div>
+                </div>
+                <div class="row">
+                    <div class="col py-6"></div>
                 </div>
                 @if (Promotion.PromotionFor is not null)
                 {
