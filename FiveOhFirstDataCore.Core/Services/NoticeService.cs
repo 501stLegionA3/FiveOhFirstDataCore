@@ -21,16 +21,11 @@ namespace FiveOhFirstDataCore.Core.Services
             _settings = settings;
         }
 
-        public async Task DeleteNoticeAsync(Notice toRemove, string board)
+        public async Task DeleteNoticeAsync(Notice toRemove)
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            var item = await _dbContext.FindAsync<NoticeBoardData>(board);
 
-            if (item is null) item = await GetOrCreateNoticeBoardAsync(board);
-
-            if (item is null) return;
-
-            item.Notices.Remove(toRemove);
+            _dbContext.Remove(toRemove);
 
             await _dbContext.SaveChangesAsync();
         }
