@@ -113,7 +113,7 @@
     @if (!IsPromoting)
     {
         <div class="row">
-            <div class="col d-grid gap-2 pb-6">
+            <div class="col d-grid gap-2 pb-3">
                 <button class="btn btn-primary" @onclick="ToggleStartPromotionForm">Start Promotion Process</button>
             </div>
         </div>
@@ -128,15 +128,7 @@
                         <InputSelectSingleTrooper @bind-Value="Promotion.PromotionFor" Troopers="CanPromoteActual" class="form-control" />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col py-6"></div>
-                </div>
-                <div class="row">
-                    <div class="col py-6"></div>
-                </div>
-                <div class="row">
-                    <div class="col py-6"></div>
-                </div>
+                
                 @if (Promotion.PromotionFor is not null)
                 {
                     <div class="row p-2">
@@ -271,6 +263,7 @@
         </EditForm>
     }
 }
+<br class="p-3" />
 
 @code {
     [CascadingParameter]
