@@ -23,12 +23,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <returns>The <see cref="Task"/> representing this operation.</returns>
         public Task PostNoticeAsync(Notice newNotice, string board, Trooper user);
         /// <summary>
-        /// Deletes a notice from the given board.
+        /// Deletes a given notice.
         /// </summary>
         /// <param name="toRemove">The <see cref="Notice"/> to remove.</param>
-        /// <param name="board">The board name.</param>
         /// <returns>A <see cref="Task"/> representing this operation.</returns>
-        public Task DeleteNoticeAsync(Notice toRemove, string board);
+        public Task DeleteNoticeAsync(Notice toRemove);
         /// <summary>
         /// Determines if this person is one of the provided allowed roles in the selected C-Shops.
         /// </summary>
