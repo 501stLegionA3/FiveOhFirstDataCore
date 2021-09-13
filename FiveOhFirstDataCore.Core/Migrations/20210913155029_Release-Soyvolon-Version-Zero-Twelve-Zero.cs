@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Core.Migrations
 {
-    public partial class DevPowerBday : Migration
+    public partial class ReleaseSoyvolonVersionZeroTwelveZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
