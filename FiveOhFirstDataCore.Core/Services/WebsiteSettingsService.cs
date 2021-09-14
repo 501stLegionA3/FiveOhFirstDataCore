@@ -1058,16 +1058,18 @@ namespace FiveOhFirstDataCore.Core.Services
             return await _dbContext.FindAsync<PromotionDetails>(rank);
         }
 
-        public async Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false)
+        public async Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false, bool filterOutPendingPromotions = true)
         {
             List<Promotion> promotions = new();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
+            //gets Cshop levels
             var levels = await GetCshopLevelsAsync(forTrooper.Id);
 
             List<int> ranks = new();
 
+            //adds any rank that the trooper has
             if (forTrooper.Rank is not null)
                 ranks.Add((int)forTrooper.Rank);
             if (forTrooper.RTORank is not null)
@@ -1094,11 +1096,19 @@ namespace FiveOhFirstDataCore.Core.Services
                 {
                     if (req.TryGetPromotion(rank, forTrooper, levels, out var promo))
                     {
-                        if (!forTrooper.PendingPromotions.Any(x =>
-                            promo.PromoteFrom == x.PromoteFrom
-                            && promo.PromoteTo == x.PromoteTo))
+                        if (filterOutPendingPromotions)
                         {
-                            promotions.Add(promo);
+                            //filters out any pending promotions.
+                            if (!forTrooper.PendingPromotions.Any(x =>
+                                promo.PromoteFrom == x.PromoteFrom
+                                && promo.PromoteTo == x.PromoteTo))
+                            {
+                                promotions.Add(promo);
+                            }
+                            else
+                            {
+                                promotions.Add(promo);
+                            }
                         }
                     }
                 }

@@ -29,9 +29,11 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="forTrooper">The <see cref="Trooper"/> to get promotions for.</param>
         /// <param name="filterOutTrooperToWarrant">A <see cref="bool"/> indicating if this action should 
         /// filter out promtions into a <see cref="WarrantRank"/></param>
+        /// <param name="filterOutPendingPromotions">A <see cref="bool"/> indicating if this action should 
+        /// filter out current pending promotions.</param>
         /// <returns>A <see cref="Task"/> that returns <see cref="IReadOnlyList{T}"/> of 
         /// type <see cref="Promotion"/> for a <see cref="Trooper"/></returns>
-        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false);
+        public Task<IReadOnlyList<Promotion>> GetEligiblePromotionsAsync(Trooper forTrooper, bool filterOutTrooperToWarrant = false, bool filterOutPendingPromotions = true);
         /// <summary>
         /// Get the saved promotion details from the database.
         /// </summary>
