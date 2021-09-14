@@ -123,7 +123,7 @@
 
                 if(set.Count() > 0)
                 {
-                    var eligible = await _settings.GetEligiblePromotionsAsync(t);
+                    var eligible = await _settings.GetEligiblePromotionsAsync(t,false,false);
                     foreach(var i in set)
                     {
                         if(!eligible.Any(x => x.PromoteFrom == i.PromoteFrom 
