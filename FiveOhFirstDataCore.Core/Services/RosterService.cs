@@ -567,7 +567,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<MynockSectionData?> GetMynockSectionDataAsync(Slot slot, bool manager)
         {
-            if (manager || (slot > Slot.Mynock && slot <= Slot.MynockOneThree))
+            if (manager || (slot >= Slot.Mynock && slot <= Slot.MynockOneThree))
             {
                 var data = new MynockSectionData();
 
