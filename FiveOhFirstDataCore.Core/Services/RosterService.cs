@@ -567,21 +567,22 @@ namespace FiveOhFirstDataCore.Core.Services
 
         public async Task<MynockSectionData?> GetMynockSectionDataAsync(Slot slot, bool manager)
         {
-            if (!manager && !slot.IsSquad())
-                return null;
+            if (manager || (slot > Slot.Mynock && slot <= Slot.MynockOneThree))
+            {
+                var data = new MynockSectionData();
 
-            var data = new MynockSectionData();
+                using var _dbContext = _dbContextFactory.CreateDbContext();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+                await _dbContext.Users.AsNoTracking()
+                    .AsSplitQuery()
+                    .Include(p => p.PendingPromotions)
+                    .ThenInclude(p => p.RequestedBy)
+                    .Where(x => x.Slot == slot && x.Slot >= Slot.Mynock && x.Slot < Slot.Razor)
+                    .ForEachAsync(x => data.Assign(x));
+                return data;
+            }
 
-            await _dbContext.Users.AsNoTracking()
-                .AsSplitQuery()
-                .Include(p => p.PendingPromotions)
-                .ThenInclude(p => p.RequestedBy)
-                .Where(x => x.Slot == slot && x.Slot >= Slot.Mynock && x.Slot < Slot.Razor)
-                .ForEachAsync(x => data.Assign(x));
-
-            return data;
+            return null;
         }
 
         public async Task<MynockSectionData?> GetMynockSectionDataAsync(ClaimsPrincipal claims)
