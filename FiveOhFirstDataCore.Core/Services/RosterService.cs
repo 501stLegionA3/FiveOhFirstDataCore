@@ -85,7 +85,7 @@ namespace FiveOhFirstDataCore.Core.Services
             HashSet<string> nicknames = new();
             await _dbContext.Users.AsNoTracking().ForEachAsync(x =>
             {
-                ids.Add(x.Id);
+                ids.Add(x.BirthNumber);
 
                 if (x.Slot < Data.Slot.Archived)
                     nicknames.Add(x.NickName);
@@ -179,7 +179,7 @@ namespace FiveOhFirstDataCore.Core.Services
 
                 var trooper = new Trooper()
                 {
-                    Id = trooperData.Id,
+                    BirthNumber = trooperData.Id,
                     NickName = trooperData.NickName,
                     Rank = trooperData.StartingRank,
                     UserName = token,

@@ -41,7 +41,7 @@ namespace FiveOhFirstDataCore.Core.Components
             {
                 string display = ((string?)y.Value) ?? "";
 
-                var item = Troopers.FirstOrDefault(x => x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
+                var item = Troopers.FirstOrDefault(x => x.BirthNumber.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
                     || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase));
 
                 Suggestions.Clear();
@@ -50,7 +50,7 @@ namespace FiveOhFirstDataCore.Core.Components
 
                 if (item is not null || !string.IsNullOrWhiteSpace(display))
                 {
-                    Suggestions.AddRange(Troopers.Where(x => (x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                    Suggestions.AddRange(Troopers.Where(x => (x.BirthNumber.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
                         || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase))
                         && !(CurrentValue.Contains(x))));
                 }
@@ -98,13 +98,13 @@ namespace FiveOhFirstDataCore.Core.Components
                     builder.AddAttribute(18, "onclick", EventCallback.Factory.Create(this, (x) =>
                     {
                         if (CurrentValue is null) CurrentValue = new();
-                        if (CurrentValue.FirstOrDefault(x => x.Id == value.Id) is null)
+                        if (CurrentValue.FirstOrDefault(x => x.BirthNumber == value.BirthNumber) is null)
                             CurrentValue.Add(value);
                         Valid = true;
                         ResetDisplay = !ResetDisplay;
                         Suggestions.Clear();
                     }));
-                    builder.AddContent(19, $"{suggest.NickName} - {suggest.Id}");
+                    builder.AddContent(19, $"{suggest.NickName} - {suggest.BirthNumber}");
 
                     builder.CloseElement();
                     builder.CloseElement();

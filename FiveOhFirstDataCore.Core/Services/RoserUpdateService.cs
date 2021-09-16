@@ -524,6 +524,24 @@ namespace FiveOhFirstDataCore.Core.Services
             return new(true, null);
         }
 
+        public async Task<ResultBase> UpdateBirthNumberAsync(Trooper trooper)
+        {
+            var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());
+            actual.BirthNumber = trooper.BirthNumber;
+            var identResult = await _userManager.UpdateAsync(actual);
+
+            if (!identResult.Succeeded)
+            {
+                List<string> errors = new();
+                foreach (var err in identResult.Errors)
+                    errors.Add($"[{err.Code}] {err.Description}");
+
+                return new(false, errors);
+            }
+
+            return new(true, null);
+        }
+
         public async Task<ResultBase> DeleteAccountAsync(Trooper trooper, string password, ClaimsPrincipal claims)
         {
             var actual = await _userManager.FindByIdAsync(trooper.Id.ToString());

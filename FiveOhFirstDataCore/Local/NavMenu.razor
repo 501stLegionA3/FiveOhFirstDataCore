@@ -19,7 +19,7 @@
             <AuthorizeView>
                 <Authorized>
                     <button role="button" id="loginButtons" data-bs-toggle="collapse" data-bs-target="#login-menu" class="w-100 justify-content-center btn btn-outline-light d-flex align-items-center text-decoration-none dropdown-toggle">
-                        <strong>@CurrentUser?.Id @CurrentUser?.NickName 
+                        <strong>@CurrentUser?.BirthNumber @CurrentUser?.NickName 
                             @if (@CurrentUser is not null) {
                                 @CurrentUser.BirthdayCake()
                             }

@@ -417,6 +417,12 @@ namespace FiveOhFirstDataCore.Core.Services
         /// <param name="trooper">The <see cref="Trooper"/> with a changed username to update.</param>
         /// <returns>A task that returns <see cref="ResultBase"/>.</returns>
         public Task<ResultBase> UpdateUserNameAsync(Trooper trooper);
+        /// <summary>
+        /// Update the birth number of a <paramref name="trooper"/>.
+        /// </summary>
+        /// <param name="trooper">The <see cref="Trooper"/> with a changed birth number to update.</param>
+        /// <returns>A task that returns <see cref="ResultBase"/>.</returns>
+        public Task<ResultBase> UpdateBirthNumberAsync(Trooper trooper);
 
         /// <summary>
         /// Deletes an account from the website.

@@ -31,7 +31,7 @@
                     @foreach(var t in Filtered)
                     {
                     <tr class="@((t.RecruitStatus?.PossibleTroll ?? false) ? "table-danger" : "")">
-                        <td>@(t.Id)</td>
+                        <td>@(t.BirthNumber)</td>
                         <td>@(t.NickName)</td>
                         <td>@(t.RecruitStatus?.OverSixteen.ToString() ?? "n/a")</td>
                         <td>@(t.RecruitStatus?.Age.ToString() ?? "n/a")</td>

@@ -85,7 +85,7 @@ namespace FiveOhFirstDataCore.Pages.Roster.Recruits
 
             if (!string.IsNullOrWhiteSpace(Search.IdFilter))
             {
-                Filtered = Filtered.Where(x => x.Id.ToString().StartsWith(Search.IdFilter, StringComparison.OrdinalIgnoreCase)).ToList();
+                Filtered = Filtered.Where(x => x.BirthNumber.ToString().StartsWith(Search.IdFilter, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             if (Search.PreferredRole is not null)

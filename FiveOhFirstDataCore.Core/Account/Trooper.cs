@@ -16,6 +16,8 @@ namespace FiveOhFirstDataCore.Core.Account
     public class Trooper : IdentityUser<int>
     {
         public string NickName { get; set; } = "";
+        public int BirthNumber { get; set; }
+
         #region Ranks
         public TrooperRank? Rank { get; set; }
         public RTORank? RTORank { get; set; }

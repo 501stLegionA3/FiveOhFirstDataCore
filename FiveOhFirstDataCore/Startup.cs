@@ -323,6 +323,11 @@ namespace FiveOhFirstDataCore
             using var db = dbFac.CreateDbContext();
             ApplyDatabaseMigrations(db);
 
+            // Validate birth numbers.
+            db.Users.Where(x => x.BirthNumber == 0)
+                .ForEachAsync(x => x.BirthNumber = x.Id).GetAwaiter().GetResult();
+            db.SaveChanges();
+
             var roleManager = scope.ServiceProvider.GetRequiredService<TrooperRoleManager>();
             roleManager.SeedRoles<WebsiteRoles>().GetAwaiter().GetResult();
 

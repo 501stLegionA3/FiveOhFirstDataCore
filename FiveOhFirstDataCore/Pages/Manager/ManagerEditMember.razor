@@ -46,10 +46,35 @@
                                 <button class="btn p-1 btn-danger" @onclick="CancelUserNameEdit">Cancel</button> 
                             </div>
                         }
-                        }
+                    }
                     else
                     {
                         RefreshUsernameField = false;
+                        StateHasChanged();
+                        <em>Loading...</em>
+                    }
+
+                    <label for="birthnumberEdit" class="form-label mt-4">Birth Number</label>
+                    @if(!RefreshBirthNumberField)
+                    {
+                        <InputTextValid Valid="ValidBirthNumber" @oninput="OnEditBirthNumber" id="birthnumberEdit" @bind-Value="DummyBirthNumber" class="form-control" disabled="@(!EditingBirthNumber)" />
+                        @if (!EditingBirthNumber)
+                        {
+                            <div class="d-grid gap-2 mx-auto">
+                                <button class="btn btn-warning" @onclick="StartBirthNumberEdit">Edit</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="d-grid gap-2 mx-auto d-md-block">
+                                <button class="btn p-1 btn-success" @onclick="SaveBirthNumber">Save</button>
+                                <button class="btn p-1 btn-danger" @onclick="CancelBirthNumberEdit">Cancel</button> 
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        RefreshBirthNumberField = false;
                         StateHasChanged();
                         <em>Loading...</em>
                     }
@@ -221,6 +246,13 @@
     private bool ValidUserName { get; set; } = true;
     private bool EditingUserName { get; set; } = false;
     private bool RefreshUsernameField { get; set; } = false;
+
+    private int OldBirthNumber { get; set; } = 0;
+    private string DummyBirthNumber { get; set; } = "";
+    private bool ValidBirthNumber { get; set; } = true;
+    private bool EditingBirthNumber { get; set; } = false;
+    private bool RefreshBirthNumberField { get; set; } = false;
+
     private string IdRep { get; set; } = "";
     private bool ValidId { get; set; } = true;
     private bool EditingId { get; set; } = false;
@@ -238,6 +270,7 @@
     private bool ResetConfirmation { get; set; } = false;
 
     private HashSet<string> CurrentUserNames { get; set; } = new();
+    private HashSet<int> CurrentBirthNumbers { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -262,7 +295,9 @@
             _refresh.RefreshRequested += RefreshMe;
 
             AllTroopers = await _roster.GetAllTroopersAsync();
-            AllTroopers.ForEach(x => CurrentUserNames.Add(x.NormalizedUserName));
+            var data = await _roster.GetInUseUserDataAsync();
+            CurrentUserNames = data.Item2;
+            CurrentBirthNumbers = data.Item1;
 
             if (IsEditing)
             {
@@ -371,6 +406,65 @@
             {
                 _alert.PostAlert(this, errors);
                 Trooper.UserName = OldUserName;
+            }
+        }
+        
+        _refresh.CallRequestRefresh();
+    }
+    #endregion
+
+    #region Birth Number Edit
+    public void StartBirthNumberEdit(EventArgs e)
+    {
+        EditingBirthNumber = true;
+        OldBirthNumber = Trooper.BirthNumber;
+        _refresh.CallRequestRefresh();
+    }
+
+    public void CancelBirthNumberEdit(EventArgs e)
+    {
+        Trooper.BirthNumber = OldBirthNumber;
+        DummyBirthNumber = OldBirthNumber.ToString();
+        EditingBirthNumber = false;
+        ValidBirthNumber = true;
+        RefreshBirthNumberField = true;
+        _refresh.CallRequestRefresh();
+    }
+
+    public void OnEditBirthNumber(ChangeEventArgs e)
+    {
+        var tmp = (string?)e.Value ?? "";
+
+        if(int.TryParse(tmp, out int bid))
+        {
+            Trooper.BirthNumber = bid;
+            if(CurrentBirthNumbers.Contains(Trooper.BirthNumber))
+            {
+                ValidBirthNumber = false;
+            }
+            else
+            {
+                ValidBirthNumber = true;
+            }
+        }
+        else
+        {
+            ValidBirthNumber = false;
+        }
+        _refresh.CallRequestRefresh();
+    }
+
+    public async Task SaveBirthNumber(EventArgs e)
+    {
+        if(ValidBirthNumber)
+       {
+            EditingBirthNumber = false;
+
+            var res = await _roster.UpdateBirthNumberAsync(Trooper);
+            if(!res.GetResult(out var errors))
+            {
+                _alert.PostAlert(this, errors);
+                Trooper.BirthNumber = OldBirthNumber;
             }
         }
         

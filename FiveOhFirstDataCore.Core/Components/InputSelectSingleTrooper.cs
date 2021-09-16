@@ -41,7 +41,7 @@ namespace FiveOhFirstDataCore.Core.Components
                 {
                     if (x is null) return false;
 
-                    return x.Id.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
+                    return x.BirthNumber.ToString().Equals(display.Trim(), StringComparison.OrdinalIgnoreCase)
                         || x.NickName.Equals(display.Trim(), StringComparison.OrdinalIgnoreCase);
                 });
 
@@ -57,7 +57,7 @@ namespace FiveOhFirstDataCore.Core.Components
                     Suggestions.AddRange(Troopers.Where(x =>
                     {
                         if (x is null) return false;
-                        return x.Id.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
+                        return x.BirthNumber.ToString().StartsWith(display, StringComparison.OrdinalIgnoreCase)
                             || x.NickName.StartsWith(display, StringComparison.OrdinalIgnoreCase);
                     }));
                 }
@@ -94,7 +94,7 @@ namespace FiveOhFirstDataCore.Core.Components
                         DisplayValue = suggestNick;
                         Suggestions.Clear();
                     }));
-                    builder.AddContent(18, $"{suggest.NickName} - {suggest.Id}");
+                    builder.AddContent(18, $"{suggest.NickName} - {suggest.BirthNumber}");
 
                     builder.CloseElement();
                     builder.CloseElement();
