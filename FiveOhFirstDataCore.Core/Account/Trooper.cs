@@ -359,11 +359,8 @@ namespace FiveOhFirstDataCore.Core.Account
         public MarkupString DisplayRankName()
         {
             string name = "";
-            name += (WarrantRank?.AsFull() + " " ?? "");
-            name += (PilotRank?.AsFull() + " " ?? "");
-            name += (WardenRank?.AsFull() + " " ?? "");
-            name += (Rank?.AsFull() + " " ?? "");
-            name += NickName;
+            name += GetRankName();
+            name += " " + NickName;
 
             return new MarkupString(name + BirthdayCake().Value);
         }
