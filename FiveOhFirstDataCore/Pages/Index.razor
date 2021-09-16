@@ -1,6 +1,4 @@
 ﻿@page "/"
-@implements IDisposable
-@inject ComponentApplicationState ApplicationState
 
 <h1>Hello there!</h1>
 
@@ -8,35 +6,4 @@ General Kenobi.
 
 <hr />
 
-@if(Loaded)
-{
-    <NoticeBoard Name="Index" />
-}
-
-@code {
-    private bool Loaded { get; set; } = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        ApplicationState.OnPersisting += PersistLoaded;
-
-        if (!ApplicationState.TryTakeAsJson("index_loaded", out bool l))
-        {
-            Loaded = true;
-        }
-        else Loaded = l;
-    }
-
-    public Task PersistLoaded()
-    {
-        ApplicationState.PersistAsJson("index_loaded", Loaded);
-        return Task.CompletedTask;
-    }
-
-    void IDisposable.Dispose()
-    {
-        ApplicationState.OnPersisting -= PersistLoaded;
-    }
-}
+<NoticeBoard Name="Index" />

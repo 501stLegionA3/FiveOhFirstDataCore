@@ -1,6 +1,5 @@
 ﻿@page "/c1/recruiter/addmember"
 @implements IDisposable
-@inject ComponentApplicationState _state
 @inject IAuthorizationService _auth
 @inject NavigationManager _nav
 @inject IRefreshRequestService _refresh
@@ -117,35 +116,22 @@
     private List<string> Errors { get; set; } = new();
     private string? SuccessMessage { get; set; } = null;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        _state.OnPersisting += OnPersisting;
-        _refresh.RefreshRequested += RefreshMe;
+        await base.OnAfterRenderAsync(firstRender);
 
-        if(_state.TryTakeAsJson<HashSet<string>>("taken_nicknames", out var nicks)
-            && _state.TryTakeAsJson<HashSet<int>>("taken_ids", out var ids))
+        if (firstRender)
         {
-            TakenNicknames = nicks ?? new();
-            TakenIds = ids ?? new();
-        }
-        else
-        {
+            _refresh.RefreshRequested += RefreshMe;
             await _nicks.InitializeAsync();
             var inUse = await _roster.GetInUseUserDataAsync();
 
             TakenIds = inUse.Item1;
             TakenNicknames = inUse.Item2;
+
+            SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+            StateHasChanged();
         }
-
-        SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-    }
-
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson("taken_nicknames", TakenNicknames);
-        _state.PersistAsJson("taken_ids", TakenIds);
-        return Task.CompletedTask;
     }
 
     private void RefreshMe()
@@ -251,7 +237,6 @@
 
     void IDisposable.Dispose()
     {
-        _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
     }
 }

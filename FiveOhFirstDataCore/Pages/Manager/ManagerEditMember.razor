@@ -1,6 +1,5 @@
 ﻿@page "/manager/modify"
 @implements IDisposable
-@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
 @inject NavigationManager _nav
@@ -240,22 +239,14 @@
 
     private HashSet<string> CurrentUserNames { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        var user = (await AuthStateTask).User;
-        _state.OnPersisting += OnPersisting;
-
-        if(_state.TryTakeAsJson<bool>("editing", out var isEditing)
-            && _state.TryTakeAsJson<int>("to_edit", out var toEdit))
+        if (firstRender)
         {
-            IsEditing = isEditing;
-            ToEdit = toEdit;
-        }
-        else
-        {
-           if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+            var user = (await AuthStateTask).User;
+            if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))
@@ -266,25 +257,10 @@
                         ToEdit = val;
                     }
                 }
-            } 
-        }
+            }
 
-        _refresh.RefreshRequested += RefreshMe;
-    }
+            _refresh.RefreshRequested += RefreshMe;
 
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson("editing", IsEditing);
-        _state.PersistAsJson("to_edit", ToEdit);
-        return Task.CompletedTask;
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
             AllTroopers = await _roster.GetAllTroopersAsync();
             AllTroopers.ForEach(x => CurrentUserNames.Add(x.NormalizedUserName));
 
@@ -549,7 +525,6 @@
 
     void IDisposable.Dispose()
     {
-        _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
     }
 }

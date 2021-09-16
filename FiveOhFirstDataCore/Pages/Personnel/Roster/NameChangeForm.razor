@@ -1,6 +1,5 @@
 ﻿@page "/c1/roster/names/change"
 @implements IDisposable
-@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
 @inject INicknameComparisonService _nicks
@@ -94,40 +93,6 @@
 
     private string OldName { get; set; } = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-
-        var user = (await AuthStateTask).User;
-        _state.OnPersisting += OnPersisting;
-
-        if(_state.TryTakeAsJson<bool>("editing", out var isEditing)
-            && _state.TryTakeAsJson<int>("to_edit", out var toEdit))
-        {
-            IsEditing = isEditing;
-            ToEdit = toEdit;
-        }
-        else
-        {
-            if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
-            {
-                if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
-                    .TryGetValue("edit", out var edit))
-                {
-                    if(int.TryParse(edit, out int val))
-                    {
-                        IsEditing = true;
-                        ToEdit = val;
-                    }
-                }
-            }
-        }
-        
-        SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
-
-        _refresh.RefreshRequested += RefreshMe;
-    }
-
     protected void NicknameChanged(ChangeEventArgs e)
     {
         string? str = (string?)e.Value;
@@ -148,13 +113,6 @@
         _refresh.CallRequestRefresh();
     }
 
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson("editing", IsEditing);
-        _state.PersistAsJson("to_edit", ToEdit);
-        return Task.CompletedTask;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -162,6 +120,24 @@
         if (firstRender)
         {
             AllTroopers = await _roster.GetAllTroopersAsync();
+
+            var user = (await AuthStateTask).User;
+            if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
+            {
+                if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
+                    .TryGetValue("edit", out var edit))
+                {
+                    if(int.TryParse(edit, out int val))
+                    {
+                        IsEditing = true;
+                        ToEdit = val;
+                    }
+                }
+            }
+        
+            SimNickTimer = new(async (x) => await GetNickSimList(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+
+            _refresh.RefreshRequested += RefreshMe;
 
             if (IsEditing)
             {
@@ -232,7 +208,6 @@
 
     void IDisposable.Dispose()
     {
-        _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
     }
 }

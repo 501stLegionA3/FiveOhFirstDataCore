@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using System.Globalization;
+using System.IO;
 using System.Security.Claims;
 
 namespace FiveOhFirstDataCore.Core.Services

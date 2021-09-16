@@ -1,6 +1,5 @@
 ﻿@using Microsoft.JSInterop
 @implements IDisposable
-@inject ComponentApplicationState _state
 @inject INoticeService _notice
 @inject IRefreshRequestService _refresh
 @inject IRosterService _roster
@@ -146,17 +145,11 @@ else
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async void OnAfterRender(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        _state.OnPersisting += OnPersisting;
-
-        if(_state.TryTakeAsJson<bool>("editor", out var editor))
-        {
-            IsEditor = editor;
-        }
-        else
+        if (firstRender)
         {
             var claims = (await AuthStateTask).User;
 
@@ -170,15 +163,9 @@ else
             {
                 IsEditor = await _notice.IsAllowedCShopEditor(claims, CSHopOverride, AllowedAccess);
             }
+
+            _refresh.RefreshRequested += RefreshRequested;
         }
-
-        _refresh.RefreshRequested += RefreshRequested;
-    }
-
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson("editor", IsEditor);
-        return Task.CompletedTask;
     }
 
     private void SortNotices()
@@ -272,7 +259,6 @@ else
 
     void IDisposable.Dispose()
     {
-        _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshRequested;
     }
 }

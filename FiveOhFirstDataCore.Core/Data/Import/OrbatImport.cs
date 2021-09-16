@@ -1,4 +1,6 @@
-﻿namespace FiveOhFirstDataCore.Core.Data.Import
+﻿using System.IO;
+
+namespace FiveOhFirstDataCore.Core.Data.Import
 {
     public class OrbatImport : IDisposable, IAsyncDisposable
     {

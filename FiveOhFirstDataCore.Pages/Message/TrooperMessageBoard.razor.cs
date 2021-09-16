@@ -3,6 +3,10 @@ using FiveOhFirstDataCore.Core.Services;
 
 using Microsoft.AspNetCore.Components;
 
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace FiveOhFirstDataCore.Pages.Message
 {
     public partial class TrooperMessageBoard

@@ -1,6 +1,5 @@
 ﻿@using FiveOhFirstDataCore.Core.Structures.Updates
 @implements IDisposable
-@inject ComponentApplicationState _state
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
@@ -298,32 +297,21 @@ else
 
     private List<Qualification> QualValues = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
-        _state.OnPersisting += OnPersisting;
-        Console.WriteLine(Trooper.Id);
-        _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "DescriptionData", OnDataRefreshRequest);
+        await base.OnAfterRenderAsync(firstRender);
 
-        QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
-        .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
+        if (firstRender)
+        {
+            _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "DescriptionData", OnDataRefreshRequest);
 
-        var user = (await AuthStateTask).User;
-        if(_state.TryTakeAsJson<Dictionary<CShop, List<ClaimUpdateData>>>("shop_positions", out var shopPositions))
-        {
-            ShopPositions = shopPositions ?? new();
-        }
-        else
-        {
+            QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
+            .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
+
+            var user = (await AuthStateTask).User;
+
             ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
-        }
 
-        if(_state.TryTakeAsJson<string[]>("service_strings", out var serviceStrings))
-        {
-            ServiceStrings = serviceStrings ?? new string[6];
-        }
-        else
-        {
             var now = DateTime.UtcNow.ToEst();
             ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
             ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
@@ -331,41 +319,15 @@ else
             ServiceStrings[3] = now.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
             ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
             ServiceStrings[5] = now.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
-        }
 
-        if(_state.TryTakeAsJson<bool>("loaded_additional", out var loadAdd))
-        {
-            LoadedAdditional = loadAdd;
-        }
-        else
-        {
-            if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
-            {
-                await LoadFlags();
-                LoadedAdditional = true;
-            }  
-        }
+            await LoadFlags();
+            LoadedAdditional = true;
 
-        if(_state.TryTakeAsJson<bool>("loaded_descriptions", out var loadDesc))
-        {
-            LoadedDescriptions = loadDesc;
-        }
-        else
-        {
             await LoadDescription();
             LoadedDescriptions = true;
+
+            _refresh.RefreshRequested += RefreshMe;
         }
-
-        _refresh.RefreshRequested += RefreshMe;
-    }
-
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson("shop_positions", ShopPositions);
-        _state.PersistAsJson("service_strings", ServiceStrings);
-        _state.PersistAsJson("loaded_additional", LoadedAdditional);
-        _state.PersistAsJson("loaded_descriptions", LoadedDescriptions);
-        return Task.CompletedTask;
     }
 
     private void RefreshMe()
@@ -450,7 +412,6 @@ else
 
     void IDisposable.Dispose()
     {
-        _state.OnPersisting -= OnPersisting;
         _refresh.RefreshRequested -= RefreshMe;
         _advRefresh.RemoveDataReloadListener(OnDataRefreshRequest);
     }

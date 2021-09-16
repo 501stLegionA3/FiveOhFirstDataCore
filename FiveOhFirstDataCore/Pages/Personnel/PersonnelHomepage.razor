@@ -1,7 +1,5 @@
 ﻿@page "/c1"
 @inject IRosterService _roster
-@implements IDisposable
-@inject ComponentApplicationState _state
 @inject NavigationManager _nav
 
 <AuthorizeView Policy="RequireC1">
@@ -58,31 +56,19 @@
     [CascadingParameter]
     public Task<AuthenticationState> AuthStateTask { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await base.OnInitializedAsync();
+        await base.OnAfterRenderAsync(firstRender);
 
-        _state.OnPersisting += OnPersisting;
-        if(_state.TryTakeAsJson<bool[]>(_nav.Uri.ToString(), out var data))
-        {
-            Access = data ?? new bool[] { false, false, false, false, false };
-        }
-        else
+        if(firstRender)
         {
             var user = (await AuthStateTask).User;
 
             Access = await _roster.GetC1PermissionsAsync(user);
-        }
         
-        Loaded = true;
-    }
+            Loaded = true;
 
-    private Task OnPersisting()
-    {
-        _state.PersistAsJson(_nav.Uri.ToString(), Access);
-        return Task.CompletedTask;
+            StateHasChanged();
+        }
     }
-
-    void IDisposable.Dispose()
-        => _state.OnPersisting -= OnPersisting;
 }

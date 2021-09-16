@@ -1,3 +1,9 @@
+global using System;
+global using System.Threading;
+global using System.Threading.Tasks;
+global using System.Linq;
+global using System.Collections.Generic;
+
 using AngleSharp.Text;
 
 using AspNet.Security.OpenId;
@@ -19,6 +25,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace FiveOhFirstDataCore
 {

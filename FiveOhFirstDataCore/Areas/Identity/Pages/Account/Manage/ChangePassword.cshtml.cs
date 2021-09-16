@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 
 using System.ComponentModel.DataAnnotations;
 namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
