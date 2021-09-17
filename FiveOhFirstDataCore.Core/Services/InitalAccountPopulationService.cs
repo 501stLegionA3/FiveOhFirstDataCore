@@ -429,7 +429,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 123456,
-                        BirthNumber = 123456
+                        BirthNumber = 123456,
                         UserName = "Reserve",
                         NickName = "Reservist",
                         Rank = TrooperRank.SeniorTrooper,
