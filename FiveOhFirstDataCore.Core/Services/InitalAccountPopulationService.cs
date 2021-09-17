@@ -77,6 +77,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 42127,
+                        BirthNumber = 42127,
                         UserName = "Soyvolon",
                         NickName = "Soyvolon",
                         Rank = TrooperRank.Trooper,
@@ -110,6 +111,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 11345,
+                        BirthNumber = 11345,
                         UserName = "Del",
                         NickName = "Del",
                         Rank = TrooperRank.Sergeant,
@@ -142,6 +144,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 70303,
+                        BirthNumber = 70303,
                         UserName = "Crebar",
                         NickName = "Crebar",
                         Rank = TrooperRank.SeniorCorporal,
@@ -173,6 +176,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 56273,
+                        BirthNumber = 56273,
                         UserName = "Knight",
                         NickName = "Knight",
                         Rank = TrooperRank.VeteranTrooper,
@@ -203,6 +207,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 30253,
+                        BirthNumber = 30253,
                         UserName = "Chimera",
                         NickName = "Chimera",
                         Rank = TrooperRank.SeniorTrooper,
@@ -233,6 +238,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 23996,
+                        BirthNumber = 23996,
                         UserName = "Deytow",
                         NickName = "Deytow",
                         Rank = TrooperRank.SeniorTrooper,
@@ -265,6 +271,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 54077,
+                        BirthNumber = 54077,
                         UserName = "Klinger",
                         NickName = "Klinger",
                         Rank = TrooperRank.Corporal,
@@ -296,6 +303,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 14577,
+                        BirthNumber = 14577,
                         UserName = "Clover",
                         NickName = "Clover",
                         Rank = TrooperRank.SeniorTrooper,
@@ -326,6 +334,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 42361,
+                        BirthNumber = 42361,
                         UserName = "Negeta",
                         NickName = "Negeta",
                         Rank = TrooperRank.Trooper,
@@ -356,6 +365,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 87071,
+                        BirthNumber = 87071,
                         UserName = "Bones",
                         NickName = "Bones",
                         Rank = TrooperRank.VeteranTrooper,
@@ -387,6 +397,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 17077,
+                        BirthNumber = 17077,
                         UserName = "Tal",
                         NickName = "Tal",
                         Rank = TrooperRank.VeteranTrooper,
@@ -418,6 +429,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 123456,
+                        BirthNumber = 123456
                         UserName = "Reserve",
                         NickName = "Reservist",
                         Rank = TrooperRank.SeniorTrooper,
@@ -447,6 +459,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 23456,
+                        BirthNumber = 23456,
                         UserName = "Clerk",
                         NickName = "Roster Clerk",
                         Rank = TrooperRank.Trooper,
@@ -477,6 +490,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     (new Trooper()
                     {
                         Id = 554433,
+                        BirthNumber = 554433,
                         UserName = "LinkTest",
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Trooper,
