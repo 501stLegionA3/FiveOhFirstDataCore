@@ -23,7 +23,7 @@
     {
         if(slot >= Slot.Mynock && slot < Slot.Razor)
         {
-            <a href="/mynock@(slot == Slot.Mynock ? "" : $"/{(int)slot}")" class="btn btn-outline-primary">@slot.AsFull() Home</a>
+            <a href="/mynock@($"/{(int)slot}")" class="btn btn-outline-primary">@slot.AsFull() Home</a>
         }
     }
     </div>
