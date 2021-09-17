@@ -570,7 +570,6 @@ namespace FiveOhFirstDataCore.Core.Services
             if (manager || (slot >= Slot.Mynock && slot <= Slot.MynockOneThree))
             {
                 var data = new MynockSectionData();
-            var data = new MynockSectionData();
 
                 using var _dbContext = _dbContextFactory.CreateDbContext();
 
