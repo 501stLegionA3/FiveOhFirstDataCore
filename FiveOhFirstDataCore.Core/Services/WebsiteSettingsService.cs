@@ -1333,7 +1333,7 @@ namespace FiveOhFirstDataCore.Data.Services
                 });
         }
 
-        public async Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilder(string sectionName, bool forceCacheReload = false)
+        public async Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilderAsync(string sectionName, bool forceCacheReload = false)
         {
             if (forceCacheReload 
                 || SectionToPolicyNameDict is null 
@@ -1343,18 +1343,26 @@ namespace FiveOhFirstDataCore.Data.Services
             if (SectionToPolicyNameDict!.TryGetValue(sectionName, out var policy))
                 if (PolicyBuilders!.TryGetValue(policy, out var builder))
                     return builder;
+            // A policy named default will be used as a fallback for any missing
+            // policy names, or unassigned policy sections.
+            if (PolicyBuilders!.TryGetValue("default".Normalize(), out var defaultBuilder))
+                return defaultBuilder;
 
             return null;
         }
 
-        public async Task<ResultBase> CreatePolicy(DynamicPolicy policy)
+        public async Task<ResultBase> CreatePolicyAsync(DynamicPolicy policy)
         {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
             if (old is null)
             {
                 await _dbContext.AddAsync(policy);
                 await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
 
                 return new(true, null);
             }
@@ -1364,15 +1372,20 @@ namespace FiveOhFirstDataCore.Data.Services
             }
         }
 
-        public async Task<ResultBase> UpdatePolicy(DynamicPolicy policy)
+        public async Task<ResultBase> UpdatePolicyAsync(DynamicPolicy policy)
         {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
             if (old is not null)
             {
-                old.EditableByPolicyName = policy.EditableByPolicyName;
-                old.RequiredRoles = policy.RequiredRoles;
-                old.RequiredClaims = policy.RequiredClaims;
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+                await _dbContext.AddAsync(policy);
+                await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
 
                 return new(true, null);
             }
@@ -1382,19 +1395,85 @@ namespace FiveOhFirstDataCore.Data.Services
             }
         }
 
-        public Task<ResultBase> UpdateOrCreatePolicy(DynamicPolicy policy)
+        public async Task<ResultBase> UpdateOrCreatePolicyAsync(DynamicPolicy policy)
         {
-            throw new NotImplementedException();
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            await _dbContext.AddAsync(policy);
+            await _dbContext.SaveChangesAsync();
+
+            await ReloadPolicyCacheAsync();
+
+            return new(true, null);
         }
 
-        public Task<ResultBase> UpdatePolicySection(PolicySection policySection)
+        public async Task<ResultBase> UpdatePolicySectionAsync(PolicySection policySection)
         {
-            throw new NotImplementedException();
+            policySection.SectionName = policySection.SectionName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<PolicySection>(policySection.SectionName);
+            if (old is null)
+            {
+                old = new()
+                {
+                    SectionName = policySection.SectionName
+                };
+            }
+
+            old.PolicyName = policySection.PolicyName;
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
         }
 
-        public Task<ResultBase> DeletePolicy(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null)
+        public async Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null)
         {
-            throw new NotImplementedException();
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                if (assignFloatingSectionsTo is not null)
+                {
+                    await _dbContext.Entry(old).Collection(e => e.PolicySections).LoadAsync();
+                    foreach(var i in old.PolicySections)
+                    {
+                        i.PolicyName = assignFloatingSectionsTo.PolicyName;
+                    }
+                }
+
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { "No policy found to delete." });
+            }
+        }
+
+        public async Task<PolicySectionResult> GetPolicySectionAsync(string sectionName)
+        {
+            var name = sectionName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var section = await _dbContext.FindAsync<PolicySection>(name);
+
+            if (section is not null)
+                return new(true, section, null);
+
+            return new(false, null, new List<string>() { "" });
         }
         #endregion
     }
