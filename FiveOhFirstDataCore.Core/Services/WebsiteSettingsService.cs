@@ -3,6 +3,8 @@ using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Promotions;
 using FiveOhFirstDataCore.Data.Structuresbase;
 using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Core.Structures.Auth;
+using FiveOhFirstDataCore.Core.Structures.Policy;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -919,11 +921,19 @@ namespace FiveOhFirstDataCore.Data.Services
 
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public Dictionary<CShop, CShopClaim> CShopClaimTree { get; set; } = null;
+        public Dictionary<CShop, CShopClaim>? CShopClaimTree { get; set; } = null;
+        public Dictionary<string, string>? SectionToPolicyNameDict { get; set; } = null;
+        public Dictionary<string, DynamicPolicyAuthorizationPolicyBuilder>? PolicyBuilders { get; set; } = null;
 
         public WebsiteSettingsService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
+        }
+
+        public async Task InitalizeAsync()
+        {
+            await ReloadClaimTreeAsync();
+            await ReloadPolicyCacheAsync();
         }
 
         public async Task ReloadClaimTreeAsync()
@@ -1268,5 +1278,124 @@ namespace FiveOhFirstDataCore.Data.Services
                 await _dbContext.SaveChangesAsync();
             }
         }
+        #region Dynamic Policies
+        public async Task ReloadPolicyCacheAsync()
+        {
+            await GenerateSectionToPolicyDictionaryAsync();
+            await GeneratePolicyBuildersAsync();
+        }
+
+        private async Task GenerateSectionToPolicyDictionaryAsync()
+        {
+            SectionToPolicyNameDict = new Dictionary<string, string>();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.PolicySections
+                .ForEachAsync(section =>
+                {
+                    if(!SectionToPolicyNameDict.TryAdd(section.SectionName, section.PolicyName))
+                    {
+                        SectionToPolicyNameDict[section.SectionName] = section.PolicyName;
+                    }
+                });
+        }
+
+        private async Task GeneratePolicyBuildersAsync()
+        {
+            PolicyBuilders = new Dictionary<string, DynamicPolicyAuthorizationPolicyBuilder>();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.DynamicPolicies
+                .Include(e => e.RequiredClaims)
+                .ForEachAsync(policy =>
+                {
+                    var builder = new DynamicPolicyAuthorizationPolicyBuilder(policy);
+                    builder.RequireAssertion((ctx, _policy) =>
+                    {
+                        if (ctx.User.IsInRole("Admin")
+                               || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
+                        foreach (var r in _policy.RequiredRoles)
+                            if (ctx.User.IsInRole(r)) return true;
+
+                        foreach (var c in _policy.RequiredClaims)
+                            if (ctx.User.HasClaim(c.Claim, c.Value)) return true;
+
+                        return false;
+                    });
+
+                    if(!PolicyBuilders.TryAdd(policy.PolicyName, builder))
+                    {
+                        PolicyBuilders[policy.PolicyName] = builder;
+                    }
+                });
+        }
+
+        public async Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilder(string sectionName, bool forceCacheReload = false)
+        {
+            if (forceCacheReload 
+                || SectionToPolicyNameDict is null 
+                || PolicyBuilders is null)
+                await ReloadPolicyCacheAsync();
+
+            if (SectionToPolicyNameDict!.TryGetValue(sectionName, out var policy))
+                if (PolicyBuilders!.TryGetValue(policy, out var builder))
+                    return builder;
+
+            return null;
+        }
+
+        public async Task<ResultBase> CreatePolicy(DynamicPolicy policy)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is null)
+            {
+                await _dbContext.AddAsync(policy);
+                await _dbContext.SaveChangesAsync();
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { $"Failed to create {policy.PolicyName}: A policy by the name of {policy.PolicyName} already exsists." });
+            }
+        }
+
+        public async Task<ResultBase> UpdatePolicy(DynamicPolicy policy)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                old.EditableByPolicyName = policy.EditableByPolicyName;
+                old.RequiredRoles = policy.RequiredRoles;
+                old.RequiredClaims = policy.RequiredClaims;
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { $"Failed to update {policy.PolicyName}: A policy by the name of {policy.PolicyName} does not exsist." });
+            }
+        }
+
+        public Task<ResultBase> UpdateOrCreatePolicy(DynamicPolicy policy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResultBase> UpdatePolicySection(PolicySection policySection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ResultBase> DeletePolicy(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
     }
 }

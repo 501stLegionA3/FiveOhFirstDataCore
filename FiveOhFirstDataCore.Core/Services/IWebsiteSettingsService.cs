@@ -2,13 +2,21 @@
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Promotions;
 using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Core.Structures.Auth;
+using FiveOhFirstDataCore.Core.Structures.Policy;
 
+using System.Collections.Concurrent;
 using System.Security.Claims;
 
 namespace FiveOhFirstDataCore.Data.Services
 {
     public interface IWebsiteSettingsService
     {
+        /// <summary>
+        /// Initalizes this service.
+        /// </summary>
+        /// <returns>A task represeting this action.</returns>
+        public Task InitalizeAsync();
         /// <summary>
         /// Populate the database with default settings.
         /// </summary>
@@ -108,5 +116,15 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <param name="promotion">The <see cref="Promotion"/> to modify.</param>
         /// <returns>A <see cref="Task"/> representing this action.</returns>
         public Task RemoveForcedTagAsync(Promotion promotion);
+
+        #region Dynamic Policies
+        public Task ReloadPolicyCacheAsync();
+        public Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilder(string sectionName, bool forceCacheReload = false);
+        public Task<ResultBase> CreatePolicy(DynamicPolicy policy);
+        public Task<ResultBase> UpdatePolicy(DynamicPolicy policy);
+        public Task<ResultBase> UpdateOrCreatePolicy(DynamicPolicy policy);
+        public Task<ResultBase> UpdatePolicySection(PolicySection policySection);
+        public Task<ResultBase> DeletePolicy(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null);
+        #endregion
     }
 }

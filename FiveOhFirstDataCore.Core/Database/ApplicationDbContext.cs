@@ -6,6 +6,7 @@ using FiveOhFirstDataCore.Data.Structures.Promotions;
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Notification;
 using FiveOhFirstDataCore.Data.Structures.Updates;
+using FiveOhFirstDataCore.Core.Structures.Policy;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,11 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
 
         #region Notifications
         public DbSet<ReportNotificationTracker> ReportNotificationTrackers { get; internal set; }
+        #endregion
+
+        #region Dynaic Policies
+        public DbSet<DynamicPolicy> DynamicPolicies {  get; internal set; }
+        public DbSet<PolicySection> PolicySections {  get; internal set; }
         #endregion
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -335,6 +341,26 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
             reportTracker.HasOne(e => e.Report)
                 .WithMany(p => p.NotificationTrackers)
                 .HasForeignKey(e => e.ReportId);
+            #endregion
+
+            #region Dynamic Policies
+
+            var dPoli = builder.Entity<DynamicPolicy>();
+            dPoli.HasKey(p => p.PolicyName);
+            dPoli.HasOne(p => p.EditableByPolicy)
+                .WithMany(e => e.CanEditPolicies)
+                .HasForeignKey(p => p.EditableByPolicyName);
+            dPoli.HasMany(p => p.RequiredClaims);
+
+            var poliSect = builder.Entity<PolicySection>();
+            poliSect.HasKey(p => p.SectionName);
+            poliSect.HasOne(p => p.Policy)
+                .WithMany(e => e.PolicySections)
+                .HasForeignKey(p => p.PolicyName);
+
+            var poliClaimData = builder.Entity<PolicyClaimData>();
+            poliClaimData.HasKey(p => p.Key);
+
             #endregion
 
             var claimData = builder.Entity<ClaimUpdateData>();
