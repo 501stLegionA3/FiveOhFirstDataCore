@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Data.Message;
-using FiveOhFirstDataCore.Core.Structures.Notification;
+﻿using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Message;
+using FiveOhFirstDataCore.Data.Structures.Notification;
 
-namespace FiveOhFirstDataCore.Core.Account.Detail
+namespace FiveOhFirstDataCore.Data.Account.Detail
 {
     public class TrooperReport
     {

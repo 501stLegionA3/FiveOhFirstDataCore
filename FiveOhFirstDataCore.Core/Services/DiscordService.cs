@@ -1,15 +1,15 @@
 ﻿using DSharpPlus;
 
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using Microsoft.Extensions.Logging;
 
 using System.Collections.Concurrent;
 using System.Security.Claims;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class DiscordService : IDiscordService
     {

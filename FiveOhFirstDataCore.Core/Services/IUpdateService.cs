@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public interface IUpdateService
     {

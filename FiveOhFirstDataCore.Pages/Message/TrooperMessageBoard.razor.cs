@@ -1,5 +1,5 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Services;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Services;
 
 using Microsoft.AspNetCore.Components;
 
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace FiveOhFirstDataCore.Pages.Message
+namespace FiveOhFirstDataCore.Components.Message
 {
     public partial class TrooperMessageBoard
     {

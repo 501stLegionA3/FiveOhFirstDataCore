@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.AspNetCore.Components;
 
@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace FiveOhFirstDataCore.Pages.Roster.Recruits
+namespace FiveOhFirstDataCore.Components.Roster.Recruits
 {
     public partial class RecruitListing
     {

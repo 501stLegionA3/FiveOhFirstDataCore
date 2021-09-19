@@ -1,5 +1,5 @@
-﻿using FiveOhFirstDataCore.Core.Services;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Services;
+using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.AspNetCore.Components;
 

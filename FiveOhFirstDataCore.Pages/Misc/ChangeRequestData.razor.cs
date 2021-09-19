@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Data.Account;
 
 using Microsoft.AspNetCore.Components;
 
-namespace FiveOhFirstDataCore.Pages.Misc
+namespace FiveOhFirstDataCore.Components.Misc
 {
     public partial class ChangeRequestData
     {

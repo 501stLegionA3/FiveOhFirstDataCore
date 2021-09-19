@@ -43,8 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Core.csproj" />
-    <ProjectReference Include="..\FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Pages.csproj" />
+    <ProjectReference Include="..\FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Data.csproj" />
+    <ProjectReference Include="..\FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Components.csproj" />
   </ItemGroup>
 
   <ItemGroup>

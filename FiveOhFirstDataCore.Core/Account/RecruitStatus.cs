@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Data;
+﻿using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class RecruitStatus
     {

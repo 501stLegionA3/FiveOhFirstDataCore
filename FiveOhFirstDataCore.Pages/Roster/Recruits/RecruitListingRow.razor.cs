@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Data.Account;
 
 using Microsoft.AspNetCore.Components;
 
-namespace FiveOhFirstDataCore.Pages.Roster.Recruits
+namespace FiveOhFirstDataCore.Components.Roster.Recruits
 {
     public partial class RecruitListingRow
     {

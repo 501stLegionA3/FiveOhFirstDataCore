@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FiveOhFirstDataCore.Core.Migrations
+namespace FiveOhFirstDataCore.Data.Migrations
 {
     public partial class ReleaseSoyvolonVersionZeroNineZero : Migration
     {

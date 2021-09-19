@@ -1,5 +1,5 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Services;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Services;
 
 using Microsoft.AspNetCore.Components;
 

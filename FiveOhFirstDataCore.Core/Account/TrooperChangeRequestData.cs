@@ -1,7 +1,7 @@
-﻿using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class TrooperChangeRequestData : UpdateBase
     {

@@ -1,7 +1,7 @@
-﻿using FiveOhFirstDataCore.Core.Data.Import;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Structures.Import;
+using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     /// <summary>
     /// The <see cref="IImportService" /> contains methods for importing 501st roster data that has been

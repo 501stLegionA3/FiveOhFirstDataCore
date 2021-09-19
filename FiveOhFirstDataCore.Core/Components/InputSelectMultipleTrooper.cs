@@ -1,4 +1,4 @@
-﻿using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Data.Account;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace FiveOhFirstDataCore.Core.Components
+namespace FiveOhFirstDataCore.Data.Components
 {
     public class InputSelectMultipleTrooper : InputBase<List<Trooper>>
     {

@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Data.Notice;
+﻿using FiveOhFirstDataCore.Data.Structures.Notice;
 
 using Microsoft.AspNetCore.Components;
 
-namespace FiveOhFirstDataCore.Core.Structures
+namespace FiveOhFirstDataCore.Data.Structures
 {
     public class AlertData
     {

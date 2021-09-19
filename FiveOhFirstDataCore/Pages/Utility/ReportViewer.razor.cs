@@ -1,7 +1,7 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Services;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Account.Detail;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Services;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;

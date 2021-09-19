@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
 
-namespace FiveOhFirstDataCore.Core.Mail
+namespace FiveOhFirstDataCore.Data.Mail
 {
     public interface ICustomMailSender : IEmailSender
     {

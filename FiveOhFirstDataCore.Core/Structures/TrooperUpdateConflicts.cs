@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
-namespace FiveOhFirstDataCore.Core.Structures
+namespace FiveOhFirstDataCore.Data.Structures
 {
     public class TrooperUpdateConflicts
     {

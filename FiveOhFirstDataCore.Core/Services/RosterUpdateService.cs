@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Extensions;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Extensions;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public partial class RosterService : IRosterService
     {

@@ -1,14 +1,14 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Database;
-using FiveOhFirstDataCore.Core.Extensions;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structuresbase;
+using FiveOhFirstDataCore.Data.Extensions;
+using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class EparService : IEparService
     {

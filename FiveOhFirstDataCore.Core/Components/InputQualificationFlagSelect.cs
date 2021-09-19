@@ -1,4 +1,4 @@
-﻿using FiveOhFirstDataCore.Core.Data;
+﻿using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 using System.Globalization;
 
-namespace FiveOhFirstDataCore.Core.Components
+namespace FiveOhFirstDataCore.Data.Components
 {
     public class InputQualificationFlagSelect : InputBase<Qualification>
     {

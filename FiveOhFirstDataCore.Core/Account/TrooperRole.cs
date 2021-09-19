@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class TrooperRole : IdentityRole<int>
     {

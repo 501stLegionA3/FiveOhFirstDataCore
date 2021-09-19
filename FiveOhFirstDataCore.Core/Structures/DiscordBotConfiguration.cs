@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Structures
+﻿namespace FiveOhFirstDataCore.Data.Structures
 {
     public class DiscordBotConfiguration
     {

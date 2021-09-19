@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Services;
+﻿using FiveOhFirstDataCore.Data.Services;
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace FiveOhFirstDataCore.Core.Structures.Auth
+namespace FiveOhFirstDataCore.Data.Structures.Auth
 {
     public class WebsiteSettingsAuthorizationPolicyBuilder : AuthorizationPolicyBuilder
     {

@@ -1,4 +1,4 @@
-﻿using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Data.Account;
 
 using MailKit.Net.Smtp;
 
@@ -9,7 +9,7 @@ using MimeKit;
 
 using System.Text.Encodings.Web;
 
-namespace FiveOhFirstDataCore.Core.Mail
+namespace FiveOhFirstDataCore.Data.Mail
 {
     public class MailSender : ICustomMailSender
     {

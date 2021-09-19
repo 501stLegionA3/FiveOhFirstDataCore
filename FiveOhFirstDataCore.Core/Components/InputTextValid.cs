@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace FiveOhFirstDataCore.Core.Components
+namespace FiveOhFirstDataCore.Data.Components
 {
     public class InputTextValid : InputBase<string>
     {

@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Mail
+﻿namespace FiveOhFirstDataCore.Data.Mail
 {
     public class MailConfiguration
     {

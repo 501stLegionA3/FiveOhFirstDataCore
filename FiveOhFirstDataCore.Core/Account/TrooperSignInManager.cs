@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class TrooperSignInManager : SignInManager<Trooper>
     {

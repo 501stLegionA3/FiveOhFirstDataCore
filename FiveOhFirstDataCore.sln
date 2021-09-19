@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31410.414
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore", "FiveOhFirstDataCore\FiveOhFirstDataCore.csproj", "{96CD3676-BFF1-47D0-B54D-326C99461334}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Core", "FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Core.csproj", "{7F44F965-24C5-43A1-850C-0EF13F81506A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Data", "FiveOhFirstDataCore.Core\FiveOhFirstDataCore.Data.csproj", "{7F44F965-24C5-43A1-850C-0EF13F81506A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{EFCCD6A6-B0C5-49E0-8027-599FD6F3D6AC}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{EFCCD6
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Pages", "FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Pages.csproj", "{A5267496-D2BC-4EC4-A32A-86DA98747DE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Components", "FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Components.csproj", "{A5267496-D2BC-4EC4-A32A-86DA98747DE9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

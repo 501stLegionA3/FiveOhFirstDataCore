@@ -1,11 +1,11 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Data.Message;
-using FiveOhFirstDataCore.Core.Data.Notice;
-using FiveOhFirstDataCore.Core.Data.Promotions;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Notification;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Account.Detail;
+using FiveOhFirstDataCore.Data.Structures.Message;
+using FiveOhFirstDataCore.Data.Structures.Notice;
+using FiveOhFirstDataCore.Data.Structures.Promotions;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Notification;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using Newtonsoft.Json;
 
-namespace FiveOhFirstDataCore.Core.Database
+namespace FiveOhFirstDataCore.Data.Structuresbase
 {
     public class ApplicationDbContext : IdentityDbContext<Trooper, TrooperRole, int>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace FiveOhFirstDataCore.Core.Structures
+namespace FiveOhFirstDataCore.Data.Structures
 {
     public class RegisterTrooperResult : ResultBase
     {

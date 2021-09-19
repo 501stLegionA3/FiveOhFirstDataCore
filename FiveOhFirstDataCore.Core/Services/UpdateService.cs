@@ -1,16 +1,16 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Database;
-using FiveOhFirstDataCore.Core.Extensions;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structuresbase;
+using FiveOhFirstDataCore.Data.Extensions;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class UpdateService : IUpdateService
     {
@@ -55,7 +55,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var dat = _dbContext
                 .SlotUpdates
-                .Where(x => x.OldSlot == Data.Slot.Archived)
+                .Where(x => x.OldSlot == Slot.Archived)
                 .Include(p => p.ChangedFor)
                 .Include(p => p.ApprovedBy)
                 .AsSplitQuery()
@@ -75,7 +75,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext
                 .SlotUpdates
-                .Where(x => x.OldSlot == Data.Slot.Archived)
+                .Where(x => x.OldSlot == Slot.Archived)
                 .CountAsync();
         }
 

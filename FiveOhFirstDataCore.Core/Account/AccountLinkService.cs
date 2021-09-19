@@ -1,4 +1,4 @@
-﻿using FiveOhFirstDataCore.Core.Database;
+﻿using FiveOhFirstDataCore.Data.Structuresbase;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.Runtime.Serialization;
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class AccountLinkService
     {

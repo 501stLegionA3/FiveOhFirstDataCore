@@ -1,9 +1,9 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Data.Roster;
-using FiveOhFirstDataCore.Core.Database;
-using FiveOhFirstDataCore.Core.Extensions;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Roster;
+using FiveOhFirstDataCore.Data.Structuresbase;
+using FiveOhFirstDataCore.Data.Extensions;
+using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 using System.Security.Claims;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public partial class RosterService : IRosterService
     {
@@ -35,7 +35,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve)
+                .Where(x => x.Slot >= Slot.ZetaCompany && x.Slot < Slot.InactiveReserve)
                 .ToListAsync();
         }
 
@@ -43,7 +43,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot == Data.Slot.Archived)
+                .Where(x => x.Slot == Slot.Archived)
                 .ToListAsync();
         }
 
@@ -61,7 +61,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = _dbContext.Users
-                .Where(x => x.Slot < Data.Slot.Archived);
+                .Where(x => x.Slot < Slot.Archived);
             if (includePromotions)
                 data = data.Include(p => p.PendingPromotions)
                 .ThenInclude(p => p.RequestedBy)
@@ -74,7 +74,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot >= Data.Slot.InactiveReserve && x.Slot < Data.Slot.Archived)
+                .Where(x => x.Slot >= Slot.InactiveReserve && x.Slot < Slot.Archived)
                 .ToListAsync();
         }
 
@@ -87,7 +87,7 @@ namespace FiveOhFirstDataCore.Core.Services
             {
                 ids.Add(x.BirthNumber);
 
-                if (x.Slot < Data.Slot.Archived)
+                if (x.Slot < Slot.Archived)
                     nicknames.Add(x.NickName);
             });
 
@@ -99,7 +99,7 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             OrbatData data = new();
             await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot < Data.Slot.ZetaCompany)
+                .Where(x => x.Slot < Slot.ZetaCompany)
                 .ForEachAsync(x => data.Assign(x));
 
             return data;
@@ -109,7 +109,7 @@ namespace FiveOhFirstDataCore.Core.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot < Data.Slot.ZetaCompany)
+                .Where(x => x.Slot < Slot.ZetaCompany)
                 .ToListAsync();
         }
 
@@ -147,8 +147,8 @@ namespace FiveOhFirstDataCore.Core.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             ZetaOrbatData data = new();
             await _dbContext.Users.AsNoTracking()
-                .Where(x => x.Slot >= Data.Slot.ZetaCompany && x.Slot < Data.Slot.InactiveReserve
-                    || x.Slot == Data.Slot.Hailstorm)
+                .Where(x => x.Slot >= Slot.ZetaCompany && x.Slot < Slot.InactiveReserve
+                    || x.Slot == Slot.Hailstorm)
                 .ForEachAsync(x => data.Assign(x));
 
             return data;
@@ -186,7 +186,7 @@ namespace FiveOhFirstDataCore.Core.Services
                     StartOfService = time,
                     LastPromotion = time,
                     AccessCode = token,
-                    Slot = Data.Slot.InactiveReserve,
+                    Slot = Slot.InactiveReserve,
                 };
 
                 var recruiter = await GetTrooperFromClaimsPrincipalAsync(user);
@@ -309,9 +309,9 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a company
                 else if ((slot / 10 % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander
-                        || t.Role == Data.Role.NCOIC
-                        || t.Role == Data.Role.XO)
+                    if (t.Role == Role.Commander
+                        || t.Role == Role.NCOIC
+                        || t.Role == Role.XO)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 100)
@@ -320,17 +320,17 @@ namespace FiveOhFirstDataCore.Core.Services
                             {
                                 // In the company staff
                                 if (slotDif == 0
-                                    || x.Role == Data.Role.Commander
-                                    || x.Role == Data.Role.SergeantMajor)
+                                    || x.Role == Role.Commander
+                                    || x.Role == Role.SergeantMajor)
                                 {
                                     sub.Add(x);
                                     return;
                                 }
                             }
-                            else if (x.Role == Data.Role.Lead
+                            else if (x.Role == Role.Lead
                                     && x.Team is null
-                                    && x.Slot >= Data.Slot.Mynock
-                                    && x.Slot < Data.Slot.Razor)
+                                    && x.Slot >= Slot.Mynock
+                                    && x.Slot < Slot.Razor)
                             {
                                 sub.Add(x);
                                 return;
@@ -342,10 +342,10 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a Plt.
                 if ((slot % 10) == 0)
                 {
-                    if (t.Role == Data.Role.Commander
-                        || t.Role == Data.Role.SergeantMajor
-                        || t.Role == Data.Role.MasterWarden
-                        || t.Role == Data.Role.ChiefWarden)
+                    if (t.Role == Role.Commander
+                        || t.Role == Role.SergeantMajor
+                        || t.Role == Role.MasterWarden
+                        || t.Role == Role.ChiefWarden)
                     {
                         int slotDif = thisSlot - slot;
                         if (slotDif >= 0 && slotDif < 10)
@@ -354,10 +354,10 @@ namespace FiveOhFirstDataCore.Core.Services
                             //if (slotDif == 0) 
                             //    sub.Add(x);
                             //// This is a squad leader
-                            //else if (x.Role == Data.Role.Lead && x.Team is null) 
+                            //else if (x.Role == Role.Lead && x.Team is null) 
                             //    sub.Add(x);
 
-                            //else if (x.Role == Data.Role.Pilot || x.Role == Data.Role.Warden)
+                            //else if (x.Role == Role.Pilot || x.Role == Role.Warden)
                             //    sub.Add(x);
 
                             sub.Add(x);
@@ -367,7 +367,7 @@ namespace FiveOhFirstDataCore.Core.Services
                 // This is a squad
                 else
                 {
-                    if (t.Role == Data.Role.Lead)
+                    if (t.Role == Role.Lead)
                     {
                         if (thisSlot == slot)
                         {

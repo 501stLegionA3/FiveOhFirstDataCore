@@ -1,4 +1,4 @@
-﻿using FiveOhFirstDataCore.Core.Database;
+﻿using FiveOhFirstDataCore.Data.Structuresbase;
 
 using Lucene.Net.Analysis.Phonetic.Language;
 
@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 using System.Collections.Concurrent;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class NicknameComparisionService : INicknameComparisonService
     {

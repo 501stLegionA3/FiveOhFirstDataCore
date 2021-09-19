@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Account
+﻿namespace FiveOhFirstDataCore.Data.Account
 {
     public class LinkState
     {

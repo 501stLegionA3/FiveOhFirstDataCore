@@ -1,7 +1,7 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Structures.Updates
+namespace FiveOhFirstDataCore.Data.Structures.Updates
 {
     public class QualificationUpdate : UpdateBase
     {

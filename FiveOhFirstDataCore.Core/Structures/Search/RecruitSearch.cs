@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Data;
+﻿using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Structures
+namespace FiveOhFirstDataCore.Data.Structures
 {
     public class RecruitSearch
     {

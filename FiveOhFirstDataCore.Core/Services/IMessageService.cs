@@ -1,8 +1,8 @@
-﻿using FiveOhFirstDataCore.Core.Components.Base;
-using FiveOhFirstDataCore.Core.Data.Message;
-using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Components.Base;
+using FiveOhFirstDataCore.Data.Structures.Message;
+using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public interface IMessageService
     {

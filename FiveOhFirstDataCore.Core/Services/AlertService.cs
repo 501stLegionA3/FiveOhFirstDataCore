@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class AlertService : IAlertService
     {
@@ -31,7 +31,7 @@ namespace FiveOhFirstDataCore.Core.Services
             PostAlert(sender, new AlertData()
             {
                 Content = data,
-                Level = Data.Notice.AlertLevel.Danger
+                Level = Structures.Notice.AlertLevel.Danger
             });
         }
 
@@ -39,7 +39,7 @@ namespace FiveOhFirstDataCore.Core.Services
             => PostAlert(sender, new AlertData()
             {
                 Content = success,
-                Level = Data.Notice.AlertLevel.Success
+                Level = Structures.Notice.AlertLevel.Success
             });
     }
 }

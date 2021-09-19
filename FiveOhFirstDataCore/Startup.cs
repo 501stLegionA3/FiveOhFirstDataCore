@@ -6,11 +6,11 @@ using AspNet.Security.OpenId;
 using DSharpPlus;
 
 using FiveOhFirstDataCore.Areas.Identity;
-using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Database;
-using FiveOhFirstDataCore.Core.Mail;
-using FiveOhFirstDataCore.Core.Services;
-using FiveOhFirstDataCore.Core.Structures;
+using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structuresbase;
+using FiveOhFirstDataCore.Data.Mail;
+using FiveOhFirstDataCore.Data.Services;
+using FiveOhFirstDataCore.Data.Structures;
 
 using MailKit.Net.Smtp;
 

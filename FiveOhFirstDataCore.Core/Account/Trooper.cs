@@ -1,17 +1,17 @@
-﻿using FiveOhFirstDataCore.Core.Account.Detail;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Data.Message;
-using FiveOhFirstDataCore.Core.Data.Notice;
-using FiveOhFirstDataCore.Core.Data.Promotions;
-using FiveOhFirstDataCore.Core.Extensions;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Structures.Notification;
-using FiveOhFirstDataCore.Core.Structures.Updates;
+﻿using FiveOhFirstDataCore.Data.Account.Detail;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Message;
+using FiveOhFirstDataCore.Data.Structures.Notice;
+using FiveOhFirstDataCore.Data.Structures.Promotions;
+using FiveOhFirstDataCore.Data.Extensions;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Notification;
+using FiveOhFirstDataCore.Data.Structures.Updates;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 
 
-namespace FiveOhFirstDataCore.Core.Account
+namespace FiveOhFirstDataCore.Data.Account
 {
     public class Trooper : IdentityUser<int>
     {

@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Services
+﻿namespace FiveOhFirstDataCore.Data.Services
 {
     public interface IRefreshRequestService
     {

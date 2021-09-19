@@ -2,7 +2,7 @@
 
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace FiveOhFirstDataCore.Core.Migrations
+namespace FiveOhFirstDataCore.Data.Migrations
 {
     public partial class ReleaseSoyvolonVersionZeroSevenZero : Migration
     {

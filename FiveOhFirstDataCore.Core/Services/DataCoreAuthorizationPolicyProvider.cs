@@ -1,12 +1,12 @@
-﻿using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures.Auth;
+﻿using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Auth;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class DataCoreAuthorizationPolicyProvider : IAuthorizationPolicyProvider
     {

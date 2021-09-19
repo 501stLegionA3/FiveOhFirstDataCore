@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Account.Detail
+﻿namespace FiveOhFirstDataCore.Data.Account.Detail
 {
     public class DisciplinaryAction
     {

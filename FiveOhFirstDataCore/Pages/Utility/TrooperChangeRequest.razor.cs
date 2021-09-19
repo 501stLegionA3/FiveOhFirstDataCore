@@ -1,5 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Services;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Services;
+using FiveOhFirstDataCore.Data.Structures;
 
 using Microsoft.AspNetCore.Components;
 
@@ -25,7 +26,7 @@ namespace FiveOhFirstDataCore.Pages.Utility
 
             if (firstRender)
             {
-                Model.Qualifications = CurrentUser?.Qualifications ?? Core.Data.Qualification.None;
+                Model.Qualifications = CurrentUser?.Qualifications ?? Qualification.None;
                 StateHasChanged();
             }
         }

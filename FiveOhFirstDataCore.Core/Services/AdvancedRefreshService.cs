@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public class AdvancedRefreshService : IAdvancedRefreshService
     {

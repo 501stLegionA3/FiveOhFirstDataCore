@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Structures;
+﻿using FiveOhFirstDataCore.Data.Structures;
 
-namespace FiveOhFirstDataCore.Core.Services
+namespace FiveOhFirstDataCore.Data.Services
 {
     public interface IAlertService
     {

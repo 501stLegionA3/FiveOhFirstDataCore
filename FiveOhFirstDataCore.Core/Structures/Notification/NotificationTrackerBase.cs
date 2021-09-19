@@ -1,6 +1,6 @@
-﻿using FiveOhFirstDataCore.Core.Account;
+﻿using FiveOhFirstDataCore.Data.Account;
 
-namespace FiveOhFirstDataCore.Core.Structures.Notification
+namespace FiveOhFirstDataCore.Data.Structures.Notification
 {
     public class NotificationTrackerBase
     {

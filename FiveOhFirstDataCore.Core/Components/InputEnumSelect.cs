@@ -7,7 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
-namespace FiveOhFirstDataCore.Core.Components
+namespace FiveOhFirstDataCore.Data.Components
 {
     public class InputEnumSelect<TEnum> : InputBase<TEnum>
     {

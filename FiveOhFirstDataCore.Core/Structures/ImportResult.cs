@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace FiveOhFirstDataCore.Core.Structures
+namespace FiveOhFirstDataCore.Data.Structures
 {
     /// <summary>
     /// Holds details for results of import operations. Mainly used in <see cref="FiveOhFirstDataCore.Core.Services.IImportService"/>.

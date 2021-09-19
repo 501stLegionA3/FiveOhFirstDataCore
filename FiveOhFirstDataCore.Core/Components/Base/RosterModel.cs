@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace FiveOhFirstDataCore.Core.Components.Base
+namespace FiveOhFirstDataCore.Data.Components.Base
 {
     public class RosterModel : ComponentBase
     {

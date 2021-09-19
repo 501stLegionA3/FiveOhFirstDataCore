@@ -1,4 +1,4 @@
-﻿namespace FiveOhFirstDataCore.Core.Extensions
+﻿namespace FiveOhFirstDataCore.Data.Extensions
 {
     public static class StringExtensions
     {
