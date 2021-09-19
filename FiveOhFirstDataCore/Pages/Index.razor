@@ -1,8 +1,15 @@
 ﻿@page "/"
 
-<h1>Hello there!</h1>
+<AuthorizeView>
+ <Authorized>
+  <h1>Welcome back, @CurrentUser?.NickName!!</h1>
+ </Authorized>
+ <NotAuthorized>
+     <h1>Welcome Guest!</h1>
+ </NotAuthorized>
+</AuthorizeView>
 
-General Kenobi.
+Hello there, General Kenobi.
 
 <hr />
 
