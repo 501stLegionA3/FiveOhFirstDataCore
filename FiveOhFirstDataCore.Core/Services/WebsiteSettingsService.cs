@@ -1341,11 +1341,11 @@ namespace FiveOhFirstDataCore.Data.Services
                 await ReloadPolicyCacheAsync();
 
             if (SectionToPolicyNameDict!.TryGetValue(sectionName, out var policy))
-                if (PolicyBuilders!.TryGetValue(policy, out var builder))
+                if (PolicyBuilders!.TryGetValue(policy ?? "", out var builder))
                     return builder;
             // A policy named default will be used as a fallback for any missing
             // policy names, or unassigned policy sections.
-            if (PolicyBuilders!.TryGetValue("default".Normalize(), out var defaultBuilder))
+            if (PolicyBuilders!.TryGetValue("Default", out var defaultBuilder))
                 return defaultBuilder;
 
             return null;
@@ -1463,17 +1463,53 @@ namespace FiveOhFirstDataCore.Data.Services
             }
         }
 
-        public async Task<PolicySectionResult> GetPolicySectionAsync(string sectionName)
+        public async Task<PolicySectionResult> GetOrCreatePolicySectionAsync(string sectionName)
         {
             var name = sectionName.Normalize();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var section = await _dbContext.FindAsync<PolicySection>(name);
 
-            if (section is not null)
-                return new(true, section, null);
+            if (section is null)
+            {
+                section = new()
+                {
+                    SectionName = sectionName
+                };
 
-            return new(false, null, new List<string>() { "" });
+                await _dbContext.AddAsync(section);
+                await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
+            }
+
+            return new(true, section, null);
+        }
+
+        public async Task<List<DynamicPolicy>> GetDynamicPoliciesAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.DynamicPolicies.ToListAsync();
+        }
+
+        public async Task<DynamicPolicy?> GetDynamicPolicyAsync(string policyName)
+        {
+            if (policyName is null) return null;
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var p = await _dbContext.FindAsync<DynamicPolicy>(policyName.Normalize());
+
+            if (p is null) return null;
+
+            await _dbContext.Entry(p).Collection(e => e.RequiredClaims).LoadAsync();
+            if (p.EditableByPolicyName is not null)
+            {
+#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+                await _dbContext.Entry(p).Reference(e => e.EditableByPolicy).LoadAsync();
+#pragma warning restore CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+            }
+
+            return p;
         }
         #endregion
     }

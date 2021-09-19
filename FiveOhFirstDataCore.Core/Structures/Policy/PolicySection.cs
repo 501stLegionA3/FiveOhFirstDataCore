@@ -8,7 +8,7 @@ namespace FiveOhFirstDataCore.Core.Structures.Policy;
 
 public class PolicySection
 {
-    public string SectionName { get; set; }
-    public string PolicyName { get; set; }
+    public string? SectionName { get; set; }
+    public string? PolicyName { get; set; }
     public DynamicPolicy Policy { get; set; }
 }

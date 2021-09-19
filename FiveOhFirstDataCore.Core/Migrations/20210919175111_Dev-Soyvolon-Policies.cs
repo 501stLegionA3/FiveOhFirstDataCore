@@ -14,7 +14,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                 {
                     PolicyName = table.Column<string>(type: "text", nullable: false),
                     RequiredRoles = table.Column<List<string>>(type: "text[]", nullable: false),
-                    EditableByPolicyName = table.Column<string>(type: "text", nullable: false)
+                    EditableByPolicyName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -24,7 +24,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                         column: x => x.EditableByPolicyName,
                         principalTable: "DynamicPolicies",
                         principalColumn: "PolicyName",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,7 +52,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                 columns: table => new
                 {
                     SectionName = table.Column<string>(type: "text", nullable: false),
-                    PolicyName = table.Column<string>(type: "text", nullable: false)
+                    PolicyName = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -62,7 +62,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                         column: x => x.PolicyName,
                         principalTable: "DynamicPolicies",
                         principalColumn: "PolicyName",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(

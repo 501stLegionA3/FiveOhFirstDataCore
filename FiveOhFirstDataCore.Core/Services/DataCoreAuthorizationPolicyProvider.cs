@@ -28,6 +28,11 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
+            var dynamicBuilder = await _settings.GetPolicyBuilderAsync(policyName, false);
+
+            if (dynamicBuilder is not null)
+                return dynamicBuilder.Build();
+
             if (TryGetPolicyBuilder(policyName, out var builder))
             {
                 return builder.Build();

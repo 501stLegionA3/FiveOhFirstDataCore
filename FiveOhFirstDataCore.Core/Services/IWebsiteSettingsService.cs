@@ -122,9 +122,11 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilderAsync(string sectionName, bool forceCacheReload = false);
         public Task<ResultBase> CreatePolicyAsync(DynamicPolicy policy);
         public Task<ResultBase> UpdatePolicyAsync(DynamicPolicy policy);
+        public Task<List<DynamicPolicy>> GetDynamicPoliciesAsync();
+        public Task<DynamicPolicy?> GetDynamicPolicyAsync(string policyName);
         public Task<ResultBase> UpdateOrCreatePolicyAsync(DynamicPolicy policy);
         public Task<ResultBase> UpdatePolicySectionAsync(PolicySection policySection);
-        public Task<PolicySectionResult> GetPolicySectionAsync(string sectionName);
+        public Task<PolicySectionResult> GetOrCreatePolicySectionAsync(string sectionName);
         public Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null);
         #endregion
     }

@@ -1,10 +1,13 @@
 ﻿using FiveOhFirstDataCore.Data.Structures;
 
+using Microsoft.AspNetCore.Components;
+
 namespace FiveOhFirstDataCore.Data.Services
 {
     public class AlertService : IAlertService
     {
         public event EventHandler<AlertData> OnAlertPosted;
+        public event EventHandler<RenderFragment> OnModalPosted;
 
         public void PostAlert(object sender, AlertData alert)
         {
@@ -41,5 +44,17 @@ namespace FiveOhFirstDataCore.Data.Services
                 Content = success,
                 Level = Structures.Notice.AlertLevel.Success
             });
+
+        public void PostModal(object sender, RenderFragment modalContent)
+        {
+            try
+            {
+                OnModalPosted.Invoke(sender, modalContent);
+            }
+            catch
+            {
+                // do nothing, as we have nothing listening.
+            }
+        }
     }
 }

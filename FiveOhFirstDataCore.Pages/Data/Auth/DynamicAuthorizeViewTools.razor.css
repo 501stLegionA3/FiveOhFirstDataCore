@@ -1,0 +1,12 @@
+﻿.coat {
+    background-color: rgb(255,216,0,0.50);
+    display: block;
+    z-index: 1010;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.above-coat {
+    z-index: 1011;
+}

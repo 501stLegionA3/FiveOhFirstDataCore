@@ -13,8 +13,8 @@ public class DynamicPolicy
     public List<string> RequiredRoles { get; set; } = new();
     public List<PolicyClaimData> RequiredClaims { get; set; } = new();
 
-    public string EditableByPolicyName { get; set; }
-    public DynamicPolicy EditableByPolicy { get; set; }
+    public string? EditableByPolicyName { get; set; }
+    public DynamicPolicy? EditableByPolicy { get; set; }
 
     public List<PolicySection> PolicySections { get; set; } = new();
     public List<DynamicPolicy> CanEditPolicies { get; set; } = new();

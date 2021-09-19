@@ -349,14 +349,18 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
             dPoli.HasKey(p => p.PolicyName);
             dPoli.HasOne(p => p.EditableByPolicy)
                 .WithMany(e => e.CanEditPolicies)
-                .HasForeignKey(p => p.EditableByPolicyName);
+                .HasForeignKey(p => p.EditableByPolicyName)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
             dPoli.HasMany(p => p.RequiredClaims);
 
             var poliSect = builder.Entity<PolicySection>();
             poliSect.HasKey(p => p.SectionName);
             poliSect.HasOne(p => p.Policy)
                 .WithMany(e => e.PolicySections)
-                .HasForeignKey(p => p.PolicyName);
+                .HasForeignKey(p => p.PolicyName)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             var poliClaimData = builder.Entity<PolicyClaimData>();
             poliClaimData.HasKey(p => p.Key);
