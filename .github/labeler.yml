@@ -4,10 +4,10 @@ documentation:
 startup:
 - FiveOhFirstDataCore/**/*
 
-core:
+data:
 - FiveOhFirstDataCore.Core/**/*
 
-pages:
+components:
 - FiveOhFirstDataCore.Pages/**/*
 
 database:
