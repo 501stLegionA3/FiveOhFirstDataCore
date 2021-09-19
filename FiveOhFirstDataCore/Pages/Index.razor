@@ -1,9 +1,32 @@
-﻿@page "/"
+@inject IAuthorizationService _auth
+@page "/"
 
-<h1>Hello there!</h1>
-
-General Kenobi.
+<AuthorizeView>
+ <Authorized>
+  <h1>Welcome back, @CurrentUser?.NickName!!</h1>
+ </Authorized>
+ <NotAuthorized>
+     <h1>Welcome Guest!,</h1>
+ </NotAuthorized>
+</AuthorizeView>
+// Future Update, The Line Below will be setup for random quotes API
+Well Hello There General Kenobi.
 
 <hr />
 
 <NoticeBoard Name="Index" />
+
+@code {
+    [CascadingParameter]
+    public Trooper? CurrentUser { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthStateTask { get; set; }
+
+    public bool InSquad { get; set; } = false;
+    public bool InPlatoon {get;set;} = false;
+    public bool InCompany { get; set; } = false;
+
+    private string Version { get; set; } = "";
+
+}
