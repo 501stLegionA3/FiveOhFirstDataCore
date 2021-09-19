@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace FiveOhFirstDataCore.Core.Migrations
+namespace FiveOhFirstDataCore.Data.Migrations
 {
     public partial class DevSoyvolonPolicies : Migration
     {

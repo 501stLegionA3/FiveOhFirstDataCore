@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FiveOhFirstDataCore.Core.Structures;
+namespace FiveOhFirstDataCore.Data.Structures;
 
 public class PolicySectionResult : ResultBase
 {
