@@ -2,7 +2,7 @@
 
 namespace FiveOhFirstDataCore.Data.Migrations
 {
-    public partial class DevSoyvolonBirthNumber : Migration
+    public partial class ReleaseSoyvolonVersionZeroThirteenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

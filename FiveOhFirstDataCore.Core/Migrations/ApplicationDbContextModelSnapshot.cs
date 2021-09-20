@@ -17,7 +17,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "6.0.0-preview.6.21352.1")
+                .HasAnnotation("ProductVersion", "6.0.0-preview.7.21378.4")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("DisciplinaryActionTrooper", b =>
@@ -35,7 +35,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("DisciplinaryActionTrooper");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.DisciplinaryAction", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", b =>
                 {
                     b.Property<Guid>("DAID")
                         .ValueGeneratedOnAdd()
@@ -97,7 +97,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("DisciplinaryActions");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -135,7 +135,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.RecruitStatus", b =>
                 {
                     b.Property<Guid>("RecruitStatusId")
                         .ValueGeneratedOnAdd()
@@ -167,7 +167,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("RecruitStatuses");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Trooper", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -332,7 +332,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.TrooperChangeRequestData", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -422,7 +422,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("ChangeRequests");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperRole", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.TrooperRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -450,7 +450,99 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Message.TrooperMessage", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopClaim", b =>
+                {
+                    b.Property<long>("Key")
+                        .HasColumnType("bigint");
+
+                    b.Property<List<string>>("CShopCommand")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<List<string>>("CShopLeadership")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<string>("ClaimData")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("CShopClaims");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopDepartmentBinding", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<long>("ParentKey")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ParentKey");
+
+                    b.ToTable("CShopDepartmentBinding");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBinding", b =>
+                {
+                    b.Property<long>("Key")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("CShopRoles");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBindingData", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ParentKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal[]>("Roles")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ParentKey");
+
+                    b.ToTable("CShopRoleData");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.DiscordRoleDetails", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
+
+                    b.Property<decimal[]>("RoleGrants")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.Property<decimal[]>("RoleReplaces")
+                        .IsRequired()
+                        .HasColumnType("numeric(20,0)[]");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("DiscordRoles");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Message.TrooperMessage", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
@@ -478,7 +570,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("TrooperMessages");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.Notice", b =>
                 {
                     b.Property<Guid>("NoticeId")
                         .ValueGeneratedOnAdd()
@@ -513,7 +605,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("Notices");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.NoticeBoardData", b =>
                 {
                     b.Property<string>("Location")
                         .HasColumnType("text");
@@ -523,7 +615,31 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("NoticeBoards");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notification.ReportNotificationTracker", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastView")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<int>("NotificationForId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ReportId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("NotificationForId");
+
+                    b.HasIndex("ReportId");
+
+                    b.ToTable("ReportNotificationTrackers");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Promotions.Promotion", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -563,7 +679,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("Promotions");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.PromotionDetails", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Promotions.PromotionDetails", b =>
                 {
                     b.Property<int>("RequirementsFor")
                         .ValueGeneratedOnAdd()
@@ -634,123 +750,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("PromotionRequirements");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopClaim", b =>
-                {
-                    b.Property<long>("Key")
-                        .HasColumnType("bigint");
-
-                    b.Property<List<string>>("CShopCommand")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<List<string>>("CShopLeadership")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<string>("ClaimData")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Key");
-
-                    b.ToTable("CShopClaims");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<long>("ParentKey")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("ParentKey");
-
-                    b.ToTable("CShopDepartmentBinding");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", b =>
-                {
-                    b.Property<long>("Key")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Key");
-
-                    b.ToTable("CShopRoles");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBindingData", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("ParentKey")
-                        .HasColumnType("uuid");
-
-                    b.Property<decimal[]>("Roles")
-                        .IsRequired()
-                        .HasColumnType("numeric(20,0)[]");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("ParentKey");
-
-                    b.ToTable("CShopRoleData");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.DiscordRoleDetails", b =>
-                {
-                    b.Property<string>("Key")
-                        .HasColumnType("text");
-
-                    b.Property<decimal[]>("RoleGrants")
-                        .IsRequired()
-                        .HasColumnType("numeric(20,0)[]");
-
-                    b.Property<decimal[]>("RoleReplaces")
-                        .IsRequired()
-                        .HasColumnType("numeric(20,0)[]");
-
-                    b.HasKey("Key");
-
-                    b.ToTable("DiscordRoles");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Notification.ReportNotificationTracker", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("LastView")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("NotificationForId")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("ReportId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("NotificationForId");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("ReportNotificationTrackers");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperDescription", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperDescription", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -782,7 +782,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("TrooperDescriptions");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperFlag", b =>
                 {
                     b.Property<Guid>("FlagId")
                         .ValueGeneratedOnAdd()
@@ -810,7 +810,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("TrooperFlags");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.CShopUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -849,7 +849,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("CShopUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -882,7 +882,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("ClaimUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdateData", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdateData", b =>
                 {
                     b.Property<Guid>("UpdateKey")
                         .ValueGeneratedOnAdd()
@@ -911,7 +911,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("ClaimUpdateData");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.NickNameUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -949,7 +949,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("NickNameUpdate");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.QualificationUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -986,7 +986,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("QualificationUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RankUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -1030,7 +1030,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("RankUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RecruitmentUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -1061,7 +1061,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("RecruitmentUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.SlotUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -1110,7 +1110,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("SlotUpdates");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.TimeUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.TimeUpdate", b =>
                 {
                     b.Property<Guid>("ChangeId")
                         .ValueGeneratedOnAdd()
@@ -1333,34 +1333,34 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("DisciplinaryActionTrooper", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Detail.DisciplinaryAction", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", null)
                         .WithMany()
                         .HasForeignKey("WitnessedDisciplinaryActionsDAID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("WitnessesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.DisciplinaryAction", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FiledAgainst")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FiledAgainst")
                         .WithMany("DisciplinaryActions")
                         .HasForeignKey("FiledAgainstId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FiledBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FiledBy")
                         .WithMany("FiledDisciplinaryActions")
                         .HasForeignKey("FiledById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FiledTo")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FiledTo")
                         .WithMany("DisciplinaryActionInbox")
                         .HasForeignKey("FiledToId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1373,9 +1373,9 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("FiledTo");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ReportedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ReportedBy")
                         .WithMany("FiledReports")
                         .HasForeignKey("ReportedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1384,26 +1384,26 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ReportedBy");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.RecruitStatus", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.RecruitStatus", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Trooper")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Trooper")
                         .WithOne("RecruitStatus")
-                        .HasForeignKey("FiveOhFirstDataCore.Core.Account.RecruitStatus", "TrooperId")
+                        .HasForeignKey("FiveOhFirstDataCore.Data.Account.RecruitStatus", "TrooperId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Trooper");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.TrooperChangeRequestData", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.TrooperChangeRequestData", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("TrooperChangeRequests")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FinalizedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FinalizedBy")
                         .WithMany("FinalizedChangeRequests")
                         .HasForeignKey("FinalizedById")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -1413,15 +1413,37 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("FinalizedBy");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Message.TrooperMessage", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopDepartmentBinding", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.CShopRoleBinding", "Parent")
+                        .WithMany("Departments")
+                        .HasForeignKey("ParentKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBindingData", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.CShopDepartmentBinding", "Parent")
+                        .WithMany("Roles")
+                        .HasForeignKey("ParentKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Message.TrooperMessage", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Author")
                         .WithMany("TrooperMessages")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", null)
                         .WithMany("Responses")
                         .HasForeignKey("MessageFor")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1430,14 +1452,14 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.Notice", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.Notice", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Author")
                         .WithMany("NoticesWritten")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", "NoticeBoard")
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Notice.NoticeBoardData", "NoticeBoard")
                         .WithMany("Notices")
                         .HasForeignKey("NoticeBoardName")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1448,55 +1470,15 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("NoticeBoard");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notification.ReportNotificationTracker", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "PromotionFor")
-                        .WithMany("PendingPromotions")
-                        .HasForeignKey("PromotionForId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "RequestedBy")
-                        .WithMany("RequestedPromotions")
-                        .HasForeignKey("RequestedById")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("PromotionFor");
-
-                    b.Navigation("RequestedBy");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", "Parent")
-                        .WithMany("Departments")
-                        .HasForeignKey("ParentKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBindingData", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", "Parent")
-                        .WithMany("Roles")
-                        .HasForeignKey("ParentKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Notification.ReportNotificationTracker", b =>
-                {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "NotificationFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "NotificationFor")
                         .WithMany("TrooperReportTrackers")
                         .HasForeignKey("NotificationForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", "Report")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", "Report")
                         .WithMany("NotificationTrackers")
                         .HasForeignKey("ReportId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1507,14 +1489,32 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperDescription", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Promotions.Promotion", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "PromotionFor")
+                        .WithMany("PendingPromotions")
+                        .HasForeignKey("PromotionForId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "RequestedBy")
+                        .WithMany("RequestedPromotions")
+                        .HasForeignKey("RequestedById")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("PromotionFor");
+
+                    b.Navigation("RequestedBy");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperDescription", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Author")
                         .WithMany("CreatedDescriptions")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "DescriptionFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "DescriptionFor")
                         .WithMany("Descriptions")
                         .HasForeignKey("DescriptionForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1525,14 +1525,14 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("DescriptionFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.TrooperFlag", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperFlag", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "Author")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Author")
                         .WithMany("CreatedFlags")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "FlagFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FlagFor")
                         .WithMany("Flags")
                         .HasForeignKey("FlagForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1543,14 +1543,14 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("FlagFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.CShopUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.CShopUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedBy")
                         .WithMany("SubmittedCShopUpdates")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("CShopUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1561,14 +1561,14 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedBy")
                         .WithMany("AuthorizedClaimUpdates")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("ClaimUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1579,25 +1579,25 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdateData", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdateData", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", null)
                         .WithMany("Additions")
                         .HasForeignKey("ClaimUpdateChangeId");
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", null)
                         .WithMany("Removals")
                         .HasForeignKey("ClaimUpdateChangeId1");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.NickNameUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.NickNameUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ApprovedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ApprovedBy")
                         .WithMany("ApprovedNickNameUpdates")
                         .HasForeignKey("ApprovedById")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("NickNameUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1608,9 +1608,9 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.QualificationUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("QualificationUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1619,20 +1619,20 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RankUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RankUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("RankChanges")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "DeniedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "DeniedBy")
                         .WithMany("DeniedRankUpdates")
                         .HasForeignKey("DeniedById")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "RequestedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "RequestedBy")
                         .WithMany("SubmittedRankUpdates")
                         .HasForeignKey("RequestedById")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -1644,15 +1644,15 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("RequestedBy");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RecruitmentUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithOne("RecruitedByData")
-                        .HasForeignKey("FiveOhFirstDataCore.Core.Structures.Updates.RecruitmentUpdate", "ChangedForId")
+                        .HasForeignKey("FiveOhFirstDataCore.Data.Structures.Updates.RecruitmentUpdate", "ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "RecruitedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "RecruitedBy")
                         .WithMany("Recruitments")
                         .HasForeignKey("RecruitedById")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -1662,9 +1662,9 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("RecruitedBy");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.SlotUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("SlotUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1673,14 +1673,14 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("ChangedFor");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.TimeUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.TimeUpdate", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedBy")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedBy")
                         .WithMany("ApprovedTimeUpdates")
                         .HasForeignKey("ChangedById")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", "ChangedFor")
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "ChangedFor")
                         .WithMany("TimeUpdates")
                         .HasForeignKey("ChangedForId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1693,7 +1693,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.TrooperRole", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.TrooperRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1702,7 +1702,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1711,7 +1711,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1720,13 +1720,13 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.TrooperRole", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.TrooperRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1735,7 +1735,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1744,13 +1744,13 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("PromotionTrooper", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("ApprovedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Data.Promotions.Promotion", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Promotions.Promotion", null)
                         .WithMany()
                         .HasForeignKey("ApprovedPendingPromotionsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1759,13 +1759,13 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("QualificationUpdateTrooper", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("InstructorsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.QualificationUpdate", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Updates.QualificationUpdate", null)
                         .WithMany()
                         .HasForeignKey("SubmittedQualificationUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1774,13 +1774,13 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("RankUpdateTrooper", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("ApprovedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.RankUpdate", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Updates.RankUpdate", null)
                         .WithMany()
                         .HasForeignKey("ApprovedRankUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1789,27 +1789,27 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             modelBuilder.Entity("SlotUpdateTrooper", b =>
                 {
-                    b.HasOne("FiveOhFirstDataCore.Core.Account.Trooper", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", null)
                         .WithMany()
                         .HasForeignKey("ApprovedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Updates.SlotUpdate", null)
+                    b.HasOne("FiveOhFirstDataCore.Data.Structures.Updates.SlotUpdate", null)
                         .WithMany()
                         .HasForeignKey("ApprovedSlotUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Detail.TrooperReport", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", b =>
                 {
                     b.Navigation("NotificationTrackers");
 
                     b.Navigation("Responses");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Account.Trooper", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Trooper", b =>
                 {
                     b.Navigation("ApprovedNickNameUpdates");
 
@@ -1876,22 +1876,22 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.Navigation("TrooperReportTrackers");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Data.Notice.NoticeBoardData", b =>
-                {
-                    b.Navigation("Notices");
-                });
-
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopDepartmentBinding", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopDepartmentBinding", b =>
                 {
                     b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.CShopRoleBinding", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBinding", b =>
                 {
                     b.Navigation("Departments");
                 });
 
-            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Updates.ClaimUpdate", b =>
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.NoticeBoardData", b =>
+                {
+                    b.Navigation("Notices");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", b =>
                 {
                     b.Navigation("Additions");
 
