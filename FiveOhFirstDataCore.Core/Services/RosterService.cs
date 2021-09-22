@@ -187,6 +187,7 @@ namespace FiveOhFirstDataCore.Data.Services
                     LastPromotion = time,
                     AccessCode = token,
                     Slot = Slot.InactiveReserve,
+                    Role = Role.Trooper
                 };
 
                 var recruiter = await GetTrooperFromClaimsPrincipalAsync(user);
