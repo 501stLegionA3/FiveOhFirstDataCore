@@ -222,5 +222,24 @@ namespace FiveOhFirstDataCore.Data.Structures
 
             return false;
         }
+
+        public static bool IsBattalion(this Slot slot)
+        {
+            return slot == Slot.Hailstorm;
+        }
+
+        public static Slot GetPlatoon(this Slot slot)
+        {
+            int lsd = (int)slot % 10;
+            int newSlot = (int)slot - lsd;
+            return (Slot)newSlot;
+        }
+
+        public static Slot GetCompany(this Slot slot)
+        {
+            int lsd = (int)slot % 100;
+            int newSlot = (int)slot - lsd;
+            return (Slot)newSlot;
+        }
     }
 }
