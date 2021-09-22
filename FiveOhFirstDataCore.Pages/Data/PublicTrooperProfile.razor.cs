@@ -27,17 +27,16 @@ namespace FiveOhFirstDataCore.Components.Data
         public bool FirstRender { get; set; } = true;
 
         public Trooper? Superior { get; set; }
-        public bool SuperiorSet { get; private set; } = false;
 
         private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
 
         public string[] ServiceStrings = new string[6];
 
         private TrooperFlag Flag { get; set; } = new();
-        private bool LoadedAdditional { get; set; } = false;
+
+        private bool IsNCO { get; set;} = false;
 
         private TrooperDescription Description { get; set; } = new();
-        private bool LoadedDescriptions { get; set; } = false;
 
         [CascadingParameter]
         private Trooper? LoggedIn { get; set; } = new();
@@ -68,13 +67,12 @@ namespace FiveOhFirstDataCore.Components.Data
                 ServiceStrings[5] = now.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
 
                 await LoadFlags();
-                LoadedAdditional = true;
 
                 await LoadDescription();
-                LoadedDescriptions = true;
 
                 Superior = await _roster.GetDirectSuperior(Trooper);
-                SuperiorSet = true;
+
+                IsNCO = (await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded;
 
                 _refresh.RefreshRequested += RefreshMe;
                 RefreshMe();
@@ -169,6 +167,18 @@ namespace FiveOhFirstDataCore.Components.Data
 
             await InvokeAsync(StateHasChanged);
         }
+
+        /// <summary>
+        /// Checks if the person logged in is the same as the person currently displayed.
+        /// </summary>
+        /// <returns>True if they are the same.</returns>
+        public bool IsMe()
+        {
+            if (LoggedIn is null) return false;
+            if (LoggedIn.Id == Trooper.Id) return true;
+            return false;
+        }
+
 
         void IDisposable.Dispose()
         {

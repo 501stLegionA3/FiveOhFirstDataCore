@@ -11,7 +11,7 @@
 {
     <div class="main">
       <div class="info" id="info">
-        <h4><RankDisplay Trooper="Trooper" /> @Trooper.Id @Trooper.NickName </h4>
+        <h4><RankDisplay Trooper="Trooper" /> @Trooper.Id @Trooper.NickName @Trooper.BirthdayCake()</h4>
         <div id="time">
           <div class="timein">
             <p class="font-bold">TiS</p>
@@ -37,11 +37,11 @@
         <div class="stuff">
           @if (Superior is not null)
           {
-              <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)">@Superior.NickName</a></p>
-                } else
-                {
-                    <p>Superior: N/A</p>
-                }
+            <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)">@Superior.NickName</a></p>
+          } else
+          {
+            <p>Superior: N/A</p>
+          }
 
           <p><a href="/squad/@((int)Trooper.Slot)">@Trooper.NickName's Squad</a></p>
           <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
@@ -92,7 +92,7 @@
               <thead>
                   <AuthorizeView Policy="RequireNCO">
                       <Authorized>
-                                @if((LoggedIn?.Id ?? 0) != Trooper.Id)
+                                @if(!IsMe())
                                 {
                                     <tr>
                                         <td colspan="2">
@@ -108,7 +108,7 @@
                 <tr>
                   <th>Description</th>
                   <th>Date</th>
-                  @if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional){
+                  @if(IsMe() || IsNCO){
                       <th>Delete</th>
                   }
                 </tr>
@@ -118,7 +118,7 @@
                     {
                         var d = desc;
 
-                        if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
+                        if(IsMe() || IsNCO)
                         {
                             <tr draggable="true" @ondrag="()=>OnDrag(d)" @ondrop="async () => await OnDrop(d)">
                                 <td>@d.Content</td>
@@ -171,7 +171,7 @@
                 <EditForm Context="flagFormContext" class="form form-inline" Model="Flag">
                     <table class="table">
                       <thead>
-                                @if((LoggedIn?.Id ?? 0) != Trooper.Id)
+                                @if(!IsMe())
                                 {
                                     <tr>
                                         <td colspan="2">
