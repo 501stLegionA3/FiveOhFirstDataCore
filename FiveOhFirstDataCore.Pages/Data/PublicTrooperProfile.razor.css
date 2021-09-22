@@ -1,25 +1,89 @@
-﻿.grid {
+﻿@media (max-width: 1024px) {
+    .main {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .main div {
+        width: 90%;
+        margin: 0 auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main {
+        display: grid;
+    }
+}
+
+.main {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 1rem;
+    gap: 4rem;
+    text-align: center;
+}
+
+.main div:nth-last-child(1):nth-child(odd) {
+    grid-column: span 3/span 3;
+}
+
+.info #time {
+    display: flex;
+    padding: 1.25rem 0;
+}
+
+.info #billet {
+    display: flex;
+    padding: 0.5rem 0;
+}
+
+.info .timein {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.list-group {
+    text-align: left;
+}
+
+.qual {
     display: grid;
-    grid-template: repeat(2,minmax(0,1fr)) / repeat(3, minmax(0,1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.25rem 0.125rem;
 }
 
-.col-1 {
-    grid-column-start: 1;
+.qual p {
+    background-color: #1a8452;
+    border-radius: 0.125rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
-.col-2 {
-    grid-column-start: 2;
+.qual p:nth-last-child(1):nth-child(odd) {
+    grid-column: span 2/span 2;
 }
 
-.col-3 {
-    grid-column-start: 3;
+.links {
+    display: flex;
 }
 
-.row-1 {
-    grid-row-start: 1;
+.links p {
+    flex-grow: 1;
 }
 
-.row-2 {
-    grid-row-start: 2;
+.font-bold {
+    font-weight: bold;
+}
+
+.stuff {
+    display: flex;
+    flex-direction: column;
+}
+
+.link-none {
+    text-decoration: none;
 }

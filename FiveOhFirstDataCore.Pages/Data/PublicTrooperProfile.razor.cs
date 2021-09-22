@@ -7,6 +7,10 @@ using FiveOhFirstDataCore.Core.Structures.Updates;
 using FiveOhFirstDataCore.Core.Structures;
 using FiveOhFirstDataCore.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace FiveOhFirstDataCore.Pages.Data
 {
@@ -14,15 +18,23 @@ namespace FiveOhFirstDataCore.Pages.Data
     {
         [Parameter]
         public Trooper Trooper { get; set; }
+
+        [Inject]
+        public NavigationManager Nav { get; set; }
+
         [CascadingParameter]
         public Task<AuthenticationState> AuthStateTask { get; set; }
+
+        public bool FirstRender { get; set; } = true;
+
+        public Trooper? Superior { get; set; }
+        public bool SuperiorSet { get; private set; } = false;
 
         private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
 
         public string[] ServiceStrings = new string[6];
 
         private TrooperFlag Flag { get; set; } = new();
-
         private bool LoadedAdditional { get; set; } = false;
 
         private TrooperDescription Description { get; set; } = new();
@@ -33,83 +45,48 @@ namespace FiveOhFirstDataCore.Pages.Data
 
         private List<Qualification> QualValues = new();
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await base.OnInitializedAsync();
-            _state.OnPersisting += OnPersisting;
-            _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "ReloadPublicData", OnDataRefreshRequest);
+            await base.OnAfterRenderAsync(firstRender);
 
-            QualValues = (
-                (Qualification[])Enum
-                .GetValues(typeof(Qualification)))
-                .AsQueryable<Qualification>()
-                .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x)
-                .ToList();
-
-            var user = (await AuthStateTask).User;
-
-            if(_state.TryTakeAsJson<Dictionary<CShop, List<ClaimUpdateData>>>("shop_positions", out var shopPositions))
+            if (firstRender)
             {
-                ShopPositions = shopPositions ?? new();
-            }
-            else
-            {
+                _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "ReloadPublicData", OnDataRefreshRequest);
+
+                QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
+                .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
+
+                var user = (await AuthStateTask).User;
+
                 ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
-            }
 
-            if(_state.TryTakeAsJson<string[]>("service_strings", out var serviceStrings))
-            {
-                ServiceStrings = serviceStrings ?? new string[6];
-            }
-            else
-            {
                 var now = DateTime.UtcNow.ToEst();
                 ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
-                ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
-                ServiceStrings[2] = now.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
+                ServiceStrings[2] = Trooper.StartOfService.ToShortDateString();
+                ServiceStrings[1] = now.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
                 ServiceStrings[3] = now.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
                 ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
                 ServiceStrings[5] = now.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
-            }
 
-            if (_state.TryTakeAsJson<bool>("loaded_additional", out var loadAdd))
-            {
-                LoadedAdditional = loadAdd;
-            }
-            else
-            {
-                if ((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
-                {
-                    await LoadFlags();
-                    LoadedAdditional = true;
-                }
-            }
+                await LoadFlags();
+                LoadedAdditional = true;
 
-            if (_state.TryTakeAsJson<bool>("loaded_descriptions", out var loadDesc))
-            {
-                LoadedDescriptions = loadDesc;
-            }
-            else
-            {
                 await LoadDescription();
                 LoadedDescriptions = true;
+
+                Superior = await _roster.GetDirectSuperior(Trooper);
+                SuperiorSet = true;
+
+                _refresh.RefreshRequested += RefreshMe;
+                RefreshMe();
             }
 
-            _refresh.RefreshRequested += RefreshMe;
+
         }
 
         private void RefreshMe()
         {
             InvokeAsync(StateHasChanged);
-        }
-
-        private Task OnPersisting()
-        {
-            _state.PersistAsJson("shop_positions", ShopPositions);
-            _state.PersistAsJson("service_strings", ServiceStrings);
-            _state.PersistAsJson("loaded_additional", LoadedAdditional);
-            _state.PersistAsJson("loaded_descriptions", LoadedDescriptions);
-            return Task.CompletedTask;
         }
 
         #region Description
@@ -180,6 +157,11 @@ namespace FiveOhFirstDataCore.Pages.Data
         }
         #endregion
 
+        public void ChangeTrooper(int t)
+        {
+            Nav.NavigateTo($"/trooper/{t}", true);
+        }
+
         public async Task OnDataRefreshRequest()
         {
             Trooper = await _roster.GetTrooperFromIdAsync(Trooper.Id);
@@ -191,8 +173,8 @@ namespace FiveOhFirstDataCore.Pages.Data
 
         void IDisposable.Dispose()
         {
-            _state.OnPersisting -= OnPersisting;
             _refresh.RefreshRequested -= RefreshMe;
+            _advRefresh.RemoveDataReloadListener(OnDataRefreshRequest);
         }
     }
 }
