@@ -1,9 +1,11 @@
 ﻿@using FiveOhFirstDataCore.Data.Structures.Updates
+@using FiveOhFirstDataCore.Components.Misc
 @implements IDisposable
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
 @inject IAdvancedRefreshService _advRefresh
+
 
 @if(Trooper is not null)
 {

@@ -1,18 +1,17 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 
-using FiveOhFirstDataCore.Core.Account;
-using FiveOhFirstDataCore.Core.Data;
-using FiveOhFirstDataCore.Core.Structures.Updates;
-using FiveOhFirstDataCore.Core.Structures;
-using FiveOhFirstDataCore.Core.Extensions;
+using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures.Updates;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 
-namespace FiveOhFirstDataCore.Pages.Data
+namespace FiveOhFirstDataCore.Components.Data
 {
     partial class PublicTrooperProfile
     {
