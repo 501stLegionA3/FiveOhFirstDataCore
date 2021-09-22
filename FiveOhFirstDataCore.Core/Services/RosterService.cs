@@ -384,6 +384,148 @@ namespace FiveOhFirstDataCore.Data.Services
             return sub;
         }
 
+        public async Task<Trooper?> GetDirectSuperior(Trooper t)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            Trooper? superior = null;
+
+            #region Squad
+            if (t.Slot.IsSquad() && t.Role != Role.Lead)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Role == Role.Lead)
+                    .Where(e => e.Team == t.Team)
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+            }
+            else if (t.Slot.IsSquad() && t.Team is not null)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Role == Role.Lead)
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Team == null)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+            }
+            else if (t.Slot.IsSquad() && t.Team is null)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Role == Role.Commander)
+                    .Where(e => e.Slot == t.Slot.GetPlatoon())
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                if (superior is null)
+                {
+                    superior = await _dbContext.Users
+                        .Where(e => e.Role == Role.SergeantMajor)
+                        .Where(e => e.Slot == t.Slot.GetPlatoon())
+                        .Where(e => e.Id != t.Id)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                }
+            }
+            #endregion
+
+            #region Platoon
+            if (t.Slot.IsPlatoon() && t.Role != Role.Commander)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Role == Role.Commander)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                if (superior is null)
+                {
+                    superior = await _dbContext.Users
+                        .Where(e => e.Slot == t.Slot)
+                        .Where(e => e.Role == Role.SergeantMajor)
+                        .Where(e => e.Id != t.Id)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                }
+            }
+            else if (t.Slot.IsPlatoon() && t.Role == Role.Commander)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Slot == t.Slot.GetCompany())
+                    .Where(e => e.Role == Role.Commander)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+
+                if(superior is null)
+                {
+                    superior = await _dbContext.Users
+                        .Where(e => e.Slot == t.Slot.GetCompany())
+                        .Where(e => e.Role == Role.XO)
+                        .Where(e => e.Id != t.Id)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                }
+
+            }
+            #endregion
+
+            #region Company
+            // Company Staff
+            if (t.Slot.IsCompany() && t.Role != Role.Commander)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Role == Role.Commander)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                if (superior is null)
+                {
+                    superior = await _dbContext.Users
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Role == Role.XO)
+                    .Where(e => e.Id != t.Id)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                }
+            }
+            //Company Commander
+            else if (t.Slot.IsCompany())
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Slot == Slot.Hailstorm)
+                    .Where(e => e.Role == Role.Commander)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                if (superior is null)
+                {
+                    superior = await _dbContext.Users
+                    .Where(e => e.Slot == Slot.Hailstorm)
+                    .Where(e => e.Role == Role.XO)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                }
+            }
+            #endregion
+
+            #region Battalion
+            if (t.Slot.IsBattalion() && t.Role != Role.Commander)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Slot == Slot.Hailstorm)
+                    .Where(e => e.Role == Role.Commander)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+            }
+            #endregion
+
+
+            return superior;
+        }
+
         public async Task<IAssignable<Trooper>?> GetSquadDataAsync(Slot slot, bool manager)
         {
             if (!manager && !slot.IsSquad())
