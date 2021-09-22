@@ -1,9 +1,11 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structuresbase;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using System.ComponentModel.DataAnnotations;
@@ -17,18 +19,18 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         private readonly TrooperSignInManager _signInManager;
         private readonly UserManager<Trooper> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly AccountLinkService _link;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         public RegisterModel(
             UserManager<Trooper> userManager,
             TrooperSignInManager signInManager,
             ILogger<RegisterModel> logger,
-            AccountLinkService link)
+            IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _link = link;
+            _dbContextFactory = dbContextFactory;
         }
 
         [BindProperty]
@@ -74,40 +76,56 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(Input.BirthNumber.ToString());
+                await using var _dbContext = _dbContextFactory.CreateDbContext();
+                var userObject = await _dbContext.Users.AsNoTracking()
+                    .Where(x => x.BirthNumber == Input.BirthNumber)
+                    .SingleOrDefaultAsync();
 
-                if (user is not null)
+                if (userObject is not null)
                 {
-                    if (user.AccessCode == Input.AccessCode)
+
+                    var user = await _userManager.FindByIdAsync(userObject.Id.ToString());
+
+                    if (user is not null)
                     {
-                        var removeRes = await _userManager.RemovePasswordAsync(user);
-
-                        if (removeRes.Succeeded)
+                        if (user.AccessCode == Input.AccessCode)
                         {
+                            var removeRes = await _userManager.RemovePasswordAsync(user);
 
-                            var passChangeRes = await _userManager.AddPasswordAsync(user, Input.Password);
-
-                            if (passChangeRes.Succeeded)
+                            if (removeRes.Succeeded)
                             {
-                                user.UserName = Input.UserName;
-                                user.AccessCode = null;
-                                var identResult = await _userManager.UpdateAsync(user);
 
-                                if (!identResult.Succeeded)
+                                var passChangeRes = await _userManager.AddPasswordAsync(user, Input.Password);
+
+                                if (passChangeRes.Succeeded)
                                 {
-                                    foreach (var error in identResult.Errors)
+                                    user.UserName = Input.UserName;
+                                    user.AccessCode = null;
+                                    var identResult = await _userManager.UpdateAsync(user);
+
+                                    if (!identResult.Succeeded)
                                     {
-                                        ModelState.AddModelError(error.Code, error.Description);
+                                        foreach (var error in identResult.Errors)
+                                        {
+                                            ModelState.AddModelError(error.Code, error.Description);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return Redirect($"/Identity/Account/Login?message={WebUtility.HtmlEncode("Your account has been created. Login to link your account.")}");
                                     }
                                 }
                                 else
                                 {
-                                    return Redirect($"/Identity/Account/Login?message={WebUtility.HtmlEncode("Your account has been created. Login to link your account.")}");
+                                    foreach (var error in passChangeRes.Errors)
+                                    {
+                                        ModelState.AddModelError(error.Code, error.Description);
+                                    }
                                 }
                             }
                             else
                             {
-                                foreach (var error in passChangeRes.Errors)
+                                foreach (var error in removeRes.Errors)
                                 {
                                     ModelState.AddModelError(error.Code, error.Description);
                                 }
@@ -115,15 +133,12 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
                         }
                         else
                         {
-                            foreach (var error in removeRes.Errors)
-                            {
-                                ModelState.AddModelError(error.Code, error.Description);
-                            }
+                            ModelState.AddModelError("Invalid Access Code", "The inputed Access Code did not match the one saved to this trooper.");
                         }
                     }
                     else
                     {
-                        ModelState.AddModelError("Invalid Access Code", "The inputed Access Code did not match the one saved to this trooper.");
+                        ModelState.AddModelError("Invalid Birth Number", "The inputed Birth Number does match an exsisting ID.");
                     }
                 }
                 else
