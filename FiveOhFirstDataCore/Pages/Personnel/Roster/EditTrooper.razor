@@ -928,6 +928,7 @@
                 {
                     Trooper = first;
                     CShopClaims = await _roster.GetCShopClaimsAsync(Trooper);
+                    ClaimsTree = await _settings.GetFullClaimsTreeAsync();
                 }
             }
 
