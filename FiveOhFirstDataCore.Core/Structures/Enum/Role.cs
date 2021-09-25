@@ -4,6 +4,9 @@ namespace FiveOhFirstDataCore.Data.Structures
 {
     public enum Role
     {
+        /// <summary>
+        /// SL/TL
+        /// </summary>
         [Description("Leader")]
         Lead,
         [Description("RT")]
@@ -14,12 +17,24 @@ namespace FiveOhFirstDataCore.Data.Structures
         Medic,
         [Description("ARC")]
         ARC,
+        /// <summary>
+        /// Platoon/Company/Squadron/Battalion Commander
+        /// </summary>
         [Description("Commander")]
         Commander,
+        /// <summary>
+        /// Platoon SGM
+        /// </summary>
         [Description("Sergeant-Major")]
         SergeantMajor,
+        /// <summary>
+        /// Company/Battalion XO
+        /// </summary>
         [Description("XO")]
         XO,
+        /// <summary>
+        /// Company/Battalion NCOIC
+        /// </summary>
         [Description("NCOIC")]
         NCOIC,
         [Description("Adjutant")]
@@ -28,10 +43,19 @@ namespace FiveOhFirstDataCore.Data.Structures
         CShopXO,
         [Description("C-Shop Commander")]
         CShopCommander,
+        /// <summary>
+        /// Squadron Sub-Commander
+        /// </summary>
         [Description("Sub-Commander")]
         SubCommander,
+        /// <summary>
+        /// Warden CO
+        /// </summary>
         [Description("Master Warden")]
         MasterWarden,
+        /// <summary>
+        /// Warden XO
+        /// </summary>
         [Description("Chief Warden")]
         ChiefWarden,
         [Description("Warden")]

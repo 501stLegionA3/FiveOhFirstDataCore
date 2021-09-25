@@ -1,225 +1,178 @@
 ﻿@using FiveOhFirstDataCore.Data.Structures.Updates
+@using FiveOhFirstDataCore.Components.Misc
 @implements IDisposable
 @inject IRosterService _roster
 @inject IRefreshRequestService _refresh
 @inject IAuthorizationService _auth
 @inject IAdvancedRefreshService _advRefresh
 
+
 @if(Trooper is not null)
 {
-<div class="row w-100">
-    <div class="col-md-3 col-sm-12 text-center align-content-center">
-        <div class="row">
-            <div class="col text-center">
-                @*Trooper Basic Details*@
-                <h4><RankDisplay Trooper="Trooper" /> @Trooper.BirthNumber @Trooper.NickName @Trooper.BirthdayCake() </h4>
-                <div class="row w-100">
-                    <div class="col-lg-6 col-md-12">
-                        <table class="w-100">
-                            <tr>
-                                <th scope="col" class="w-50">
-                                    TiS
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @ServiceStrings[1]
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @ServiceStrings[3] DAY(S)
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <table class="w-100">
-                            <tr>
-                                <th scope="col" class="w-50">
-                                    TiG
-                                </th>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @ServiceStrings[0]
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    @ServiceStrings[2] DAY(S)
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
+    <div class="main">
+      <div class="info" id="info">
+        <h4><RankDisplay Trooper="Trooper" /> @Trooper.BirthNumber @Trooper.NickName @Trooper.BirthdayCake()</h4>
+        <div id="time">
+          <div class="timein">
+            <p class="font-bold">TiS</p>
+            <p>@ServiceStrings[0]</p>
+            <p>@ServiceStrings[1] DAY(S)</p>
+          </div>
+          <div class="timein">
+            <p class="font-bold">TiG</p>
+            <p>@ServiceStrings[2]</p>
+            <p>@ServiceStrings[3] DAY(S)</p>
+          </div>
         </div>
         <hr />
-        <div class="row">
-            <div class="col text-center">
-                @*Slot Details*@
-                <table class="w-100">
-                    <tr>
-                        <th>@Trooper.Slot.AsFull()</th>
-                    </tr>
-                    <tr>
-                        <th>TiB</th>
-                    </tr>
-                    <tr>
-                        <td>@ServiceStrings[4]</td>
-                    </tr>
-                    <tr>
-                        <td>@ServiceStrings[5] DAY(S)</td>
-                    </tr>
-                </table>
-            </div>
+        <div id="billet">
+          <div class="timein">
+            <p class="font-bold">@Trooper.Slot.AsFull()</p>
+            <p class="font-bold">TiB</p>
+            <p>@ServiceStrings[4]</p>
+            <p>@ServiceStrings[5] DAY(S)</p>
+          </div>
         </div>
         <hr />
-        <div class="row">
-            <strong>Description</strong>
-                        <EditForm Context="descriptionFormContext" class="form form-inline" Model="Description">
-                            <table class="table table-hover" ondragover="event.preventDefault();">
-                                <thead>
-                                    <AuthorizeView Policy="RequireNCO">
-                                        <Authorized>
-                                            @if((LoggedIn?.Id ?? 0) != Trooper.Id)
-                                            {
-                                                <tr>
-                                                    <td colspan="1">
-                                                        <InputText @bind-Value="Description.Content" class="form-control" placeholder="Description Contents" />
-                                                    </td>
-                                                    <td>
-                                                        <button class="btn btn-primary" @onclick="SaveDescription">Save</button>
-                                                    </td>
-                                                </tr>
-                                            }
-                                        </Authorized>
-                                    </AuthorizeView>
-                                    <tr>
-                                        <th>Description</th>
-                                        <th>Date</th>
-                                        @if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
-                                        {
-                                            <th>Delete</th>
-                                        }
-                                    </tr>
-                                </thead>
-                                <tbody class="w-100">
-                                    @foreach (var desc in Trooper.Descriptions)
-                                    {
-                                var d = desc;
-                                if((LoggedIn?.Id ?? 0) == Trooper.Id || LoadedAdditional)
-                                        {
-                                                <tr draggable="true" @ondrag="()=>OnDrag(d)" @ondrop="async ()=>await OnDrop(d)">
-                                                    <td>@d.Content</td>
-                                                    <td>@d.CreatedOn.ToString("d")</td>
-                                                    <td><button @onclick="async ()=>await DeleteDescription(d)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
-                                                </tr>
-                                        }
-                                        else
-                                        {
-                                                <tr draggable="false">
-                                                    <td>@d.Content</td>
-                                                    <td>@d.CreatedOn.ToString("d")</td>
-                                                </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </EditForm>
+        <div class="stuff">
+          @if (Superior is not null)
+          {
+            <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)">@Superior.NickName</a></p>
+          } else
+          {
+            <p>Superior: TBD</p>
+          }
+
+          <p><a href="/squad/@((int)Trooper.Slot)">@Trooper.NickName's Squad</a></p>
+          <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
+          <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
+          <AuthorizeView Policy="RequireRosterClerk">
+              <Authorized>
+                  <a class="btn btn-primary link-none" href="/c1/roster/edit?edit=@Trooper.Id">Edit</a>
+              </Authorized>
+          </AuthorizeView>
         </div>
-    </div>
-    <div class="col-md-9 col-sm-12">
-        <div class="row">
-            @*Trooper Full Details*@
-            <div class="col-lg-6 col-md-12">
-                <div class="row">
-                    <div class="col">
-                        <h5 class="text-center">C-Shops</h5>
-                        <div class="list-group">
-                            @foreach(CShop shop in Enum.GetValues(typeof(CShop)))
-                            {
-                                if (shop != CShop.None && (Trooper.CShops & shop) == shop)
-                                {
-                                    <div class="list-group-item">
-                                        <strong class="mb-1">@shop.AsFull()</strong>
-                                        @if(ShopPositions.TryGetValue(shop, out var positions))
-                                        {
-                                            <ul class="mb-1">
-                                            @foreach(var pos in positions)
-                                            {
-                                                <li class="mb-1">@pos.Key @pos.Value</li>
-                                            }
-                                            </ul>
-                                        }
-                                    </div>
-                                }
-                            }
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-6 col-md-12 text-center">
-                <h5>Qualifications</h5>
-                    @for(int i = 0; i < QualValues.Count; )
-                    {
-                        <div class="row justify-content-center">
-                        @if ((i + 1) < QualValues.Count)
+      </div>
+      <div>
+        <h4>C-Shops</h4>
+        <div class="list-group">
+            @foreach(CShop shop in Enum.GetValues(typeof(CShop)))
+            {
+                if(shop != CShop.None && (Trooper.CShops & shop) == shop)
+                {
+                    <div class="list-group-item">
+                        <h5>@shop.AsFull()</h5>
+                        @if(ShopPositions.TryGetValue(shop, out var positions))
                         {
-                            <div class="p-1 border bg-success text-light col-lg-6 col-md-12">@QualValues[i++].AsFull()</div>
-                            <div class="p-1 border bg-success text-light col-lg-6 col-md-12">@QualValues[i++].AsFull()</div>
+                            <ul>
+                                @foreach(var pos in positions)
+                                {
+                                    <li>@pos.Key @pos.Value</li>
+                                }
+                            </ul>
+                        }
+                    </div>
+                }
+            }
+        </div>
+      </div>
+      <div>
+        <h4>Qualifications</h4>
+        <div class="qual">
+                @foreach(var qual in QualValues)
+                {
+                    <p>@qual</p>
+                }
+            </div>
+      </div>
+      <div>
+        <h4>Descriptions</h4>
+        <EditForm Context="descriptionFormContext" class="form form-inline" Model="Description">
+            <table class="table">
+              <thead>
+                  <AuthorizeView Policy="RequireNCO">
+                      <Authorized>
+                                @if(!IsMe())
+                                {
+                                    <tr>
+                                        <td colspan="2">
+                                            <InputText @bind-Value="Description.Content" class="form-control" placeholder="Description Contents" />
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-primary" @onclick="SaveDescription">Save</button>
+                                        </td>
+                                    </tr>              
+                                }
+                      </Authorized>
+                  </AuthorizeView>
+                <tr>
+                  <th>Description</th>
+                  <th>Date</th>
+                  @if(IsMe() || IsNCO){
+                      <th>Delete</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var desc in Trooper.Descriptions)
+                    {
+                        var d = desc;
+
+                        if(IsMe() || IsNCO)
+                        {
+                            <tr draggable="true" @ondrag="()=>OnDrag(d)" @ondrop="async () => await OnDrop(d)">
+                                <td>@d.Content</td>
+                                <td>@d.CreatedOn.ToString("D")</td>
+                                <td><button @onclick="async () => await DeleteDescription(d)" class="btn btn-link"><span class="oi oi-trash"></span></button></td>
+                            </tr>    
                         }
                         else
                         {
-                            <div class="p-1 border bg-success text-light col">@QualValues[i++].AsFull()</div>
+                            <tr draggable="false">
+                                <td>@d.Content</td>
+                                <td>@d.CreatedOn.ToString("D")</td>
+                            </tr>    
                         }
-                        </div>
-                    }
-            </div>
-        </div>
+                        }
+              </tbody>
+            </table>
+        </EditForm>
+      </div>
+      <div>
         <AuthorizeView Policy="RequireNCO">
             <Authorized>
-                @if (LoadedAdditional)
-                {
-                <div class="row">
-                    @*NCO Box*@
-                    <div class="col-lg-6 col-md-12">
-                        <strong>Disciplinary Actions</strong>
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Filed By</th>
-                                    <th>Occurred On</th>
-                                    <th>Situation</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tboday>
-                                @foreach (var da in Trooper.DisciplinaryActions)
+                <h4>Disciplinary Actions</h4>
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Filed By</th>
+                      <th>Occured On</th>
+                      <th>Situation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach (var da in Trooper.DisciplinaryActions)
+                    {
+                        <tr>
+                            <td>@(da.FiledBy?.NickName ?? da.FiledById.ToString())</td>
+                            <td>@da.OccurredOn.ToString("g")</td>
+                            <td>@da.Situation</td>
+                        </tr>
+                    }
+                  </tbody>
+                </table>
+            </Authorized>
+        </AuthorizeView>
+      </div>
+      <div>
+        <AuthorizeView>
+            <Authorized>
+                <h4>Flags</h4>
+                <EditForm Context="flagFormContext" class="form form-inline" Model="Flag">
+                    <table class="table">
+                      <thead>
+                                @if(!IsMe())
                                 {
-                                    <tr>
-                                        <td>@(da.FiledBy?.NickName ?? da.FiledById.ToString())</td>
-                                        <td>@da.OccurredOn.ToString("g")</td>
-                                        <td>@da.Situation</td>
-                                        <td><a href="" class="oi oi-arrow-circle-right" aria-hidden="true"></a></td>
-                                    </tr>
-                                }
-                            </tboday>
-                        </table>
-                    </div>
-                    <div class="col-lg-6 col-md-12">
-                        <strong>Flags</strong>
-                        <EditForm Context="flagFormContext" class="form form-inline" Model="Flag">
-                            <table class="table table-hover">
-                                <thead>
-                                    @if((LoggedIn?.Id ?? 0) != Trooper.Id)
-                                    {
                                     <tr>
                                         <td colspan="2">
                                             <InputText @bind-Value="Flag.Contents" class="form-control" placeholder="Flag Contents" />
@@ -228,192 +181,42 @@
                                             <button class="btn btn-primary" @onclick="SaveFlag">Save</button>
                                         </td>
                                     </tr>
-                                    }
-                                    <tr>
-                                        <th>Author</th>
-                                        <th>Date</th>
-                                        <th>Message</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var flag in Trooper.Flags)
-                                    {
-                                        <tr>
-                                            <td>@(flag.Author?.NickName ?? flag.AuthorId.ToString())</td>
-                                            <td>@flag.CreatedOn.ToString("g")</td>
-                                            <td>@flag.Contents</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </EditForm>
-                    </div>
-                </div>
-                }
+                                }
+                        <tr>
+                          <th>Author</th>
+                          <th>Date</th>
+                          <th>Message</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          @foreach (var flag in Trooper.Flags)
+                          {
+                              <tr>
+                                  <td>@(flag.Author?.NickName ?? flag.AuthorId.ToString())</td>
+                                  <td>@flag.CreatedOn.ToString("g")</td>
+                                  <td>@flag.Contents</td>
+                              </tr>
+                          }
+                      </tbody>
+                    </table>
+                </EditForm>
             </Authorized>
         </AuthorizeView>
+      </div>
+      <div id="link">
         <AuthorizeView Policy="RequireManager">
             <Authorized>
-                <div class="row">
-                    <div class="col">
-                        <h5>Discord ID</h5>
-                        <h6>@Trooper.DiscordId</h6>
-                    </div>
-                    <div class="col">
-                        <h5>Steam ID</h5>
-                        <a href="https://steamcommunity.com/profiles/@Trooper.SteamLink" rel="nofollow" target="_blank"><h6>@Trooper.SteamLink</h6></a>
-                    </div>
+                <h4>Links</h4>
+                <div class="links">
+                  <p>Steam Profile: <a href="https://steamcommunity.com/profiles/@Trooper.SteamLink">@Trooper.SteamLink</a></p>
+                  <p>Discord Id: @Trooper.DiscordId</p>
                 </div>
             </Authorized>
         </AuthorizeView>
+      </div>
     </div>
-</div>
 }
 else
 {
     <em>Something went wrong, and a trooper was unabled to be loaded. Go <a href="/">home</a>.</em>
-}
-
-@code {
-    [Parameter]
-    public Trooper Trooper { get; set; }
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
-
-    public bool FirstRender {get; set;} = true;
-
-    private Dictionary<CShop, List<ClaimUpdateData>> ShopPositions { get; set; } = new();
-
-    public string[] ServiceStrings = new string[6];
-
-    private TrooperFlag Flag { get; set; } = new();
-    private bool LoadedAdditional { get; set; } = false;
-
-    private TrooperDescription Description {get; set;} = new();
-    private bool LoadedDescriptions { get; set; } = false;
-
-    [CascadingParameter]
-    private Trooper? LoggedIn { get; set; } = new();
-
-    private List<Qualification> QualValues = new();
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            _advRefresh.AddUserSpecificDataReloadListener(Trooper.Id, "DescriptionData", OnDataRefreshRequest);
-
-            QualValues = ((Qualification[])Enum.GetValues(typeof(Qualification))).AsQueryable<Qualification>()
-            .Where(x => x != Qualification.None && (Trooper.Qualifications & x) == x).ToList();
-
-            var user = (await AuthStateTask).User;
-
-            ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
-
-            var now = DateTime.UtcNow.ToEst();
-            ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
-            ServiceStrings[1] = Trooper.StartOfService.ToShortDateString();
-            ServiceStrings[2] = now.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
-            ServiceStrings[3] = now.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
-            ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
-            ServiceStrings[5] = now.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
-
-            await LoadFlags();
-            LoadedAdditional = true;
-
-            await LoadDescription();
-            LoadedDescriptions = true;
-
-            _refresh.RefreshRequested += RefreshMe;
-            RefreshMe();
-        }
-    }
-
-    private void RefreshMe()
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    private async Task SaveFlag(EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(Flag.Contents)) return;
-
-        var user = (await AuthStateTask).User;
-        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
-        {
-            await _roster.SaveNewFlag(user, Trooper, Flag);
-            Flag = new();
-            Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
-            _refresh.CallRequestRefresh();
-        }
-    }
-
-    // Description Methods
-
-    private async Task SaveDescription(EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(Description.Content)) return;
-
-        var user = (await AuthStateTask).User;
-        if((await _auth.AuthorizeAsync(user, "RequireNCO")).Succeeded)
-        {
-            await _roster.SaveNewDescription(user, Trooper, Description);
-            Description = new();
-            Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
-            Console.WriteLine(Trooper.Id);
-            _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
-        }
-    }
-
-    private TrooperDescription? CurrentDesc { get; set; }
-
-    private void OnDrag(TrooperDescription desc)
-    {
-        CurrentDesc = desc;
-    }
-
-    private async Task OnDrop(TrooperDescription desc)
-    {
-        if (CurrentDesc is not null && desc != CurrentDesc)
-            await _roster.UpdateDescriptionOrderAsync(Trooper, CurrentDesc, desc.Order);
-        CurrentDesc = null;
-
-        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
-    }
-
-    private async Task DeleteDescription(TrooperDescription desc)
-    {
-        await _roster.DeleteDescriptionAsync(Trooper, desc);
-        _advRefresh.CallDataReloadRequest("DescriptionData", Trooper.Id);
-    }
-
-    public async Task OnDataRefreshRequest()
-    {
-        Trooper = await _roster.GetTrooperFromIdAsync(Trooper.Id);
-        await LoadDescription();
-        await LoadFlags();
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task LoadFlags()
-    {
-        await _roster.LoadPublicProfileDataAsync(Trooper);
-        Trooper.Flags.Sort((x, y) => y.CreatedOn.CompareTo(x.CreatedOn));
-    }
-
-    private async Task LoadDescription()
-    {
-        await _roster.LoadDescriptionsAsync(Trooper);
-        Trooper.Descriptions.Sort((x, y) => x.Order.CompareTo(y.Order));
-    }
-
-
-    void IDisposable.Dispose()
-    {
-        _refresh.RefreshRequested -= RefreshMe;
-        _advRefresh.RemoveDataReloadListener(OnDataRefreshRequest);
-    }
 }
