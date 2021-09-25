@@ -186,6 +186,8 @@ namespace FiveOhFirstDataCore.Data.Structures
             return (Slot)slot;
         }
 
+        #region Infanry
+
         public static bool IsSquad(this Slot slot)
         {
             if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
@@ -223,6 +225,66 @@ namespace FiveOhFirstDataCore.Data.Structures
             return false;
         }
 
+        #endregion
+
+        #region Razor/Warden
+
+        public static bool IsWardenTeam(this Slot slot)
+        {
+            if (slot >= Slot.Warden && slot < Slot.ZetaCompany)
+            {
+                var val = (int)slot % 10;
+                if (val > 0) return true;
+            }
+            return false;
+        }
+
+        public static bool IsRazorSection(this Slot slot)
+        {
+            if (slot >= Slot.Razor && slot < Slot.Warden)
+            {
+                var val = (int)slot % 10;
+                if (val > 0) return true;
+            }
+
+            return false;
+        }
+
+        public static bool IsFlight(this Slot slot)
+        {
+            if (slot >= Slot.Razor && slot < Slot.Warden)
+            {
+                var s = (int)slot;
+                var val = s % 10;
+                if (val == 0 && s % 100 != 0) return true;
+            }
+            return false;
+        }
+
+        public static bool IsSquadron(this Slot slot)
+        {
+            if (slot >= Slot.Razor && slot < Slot.Warden)
+            {
+                var val = (int)slot / 10 % 10;
+                if (val == 0) return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Mynock
+        public static bool IsMynockSection(this Slot slot)
+        {
+            if (slot >= Slot.Mynock && slot < Slot.Razor)
+            {
+                var val = (int)slot % 10;
+                if (val > 0) return true;
+            }
+            return false;
+        }
+        #endregion
+
         public static bool IsBattalion(this Slot slot)
         {
             return slot == Slot.Hailstorm;
@@ -238,6 +300,13 @@ namespace FiveOhFirstDataCore.Data.Structures
         public static Slot GetCompany(this Slot slot)
         {
             int lsd = (int)slot % 100;
+            int newSlot = (int)slot - lsd;
+            return (Slot)newSlot;
+        }
+
+        public static Slot GetFlight(this Slot slot)
+        {
+            int lsd = (int)slot % 10;
             int newSlot = (int)slot - lsd;
             return (Slot)newSlot;
         }
