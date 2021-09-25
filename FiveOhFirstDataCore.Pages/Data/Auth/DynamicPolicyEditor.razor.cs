@@ -25,6 +25,12 @@ public partial class DynamicPolicyEditor
     private PolicyClaimData AddClaim { get; set; } = new();
     private WebsiteRoles WebsiteRole { get; set; } = WebsiteRoles.Admin;
 
+    private Dictionary<CShop, CShopClaim> CShopClaims { get; set; } = new();
+
+    private CShop ClaimGroup { get; set; } = CShop.None;
+    private string CShopGroup { get; set; } = "";
+    private string CShopPosition { get; set; } = "";
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -40,6 +46,8 @@ public partial class DynamicPolicyEditor
                 ExsistingPolicy = true;
             else
                 ToEdit = new();
+
+            CShopClaims = await WebsiteSettingsService.GetFullClaimsTreeAsync();
 
             StateHasChanged();
         }
@@ -64,6 +72,29 @@ public partial class DynamicPolicyEditor
     {
         ToEdit!.RequiredClaims.Add(AddClaim);
         AddClaim = new();
+        StateHasChanged();
+    }
+
+    private void AddCShopGroup()
+    {
+        foreach(var i in CShopClaims[ClaimGroup].ClaimData[CShopGroup])
+        {
+            CShopPosition = i;
+            AddCShopPosition();
+        }
+        CShopGroup = "";
+        ClaimGroup = CShop.None;
+        StateHasChanged();
+    }
+
+    private void AddCShopPosition()
+    {
+        ToEdit!.RequiredClaims.Add(new()
+        {
+            Claim = CShopGroup,
+            Value = CShopPosition
+        });
+        CShopPosition = "";
         StateHasChanged();
     }
 

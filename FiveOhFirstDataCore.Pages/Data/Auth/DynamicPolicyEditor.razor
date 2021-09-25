@@ -34,26 +34,43 @@
 				<hr />
 
 				<div class="input-group">
-					<span class="input-group-text">C-Shop Claim</span>
-					<InputText class="form-control" @bind-Value="AddClaim.Claim" />
-						
-					<span class="input-group-text">Value</span>
-					<InputText class="form-control" @bind-Value="AddClaim.Value" />
-
-					<button class="btn btn-outline-success" @onclick="AddClaimPair">Add</button>
+					<span class="input-group-text">C-Shop Department</span>
+					<InputEnumSelect class="form-control" @bind-Value="ClaimGroup" />
 				</div>
 
-				<br />
+				@if (ClaimGroup != CShop.None)
+				{
+					<br />
 
-				<div class="input-group">
-					<span class="input-group-text">Custom Claim</span>
-					<InputText class="form-control" @bind-Value="AddClaim.Claim" />
-						
-					<span class="input-group-text">Value</span>
-					<InputText class="form-control" @bind-Value="AddClaim.Value" />
+					<div class="input-group">
+						<span class="input-group-text">C-Shop</span>
+						<InputSelect class="form-control" @bind-Value="CShopGroup">
+							@foreach(var i in CShopClaims[ClaimGroup].ClaimData.Keys)
+							{
+								<option value="@i">@i</option>
+							}
+						</InputSelect>
 
-					<button class="btn btn-outline-success" @onclick="AddClaimPair">Add</button>
-				</div>
+						<button class="btn btn-outline-success" @onclick="AddCShopGroup">Add</button>
+					</div>
+
+					@if (!string.IsNullOrWhiteSpace(CShopGroup))
+					{
+						<br />
+
+						<div class="input-group">
+							<span class="input-group-text">C-Shop Position</span>
+							<InputSelect class="form-control" @bind-Value="CShopPosition">
+								@foreach(var i in CShopClaims[ClaimGroup].ClaimData[CShopGroup])
+								{
+									<option value="@i">@i</option>
+								}
+							</InputSelect>
+
+							<button class="btn btn-outline-success" @onclick="AddCShopPosition">Add</button>
+						</div>
+					}
+				}
 
 				<br />
 
