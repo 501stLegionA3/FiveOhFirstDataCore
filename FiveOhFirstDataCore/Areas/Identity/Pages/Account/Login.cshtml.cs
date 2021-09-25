@@ -43,6 +43,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Username or Birth Number")]
             public string Username { get; set; }
 
             [Required]
