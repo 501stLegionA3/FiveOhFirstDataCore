@@ -932,8 +932,31 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task InitalizeAsync()
         {
+            await EnsureManagerPolicy();
             await ReloadClaimTreeAsync();
             await ReloadPolicyCacheAsync();
+        }
+
+        private async Task EnsureManagerPolicy()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var manager = await _dbContext.FindAsync<DynamicPolicy>("Require Manager");
+            if(manager is null)
+            {
+                manager = new()
+                {
+                    PolicyName = "Require Manager",
+                    PolicySections = new()
+                    {
+                        new()
+                        {
+                            SectionName = "Require Manager"
+                        }
+                    }
+                };
+                await _dbContext.AddAsync(manager);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task ReloadClaimTreeAsync()

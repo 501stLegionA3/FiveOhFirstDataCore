@@ -34,7 +34,7 @@
                                 @if(!EditStarted)
                                 {
                                     <div class="input-group">
-                                        <label for="policy-picker-edit" class="form-label">Policy To Edit</label>
+                                        <span class="input-group-text">Policy To Edit</span>
                                         <InputSelect class="form-control" @bind-Value="PolicyToEditRaw" id="policy-picker-edit">
                                             <option value="null">Create New Policy</option>
                                             @foreach(var p in DynamicPolicies)

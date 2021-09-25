@@ -20,6 +20,7 @@ public partial class DynamicAuthorizeViewTools
     [Parameter]
     public RenderFragment? EditPolicySection { get; set; }
     private string BoundingCssClass { get; set; } = "";
+    private string EditPolicy { get; set; } = "Require Manager";
 
     private void CoatArea()
     {
