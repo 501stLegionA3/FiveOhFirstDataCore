@@ -1,0 +1,31 @@
+﻿@page "/manager/access"
+
+<DynamicAuthorizeView SectionName="Manager Access Settings">
+	<Authorized>
+		<BreadcrumbsList Url="Urls" />
+        <h3>Manager Settings</h3>
+        <hr />
+        <ul class="nav nav-tabs row">
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerAccessView.Sections ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerAccessView.Sections)">Website Sections</button>
+            </li>
+            <li class="nav-item col">
+                <button class="nav-link w-100 h-100 @(Active == ManagerAccessView.Policies ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(ManagerAccessView.Policies)">Website Policies</button>
+            </li>
+        </ul>
+        <div class="tab-content">
+            @switch(Active)
+            {
+                case ManagerAccessView.Sections:
+                    <WebsiteSectionView />
+                    break;
+                case ManagerAccessView.Policies:
+                    <WebsitePolicyView />
+                    break;
+            }
+        </div>
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedMessage />
+	</NotAuthorized>
+</DynamicAuthorizeView>

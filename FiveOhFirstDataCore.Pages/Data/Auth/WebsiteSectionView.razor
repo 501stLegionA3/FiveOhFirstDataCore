@@ -1,0 +1,37 @@
+﻿<br />
+
+<div class="row">
+	<div class="col">
+		<EditForm Model="this" Context="AllSectionsContext">
+			@for (int i = 0; i < Sections.Count; i++)
+			{
+				var c = i;
+				var s = Sections[c];
+
+				<div class="input-group">
+					<span class="input-group-text">Section</span>
+					<InputText class="form-control" disabled="true" @bind-Value="s.SectionName" />
+					<button class="btn btn-outline-primary" @onclick="() => DisplayTree[c] = true">Edit</button>
+					@if (s.SectionName != "Require Manager")
+					{
+						<button class="btn btn-outline-danger" @onclick="async () => await DeleteSectionAsync(s)">Delete</button>
+					}
+				</div>
+				
+				bool display = DisplayTree[c];
+				<ModalDisplay Display="display">
+					<ToDisplay>
+						<DynamicPolicySectionEditor SectionName="@s.SectionName" />
+					</ToDisplay>
+				</ModalDisplay>
+
+				<br />
+
+				@if(display)
+				{
+					DisplayTree[c] = false;
+				}
+			}
+		</EditForm>
+	</div>
+</div>

@@ -20,6 +20,8 @@ public partial class DynamicPolicyEditor
     public IAlertService AlertService {  get; set; }
     [Parameter]
     public DynamicPolicy? ToEdit { get; set; } = null;
+    [Parameter]
+    public bool CloseOnSave { get; set; } = false;
     private bool ExsistingPolicy { get; set; } = false;
 
     private PolicyClaimData AddClaim { get; set; } = new();
@@ -58,9 +60,11 @@ public partial class DynamicPolicyEditor
         if (!string.IsNullOrWhiteSpace(ToEdit!.PolicyName))
         {
             await WebsiteSettingsService.UpdateOrCreatePolicyAsync(ToEdit);
-            AlertService.PostAlert(this, $"A new policy by the name of {ToEdit.PolicyName} has been created.");
+            AlertService.PostAlert(this, $"A new policy by the name of {ToEdit.PolicyName} has been created or updated.");
             ExsistingPolicy = false;
             ToEdit = new();
+            if (CloseOnSave)
+                AlertService.PostModal(this, null);
         }
         else
         {

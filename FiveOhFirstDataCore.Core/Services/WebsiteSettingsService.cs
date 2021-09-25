@@ -947,13 +947,20 @@ namespace FiveOhFirstDataCore.Data.Services
                 {
                     PolicyName = "Require Manager",
                     PolicySections = new()
-                    {
-                        new()
-                        {
-                            SectionName = "Require Manager"
-                        }
-                    }
                 };
+
+                var sec = await _dbContext.FindAsync<PolicySection>("Require Manager");
+
+                if(sec is null)
+				{
+                    sec = new()
+                    {
+                        SectionName = "Require Manager"
+                    };
+				}
+
+                manager.PolicySections.Add(sec);
+
                 await _dbContext.AddAsync(manager);
                 await _dbContext.SaveChangesAsync();
             }
@@ -1534,6 +1541,28 @@ namespace FiveOhFirstDataCore.Data.Services
 
             return p;
         }
-        #endregion
-    }
+
+		public async Task<List<PolicySection>> GetAllPolicySectionsAsync()
+		{
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.PolicySections.ToListAsync();
+        }
+
+		public async Task<ResultBase> DeletePolicySectionAsync(PolicySection section)
+		{
+			using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<PolicySection>(section.SectionName);
+            
+            if(actual is null)
+			{
+                return new(false, new List<string>() { "No section data found for the provided section." });
+			}
+
+            _dbContext.Remove(actual);
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
+		}
+		#endregion
+	}
 }

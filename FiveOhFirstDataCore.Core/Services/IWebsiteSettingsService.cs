@@ -123,11 +123,13 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<ResultBase> CreatePolicyAsync(DynamicPolicy policy);
         public Task<ResultBase> UpdatePolicyAsync(DynamicPolicy policy);
         public Task<List<DynamicPolicy>> GetDynamicPoliciesAsync();
+        public Task<List<PolicySection>> GetAllPolicySectionsAsync();
         public Task<DynamicPolicy?> GetDynamicPolicyAsync(string policyName);
         public Task<ResultBase> UpdateOrCreatePolicyAsync(DynamicPolicy policy);
         public Task<ResultBase> UpdatePolicySectionAsync(PolicySection policySection);
         public Task<PolicySectionResult> GetOrCreatePolicySectionAsync(string sectionName);
-        public Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null);
+        public Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignOrphanedSectionsTo = null);
+        public Task<ResultBase> DeletePolicySectionAsync(PolicySection section);
         #endregion
     }
 }
