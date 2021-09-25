@@ -7,6 +7,8 @@ A web application designed to manage roster upkeep for the 501st Legion StarSim 
 
 [501st StarSim Website](https://www.501stlegion-a3.com/) 
 
+[501st Data Core Documentation](https://501stlegiona3.github.io/FiveOhFirstDataCore/#/)
+
 # Contributing
 Want to request a new page, feature, or report a bug? Submit an [Issue](https://github.com/soyvolon/FiveOhFirstDataCore/issues) to get started!
 
