@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using FiveOhFirstDataCore.Data.Structuresbase;
+
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -8,15 +11,19 @@ namespace FiveOhFirstDataCore.Data.Account
 {
     public class TrooperSignInManager : SignInManager<Trooper>
     {
-        public TrooperSignInManager(UserManager<Trooper> userManager, IHttpContextAccessor contextAccessor, IUserClaimsPrincipalFactory<Trooper> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILogger<SignInManager<Trooper>> logger, IAuthenticationSchemeProvider schemes, IUserConfirmation<Trooper> confirmation)
-            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation) { }
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+
+        public TrooperSignInManager(UserManager<Trooper> userManager, IDbContextFactory<ApplicationDbContext> dbContextFactory, IHttpContextAccessor contextAccessor, IUserClaimsPrincipalFactory<Trooper> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILogger<SignInManager<Trooper>> logger, IAuthenticationSchemeProvider schemes, IUserConfirmation<Trooper> confirmation)
+            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
+            => (_dbContextFactory) = (dbContextFactory);
 
         public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
         {
-            Trooper user;
-            if (int.TryParse(userName, out _))
+            Trooper? user;
+            if (int.TryParse(userName, out int id))
             {
-                user = await UserManager.FindByIdAsync(userName);
+                await using var _dbContext = _dbContextFactory.CreateDbContext();
+                user = await _dbContext.Users.Where(x => x.BirthNumber == id).FirstOrDefaultAsync();
             }
             else
             {

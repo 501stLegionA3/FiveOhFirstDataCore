@@ -1,11 +1,13 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Mail;
+using FiveOhFirstDataCore.Data.Structuresbase;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -17,12 +19,15 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
     public class ForgotPasswordModel : PageModel
     {
         private readonly UserManager<Trooper> _userManager;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly ICustomMailSender _emailSender;
 
-        public ForgotPasswordModel(UserManager<Trooper> userManager, ICustomMailSender emailSender)
+        public ForgotPasswordModel(UserManager<Trooper> userManager, ICustomMailSender emailSender,
+            IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _dbContextFactory = dbContextFactory;
         }
 
         [BindProperty]
@@ -39,7 +44,10 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(Input.BirthNumber.ToString());
+                await using var _dbContext = _dbContextFactory.CreateDbContext();
+                var user = await _dbContext.Users
+                    .Where(x => x.BirthNumber == Input.BirthNumber)
+                    .FirstOrDefaultAsync();
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
