@@ -5,6 +5,14 @@
 	  <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Data\PublicTrooperProfile.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\PublicTrooperProfile.razor.css" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />

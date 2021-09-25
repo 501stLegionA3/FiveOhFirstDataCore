@@ -110,6 +110,13 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<List<Trooper>> GetDirectSubordinates(Trooper t);
 
         /// <summary>
+        /// Get the direct superior of a <see cref="Trooper"/>
+        /// </summary>
+        /// <param name="t">The <see cref="Trooper"/> to get the superior of.</param>
+        /// <returns>A task that return a <see cref="Trooper"/>.</returns>
+        public Task<Trooper?> GetDirectSuperior(Trooper t);
+
+        /// <summary>
         /// Get all the troopers in a squad.
         /// </summary>
         /// <param name="slot">The <see cref="Slot"/> to get troopers for.</param>
