@@ -36,8 +36,19 @@
                     <hr />
                     <div class="row">
                         <div class="col d-grid gap-2">
-                            <button class="btn btn-primary" @onclick="async (x) => await _settings.SetDefaultSettingsAsync()">Set Default Website Settings</button>
-                            <button class="btn btn-secondary" @onclick="async (x) => await _roster.ValidateArchivedTroopersAsync()">Validate Archived Trooper Roles</button>
+                            <!-- Cruisie Changes The Buttons -->
+                            <div class="input-group">
+                                <div class="input-group-text bg-success">
+                                    <input type="checkbox" class="form-check-input mt-0" bind="@IsAcknowledgedDWS" @onchange="@((args) => IsAcknowledgedDWS = (bool)args.Value)" />
+                                </div>
+                                <button class="btn btn-primary" disabled="@(IsAcknowledgedDWS?false:true)" @onclick="async (x) => await _settings.SetDefaultSettingsAsync()">Set Default Website Settings</button>
+                            </div>
+                            <div class="input-group">
+                                <div class="input-group-text bg-danger">
+                                    <input type="checkbox" class="form-check-input mt-0" bind="@IsAcknowledgedVTR" @onchange="@((args) => IsAcknowledgedVTR = (bool)args.Value)" />
+                                </div>
+                                <button class="btn btn-secondary" disabled="@(IsAcknowledgedVTR?false:true)" @onclick="async (x) => await _roster.ValidateArchivedTroopersAsync()">Validate Archived Trooper Roles</button>
+                            </div>
                         </div>
                     </div>
                     break;
@@ -49,23 +60,3 @@
         <NotAuthorizedMessage />
     </NotAuthorized>
 </AuthorizeView>
-
-@code {
-    public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home"), ("/manager/settings", "Manager Settings") };
-
-    public enum ManagerDisplayOption
-    {
-        CShops,
-        Discord,
-        Promotions,
-        Settings,
-    }
-
-    public ManagerDisplayOption Active { get; set; }
-
-    private void OnTypeChange(ManagerDisplayOption option)
-    {
-        Active = option;
-        StateHasChanged();
-    }
-}
