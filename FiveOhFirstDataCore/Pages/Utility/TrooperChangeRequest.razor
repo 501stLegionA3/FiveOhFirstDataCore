@@ -1,5 +1,5 @@
 ﻿@page "/utility/changerequest"
-<AuthorizeView Policy="RequireTrooper">
+<DynamicAuthorizeView SectionName="Change Request Form">
     <Authorized>
         @if(CurrentUser is not null)
         {
@@ -31,4 +31,4 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>

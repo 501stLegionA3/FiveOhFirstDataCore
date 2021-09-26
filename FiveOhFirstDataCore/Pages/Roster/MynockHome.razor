@@ -8,7 +8,7 @@
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.Roster)">Roster</button>
     </li>
-    <DynamicAuthorizeView Policy="Mynock Promotion Board">
+    <DynamicAuthorizeView SectionName="Mynock Promotion Board" IsPage="false">
         <Authorized>
             <li class="nav-item col">
                 <button class="nav-link w-100 h-100 @(Active == MynockDisplayOption.SectionPromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(MynockDisplayOption.SectionPromotionBoard)">Section Promotion Board</button>

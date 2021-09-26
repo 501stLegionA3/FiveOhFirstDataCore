@@ -8,7 +8,7 @@
     <li class="nav-item col">
         <button class="nav-link w-100 h-100 @(Active == HailstormDisplayOption.Roster ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(HailstormDisplayOption.Roster)">Roster</button>
     </li>
-    <DynamicAuthorizeView Policy="Hailstorm Promotion Board">
+    <DynamicAuthorizeView SectionName="Hailstorm Promotion Board">
         <Authorized>
             <li class="nav-item col">
                 <button class="nav-link w-100 h-100 @(Active == HailstormDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(HailstormDisplayOption.PromotionBoard)">Promotion Board</button>

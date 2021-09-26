@@ -10,13 +10,13 @@
     </li>
     @if (Loaded && ZetaThree is null)
     {
-        <AuthorizeView Policy="RequireTrooper">
+        <DynamicAuthorizeView SectionName="Squad Promotion Board" IsPage="false">
             <Authorized>
                 <li class="nav-item col">
                     <button class="nav-link w-100 h-100 @(Active == SquadDisplayOption.PromotionBoard ? "active bg-primary text-light" : "")" @onclick="(x) => OnTypeChange(SquadDisplayOption.PromotionBoard)">Promotion Board</button>
                 </li>
             </Authorized>
-        </AuthorizeView>
+        </DynamicAuthorizeView>
     }
 </ul>
 @if(Loaded)

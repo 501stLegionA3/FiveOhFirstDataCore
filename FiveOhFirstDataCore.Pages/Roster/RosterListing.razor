@@ -121,11 +121,11 @@
             <th scope="col" class="d-none d-lg-table-cell">TiG</th>
             <th scope="col" class="d-none d-xl-table-cell">TiS</th>
             <td scope="col"></td>
-            <AuthorizeView Policy="RequireRosterClerk">
+            <DynamicAuthorizeView SectionName="Roster Row Edit Button" IsPage="false">
                 <Authorized>
                     <td scope="col" class="d-none d-lg-table-cell"></td>
                 </Authorized>
-            </AuthorizeView>
+            </DynamicAuthorizeView>
         </tr>
     </thead>
     <tbody>

@@ -7,7 +7,7 @@
 @inject ICustomMailSender _mail
 @inject IAlertService _alert
 
-<DynamicAuthorizeView Policy="Manager Edit Member">
+<DynamicAuthorizeView SectionName="Manager Edit Member">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Model="Trooper" class="form pb-3" Context="modifyTrooperDataContext">
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                     </div>
-                    <DynamicAuthorizeView Policy="Manager Edit Member Admin" Context="adminAuthView">
+                    <DynamicAuthorizeView SectionName="Manager Edit Member Admin" Context="adminAuthView">
                         <Authorized>
                             <div class="row">
                                 <div class="col-lg-6 col-md-12">
