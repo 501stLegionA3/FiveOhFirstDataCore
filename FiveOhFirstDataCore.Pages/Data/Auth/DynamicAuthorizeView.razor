@@ -1,16 +1,37 @@
 ﻿@inherits AuthorizeView
 
-<div class="position-relative">
-	@if (IsPage)
-	{
-		@*Don't show these for components, it breaks things.*@
-		<DynamicAuthorizeViewTools>
-			<EditPolicySection>
-				<DynamicPolicySectionEditor SectionName="@QualifiedName" />
-			</EditPolicySection>
-		</DynamicAuthorizeViewTools>
-	}
+@if(CurrentUser?.PermissionsView ?? false)
+{
+	<div class="position-relative">
+		@if (IsPage)
+		{
+			@*Don't show these for components, it breaks things.*@
+			<DynamicAuthorizeViewTools>
+				<EditPolicySection>
+					<DynamicPolicySectionEditor SectionName="@QualifiedName" />
+				</EditPolicySection>
+			</DynamicAuthorizeViewTools>
+		}
 
+		@if(IsAuthorizing)
+		{
+			@Authorizing
+		}
+		else if (AuthState is not null)
+		{
+			@if(IsAuthorized)
+			{
+				@Authorized?.Invoke(AuthState)
+			}
+			else
+			{
+				@NotAuthorized?.Invoke(AuthState)
+			}
+		}
+	</div>
+}
+else
+{
 	@if(IsAuthorizing)
 	{
 		@Authorizing
@@ -26,4 +47,4 @@
 			@NotAuthorized?.Invoke(AuthState)
 		}
 	}
-</div>
+}

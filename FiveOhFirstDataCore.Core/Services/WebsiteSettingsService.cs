@@ -1504,13 +1504,21 @@ namespace FiveOhFirstDataCore.Data.Services
             {
                 section = new()
                 {
-                    SectionName = sectionName
+                    SectionName = sectionName,
+                    PolicyName = "Require Manager"
                 };
 
-                await _dbContext.AddAsync(section);
-                await _dbContext.SaveChangesAsync();
+                try
+                {
+                    await _dbContext.AddAsync(section);
+                    await _dbContext.SaveChangesAsync();
 
-                await ReloadPolicyCacheAsync();
+                    await ReloadPolicyCacheAsync();
+                }
+                catch (Exception ex)
+                {
+                    return new(false, null, new List<string>() { "An error occoured while saving a new policy section", ex.Message });
+                }
             }
 
             return new(true, section, null);

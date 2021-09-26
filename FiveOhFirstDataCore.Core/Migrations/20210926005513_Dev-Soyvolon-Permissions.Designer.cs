@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210925145107_Dev-Soyvolon-Permissions")]
+    [Migration("20210926005513_Dev-Soyvolon-Permissions")]
     partial class DevSoyvolonPermissions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -321,6 +321,9 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
+
+                    b.Property<bool>("PermissionsView")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");

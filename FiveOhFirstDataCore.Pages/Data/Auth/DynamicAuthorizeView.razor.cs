@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Services;
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
@@ -16,11 +19,15 @@ public partial class DynamicAuthorizeView
     [Inject]
     public IAuthorizationService AuthorizationService {  get; set; }
     [Inject]
+    public IWebsiteSettingsService WebsiteSettings { get; set; }
+    [Inject]
     public NavigationManager Navigation { get; set; }
     [Inject]
     ILogger<DynamicAuthorizeView> Logger { get; set; }
     [CascadingParameter]
     private Task<AuthenticationState> AuthStateTask { get; set; }
+    [CascadingParameter]
+    private Trooper? CurrentUser { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [Parameter]
@@ -34,9 +41,13 @@ public partial class DynamicAuthorizeView
 
     private bool IsAuthorizing { get; set; } = true;
     private bool IsAuthorized { get; set; } = false;
+    private bool FirstRun { get; set; } = true;
 
     protected override async Task OnInitializedAsync()
     {
+        if(FirstRun)
+            await base.OnInitializedAsync();
+
         if (AuthStateTask is not null)
         {
             AuthState = await AuthStateTask;
@@ -46,6 +57,10 @@ public partial class DynamicAuthorizeView
             {
                 QualifiedName = $"/{Navigation.ToBaseRelativePath(Navigation.Uri)}.{SectionName}";
             }
+            else
+			{
+                QualifiedName = $"\\{SectionName}";
+			}
 
             try
             {
@@ -55,8 +70,14 @@ public partial class DynamicAuthorizeView
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex, $"Missing default and configured authorization policy for {QualifiedName}");
+                await WebsiteSettings.GetOrCreatePolicySectionAsync(QualifiedName);
+                Logger.LogWarning(ex, $"No policy found. Generated authorization policy section for {QualifiedName}");
                 IsAuthorized = false;
+                if (FirstRun)
+                {
+                    FirstRun = false;
+                    await OnInitializedAsync();
+                }
             }
         }
         else

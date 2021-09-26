@@ -8,6 +8,13 @@ namespace FiveOhFirstDataCore.Data.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+                name: "PermissionsView",
+                table: "AspNetUsers",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.CreateTable(
                 name: "DynamicPolicies",
                 columns: table => new
@@ -91,6 +98,10 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "DynamicPolicies");
+
+            migrationBuilder.DropColumn(
+                name: "PermissionsView",
+                table: "AspNetUsers");
         }
     }
 }
