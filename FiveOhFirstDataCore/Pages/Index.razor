@@ -1,22 +1,13 @@
 ﻿@page "/"
 
-<AuthorizeView>
+<DynamicAuthorizeView SectionName="Homepage">
  <Authorized>
   <h1>Welcome back, @CurrentUser?.NickName!!</h1>
  </Authorized>
  <NotAuthorized>
      <h1>Welcome Guest!</h1>
  </NotAuthorized>
-</AuthorizeView>
-
-<FiveOhFirstDataCore.Components.Data.Auth.DynamicAuthorizeView SectionName="IndexTest">
-	<Authorized>
-		Authed.
-	</Authorized>
-	<NotAuthorized>
-		Not Authed.
-	</NotAuthorized>
-</FiveOhFirstDataCore.Components.Data.Auth.DynamicAuthorizeView>
+</DynamicAuthorizeView>
 
 Hello there, General Kenobi.
 

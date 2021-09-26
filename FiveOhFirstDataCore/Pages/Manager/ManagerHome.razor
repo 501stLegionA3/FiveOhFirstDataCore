@@ -1,6 +1,6 @@
 ﻿@page "/manager"
 
-<AuthorizeView Policy="RequireManager">
+<DynamicAuthorizeView SectionName="Manager Home">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row text-center">
@@ -37,7 +37,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls = new() { ("/", "Home"), ("/manager", "Manager Home") };

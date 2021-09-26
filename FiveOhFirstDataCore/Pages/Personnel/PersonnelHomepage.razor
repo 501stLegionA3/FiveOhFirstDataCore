@@ -2,7 +2,7 @@
 @inject IRosterService _roster
 @inject NavigationManager _nav
 
-<AuthorizeView Policy="RequireC1">
+<DynamicAuthorizeView SectionName="C1 Home">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="container">
@@ -46,7 +46,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL") };

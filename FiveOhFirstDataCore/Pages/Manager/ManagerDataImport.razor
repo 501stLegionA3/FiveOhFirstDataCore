@@ -2,7 +2,7 @@
 @implements IDisposable
 @inject IRefreshRequestService _refresh
 
-<AuthorizeView Policy="RequireManager">
+<DynamicAuthorizeView Policy="Manager Data Import">
     <Authorized>
 
         <ul class="nav nav-tabs row">
@@ -34,7 +34,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public enum ImportType
