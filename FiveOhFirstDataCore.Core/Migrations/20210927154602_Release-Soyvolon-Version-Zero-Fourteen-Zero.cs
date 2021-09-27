@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Data.Migrations
 {
-    public partial class DevSoyvolonPermissions : Migration
+    public partial class ReleaseSoyvolonVersionZeroFourteenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
