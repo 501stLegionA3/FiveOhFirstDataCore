@@ -118,17 +118,77 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task RemoveForcedTagAsync(Promotion promotion);
 
         #region Dynamic Policies
+        /// <summary>
+        /// Reloads the polic cahce used by the permissions system.
+        /// </summary>
+        /// <returns>A task representing this action.</returns>
         public Task ReloadPolicyCacheAsync();
+        /// <summary>
+        /// Get a specific policy builder by section name.
+        /// </summary>
+        /// <param name="sectionName">The section name to get a policy builder for.</param>
+        /// <param name="forceCacheReload">Set to true to force a cache to reload before reteriving the policy builder.</param>
+        /// <returns>A task that returns a <see cref="DynamicPolicyAuthorizationPolicyBuilder"/> for the provided <paramref name="sectionName"/></returns>
         public Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilderAsync(string sectionName, bool forceCacheReload = false);
+        /// <summary>
+        /// Create a new policy.
+        /// </summary>
+        /// <param name="policy">The <see cref="DynamicPolicy"/> to create.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> CreatePolicyAsync(DynamicPolicy policy);
+        /// <summary>
+        /// Update an existing policy.
+        /// </summary>
+        /// <param name="policy">The <see cref="DynamicPolicy"/> to update.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> UpdatePolicyAsync(DynamicPolicy policy);
+        /// <summary>
+        /// Gets all <see cref="DynamicPolicy"/>s in the database.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="List{T}"/> of <see cref="DynamicPolicy"/>s.</returns>
         public Task<List<DynamicPolicy>> GetDynamicPoliciesAsync();
+        /// <summary>
+        /// Gets all <see cref="PolicySection"/>s in the database.
+        /// </summary>
+        /// <returns>A task that returns a <see cref="List{T}"/> of <see cref="PolicySection"/>s.</returns>
         public Task<List<PolicySection>> GetAllPolicySectionsAsync();
+        /// <summary>
+        /// Retreive a sepcific <see cref="DynamicPolicy"/> from the database.
+        /// </summary>
+        /// <param name="policyName">The name of the policy to get.</param>
+        /// <returns>A task that returns a <see cref="DynamicPolicy"/> for the provided <paramref name="policyName"/></returns>
         public Task<DynamicPolicy?> GetDynamicPolicyAsync(string policyName);
+        /// <summary>
+        /// Updates or creates a new <see cref="DynamicPolicy"/>.
+        /// </summary>
+        /// <param name="policy">The <see cref="DynamicPolicy"/> to update or create.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> UpdateOrCreatePolicyAsync(DynamicPolicy policy);
+        /// <summary>
+        /// Update a <see cref="PolicySection"/> in the database.
+        /// </summary>
+        /// <param name="policySection">The <see cref="PolicySection"/> to update.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> UpdatePolicySectionAsync(PolicySection policySection);
+        /// <summary>
+        /// Get or create a <see cref="PolicySection"/>.
+        /// </summary>
+        /// <param name="sectionName">The section name for the <see cref="PolicySection"/> to get or create.</param>
+        /// <returns>A task that returns a <see cref="PolicySectionResult"/> for this action.</returns>
         public Task<PolicySectionResult> GetOrCreatePolicySectionAsync(string sectionName);
+        /// <summary>
+        /// Delete a <see cref="DynamicPolicy"/> from the database.
+        /// </summary>
+        /// <param name="policy">The <see cref="DynamicPolicy"/> to delete.</param>
+        /// <param name="assignOrphanedSectionsTo">A <see cref="DynamicPolicy"/> to assign all sections that were assigned to the <paramref name="policy"/>
+        /// after it has been deleted.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignOrphanedSectionsTo = null);
+        /// <summary>
+        /// Delete a <see cref="PolicySection"/> from the database.
+        /// </summary>
+        /// <param name="section">The <see cref="PolicySection"/> to delete.</param>
+        /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> DeletePolicySectionAsync(PolicySection section);
         #endregion
     }
