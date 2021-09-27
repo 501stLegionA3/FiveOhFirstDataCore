@@ -29,6 +29,18 @@ jobs:
         host: ${{ secrets.RELEASE_HOST }}
         username: ${{ secrets.RELEASE_USER }}
         password: ${{ secrets.RELEASE_PASS }}
+    - name: Backup Database
+      run: |
+        set CUR_YYYY=%date:~10,4%
+        set CUR_MM=%date:~4,2%
+        set CUR_DD=%date:~7,2%
+        set CUR_HH=%time:~0,2%
+        if %CUR_HH% lss 10 (set CUR_HH=0%time:~1,1%)
+        set CUR_NN=%time:~3,2%
+        set CUR_SS=%time:~6,2%
+        set CUR_MS=%time:~9,2%
+        set SUBFILENAME=%CUR_YYYY%%CUR_MM%%CUR_DD%-%CUR_HH%%CUR_NN%%CUR_SS%
+        pg_dump -F c -f "${{ secrest.DB_BACKUP_ROOT }}\fofdc_backup_%SUBFILENAME%"
     - name: Copy Files over SSH
       uses: garygrossgarten/github-action-scp@release
       with:
