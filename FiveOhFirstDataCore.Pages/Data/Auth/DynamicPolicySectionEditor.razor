@@ -1,0 +1,68 @@
+﻿<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">@SectionTitle</h4>
+            <h6>@SectionLoaction</h6>
+        </div>
+        <div class="modal-body">
+            @if (Section is not null)
+            {
+                <EditForm Model="Section">
+                    <div class="row">
+                        <div class="col">
+                            <label for="policy-picker">Policy</label>
+                            <InputSelect class="form-control" @bind-Value="Section.PolicyName" id="policy-picker">
+                                @foreach(var p in DynamicPolicies)
+                                {
+                                    <option value="@p.PolicyName">@p.PolicyName</option>
+                                }
+                            </InputSelect>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col">
+                            @if (!ShowEditPage)
+                            {
+                                <button class="btn btn-outline-primary" @onclick="OpenPolicyCreator">Open Policy Editor</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-secondary" @onclick="OpenPolicyCreator">Close Policy Editor</button>
+
+                                <hr />
+                                @if(!EditStarted)
+                                {
+                                    <div class="input-group">
+                                        <span class="input-group-text">Policy To Edit</span>
+                                        <InputSelect class="form-control" @bind-Value="PolicyToEditRaw" id="policy-picker-edit">
+                                            <option value="null">Create New Policy</option>
+                                            @foreach(var p in DynamicPolicies)
+                                            {
+                                                <option value="@p.PolicyName">@p.PolicyName</option>
+                                            }
+                                        </InputSelect>
+
+                                        <button class="btn btn-primary" @onclick="StartEdit">Continue</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <DynamicPolicyEditor ToEdit="PolicyToEdit" />
+                                }
+                            }
+                        </div>
+                    </div>
+                </EditForm>
+            }
+            else
+            {
+                <em>Failed to load section data.</em>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" @onclick="SaveChanges">Save changes</button>
+            <button type="button" class="btn btn-danger" @onclick="CloseModal">Discard Changes</button>
+        </div>
+    </div>
+</div>

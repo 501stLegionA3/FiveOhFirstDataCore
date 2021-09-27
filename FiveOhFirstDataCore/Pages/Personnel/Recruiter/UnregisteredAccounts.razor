@@ -2,7 +2,7 @@
 @inject IRosterService _roster
 @inject IAuthorizationService _auth
 
-<AuthorizeView Policy="RequireRecruiter">
+<DynamicAuthorizeView SectionName="Unregistered Troopers">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="unregisteredForm" class="form form-inline" Model="this">
@@ -48,7 +48,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home"), ("/c1/recruiter/unregistered", "Unregistered Troopers") };

@@ -26,13 +26,13 @@
     <td>
         <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
     </td>
-    <AuthorizeView Policy="RequireRosterClerk">
+    <DynamicAuthorizeView SectionName="Roster Row Edit Button" IsPage="false">
         <Authorized>
             <td class="d-none d-lg-table-cell">
                 <a href="/c1/roster/edit?edit=@Trooper.Id" class="oi oi-pencil btn btn-outline-primary" aria-hidden="true"></a>
             </td>
         </Authorized>
-    </AuthorizeView>
+    </DynamicAuthorizeView>
 </tr>
 
 @code {

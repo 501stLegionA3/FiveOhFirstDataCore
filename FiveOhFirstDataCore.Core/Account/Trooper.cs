@@ -137,6 +137,7 @@ namespace FiveOhFirstDataCore.Data.Account
         public List<TrooperMessage> TrooperMessages { get; set; } = new();
 
         public DateTime LastUpdate { get; set; }
+        public bool PermissionsView { get; set; } = false;
 
         public Trooper ShallowCopy()
             => (Trooper)MemberwiseClone();

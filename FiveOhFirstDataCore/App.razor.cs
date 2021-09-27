@@ -13,6 +13,7 @@ public partial class App : IDisposable
     public IAlertService AlertService { get; set; }
 
     private List<AlertData> Alerts { get; set; } = new();
+    private RenderFragment? ActiveModal { get; set; } = null;
     private int Counter { get; set; } = 0;
 
     protected override async Task OnParametersSetAsync()
@@ -20,11 +21,18 @@ public partial class App : IDisposable
         await base.OnParametersSetAsync();
 
         AlertService.OnAlertPosted += OnAlertPosted;
+        AlertService.OnModalPosted += OnModalPosted;
     }
 
     private void OnAlertPosted(object? sender, AlertData e)
     {
         Alerts.Add(e);
+        StateHasChanged();
+    }
+
+    private void OnModalPosted(object? sender, RenderFragment modalContent)
+    {
+        ActiveModal = modalContent;
         StateHasChanged();
     }
 
@@ -40,6 +48,7 @@ public partial class App : IDisposable
             if (disposing)
             {
                 AlertService.OnAlertPosted -= OnAlertPosted;
+                AlertService.OnModalPosted -= OnModalPosted;
             }
 
             Alerts = null;

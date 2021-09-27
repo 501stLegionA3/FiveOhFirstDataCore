@@ -2,7 +2,7 @@
 @inject IUpdateService _update
 @inherits PaginationModel
 
-<AuthorizeView Policy="RequireReturningMemberStaff">
+<DynamicAuthorizeView SectionName="Returning Member Staff Home">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">
@@ -51,7 +51,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/returning", "Returning Member Staff Home") };

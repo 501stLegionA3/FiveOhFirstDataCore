@@ -1,13 +1,13 @@
 ﻿@page "/"
 
-<AuthorizeView>
+<DynamicAuthorizeView SectionName="Homepage">
  <Authorized>
   <h1>Welcome back, @CurrentUser?.NickName!!</h1>
  </Authorized>
  <NotAuthorized>
      <h1>Welcome Guest!</h1>
  </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 Hello there, General Kenobi.
 

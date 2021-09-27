@@ -8,7 +8,7 @@
 @inject IAdvancedRefreshService _advRefresh
 @inject IAlertService _alert
 
-<AuthorizeView Policy="RequireNameChange">
+<DynamicAuthorizeView SectionName="Name Change Form">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <EditForm Context="nameChangeContext" Model="Trooper" class="pb-3">
@@ -61,7 +61,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     [CascadingParameter]

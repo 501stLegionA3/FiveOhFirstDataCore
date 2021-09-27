@@ -2,7 +2,7 @@
 @page "/c1/roster/epar/{IdRaw}"
 @inherits PaginationModel
 
-<AuthorizeView Policy="RequireRosterClerk">
+<DynamicAuthorizeView SectionName="Roster Staff EPAR Viewer" IsPage="false">
     <Authorized>
         @if (Data is null)
         {
@@ -75,4 +75,4 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>

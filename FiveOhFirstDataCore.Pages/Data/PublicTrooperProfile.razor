@@ -46,11 +46,11 @@
           <p><a href="/squad/@((int)Trooper.Slot)">@Trooper.NickName's Squad</a></p>
           <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
           <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
-          <AuthorizeView Policy="RequireRosterClerk">
+          <DynamicAuthorizeView SectionName="Public Trooper Profile Edit Button" IsPage="false">
               <Authorized>
                   <a class="btn btn-primary link-none" href="/c1/roster/edit?edit=@Trooper.Id">Edit</a>
               </Authorized>
-          </AuthorizeView>
+          </DynamicAuthorizeView>
         </div>
       </div>
       <div>
@@ -90,7 +90,7 @@
         <EditForm Context="descriptionFormContext" class="form form-inline" Model="Description">
             <table class="table">
               <thead>
-                  <AuthorizeView Policy="RequireNCO">
+                  <DynamicAuthorizeView SectionName="Public Trooper Display Add Descriptions" IsPage="false">
                       <Authorized>
                                 @if(!IsMe())
                                 {
@@ -104,7 +104,7 @@
                                     </tr>              
                                 }
                       </Authorized>
-                  </AuthorizeView>
+                  </DynamicAuthorizeView>
                 <tr>
                   <th>Description</th>
                   <th>Date</th>
@@ -139,7 +139,7 @@
         </EditForm>
       </div>
       <div>
-        <AuthorizeView Policy="RequireNCO">
+        <DynamicAuthorizeView SectionName="Public Trooper Display Disciplinary Actions" IsPage="false">
             <Authorized>
                 <h4>Disciplinary Actions</h4>
                 <table class="table table-hover">
@@ -162,10 +162,10 @@
                   </tbody>
                 </table>
             </Authorized>
-        </AuthorizeView>
+        </DynamicAuthorizeView>
       </div>
       <div>
-        <AuthorizeView>
+        <DynamicAuthorizeView SectionName="Public Trooper Display Flags" IsPage="false">
             <Authorized>
                 <h4>Flags</h4>
                 <EditForm Context="flagFormContext" class="form form-inline" Model="Flag">
@@ -201,10 +201,10 @@
                     </table>
                 </EditForm>
             </Authorized>
-        </AuthorizeView>
+        </DynamicAuthorizeView>
       </div>
       <div id="link">
-        <AuthorizeView Policy="RequireManager">
+        <DynamicAuthorizeView SectionName="Public Trooper Display Account Links" IsPage="false">
             <Authorized>
                 <h4>Links</h4>
                 <div class="links">
@@ -212,7 +212,7 @@
                   <p>Discord Id: @Trooper.DiscordId</p>
                 </div>
             </Authorized>
-        </AuthorizeView>
+        </DynamicAuthorizeView>
       </div>
     </div>
 }

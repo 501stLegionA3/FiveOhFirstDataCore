@@ -35,6 +35,64 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.ToTable("DisciplinaryActionTrooper");
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", b =>
+                {
+                    b.Property<string>("PolicyName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EditableByPolicyName")
+                        .HasColumnType("text");
+
+                    b.Property<List<string>>("RequiredRoles")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.HasKey("PolicyName");
+
+                    b.HasIndex("EditableByPolicyName");
+
+                    b.ToTable("DynamicPolicies");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicyClaimData", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Claim")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DynamicPolicyPolicyName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("DynamicPolicyPolicyName");
+
+                    b.ToTable("PolicyClaimData");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicySection", b =>
+                {
+                    b.Property<string>("SectionName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PolicyName")
+                        .HasColumnType("text");
+
+                    b.HasKey("SectionName");
+
+                    b.HasIndex("PolicyName");
+
+                    b.ToTable("PolicySections");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", b =>
                 {
                     b.Property<Guid>("DAID")
@@ -261,6 +319,9 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
+
+                    b.Property<bool>("PermissionsView")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
@@ -1346,6 +1407,33 @@ namespace FiveOhFirstDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", "EditableByPolicy")
+                        .WithMany("CanEditPolicies")
+                        .HasForeignKey("EditableByPolicyName")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("EditableByPolicy");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicyClaimData", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", null)
+                        .WithMany("RequiredClaims")
+                        .HasForeignKey("DynamicPolicyPolicyName");
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicySection", b =>
+                {
+                    b.HasOne("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", "Policy")
+                        .WithMany("PolicySections")
+                        .HasForeignKey("PolicyName")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Policy");
+                });
+
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", b =>
                 {
                     b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "FiledAgainst")
@@ -1800,6 +1888,15 @@ namespace FiveOhFirstDataCore.Data.Migrations
                         .HasForeignKey("ApprovedSlotUpdatesChangeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", b =>
+                {
+                    b.Navigation("CanEditPolicies");
+
+                    b.Navigation("PolicySections");
+
+                    b.Navigation("RequiredClaims");
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", b =>

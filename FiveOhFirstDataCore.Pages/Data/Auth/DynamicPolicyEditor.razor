@@ -1,0 +1,141 @@
+﻿@if(ToEdit is not null)
+{
+	<EditForm Context="EditDynamicPolicyContext" Model="ToEdit">
+		<div class="row">
+			<div class="col">
+				<h5>Policy Name</h5>
+				<em>Use <strong>Default</strong> as a name to create a fallback policy when no other policy can be found.</em>
+
+				<br />
+				<div class="input-group">
+					<span class="input-group-text">Policy Name</span>
+					<InputText id="p-name" class="form-control" @bind-Value="ToEdit.PolicyName" disabled="@ExsistingPolicy" />
+				</div>
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col">
+				<h5>Required Claim</h5>
+				<em>Require any <strong>one</strong> of the following claims.</em>
+
+				<br />
+
+				<div class="input-group">
+					<span class="input-group-text">Custom Claim</span>
+					<InputText class="form-control" @bind-Value="AddClaim.Claim" />
+						
+					<span class="input-group-text">Value</span>
+					<InputText class="form-control" @bind-Value="AddClaim.Value" />
+
+					<button class="btn btn-outline-success" @onclick="AddClaimPair">Add</button>
+				</div>
+
+				<hr />
+
+				<div class="input-group">
+					<span class="input-group-text">C-Shop Department</span>
+					<InputEnumSelect class="form-control" @bind-Value="ClaimGroup" />
+				</div>
+
+				@if (ClaimGroup != CShop.None)
+				{
+					<br />
+
+					<div class="input-group">
+						<span class="input-group-text">C-Shop</span>
+						<InputSelect class="form-control" @bind-Value="CShopGroup">
+							@foreach(var i in CShopClaims[ClaimGroup].ClaimData.Keys)
+							{
+								<option value="@i">@i</option>
+							}
+						</InputSelect>
+
+						<button class="btn btn-outline-success" @onclick="AddCShopGroup">Add</button>
+					</div>
+
+					@if (!string.IsNullOrWhiteSpace(CShopGroup))
+					{
+						<br />
+
+						<div class="input-group">
+							<span class="input-group-text">C-Shop Position</span>
+							<InputSelect class="form-control" @bind-Value="CShopPosition">
+								@foreach(var i in CShopClaims[ClaimGroup].ClaimData[CShopGroup])
+								{
+									<option value="@i">@i</option>
+								}
+							</InputSelect>
+
+							<button class="btn btn-outline-success" @onclick="AddCShopPosition">Add</button>
+						</div>
+					}
+				}
+
+				<br />
+
+				@foreach(var c in ToEdit.RequiredClaims)
+				{
+					var claim = c;
+					<div class="input-group">
+						<span class="input-group-text">Claim</span>
+						<InputText class="form-control" @bind-Value="claim.Claim" disabled="true" />
+						
+						<span class="input-group-text">Value</span>
+						<InputText class="form-control" @bind-Value="claim.Value" disabled="true" />
+
+						<button class="btn btn-outline-danger" @onclick="() => RemoveClaimPair(claim)">Delete</button>
+					</div>
+				}
+			</div>
+		</div>
+		<hr />
+		<div class="row">
+			<div class="col">
+				<h5>Required Role</h5>
+				<em>Require any <strong>one</strong> of the following roles.</em>
+				
+				<br />
+
+				<div class="input-group">
+						<span class="input-group-text">Role</span>
+						<InputEnumSelect class="form-control" @bind-Value="WebsiteRole" />
+
+						<button class="btn btn-outline-success" @onclick="AddRole">Add</button>
+					</div>
+
+				<br />
+
+				@foreach(var c in ToEdit.RequiredRoles)
+				{
+					var role = c;
+					<div class="input-group">
+						<span class="input-group-text">Role</span>
+						<InputText class="form-control" @bind-Value="role" disabled="true" />
+
+						<button class="btn btn-outline-danger" @onclick="() => RemoveRole(role)">Delete</button>
+					</div>
+				}
+			</div>
+		</div>
+		<DynamicAuthorizeView SectionName="DynamicPolicyEditor_EditableBySection" IsPage="false">
+			<Authorized>
+				<hr />
+				<div class="row">
+					<div class="col">
+						<h5>Editable By</h5>
+						<em>What policy has permissions to edit this policy?</em>
+						
+						<br />
+					</div>
+				</div>
+			</Authorized>
+		</DynamicAuthorizeView>
+		<hr />
+		<div class="p-3">
+			<div class="d-grid gap-2">
+				<button class="btn btn-success" @onclick="OnSave">Save</button>
+			</div>
+		</div>
+	</EditForm>
+}

@@ -330,7 +330,7 @@ namespace FiveOhFirstDataCore
             data.InitializeAsync().GetAwaiter().GetResult();
 
             var claims = scope.ServiceProvider.GetRequiredService<IWebsiteSettingsService>();
-            claims.ReloadClaimTreeAsync().GetAwaiter().GetResult();
+            claims.InitalizeAsync().GetAwaiter().GetResult();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions()
             {

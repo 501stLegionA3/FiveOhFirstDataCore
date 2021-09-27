@@ -4,7 +4,7 @@
 @inject IEparService _epar
 @inherits PaginationModel
 
-<AuthorizeView Policy="RequireRosterClerk">
+<DynamicAuthorizeView SectionName="Roster Clerk Home">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">
@@ -211,7 +211,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home") };

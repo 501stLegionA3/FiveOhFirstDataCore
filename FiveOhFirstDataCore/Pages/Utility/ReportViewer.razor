@@ -3,7 +3,7 @@
 
 <h1 class="text-center display-6">Trooper Report Listing</h1>
 
-<AuthorizeView Policy="RequireTrooper">
+<DynamicAuthorizeView SectionName="Report Viewer">
     <Authorized>
         <PaginationController Controller="this" />
 
@@ -60,4 +60,4 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>

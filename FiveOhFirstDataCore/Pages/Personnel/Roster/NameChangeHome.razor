@@ -5,11 +5,11 @@
 @inject IRefreshRequestService _refresh
 @inject IAlertService _alert
 
-<AuthorizeView Policy="RequireNameChange">
+<DynamicAuthorizeView SectionName="Name Change Home">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">
-            <AuthorizeView Policy="RequireManager" Context="managerContext">
+            <DynamicAuthorizeView SectionName="Add Name Changers Form" Context="managerContext">
                 <Authorized>
                     <div class="col-lg-3 col-md-12">
                     <div class="d-grid gap-2 mx-auto">
@@ -41,7 +41,7 @@
                     }
                     </div>
                 </Authorized>
-            </AuthorizeView>
+            </DynamicAuthorizeView>
         </div>
         <div class="row">
             <div class="col p-4 d-grid gap-2">
@@ -52,7 +52,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/roster", "Roster Staff Home"),

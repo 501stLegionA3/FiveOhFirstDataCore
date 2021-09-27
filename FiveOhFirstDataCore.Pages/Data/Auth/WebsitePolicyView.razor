@@ -1,0 +1,84 @@
+﻿<br />
+
+<div class="d-grid gap-2">
+	<button class="btn btn-primary" @onclick="() => NewPolicy = true">Add Policy</button>
+
+	<ModalDisplay Display="NewPolicy">
+		<ToDisplay>
+			<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">New Policy</h4>
+					</div>
+					<div class="modal-body">
+						<DynamicPolicyEditor CloseOnSave="true" />
+					</div>
+				</div>
+			</div>
+		</ToDisplay>
+	</ModalDisplay>
+
+	@if(NewPolicy)
+	{
+		NewPolicy = false;
+	}
+</div>
+
+<br />
+
+<div class="row">
+	<div class="col">
+		<EditForm Model="this" Context="AllPoliciesContext">
+			@for (int i = 0; i < Policies.Count; i++)
+			{
+				var c = i;
+				var p = Policies[c];
+				string o = OrphanTree[c];
+
+				<div class="input-group">
+					<span class="input-group-text">Policy</span>
+					<InputText class="form-control" disabled="true" @bind-Value="p.PolicyName" />
+					<button class="btn btn-outline-primary" @onclick="() => DisplayTree[c] = true">Edit</button>
+					@if (p.PolicyName != "Require Manager")
+					{
+						<span class="input-group-text">On Delete</span>
+						<InputSelect class="form-control" @bind-Value="o" @oninput="(x) => OrphanTree[c] = (string)x.Value">
+							<option value="">Assigne Orphaned Sections To...</option>
+							@foreach (var v in Policies)
+							{
+								if (v != p)
+								{
+									<option value="@v.PolicyName">@v.PolicyName</option>
+								}
+							}
+						</InputSelect>
+						<button class="btn btn-outline-danger" disabled="@(o == "")" @onclick="async () => await DeletePolicyAsync(p, o)">Delete</button>
+					}
+				</div>
+				
+				bool display = DisplayTree[c];
+				<ModalDisplay Display="display">
+					<ToDisplay>
+						<div class="modal-dialog modal-dialog-centered modal-lg modal-fullscreen-md-down">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h4 class="modal-title">@p.PolicyName</h4>
+								</div>
+								<div class="modal-body">
+									<DynamicPolicyEditor ToEdit="p" CloseOnSave="true" />
+								</div>
+							</div>
+						</div>
+					</ToDisplay>
+				</ModalDisplay>
+
+				<br />
+
+				@if(display)
+				{
+					DisplayTree[c] = false;
+				}
+			}
+		</EditForm>
+	</div>
+</div>

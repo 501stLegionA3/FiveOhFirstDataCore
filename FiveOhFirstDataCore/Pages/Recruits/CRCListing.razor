@@ -1,15 +1,22 @@
 ﻿@page "/recruits/crclisting"
 
-<div class="text-center">
-    <h4>New Recruits</h4>
-</div>
+<DynamicAuthorizeView SectionName="New Recruit Listing">
+	<Authorized>
+		<div class="text-center">
+			<h4>New Recruits</h4>
+		</div>
 
-<RecruitListing Troopers="Recruits" />
+		<RecruitListing Troopers="Recruits" />
 
-<hr />
+		<hr />
 
-<div class="text-center">
-    <h4>UTC Cadets</h4>
-</div>
+		<div class="text-center">
+			<h4>UTC Cadets</h4>
+		</div>
 
-<RecruitListing Troopers="UTCCadets" />
+		<RecruitListing Troopers="UTCCadets" />
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedMessage />
+	</NotAuthorized>
+</DynamicAuthorizeView>

@@ -1,6 +1,6 @@
 ﻿@page "/utility/report"
 
-<AuthorizeView Policy="RequireTrooper">
+<DynamicAuthorizeView SectionName="Anonymous Report Page">
     <Authorized>
         <div class="row">
             <div class="col">
@@ -38,4 +38,4 @@
             </div>
         </EditForm>
     </Authorized>
-</AuthorizeView>
+</DynamicAuthorizeView>

@@ -1,7 +1,7 @@
 ﻿@page "/manager/settings"
 @inject IWebsiteSettingsService _settings
 @inject IRosterService _roster
-<AuthorizeView Policy="RequireManager">
+<DynamicAuthorizeView SectionName="Manager Settings">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <h3>Manager Settings</h3>
@@ -59,4 +59,4 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>

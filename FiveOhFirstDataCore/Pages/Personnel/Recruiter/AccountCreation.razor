@@ -8,7 +8,7 @@
 @inject IRosterService _roster
 @inject IAlertService _alert
 
-<AuthorizeView Policy="RequireRecruiterOrReturningMemberStaff" Context="authContext">
+<DynamicAuthorizeView SectionName="New Recruit Form" Context="authContext">
     <Authorized>
         <BreadcrumbsList Url="Urls" />
         <div class="row">
@@ -91,7 +91,7 @@
     <NotAuthorized>
         <NotAuthorizedMessage />
     </NotAuthorized>
-</AuthorizeView>
+</DynamicAuthorizeView>
 
 @code {
     public List<(string, string)> Urls { get; set; } = new() { ("/", "Home"), ("/c1", "C-1 PERSONNEL"), ("/c1/recruiter", "Recruiter Home"), ("/c1/recruiter/addmember", "Add New Trooper") };

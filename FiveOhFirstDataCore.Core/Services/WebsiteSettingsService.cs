@@ -3,6 +3,8 @@ using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Promotions;
 using FiveOhFirstDataCore.Data.Structuresbase;
 using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Core.Structures.Auth;
+using FiveOhFirstDataCore.Core.Structures.Policy;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -919,11 +921,49 @@ namespace FiveOhFirstDataCore.Data.Services
 
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-        public Dictionary<CShop, CShopClaim> CShopClaimTree { get; set; } = null;
+        public Dictionary<CShop, CShopClaim>? CShopClaimTree { get; set; } = null;
+        public Dictionary<string, string>? SectionToPolicyNameDict { get; set; } = null;
+        public Dictionary<string, DynamicPolicyAuthorizationPolicyBuilder>? PolicyBuilders { get; set; } = null;
 
         public WebsiteSettingsService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
+        }
+
+        public async Task InitalizeAsync()
+        {
+            await EnsureManagerPolicy();
+            await ReloadClaimTreeAsync();
+            await ReloadPolicyCacheAsync();
+        }
+
+        private async Task EnsureManagerPolicy()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var manager = await _dbContext.FindAsync<DynamicPolicy>("Require Manager");
+            if(manager is null)
+            {
+                manager = new()
+                {
+                    PolicyName = "Require Manager",
+                    PolicySections = new()
+                };
+
+                var sec = await _dbContext.FindAsync<PolicySection>("Require Manager");
+
+                if(sec is null)
+				{
+                    sec = new()
+                    {
+                        SectionName = "Require Manager"
+                    };
+				}
+
+                manager.PolicySections.Add(sec);
+
+                await _dbContext.AddAsync(manager);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
         public async Task ReloadClaimTreeAsync()
@@ -1268,5 +1308,269 @@ namespace FiveOhFirstDataCore.Data.Services
                 await _dbContext.SaveChangesAsync();
             }
         }
-    }
+        #region Dynamic Policies
+        public async Task ReloadPolicyCacheAsync()
+        {
+            await GenerateSectionToPolicyDictionaryAsync();
+            await GeneratePolicyBuildersAsync();
+        }
+
+        private async Task GenerateSectionToPolicyDictionaryAsync()
+        {
+            SectionToPolicyNameDict = new Dictionary<string, string>();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.PolicySections
+                .ForEachAsync(section =>
+                {
+                    if(!SectionToPolicyNameDict.TryAdd(section.SectionName, section.PolicyName))
+                    {
+                        SectionToPolicyNameDict[section.SectionName] = section.PolicyName;
+                    }
+                });
+        }
+
+        private async Task GeneratePolicyBuildersAsync()
+        {
+            PolicyBuilders = new Dictionary<string, DynamicPolicyAuthorizationPolicyBuilder>();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await _dbContext.DynamicPolicies
+                .Include(e => e.RequiredClaims)
+                .ForEachAsync(policy =>
+                {
+                    var builder = new DynamicPolicyAuthorizationPolicyBuilder(policy);
+                    builder.RequireAssertion((ctx, _policy) =>
+                    {
+                        if (ctx.User.IsInRole("Admin")
+                               || ctx.User.IsInRole("Manager")) return true;
+
+                        if (ctx.User.IsInRole("Archived")) return false;
+
+                        foreach (var r in _policy.RequiredRoles)
+                            if (ctx.User.IsInRole(r)) return true;
+
+                        foreach (var c in _policy.RequiredClaims)
+                            if (ctx.User.HasClaim(c.Claim, c.Value)) return true;
+
+                        return false;
+                    });
+
+                    if(!PolicyBuilders.TryAdd(policy.PolicyName, builder))
+                    {
+                        PolicyBuilders[policy.PolicyName] = builder;
+                    }
+                });
+        }
+
+        public async Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilderAsync(string sectionName, bool forceCacheReload = false)
+        {
+            if (forceCacheReload 
+                || SectionToPolicyNameDict is null 
+                || PolicyBuilders is null)
+                await ReloadPolicyCacheAsync();
+
+            if (SectionToPolicyNameDict!.TryGetValue(sectionName, out var policy))
+                if (PolicyBuilders!.TryGetValue(policy ?? "", out var builder))
+                    return builder;
+            // A policy named default will be used as a fallback for any missing
+            // policy names, or unassigned policy sections.
+            if (PolicyBuilders!.TryGetValue("Default", out var defaultBuilder))
+                return defaultBuilder;
+
+            return null;
+        }
+
+        public async Task<ResultBase> CreatePolicyAsync(DynamicPolicy policy)
+        {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is null)
+            {
+                await _dbContext.AddAsync(policy);
+                await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { $"Failed to create {policy.PolicyName}: A policy by the name of {policy.PolicyName} already exsists." });
+            }
+        }
+
+        public async Task<ResultBase> UpdatePolicyAsync(DynamicPolicy policy)
+        {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+                await _dbContext.AddAsync(policy);
+                await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { $"Failed to update {policy.PolicyName}: A policy by the name of {policy.PolicyName} does not exsist." });
+            }
+        }
+
+        public async Task<ResultBase> UpdateOrCreatePolicyAsync(DynamicPolicy policy)
+        {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            await _dbContext.AddAsync(policy);
+            await _dbContext.SaveChangesAsync();
+
+            await ReloadPolicyCacheAsync();
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> UpdatePolicySectionAsync(PolicySection policySection)
+        {
+            policySection.SectionName = policySection.SectionName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<PolicySection>(policySection.SectionName);
+            if (old is null)
+            {
+                old = new()
+                {
+                    SectionName = policySection.SectionName
+                };
+            }
+
+            old.PolicyName = policySection.PolicyName;
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
+        }
+
+        public async Task<ResultBase> DeletePolicyAsync(DynamicPolicy policy, DynamicPolicy? assignFloatingSectionsTo = null)
+        {
+            policy.PolicyName = policy.PolicyName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
+            if (old is not null)
+            {
+                if (assignFloatingSectionsTo is not null)
+                {
+                    await _dbContext.Entry(old).Collection(e => e.PolicySections).LoadAsync();
+                    foreach(var i in old.PolicySections)
+                    {
+                        i.PolicyName = assignFloatingSectionsTo.PolicyName;
+                    }
+                }
+
+                _dbContext.Remove(old);
+                await _dbContext.SaveChangesAsync();
+
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { "No policy found to delete." });
+            }
+        }
+
+        public async Task<PolicySectionResult> GetOrCreatePolicySectionAsync(string sectionName)
+        {
+            var name = sectionName.Normalize();
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var section = await _dbContext.FindAsync<PolicySection>(name);
+
+            if (section is null)
+            {
+                section = new()
+                {
+                    SectionName = sectionName,
+                    PolicyName = "Require Manager"
+                };
+
+                try
+                {
+                    await _dbContext.AddAsync(section);
+                    await _dbContext.SaveChangesAsync();
+
+                    await ReloadPolicyCacheAsync();
+                }
+                catch (Exception ex)
+                {
+                    return new(false, null, new List<string>() { "An error occoured while saving a new policy section", ex.Message });
+                }
+            }
+
+            return new(true, section, null);
+        }
+
+        public async Task<List<DynamicPolicy>> GetDynamicPoliciesAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.DynamicPolicies.ToListAsync();
+        }
+
+        public async Task<DynamicPolicy?> GetDynamicPolicyAsync(string policyName)
+        {
+            if (policyName is null) return null;
+
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var p = await _dbContext.FindAsync<DynamicPolicy>(policyName.Normalize());
+
+            if (p is null) return null;
+
+            await _dbContext.Entry(p).Collection(e => e.RequiredClaims).LoadAsync();
+            if (p.EditableByPolicyName is not null)
+            {
+#pragma warning disable CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+                await _dbContext.Entry(p).Reference(e => e.EditableByPolicy).LoadAsync();
+#pragma warning restore CS8634 // The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+            }
+
+            return p;
+        }
+
+		public async Task<List<PolicySection>> GetAllPolicySectionsAsync()
+		{
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.PolicySections.ToListAsync();
+        }
+
+		public async Task<ResultBase> DeletePolicySectionAsync(PolicySection section)
+		{
+			using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<PolicySection>(section.SectionName);
+            
+            if(actual is null)
+			{
+                return new(false, new List<string>() { "No section data found for the provided section." });
+			}
+
+            _dbContext.Remove(actual);
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
+		}
+		#endregion
+	}
 }
