@@ -59,10 +59,10 @@ namespace FiveOhFirstDataCore.Components.Data
                 ShopPositions = await _roster.GetCShopClaimsAsync(Trooper);
 
                 var now = DateTime.UtcNow.ToEst();
-                ServiceStrings[0] = Trooper.LastPromotion.ToShortDateString();
-                ServiceStrings[2] = Trooper.StartOfService.ToShortDateString();
-                ServiceStrings[1] = now.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
-                ServiceStrings[3] = now.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+                ServiceStrings[0] = Trooper.StartOfService.ToShortDateString();
+                ServiceStrings[1] = now.Subtract(Trooper.StartOfService).TotalDays.ToString("F0");
+                ServiceStrings[2] = Trooper.LastPromotion.ToShortDateString();
+                ServiceStrings[3] = now.Subtract(Trooper.LastPromotion).TotalDays.ToString("F0");
                 ServiceStrings[4] = Trooper.LastBilletChange.ToShortDateString();
                 ServiceStrings[5] = now.Subtract(Trooper.LastBilletChange).TotalDays.ToString("F0");
 
