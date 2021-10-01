@@ -22,6 +22,8 @@ public partial class DynamicPolicyEditor
     public DynamicPolicy? ToEdit { get; set; } = null;
     [Parameter]
     public bool CloseOnSave { get; set; } = false;
+    [Parameter]
+    public bool IndependentDisplay { get; set; } = false;
     private bool ExsistingPolicy { get; set; } = false;
 
     private PolicyClaimData AddClaim { get; set; } = new();
@@ -70,6 +72,11 @@ public partial class DynamicPolicyEditor
         {
             AlertService.PostAlert(this, new List<string>() { "A policy must have a name!" });
         }
+    }
+
+    private void OnClose()
+    {
+        AlertService.PostModal(this, null);
     }
 
     private void AddClaimPair()
