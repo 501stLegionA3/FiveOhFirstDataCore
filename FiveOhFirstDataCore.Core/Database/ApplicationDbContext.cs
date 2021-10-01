@@ -352,7 +352,9 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
                 .HasForeignKey(p => p.EditableByPolicyName)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
-            dPoli.HasMany(p => p.RequiredClaims);
+            dPoli.HasMany(p => p.RequiredClaims)
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
             var poliSect = builder.Entity<PolicySection>();
             poliSect.HasKey(p => p.SectionName);
