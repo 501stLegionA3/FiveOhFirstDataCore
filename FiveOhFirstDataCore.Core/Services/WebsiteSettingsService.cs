@@ -1407,12 +1407,10 @@ namespace FiveOhFirstDataCore.Data.Services
             policy.PolicyName = policy.PolicyName.Normalize();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
-            if (old is not null)
+            var tracker = _dbContext.Update(policy);
+
+            if(tracker.State != EntityState.Added)
             {
-                _dbContext.Remove(old);
-                await _dbContext.SaveChangesAsync();
-                await _dbContext.AddAsync(policy);
                 await _dbContext.SaveChangesAsync();
 
                 await ReloadPolicyCacheAsync();
@@ -1430,14 +1428,8 @@ namespace FiveOhFirstDataCore.Data.Services
             policy.PolicyName = policy.PolicyName.Normalize();
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
-            var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
-            if (old is not null)
-            {
-                _dbContext.Remove(old);
-                await _dbContext.SaveChangesAsync();
-            }
 
-            await _dbContext.AddAsync(policy);
+            _dbContext.Update(policy);
             await _dbContext.SaveChangesAsync();
 
             await ReloadPolicyCacheAsync();
