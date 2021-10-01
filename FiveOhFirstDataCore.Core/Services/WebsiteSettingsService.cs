@@ -1429,7 +1429,15 @@ namespace FiveOhFirstDataCore.Data.Services
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
-            _dbContext.Update(policy);
+            if((await _dbContext.DynamicPolicies.CountAsync(x => x.PolicyName == policy.PolicyName)) > 0)
+            {
+                _dbContext.Update(policy);
+            }
+            else
+            {
+                await _dbContext.AddAsync(policy);
+            }
+
             await _dbContext.SaveChangesAsync();
 
             await ReloadPolicyCacheAsync();
