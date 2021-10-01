@@ -45,10 +45,14 @@
 					<div class="input-group">
 						<span class="input-group-text">C-Shop</span>
 						<InputSelect class="form-control" @bind-Value="CShopGroup">
-							@foreach(var i in CShopClaims[ClaimGroup].ClaimData.Keys)
+							@try
 							{
-								<option value="@i">@i</option>
+								foreach(var i in CShopClaims[ClaimGroup].ClaimData.Keys)
+								{
+									<option value="@i">@i</option>
+								}
 							}
+							catch { }
 						</InputSelect>
 
 						<button class="btn btn-outline-success" @onclick="AddCShopGroup">Add</button>
@@ -61,10 +65,14 @@
 						<div class="input-group">
 							<span class="input-group-text">C-Shop Position</span>
 							<InputSelect class="form-control" @bind-Value="CShopPosition">
-								@foreach(var i in CShopClaims[ClaimGroup].ClaimData[CShopGroup])
+								@try
 								{
-									<option value="@i">@i</option>
+									foreach (var i in CShopClaims[ClaimGroup].ClaimData[CShopGroup])
+									{
+										<option value="@i">@i</option>
+									}
 								}
+								catch { }
 							</InputSelect>
 
 							<button class="btn btn-outline-success" @onclick="AddCShopPosition">Add</button>
