@@ -122,7 +122,7 @@
             AllTroopers = await _roster.GetAllTroopersAsync();
 
             var user = (await AuthStateTask).User;
-            if((await _auth.AuthorizeAsync(user, "RequireNameChange")).Succeeded)
+            if((await _auth.AuthorizeAsync(user, "Name Change Form")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))

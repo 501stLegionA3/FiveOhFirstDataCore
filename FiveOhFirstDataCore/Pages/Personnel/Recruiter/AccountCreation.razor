@@ -195,7 +195,7 @@
 
         Errors.Clear();
 
-        if((await _auth.AuthorizeAsync(claim, "RequireRecruiterOrReturningMemberStaff")).Succeeded)
+        if((await _auth.AuthorizeAsync(claim, "New Recruit Form")).Succeeded)
         {
             if (ValidNewId)
             {

@@ -906,7 +906,7 @@
             AllTroopers = await _roster.GetAllTroopersAsync();
 
             var user = (await AuthStateTask).User;
-            if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+            if((await _auth.AuthorizeAsync(user, "Roster Edit Page")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))
@@ -985,7 +985,7 @@
 
         var user = (await AuthStateTask).User;
 
-        if ((await _auth.AuthorizeAsync(user, "RequireRosterClerkOrReturningMemberStaff")).Succeeded)
+        if ((await _auth.AuthorizeAsync(user, "Roster Edit Page")).Succeeded)
         {
             if (!isMerge || Conflicts is null)
             {

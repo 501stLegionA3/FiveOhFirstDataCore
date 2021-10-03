@@ -279,7 +279,7 @@
         if (firstRender)
         {
             var user = (await AuthStateTask).User;
-            if((await _auth.AuthorizeAsync(user, "RequireRosterClerk")).Succeeded)
+            if((await _auth.AuthorizeAsync(user, "Manager Edit Member")).Succeeded)
             {
                 if(QueryHelpers.ParseQuery(_nav.ToAbsoluteUri(_nav.Uri).Query)
                     .TryGetValue("edit", out var edit))
@@ -328,8 +328,8 @@
             DummyUsername = Trooper.UserName;
 
             var user = (await AuthStateTask).User;
-            bool currentManager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
-            bool currentAdmin = (await _auth.AuthorizeAsync(user, "RequireAdmin")).Succeeded;
+            bool currentManager = (await _auth.AuthorizeAsync(user, "Manager Edit Member")).Succeeded;
+            bool currentAdmin = (await _auth.AuthorizeAsync(user, "Manager Edit Member Admin")).Succeeded;
 
             if (CurrentUser.Id == -1
                 && CurrentUser.Id != Trooper.Id)

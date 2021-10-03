@@ -83,7 +83,7 @@ but the file gets populated with intellisense errors.*@
 
         var claims = (await AuthStateTask).User;
 
-        if((await _auth.AuthorizeAsync(claims, "RequireManager")).Succeeded)
+        if((await _auth.AuthorizeAsync(claims, "Manager Data Import")).Succeeded)
         {
             Running = true;
             _import.VerifyUnsafeFolder();

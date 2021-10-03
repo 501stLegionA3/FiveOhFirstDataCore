@@ -73,7 +73,7 @@
         {
             var claim = (await AuthStateTask).User;
 
-            if ((await _auth.AuthorizeAsync(claim, "RequireRecruiter")).Succeeded)
+            if ((await _auth.AuthorizeAsync(claim, "Unregistered Troopers")).Succeeded)
             {
                 Unregistered = await _roster.GetUnregisteredTroopersAsync();
 
