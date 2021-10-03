@@ -18,10 +18,10 @@
         @Trooper.GetRoleName()
     </td>
     <td class="d-none d-lg-table-cell">
-        @((int)DateTime.Now.Subtract(Trooper.LastPromotion).TotalDays) DAY(S)
+        @((int)DateTime.UtcNow.Subtract(Trooper.LastPromotion).TotalDays) DAY(S)
     </td>
     <td class="d-none d-xl-table-cell">
-        @((int)DateTime.Now.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
+        @((int)DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
     </td>
     <td>
         <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
