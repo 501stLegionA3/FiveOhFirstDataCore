@@ -2,7 +2,7 @@
 
 namespace FiveOhFirstDataCore.Data.Migrations
 {
-    public partial class DevSoyvolonDeletePolicy : Migration
+    public partial class ReleaseSoyvolonVersionZeroFifteenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
