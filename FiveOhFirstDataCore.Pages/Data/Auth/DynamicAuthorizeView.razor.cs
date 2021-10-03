@@ -53,14 +53,7 @@ public partial class DynamicAuthorizeView
             AuthState = await AuthStateTask;
             var user = AuthState.User;
 
-            if (IsPage && SectionName is not null)
-            {
-                QualifiedName = $"/{Navigation.ToBaseRelativePath(Navigation.Uri)}.{SectionName}";
-            }
-            else
-			{
-                QualifiedName = $"\\{SectionName}";
-			}
+            QualifiedName = SectionName ?? "default";
 
             try
             {
