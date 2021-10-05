@@ -1462,6 +1462,8 @@ namespace FiveOhFirstDataCore.Data.Services
             old.PolicyName = policySection.PolicyName;
             await _dbContext.SaveChangesAsync();
 
+            await ReloadPolicyCacheAsync();
+
             return new(true, null);
         }
 
@@ -1484,6 +1486,8 @@ namespace FiveOhFirstDataCore.Data.Services
 
                 _dbContext.Remove(old);
                 await _dbContext.SaveChangesAsync();
+
+                await ReloadPolicyCacheAsync();
 
                 return new(true, null);
             }
@@ -1568,6 +1572,8 @@ namespace FiveOhFirstDataCore.Data.Services
 
             _dbContext.Remove(actual);
             await _dbContext.SaveChangesAsync();
+
+            await ReloadPolicyCacheAsync();
 
             return new(true, null);
 		}
