@@ -228,6 +228,10 @@ namespace FiveOhFirstDataCore.Data.Structures
         #endregion
 
         #region Razor/Warden
+        public static bool IsRazor(this Slot slot)
+        {
+            return (slot >= Slot.Razor && slot < Slot.ZetaCompany);
+        }
 
         public static bool IsWardenTeam(this Slot slot)
         {
@@ -274,6 +278,10 @@ namespace FiveOhFirstDataCore.Data.Structures
         #endregion
 
         #region Mynock
+        public static bool IsMynock(this Slot slot)
+        {
+            return (slot >= Slot.Mynock && slot < Slot.Razor);
+        }
         public static bool IsMynockSection(this Slot slot)
         {
             if (slot >= Slot.Mynock && slot < Slot.Razor)
