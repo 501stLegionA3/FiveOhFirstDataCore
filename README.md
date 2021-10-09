@@ -15,7 +15,7 @@ Want to request a new page, feature, or report a bug? Submit an [Issue](https://
 Want to help with the development? First please check out our [guidelines](https://github.com/Soyvolon/FiveOhFirstDataCore/blob/ea5b5f3119a8a98b56db687da171efeb2a0cb3b1/CONTRIBUTING.md) then follow the instructions below to setup your development environment!
 
 ## Installing Preview .NET and Visual Studio
-This project is built with the latest versions on .NET and Visual Studio 2019 - the preview ones to be exact.
+This project is built with the latest versions on .NET and Visual Studio 2022 - the preview ones to be exact.
 You will need to install both the [.NET Preview](https://dotnet.microsoft.com/download/dotnet/6.0) and the [Visual Studio Preview](https://visualstudio.microsoft.com/vs/preview/). If you already have the Visual Studio Installer, you can get the Visual Studio preview from the installer.
 
 ## Installing and setting up the Database
