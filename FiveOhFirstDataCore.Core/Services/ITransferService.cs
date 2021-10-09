@@ -1,4 +1,8 @@
-﻿using System;
+﻿using FiveOhFirstDataCore.Data.Account;
+using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Transfer;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +12,9 @@ namespace FiveOhFirstDataCore.Data.Services;
 
 public interface ITransferService
 {
-
+    public Task<TransferResult> FileTransferRequestAsync(TransferRequest request, int filedBy, Slot filedAt);
+    public Task<TransferResult> ApproveTransferRequestAsync(TransferRequest request, int approvedBy, Slot approvedAt);
+    public Task<TransferResult> DenyTransferRequestAsync(TransferRequest request, int deniedBy, Slot deniedAt);
+    public Task<List<Trooper>> GetTransferableTroopersAsync(int id);
+    public Task<List<TransferRequest>> GetPendingTransfers(Slot slot);
 }
