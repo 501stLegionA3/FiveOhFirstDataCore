@@ -191,5 +191,12 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <returns>A task that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> DeletePolicySectionAsync(PolicySection section);
         #endregion
+
+        #region Discord Bindings
+        public Task AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails);
+        public Task AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data);
+        public Task<List<DiscordRoleDetails>> GetAllDiscordBindingsAsync();
+        public Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync();
+        #endregion
     }
 }

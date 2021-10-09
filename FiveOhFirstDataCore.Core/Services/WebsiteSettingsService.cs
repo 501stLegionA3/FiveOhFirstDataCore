@@ -941,7 +941,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var manager = await _dbContext.FindAsync<DynamicPolicy>("Require Manager");
-            if(manager is null)
+            if (manager is null)
             {
                 manager = new()
                 {
@@ -951,13 +951,13 @@ namespace FiveOhFirstDataCore.Data.Services
 
                 var sec = await _dbContext.FindAsync<PolicySection>("Require Manager");
 
-                if(sec is null)
-				{
+                if (sec is null)
+                {
                     sec = new()
                     {
                         SectionName = "Require Manager"
                     };
-				}
+                }
 
                 manager.PolicySections.Add(sec);
 
@@ -1323,7 +1323,7 @@ namespace FiveOhFirstDataCore.Data.Services
             await _dbContext.PolicySections
                 .ForEachAsync(section =>
                 {
-                    if(!SectionToPolicyNameDict.TryAdd(section.SectionName, section.PolicyName))
+                    if (!SectionToPolicyNameDict.TryAdd(section.SectionName, section.PolicyName))
                     {
                         SectionToPolicyNameDict[section.SectionName] = section.PolicyName;
                     }
@@ -1356,7 +1356,7 @@ namespace FiveOhFirstDataCore.Data.Services
                         return false;
                     });
 
-                    if(!PolicyBuilders.TryAdd(policy.PolicyName, builder))
+                    if (!PolicyBuilders.TryAdd(policy.PolicyName, builder))
                     {
                         PolicyBuilders[policy.PolicyName] = builder;
                     }
@@ -1365,8 +1365,8 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<DynamicPolicyAuthorizationPolicyBuilder?> GetPolicyBuilderAsync(string sectionName, bool forceCacheReload = false)
         {
-            if (forceCacheReload 
-                || SectionToPolicyNameDict is null 
+            if (forceCacheReload
+                || SectionToPolicyNameDict is null
                 || PolicyBuilders is null)
                 await ReloadPolicyCacheAsync();
 
@@ -1409,7 +1409,7 @@ namespace FiveOhFirstDataCore.Data.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             var tracker = _dbContext.Update(policy);
 
-            if(tracker.State != EntityState.Added)
+            if (tracker.State != EntityState.Added)
             {
                 await _dbContext.SaveChangesAsync();
 
@@ -1429,7 +1429,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
-            if((await _dbContext.DynamicPolicies.CountAsync(x => x.PolicyName == policy.PolicyName)) > 0)
+            if ((await _dbContext.DynamicPolicies.CountAsync(x => x.PolicyName == policy.PolicyName)) > 0)
             {
                 _dbContext.Update(policy);
             }
@@ -1478,7 +1478,7 @@ namespace FiveOhFirstDataCore.Data.Services
                 if (assignFloatingSectionsTo is not null)
                 {
                     await _dbContext.Entry(old).Collection(e => e.PolicySections).LoadAsync();
-                    foreach(var i in old.PolicySections)
+                    foreach (var i in old.PolicySections)
                     {
                         i.PolicyName = assignFloatingSectionsTo.PolicyName;
                     }
@@ -1554,21 +1554,21 @@ namespace FiveOhFirstDataCore.Data.Services
             return p;
         }
 
-		public async Task<List<PolicySection>> GetAllPolicySectionsAsync()
-		{
+        public async Task<List<PolicySection>> GetAllPolicySectionsAsync()
+        {
             using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.PolicySections.ToListAsync();
         }
 
-		public async Task<ResultBase> DeletePolicySectionAsync(PolicySection section)
-		{
-			using var _dbContext = _dbContextFactory.CreateDbContext();
+        public async Task<ResultBase> DeletePolicySectionAsync(PolicySection section)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.FindAsync<PolicySection>(section.SectionName);
-            
-            if(actual is null)
-			{
+
+            if (actual is null)
+            {
                 return new(false, new List<string>() { "No section data found for the provided section." });
-			}
+            }
 
             _dbContext.Remove(actual);
             await _dbContext.SaveChangesAsync();
@@ -1576,7 +1576,29 @@ namespace FiveOhFirstDataCore.Data.Services
             await ReloadPolicyCacheAsync();
 
             return new(true, null);
-		}
-		#endregion
-	}
+        }
+        #endregion
+
+        #region Discord Bindings
+        public Task AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<DiscordRoleDetails>> GetAllDiscordBindingsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
 }
