@@ -193,10 +193,12 @@ namespace FiveOhFirstDataCore.Data.Services
         #endregion
 
         #region Discord Bindings
-        public Task AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails);
-        public Task AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data);
+        public Task<ResultBase> AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails);
+        public Task<ResultBase> AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data);
         public Task<List<DiscordRoleDetails>> GetAllDiscordBindingsAsync();
         public Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync();
+        public Task<ResultBase> DeleteDiscordBindingAsync(DiscordRoleDetails roleDetails);
+        public Task<ResultBase> DeleteCShopRoleBindingDataAsync(CShopRoleBindingData data);
         #endregion
     }
 }

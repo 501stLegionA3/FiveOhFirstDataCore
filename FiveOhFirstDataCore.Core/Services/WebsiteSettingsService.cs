@@ -939,7 +939,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         private async Task EnsureManagerPolicy()
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var manager = await _dbContext.FindAsync<DynamicPolicy>("Require Manager");
             if (manager is null)
             {
@@ -981,7 +981,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task SetDefaultSettingsAsync()
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             _dbContext.PromotionRequirements.RemoveRange(_dbContext.PromotionRequirements);
             foreach (var pair in NeededTimeForPromotion)
             {
@@ -1075,7 +1075,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task OverrideCShopClaimSettingsAsync(Dictionary<CShop, CShopClaim> claimTree)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             _dbContext.CShopClaims.RemoveRange(_dbContext.CShopClaims);
             foreach (var item in claimTree)
             {
@@ -1094,7 +1094,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<PromotionDetails?> GetPromotionRequirementsAsync(int rank)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.FindAsync<PromotionDetails>(rank);
         }
 
@@ -1102,7 +1102,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             List<Promotion> promotions = new();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
 
             //gets Cshop levels
             var levels = await GetCshopLevelsAsync(forTrooper.Id);
@@ -1170,7 +1170,7 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <returns>Returns <see cref="(bool, bool)"/> where Item1 is if the Trooper is in C-Shop command and Item2 is if the Trooper is in C-Shop leadership.</returns>
         public async Task<(bool, bool)> GetCshopLevelsAsync(int trooperId)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
 
             var claims = await _dbContext.UserClaims.AsNoTracking()
                 .Where(x => x.UserId == trooperId)
@@ -1213,7 +1213,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<Dictionary<CShop, CShopClaim>> GetFullClaimsTreeAsync()
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
 
             Dictionary<CShop, CShopClaim> data = new();
 
@@ -1234,7 +1234,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<Dictionary<string, List<string>>> GetClaimDataForCShopAsync(CShop key)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = await _dbContext.CShopClaims.FindAsync(key);
 
             return data?.ClaimData ?? new();
@@ -1242,7 +1242,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<IReadOnlyList<ulong>?> GetCShopDiscordRolesAsync(Claim claim)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = _dbContext.CShopRoleData
                 .Where(x => x.Id == claim.Value)
                 .Include(p => p.Parent)
@@ -1259,7 +1259,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var details = await _dbContext.FindAsync<DiscordRoleDetails>(key.AsQualified());
             return details;
         }
@@ -1267,7 +1267,7 @@ namespace FiveOhFirstDataCore.Data.Services
         public async Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails()
         {
             Dictionary<int, PromotionDetails> dict = new();
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var data = _dbContext.PromotionRequirements
                 .AsAsyncEnumerable();
 
@@ -1281,7 +1281,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task OverridePromotionRequirementsAsync(Dictionary<int, PromotionDetails> details)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
 
             _dbContext.PromotionRequirements.RemoveRange(_dbContext.PromotionRequirements);
 
@@ -1300,7 +1300,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task RemoveForcedTagAsync(Promotion promotion)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var promo = await _dbContext.FindAsync<Promotion>(promotion.Id);
             if (promo is not null)
             {
@@ -1319,7 +1319,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             SectionToPolicyNameDict = new Dictionary<string, string>();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             await _dbContext.PolicySections
                 .ForEachAsync(section =>
                 {
@@ -1334,7 +1334,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             PolicyBuilders = new Dictionary<string, DynamicPolicyAuthorizationPolicyBuilder>();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             await _dbContext.DynamicPolicies
                 .Include(e => e.RequiredClaims)
                 .ForEachAsync(policy =>
@@ -1385,7 +1385,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             policy.PolicyName = policy.PolicyName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
             if (old is null)
             {
@@ -1406,7 +1406,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             policy.PolicyName = policy.PolicyName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var tracker = _dbContext.Update(policy);
 
             if (tracker.State != EntityState.Added)
@@ -1427,7 +1427,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             policy.PolicyName = policy.PolicyName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
 
             if ((await _dbContext.DynamicPolicies.CountAsync(x => x.PolicyName == policy.PolicyName)) > 0)
             {
@@ -1449,7 +1449,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             policySection.SectionName = policySection.SectionName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var old = await _dbContext.FindAsync<PolicySection>(policySection.SectionName);
             if (old is null)
             {
@@ -1471,7 +1471,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             policy.PolicyName = policy.PolicyName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var old = await _dbContext.FindAsync<DynamicPolicy>(policy.PolicyName);
             if (old is not null)
             {
@@ -1501,7 +1501,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             var name = sectionName.Normalize();
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var section = await _dbContext.FindAsync<PolicySection>(name);
 
             if (section is null)
@@ -1530,7 +1530,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<List<DynamicPolicy>> GetDynamicPoliciesAsync()
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.DynamicPolicies.ToListAsync();
         }
 
@@ -1538,7 +1538,7 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             if (policyName is null) return null;
 
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var p = await _dbContext.FindAsync<DynamicPolicy>(policyName.Normalize());
 
             if (p is null) return null;
@@ -1556,13 +1556,13 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public async Task<List<PolicySection>> GetAllPolicySectionsAsync()
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             return await _dbContext.PolicySections.ToListAsync();
         }
 
         public async Task<ResultBase> DeletePolicySectionAsync(PolicySection section)
         {
-            using var _dbContext = _dbContextFactory.CreateDbContext();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
             var actual = await _dbContext.FindAsync<PolicySection>(section.SectionName);
 
             if (actual is null)
@@ -1580,24 +1580,87 @@ namespace FiveOhFirstDataCore.Data.Services
         #endregion
 
         #region Discord Bindings
-        public Task AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails)
+        public async Task<ResultBase> AddOrUpdateDiscordBindingsAsync(DiscordRoleDetails roleDetails)
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            if ((await _dbContext.DiscordRoles.CountAsync(x => x.Key == roleDetails.Key)) > 0)
+            {
+                _dbContext.Update(roleDetails);
+            }
+            else
+            {
+                await _dbContext.AddAsync(roleDetails);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
         }
 
-        public Task AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data)
+        public async Task<ResultBase> AddOrUpdateCShopRoleBindingAsync(CShopRoleBindingData data)
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+            if ((await _dbContext.CShopRoleData.CountAsync(x => x.Key == data.Key)) > 0)
+            {
+                _dbContext.Update(data);
+            }
+            else
+            {
+                await _dbContext.AddAsync(data);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
         }
 
-        public Task<List<DiscordRoleDetails>> GetAllDiscordBindingsAsync()
+        public async Task<List<DiscordRoleDetails>> GetAllDiscordBindingsAsync()
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.DiscordRoles.ToListAsync();
         }
 
-        public Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync()
+        public async Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync()
         {
-            throw new NotImplementedException();
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.CShopRoleData
+                .Include(e => e.Parent)
+                .ThenInclude(e => e.Parent)
+                .ToListAsync();
+        }
+
+        public async Task<ResultBase> DeleteDiscordBindingAsync(DiscordRoleDetails roleDetails)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<DiscordRoleDetails>(roleDetails.Key);
+            if (actual is not null)
+            {
+                _dbContext.Remove(actual);
+                await _dbContext.SaveChangesAsync();
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { "Failed to find a role details to delete." });
+            }
+        }
+
+        public async Task<ResultBase> DeleteCShopRoleBindingDataAsync(CShopRoleBindingData data)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<CShopRoleBindingData>(data.Key);
+            if (actual is not null)
+            {
+                _dbContext.Remove(actual);
+                await _dbContext.SaveChangesAsync();
+                return new(true, null);
+            }
+            else
+            {
+                return new(false, new List<string>() { "Failed to find a cshop role binding to delete." });
+            }
         }
         #endregion
     }
