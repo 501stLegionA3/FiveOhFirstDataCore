@@ -11,62 +11,69 @@
 @if(Trooper is not null)
 {
     <div class="main">
-      <div class="info" id="info">
-        <h4><RankDisplay Trooper="Trooper" /> @Trooper.BirthNumber @Trooper.NickName @Trooper.BirthdayCake()</h4>
-        <div id="time">
-          <div class="timein">
-            <p class="font-bold">TiS</p>
-            <p>@ServiceStrings[0]</p>
-            <p>@ServiceStrings[1] DAY(S)</p>
-          </div>
-          <div class="timein">
-            <p class="font-bold">TiG</p>
-            <p>@ServiceStrings[2]</p>
-            <p>@ServiceStrings[3] DAY(S)</p>
-          </div>
-        </div>
-        <hr />
-        <div id="billet">
-          <div class="timein">
-            <p class="font-bold">@Trooper.Slot.AsFull()</p>
-            <p class="font-bold">TiB</p>
-            <p>@ServiceStrings[4]</p>
-            <p>@ServiceStrings[5] DAY(S)</p>
-          </div>
-        </div>
-        <hr />
-        <div class="stuff">
-            @if (Superior is not null)
-            {
-                <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)"><RankDisplay Trooper="@Superior"/> @Superior.NickName</a></p>
-            } else
-            {
-                <p>Superior: TBD</p>
-            }
+        <div class="info" id="info">
+            <div class="info-head">
+                @if(Trooper.PFP is not null && Trooper.PFP.Length > 1)
+                {
+                    <img class="rounded pfp" src="data:image/png;base64, @(Convert.ToBase64String(@Trooper.PFP))"/>
+                } else
+                {
+                    <img class="rounded pfp" src="https://www.501stlegion-a3.com/media/img/900x600/2021-04/501stlogo__1_.png"/>
+                }
+                <h4><RankDisplay Trooper="Trooper" /> @Trooper.BirthNumber @Trooper.NickName @Trooper.BirthdayCake()</h4>
+                <p class="font-bold">@Trooper.Slot.AsFull()</p>
+            </div>
+            <hr />
+            <div id="time">
+                <div class="timein">
+                    <p class="font-bold">TiS</p>
+                    <p>@ServiceStrings[0]</p>
+                    <p>@ServiceStrings[1] DAY(S)</p>
+                </div>
+                <div class="timein">
+                    <p class="font-bold">TiG</p>
+                    <p>@ServiceStrings[2]</p>
+                    <p>@ServiceStrings[3] DAY(S)</p>
+                </div>
+                <div class="timein">
+                    <p class="font-bold">TiB</p>
+                    <p>@ServiceStrings[4]</p>
+                    <p>@ServiceStrings[5] DAY(S)</p>
+                </div>
+            </div>
+            <hr />
+            <div class="stuff">
+                @if (Superior is not null)
+                {
+                    <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)"><RankDisplay Trooper="@Superior"/> @Superior.NickName</a></p>
+                } else
+                {
+                    <p>Superior: TBD</p>
+                }
 
-            @if(Trooper.Slot.IsSquad()){
-                <p><a href="/squad/@((int)Trooper.Slot)">@Trooper.NickName's Squad</a></p>
-                <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
-                <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
-            }
-            else if(Trooper.Slot.IsPlatoon())
-            {
-                <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
-                <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
-            }
-            else if(Trooper.Slot.IsCompany())
-            {
-                <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
-            }
+                @if(Trooper.Slot.IsSquad()){
+                    <p><a href="/squad/@((int)Trooper.Slot)">@Trooper.NickName's Squad</a></p>
+                    <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
+                    <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
+                }
+                else if(Trooper.Slot.IsPlatoon())
+                {
+                    <p><a href="/platoon/@((int)Trooper.Slot.GetPlatoon())">@Trooper.NickName's Platoon</a></p>
+                    <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
+                }
+                else if(Trooper.Slot.IsCompany())
+                {
+                    <p><a href="/company/@((int)Trooper.Slot.GetCompany())">@Trooper.NickName's Company</a></p>
+                }
 
-            <DynamicAuthorizeView SectionName="Public Trooper Profile Edit Button" IsPage="false">
-                <Authorized>
-                    <a class="btn btn-primary link-none" href="/c1/roster/edit?edit=@Trooper.Id">Edit</a>
-                </Authorized>
-            </DynamicAuthorizeView>
+                <DynamicAuthorizeView SectionName="Public Trooper Profile Edit Button" IsPage="false">
+                    <Authorized>
+                        <a class="btn btn-primary link-none" href="/c1/roster/edit?edit=@Trooper.Id">Edit</a>
+                    </Authorized>
+                </DynamicAuthorizeView>
+            </div>
         </div>
-      </div>
-      <div>
+    <div>
         <h4>C-Shops</h4>
         <div class="list-group">
             @foreach(CShop shop in Enum.GetValues(typeof(CShop)))

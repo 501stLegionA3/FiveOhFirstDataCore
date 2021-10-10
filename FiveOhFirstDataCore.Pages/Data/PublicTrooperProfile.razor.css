@@ -87,3 +87,11 @@
 .link-none {
     text-decoration: none;
 }
+
+.pfp {
+    object-fit: cover;
+    max-height: 256px;
+    height: auto;
+    width: auto;
+    padding-bottom: 5px;
+}

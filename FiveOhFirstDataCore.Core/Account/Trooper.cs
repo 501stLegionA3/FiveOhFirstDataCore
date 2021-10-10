@@ -4,7 +4,6 @@ using FiveOhFirstDataCore.Data.Structures.Message;
 using FiveOhFirstDataCore.Data.Structures.Notice;
 using FiveOhFirstDataCore.Data.Structures.Promotions;
 using FiveOhFirstDataCore.Data.Extensions;
-using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Notification;
 using FiveOhFirstDataCore.Data.Structures.Updates;
 using Microsoft.AspNetCore.Components;
@@ -17,6 +16,7 @@ namespace FiveOhFirstDataCore.Data.Account
     {
         public string NickName { get; set; } = "";
         public int BirthNumber { get; set; }
+        public byte[]? PFP {  get; set; }
 
         #region Ranks
         public TrooperRank? Rank { get; set; }
