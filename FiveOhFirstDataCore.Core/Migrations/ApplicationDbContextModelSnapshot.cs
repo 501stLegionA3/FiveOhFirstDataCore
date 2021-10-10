@@ -32,7 +32,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("WitnessesId");
 
-                    b.ToTable("DisciplinaryActionTrooper");
+                    b.ToTable("DisciplinaryActionTrooper", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.DynamicPolicy", b =>
@@ -51,7 +51,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("EditableByPolicyName");
 
-                    b.ToTable("DynamicPolicies");
+                    b.ToTable("DynamicPolicies", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicyClaimData", b =>
@@ -75,7 +75,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("DynamicPolicyPolicyName");
 
-                    b.ToTable("PolicyClaimData");
+                    b.ToTable("PolicyClaimData", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Core.Structures.Policy.PolicySection", b =>
@@ -90,7 +90,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("PolicyName");
 
-                    b.ToTable("PolicySections");
+                    b.ToTable("PolicySections", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.DisciplinaryAction", b =>
@@ -152,7 +152,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("FiledToId");
 
-                    b.ToTable("DisciplinaryActions");
+                    b.ToTable("DisciplinaryActions", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Detail.TrooperReport", b =>
@@ -190,7 +190,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ReportedById");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.RecruitStatus", b =>
@@ -222,7 +222,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.HasIndex("TrooperId")
                         .IsUnique();
 
-                    b.ToTable("RecruitStatuses");
+                    b.ToTable("RecruitStatuses", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.Trooper", b =>
@@ -480,7 +480,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("FinalizedById");
 
-                    b.ToTable("ChangeRequests");
+                    b.ToTable("ChangeRequests", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Account.TrooperRole", b =>
@@ -530,7 +530,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("CShopClaims");
+                    b.ToTable("CShopClaims", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopDepartmentBinding", b =>
@@ -549,7 +549,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ParentKey");
 
-                    b.ToTable("CShopDepartmentBinding");
+                    b.ToTable("CShopDepartmentBinding", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBinding", b =>
@@ -559,7 +559,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("CShopRoles");
+                    b.ToTable("CShopRoles", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.CShopRoleBindingData", b =>
@@ -582,7 +582,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ParentKey");
 
-                    b.ToTable("CShopRoleData");
+                    b.ToTable("CShopRoleData", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.DiscordRoleDetails", b =>
@@ -600,7 +600,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("DiscordRoles");
+                    b.ToTable("DiscordRoles", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Message.TrooperMessage", b =>
@@ -628,7 +628,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("MessageFor");
 
-                    b.ToTable("TrooperMessages");
+                    b.ToTable("TrooperMessages", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.Notice", b =>
@@ -663,7 +663,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("NoticeBoardName");
 
-                    b.ToTable("Notices");
+                    b.ToTable("Notices", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notice.NoticeBoardData", b =>
@@ -673,7 +673,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasKey("Location");
 
-                    b.ToTable("NoticeBoards");
+                    b.ToTable("NoticeBoards", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Notification.ReportNotificationTracker", b =>
@@ -697,7 +697,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ReportId");
 
-                    b.ToTable("ReportNotificationTrackers");
+                    b.ToTable("ReportNotificationTrackers", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Promotions.Promotion", b =>
@@ -737,7 +737,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("RequestedById");
 
-                    b.ToTable("Promotions");
+                    b.ToTable("Promotions", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Promotions.PromotionDetails", b =>
@@ -808,7 +808,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasKey("RequirementsFor");
 
-                    b.ToTable("PromotionRequirements");
+                    b.ToTable("PromotionRequirements", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperDescription", b =>
@@ -840,7 +840,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("DescriptionForId");
 
-                    b.ToTable("TrooperDescriptions");
+                    b.ToTable("TrooperDescriptions", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.TrooperFlag", b =>
@@ -868,7 +868,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("FlagForId");
 
-                    b.ToTable("TrooperFlags");
+                    b.ToTable("TrooperFlags", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.CShopUpdate", b =>
@@ -907,7 +907,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("CShopUpdates");
+                    b.ToTable("CShopUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdate", b =>
@@ -940,7 +940,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("ClaimUpdates");
+                    b.ToTable("ClaimUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.ClaimUpdateData", b =>
@@ -969,7 +969,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ClaimUpdateChangeId1");
 
-                    b.ToTable("ClaimUpdateData");
+                    b.ToTable("ClaimUpdateData", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.NickNameUpdate", b =>
@@ -1007,7 +1007,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("NickNameUpdate");
+                    b.ToTable("NickNameUpdate", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.QualificationUpdate", b =>
@@ -1044,7 +1044,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("QualificationUpdates");
+                    b.ToTable("QualificationUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RankUpdate", b =>
@@ -1088,7 +1088,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("RequestedById");
 
-                    b.ToTable("RankUpdates");
+                    b.ToTable("RankUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.RecruitmentUpdate", b =>
@@ -1119,7 +1119,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("RecruitedById");
 
-                    b.ToTable("RecruitmentUpdates");
+                    b.ToTable("RecruitmentUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.SlotUpdate", b =>
@@ -1168,7 +1168,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("SlotUpdates");
+                    b.ToTable("SlotUpdates", (string)null);
                 });
 
             modelBuilder.Entity("FiveOhFirstDataCore.Data.Structures.Updates.TimeUpdate", b =>
@@ -1228,7 +1228,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ChangedForId");
 
-                    b.ToTable("TimeUpdates");
+                    b.ToTable("TimeUpdates", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1344,7 +1344,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ApprovedPendingPromotionsId");
 
-                    b.ToTable("PromotionTrooper");
+                    b.ToTable("PromotionTrooper", (string)null);
                 });
 
             modelBuilder.Entity("QualificationUpdateTrooper", b =>
@@ -1359,7 +1359,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("SubmittedQualificationUpdatesChangeId");
 
-                    b.ToTable("QualificationUpdateTrooper");
+                    b.ToTable("QualificationUpdateTrooper", (string)null);
                 });
 
             modelBuilder.Entity("RankUpdateTrooper", b =>
@@ -1374,7 +1374,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ApprovedRankUpdatesChangeId");
 
-                    b.ToTable("RankUpdateTrooper");
+                    b.ToTable("RankUpdateTrooper", (string)null);
                 });
 
             modelBuilder.Entity("SlotUpdateTrooper", b =>
@@ -1389,7 +1389,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
 
                     b.HasIndex("ApprovedSlotUpdatesChangeId");
 
-                    b.ToTable("SlotUpdateTrooper");
+                    b.ToTable("SlotUpdateTrooper", (string)null);
                 });
 
             modelBuilder.Entity("DisciplinaryActionTrooper", b =>
@@ -1601,7 +1601,8 @@ namespace FiveOhFirstDataCore.Data.Migrations
                     b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "Author")
                         .WithMany("CreatedDescriptions")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.HasOne("FiveOhFirstDataCore.Data.Account.Trooper", "DescriptionFor")
                         .WithMany("Descriptions")

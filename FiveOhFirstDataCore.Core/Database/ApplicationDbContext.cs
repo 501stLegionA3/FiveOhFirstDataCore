@@ -50,6 +50,7 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
         public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
         public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
         public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
+        public DbSet<CShopDepartmentBinding> CShopDepartmentBinding { get; internal set;  }
         #endregion
 
         #region Notifications

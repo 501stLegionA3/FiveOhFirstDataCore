@@ -1,0 +1,30 @@
+﻿<EditForm class="form" Model="this">
+    @if (Items is not null)
+    {
+        @for (int c = 0; c < Items.Count; c++)
+        {
+            var num = c;
+            var i = Items[num];
+            var name = Source.FirstOrDefault(x => x.Id == i)?.Name ?? "err";
+            <div class="input-group">
+                <InputText @bind-Value="name" class="form-control" disabled="true" />
+                <button class="btn btn-outline-danger" type="button" @onclick="x => RemoveValue(num)">Delete</button>
+            </div>
+            <br /> 
+        } 
+    }
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text">Filter</span>
+            <InputText class="form-control" @bind-Value="NewValueFilter" />
+            <span class="input-group-text">Roles</span>
+            <InputSelect class="form-control" @bind-Value="NewValue">
+                @foreach(var i in Source.Where(x => x.Name.StartsWith(NewValueFilter, StringComparison.OrdinalIgnoreCase)))
+                {
+                    <option value="@i.Id">@i.Name</option>
+                }
+            </InputSelect>
+            <button class="btn btn-outline-success" @onclick="AddValue">Add Item</button>
+        </div>
+    </div>
+</EditForm>

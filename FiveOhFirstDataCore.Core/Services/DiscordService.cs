@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures;
@@ -238,6 +239,12 @@ namespace FiveOhFirstDataCore.Data.Services
             }
 
             return (add, del);
+        }
+
+        public async Task<IReadOnlyList<DiscordRole>> GetAllHomeGuildRolesAsync()
+        {
+            var roles = await _rest.GetGuildRolesAsync(_discordConfig.HomeGuild);
+            return roles;
         }
     }
 }

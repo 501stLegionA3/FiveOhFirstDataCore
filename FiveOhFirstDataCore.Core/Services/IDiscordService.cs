@@ -1,4 +1,6 @@
-﻿using FiveOhFirstDataCore.Data.Structures.Updates;
+﻿using DSharpPlus.Entities;
+
+using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using System.Security.Claims;
 
@@ -35,5 +37,10 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <param name="changeFor">The Discord ID of the user to modify.</param>
         /// <returns>A <see cref="Task"/> representing this action.</returns>
         public Task UpdateSlotChangeAsync(SlotUpdate change, ulong changeFor);
+        /// <summary>
+        /// Gets all <see cref="DiscordRole"/> objects for the home guild.
+        /// </summary>
+        /// <returns>A <see cref="IReadOnlyList{T}"/> of <see cref="DiscordRole"/> objects.</returns>
+        public Task<IReadOnlyList<DiscordRole>> GetAllHomeGuildRolesAsync();
     }
 }
