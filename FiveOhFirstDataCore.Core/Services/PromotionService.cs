@@ -228,5 +228,16 @@ namespace FiveOhFirstDataCore.Data.Services
             => await StartPromotionProcessAsync(invoker, promotion.PromotionFor,
                 promotion.CurrentBoard, promotion.PromoteFrom, promotion.PromoteTo,
                 promotion.Reason, promotion.Forced);
+
+        public async Task<ResultBase> UpdatePromotionAsync(Promotion promotion, string reason)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.Promotions.FindAsync(promotion.Id);
+
+            if (actual is null) return new(false, new() { "Promotion was not found in the database." });
+            actual.Reason = reason;
+            var entriesModified = await _dbContext.SaveChangesAsync();
+            if (entriesModified > 0) { return new(true); } else{ return new(false, new() { "SaveChangesAsync returned 0 entries modified!" }); }
+        }
     }
 }
