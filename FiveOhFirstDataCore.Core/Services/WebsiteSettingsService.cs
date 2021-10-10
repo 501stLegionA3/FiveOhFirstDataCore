@@ -1240,30 +1240,6 @@ namespace FiveOhFirstDataCore.Data.Services
             return data?.ClaimData ?? new();
         }
 
-        public async Task<IReadOnlyList<ulong>?> GetCShopDiscordRolesAsync(Claim claim)
-        {
-            await using var _dbContext = _dbContextFactory.CreateDbContext();
-            var data = _dbContext.CShopRoleData
-                .Where(x => x.Id == claim.Value)
-                .Include(p => p.Parent)
-                .AsAsyncEnumerable();
-
-            await foreach (var item in data)
-            {
-                if (item.Parent.Id == claim.Type)
-                    return item.Roles;
-            }
-
-            return null;
-        }
-
-        public async Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key)
-        {
-            await using var _dbContext = _dbContextFactory.CreateDbContext();
-            var details = await _dbContext.FindAsync<DiscordRoleDetails>(key.AsQualified());
-            return details;
-        }
-
         public async Task<Dictionary<int, PromotionDetails>> GetSavedPromotionDetails()
         {
             Dictionary<int, PromotionDetails> dict = new();
@@ -1660,6 +1636,108 @@ namespace FiveOhFirstDataCore.Data.Services
             else
             {
                 return new(false, new List<string>() { "Failed to find a cshop role binding to delete." });
+            }
+        }
+
+        public async Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key)
+            => await GetDiscordRoleDetailsAsync(key.AsQualified());
+
+        public async Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(string qualifiedKey)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var details = await _dbContext.FindAsync<DiscordRoleDetails>(qualifiedKey);
+            return details;
+        }
+
+        public async Task<IReadOnlyList<ulong>?> GetCShopDiscordRolesAsync(Claim claim)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = _dbContext.CShopRoleData
+                .Where(x => x.Id == claim.Value)
+                .Include(p => p.Parent)
+                .AsAsyncEnumerable();
+
+            await foreach (var item in data)
+            {
+                if (item.Parent.Id == claim.Type)
+                    return item.Roles;
+            }
+
+            return null;
+        }
+
+        public async Task<CShopRoleBindingData> GetCShopRoleBindingAsync(Guid key)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = await _dbContext.FindAsync<CShopRoleBindingData>(key);
+
+            if(data is not null)
+            {
+                await _dbContext.Entry(data).Reference(e => e.Parent).LoadAsync();
+                await _dbContext.Entry(data.Parent).Reference(e => e.Parent).LoadAsync();
+                return data;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<CShop?> ValidateCShopRoleBindClusterAsync(CShop cluster)
+        {
+            try
+            {
+                await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+                var clust = await _dbContext.FindAsync<CShopRoleBinding>(cluster);
+
+                if(clust is null)
+                {
+                    clust = new()
+                    {
+                        Key = cluster
+                    };
+
+                    await _dbContext.AddAsync(clust);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                return cluster;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<Guid?> ValidateCShopRoleBindDepartmentAsync(string department, CShop forCluster)
+        {
+            try
+            {
+                await using var _dbContext = _dbContextFactory.CreateDbContext();
+
+                var dept = await _dbContext.CShopDepartmentBinding.FirstAsync(x => x.Id == department);
+
+                if(dept is null)
+                {
+                    dept = new()
+                    {
+                        Id = department,
+                        ParentKey = forCluster
+                    };
+
+                    await _dbContext.AddAsync(dept);
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                if (dept.ParentKey != forCluster)
+                    return null;
+
+                return dept.Key;
+            }
+            catch
+            {
+                return null;
             }
         }
         #endregion

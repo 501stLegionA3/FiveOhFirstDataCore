@@ -89,6 +89,12 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <returns>A <see cref="Task"/> that returns a <see cref="DiscordRoleDetails"/> for the requested rank.</returns>
         public Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(Enum key);
         /// <summary>
+        /// Get the Discord role details for a rank.
+        /// </summary>
+        /// <param name="qualifiedKey">The <see cref="string"/> value of a rank.</param>
+        /// <returns>A <see cref="Task"/> that returns a <see cref="DiscordRoleDetails"/> for the requested rank.</returns>
+        public Task<DiscordRoleDetails?> GetDiscordRoleDetailsAsync(string qualifiedKey);
+        /// <summary>
         /// Override current C-Shop claim settings with the inputed data.
         /// </summary>
         /// <remarks>
@@ -199,6 +205,9 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<List<CShopRoleBindingData>> GetAllCShopRoleBindingDataAsync();
         public Task<ResultBase> DeleteDiscordBindingAsync(DiscordRoleDetails roleDetails);
         public Task<ResultBase> DeleteCShopRoleBindingDataAsync(CShopRoleBindingData data);
+        public Task<CShopRoleBindingData> GetCShopRoleBindingAsync(Guid key);
+        public Task<CShop?> ValidateCShopRoleBindClusterAsync(CShop cluster);
+        public Task<Guid?> ValidateCShopRoleBindDepartmentAsync(string department, CShop forCluster);
         #endregion
     }
 }
