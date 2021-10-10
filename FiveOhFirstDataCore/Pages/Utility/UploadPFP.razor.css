@@ -1,0 +1,12 @@
+﻿.pfp {
+    margin-bottom: 10px;
+    max-width: 256px;
+    max-height: 256px;
+    width: fit-content !important;
+    height: fit-content !important;
+    padding: 10px;
+}
+.button
+{
+    margin: 10px;
+}
