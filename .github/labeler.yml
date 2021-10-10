@@ -12,3 +12,4 @@ components:
 
 database:
 - FiveOhFirstDataCore.Core/Database/**/*
+- FiveOhFirstDataCore.Core/Migrations/**/*
