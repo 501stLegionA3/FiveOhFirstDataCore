@@ -88,5 +88,13 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <param name="denier">The <see cref="Trooper"/> who denied this promotion.</param>
         /// <returns>A <see cref="Task"/> that returns a <see cref="ResultBase"/> for this action.</returns>
         public Task<ResultBase> CancelPromotionAsync(Promotion promotion, Trooper denier);
+
+        /// <summary>
+        /// Update the reason for a given promotion.
+        /// </summary>
+        /// <param name="promotion">The <see cref="Promotion"/> to update.</param>
+        /// <param name="reason">The new <see cref="Promotion.Reason"/> as a <see cref="string"/></param>
+        /// <returns>A <see cref="Task"/> that returns a <see cref="ResultBase"/> for this action.</returns>
+        public Task<ResultBase> UpdatePromotionAsync(Promotion promotion, string reason);
     }
 }
