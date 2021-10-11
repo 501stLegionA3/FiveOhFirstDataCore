@@ -39,19 +39,28 @@
                                     <td>@promo.PromoteFrom.GetRank().AsFull()</td>
                                     <td>@promo.PromoteTo.GetRank().AsFull()</td>
                                     <td><a href="/trooper/@(promo.RequestedBy?.Id ?? 0)" target="_blank">@promo.RequestedBy?.NickName</a></td>
-                                    @if (!EditingReason)
+                                    @if (CurrentUser.Id == promo.RequestedById)
+                                    {
+                                        @if (!EditingReason)
+                                        {
+                                            <td>@promo.Reason</td>
+                                            <td><button class="btn btn-secondary btn-sm edit-button" @onclick="() => EditingReason = true"><span class="oi bi bi-pencil-square" style="font-size:18px;"></span></button></td>
+                                        }
+                                        else
+                                        {
+                                            <td><EditForm Model=this><InputText style="width: 100%;" placeholder="@promo.Reason" @bind-Value="NewReason" /></EditForm></td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <button class="btn btn-secondary btn-sm btn-success" @onclick="async ()=>{await EditPromotion(promo, NewReason); EditingReason = false;}"><span class="oi bi bi-check" style="font-size:18px;"></span></button>
+                                                    <button class="btn btn-secondary btn-sm btn-danger" @onclick="()=> EditingReason = false"><span class="oi bi bi-x" style="font-size:18px;"></span></button>
+                                                </div>
+                                            </td>
+                                        }
+                                    }
+                                    else
                                     {
                                         <td>@promo.Reason</td>
-                                        <td><button class="btn btn-secondary btn-sm edit-button" @onclick="() => EditingReason = true"><span class="oi bi bi-pencil-square" style="font-size:18px;"></span></button></td>
-                                    } else
-                                    {
-                                        <td><EditForm Model=this><InputText style="width: 100%;" placeholder="@promo.Reason" @bind-Value="NewReason" /></EditForm></td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <button class="btn btn-secondary btn-sm btn-success" @onclick="async ()=>{await EditPromotion(promo, NewReason); EditingReason = false;}"><span class="oi bi bi-check" style="font-size:18px;"></span></button>
-                                                <button class="btn btn-secondary btn-sm btn-danger" @onclick="()=> EditingReason = false"><span class="oi bi bi-x" style="font-size:18px;"></span></button>
-                                            </div>
-                                        </td>
+                                        <td></td>
                                     }
                                     @if (AllowedPromoter && promo.CurrentBoard == BoardLevel 
                                         && CanPromote.Contains(promo.PromotionForId))
