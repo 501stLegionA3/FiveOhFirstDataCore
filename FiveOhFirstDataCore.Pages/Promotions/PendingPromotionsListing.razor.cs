@@ -39,6 +39,9 @@ namespace FiveOhFirstDataCore.Components.Promotions
 
         private HashSet<Guid> ForcedPromotions { get; set; } = new();
 
+        public bool EditingReason { get; set; } = false;
+        public string NewReason { get; set; } = string.Empty;
+
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
@@ -214,6 +217,13 @@ namespace FiveOhFirstDataCore.Components.Promotions
 
                 StateHasChanged();
             }
+        }
+
+        protected async Task EditPromotion(Promotion promo, string reason)
+        {
+            var result = await _promote.UpdatePromotionAsync(promo, NewReason);
+
+            if (result.GetResult(out var e)){ promo.Reason = reason; } else Console.WriteLine(e);
         }
     }
 }
