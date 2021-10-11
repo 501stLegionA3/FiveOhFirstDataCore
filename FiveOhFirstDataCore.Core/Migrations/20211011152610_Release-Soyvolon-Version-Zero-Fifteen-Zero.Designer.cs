@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211009202526_dev-hob-pfp")]
-    partial class devhobpfp
+    [Migration("20211011152610_Release-Soyvolon-Version-Zero-Fifteen-Zero")]
+    partial class ReleaseSoyvolonVersionZeroFifteenZero
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -320,7 +320,6 @@ namespace FiveOhFirstDataCore.Data.Migrations
                         .HasColumnType("uuid[]");
 
                     b.Property<byte[]>("PFP")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("PasswordHash")

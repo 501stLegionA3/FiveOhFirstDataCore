@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FiveOhFirstDataCore.Data.Migrations
 {
-    public partial class devhobpfp : Migration
+    public partial class ReleaseSoyvolonVersionZeroFifteenZero : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,7 @@ namespace FiveOhFirstDataCore.Data.Migrations
                 name: "PFP",
                 table: "AspNetUsers",
                 type: "bytea",
-                nullable: false,
-                defaultValue: new byte[0]);
+                nullable: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
