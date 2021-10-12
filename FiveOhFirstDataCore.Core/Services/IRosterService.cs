@@ -1,7 +1,6 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Roster;
-using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using System.Security.Claims;
