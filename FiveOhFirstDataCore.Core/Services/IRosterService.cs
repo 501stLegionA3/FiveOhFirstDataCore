@@ -102,6 +102,14 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<Trooper?> GetTrooperFromIdAsync(int id, bool loadNotificationTrackers = false);
 
         /// <summary>
+        /// Gets a <see cref="Trooper"/> from their Birth Number.
+        /// </summary>
+        /// <param name="birthNumber">The Birth Number of the trooper.</param>
+        /// <param name="loadNotificationTrackers">If this action should load trooper notification trackers.</param>
+        /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
+        public Task<Trooper?> GetTrooperFromBirthNumberAsync(int birthNumber, bool loadNotificationTrackers = false);
+
+        /// <summary>
         /// Get the direct subordinates of a <see cref="Trooper"/>
         /// </summary>
         /// <param name="t">The <see cref="Trooper"/> to get subordinates for.</param>
