@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Mynock.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Commander?.Id)">
+    <tr role="@(Mynock.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Commander?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Detachment Commander
         </th>
@@ -23,7 +23,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Mynock.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.NCOIC?.Id)">
+    <tr role="@(Mynock.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.NCOIC?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Detachment NCOIC
         </th>
@@ -38,7 +38,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Mynock.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Medic?.Id)">
+    <tr role="@(Mynock.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.Medic?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Detachment Medic
         </th>
@@ -53,7 +53,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Mynock.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.RT?.Id)">
+    <tr role="@(Mynock.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Mynock.RT?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Detachment RT
         </th>

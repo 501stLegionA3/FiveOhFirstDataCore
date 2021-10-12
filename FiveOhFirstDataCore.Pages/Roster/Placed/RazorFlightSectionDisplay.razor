@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Section.Alpha is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Alpha?.Id)">
+    <tr role="@(Section.Alpha is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Alpha?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}A"))
         </th>
@@ -23,7 +23,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Section.Bravo is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Bravo?.Id)">
+    <tr role="@(Section.Bravo is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Bravo?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}B"))
         </th>
@@ -38,7 +38,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Section.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Charlie?.Id)">
+    <tr role="@(Section.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Charlie?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}C"))
         </th>
@@ -53,7 +53,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Section.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Delta?.Id)">
+    <tr role="@(Section.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Delta?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Pilot (@($"{SectionNumber}D"))
         </th>

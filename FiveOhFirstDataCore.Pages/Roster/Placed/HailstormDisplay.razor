@@ -14,7 +14,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Hailstorm.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.Commander?.Id)">
+    <tr role="@(Hailstorm.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.Commander?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end w-50">
             Battalion Commander
         </th>
@@ -29,7 +29,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.XO?.Id)">
+    <tr role="@(Hailstorm.XO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.XO?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             Battalion Executive Officer
         </th>
@@ -44,7 +44,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.CShopCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopCommander?.Id)">
+    <tr role="@(Hailstorm.CShopCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopCommander?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             Battalion C-Shop Commander
         </th>
@@ -59,7 +59,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.CShopXO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopXO?.Id)">
+    <tr role="@(Hailstorm.CShopXO is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.CShopXO?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             C-Shop Executive Officer
         </th>
@@ -74,7 +74,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.NCOIC?.Id)">
+    <tr role="@(Hailstorm.NCOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.NCOIC?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             Battalion NCOIC
         </th>
@@ -89,7 +89,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.Medic?.Id)">
+    <tr role="@(Hailstorm.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.Medic?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             Battalion Medic
         </th>
@@ -104,7 +104,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Hailstorm.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.RT?.Id)">
+    <tr role="@(Hailstorm.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.RT?.BirthNumber)">
         <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
             Battalion RT
         </th>

@@ -13,7 +13,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Razor.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.Commander?.Id)">
+    <tr role="@(Razor.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.Commander?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Squadron Commander
         </th>
@@ -28,7 +28,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.Id)">
+    <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Squadron Sub-Commander
         </th>
@@ -43,7 +43,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.Id)">
+    <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
             Squadron FOIC
         </th>
