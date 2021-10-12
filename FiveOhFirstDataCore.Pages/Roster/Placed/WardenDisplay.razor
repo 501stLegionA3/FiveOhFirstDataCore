@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-<tr role="@(Warden.Master is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Master?.Id)">
+<tr role="@(Warden.Master is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Master?.BirthNumber)">
     <th scope="row" colspan="2" class="text-end">
         Master Warden
     </th>
@@ -23,7 +23,7 @@
         }
     </td>
 </tr>
-<tr role="@(Warden.Chief is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Chief?.Id)">
+<tr role="@(Warden.Chief is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Chief?.BirthNumber)">
     <th scope="row" colspan="2" class="text-end">
         Chief Warden
     </th>
@@ -43,7 +43,7 @@
 {
     var c = i + 1;
     var n = i;
-    <tr role="@(Warden.Wardens[n].SectionLead is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].SectionLead?.Id)">
+    <tr role="@(Warden.Wardens[n].SectionLead is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].SectionLead?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Section Lead (@c-1)
         </th>
@@ -58,7 +58,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Warden.Wardens[n].WardenTwo is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenTwo?.Id)">
+    <tr role="@(Warden.Wardens[n].WardenTwo is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenTwo?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Warden @c-2
         </th>
@@ -73,7 +73,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Warden.Wardens[n].WardenThree is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenThree?.Id)">
+    <tr role="@(Warden.Wardens[n].WardenThree is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].WardenThree?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Warden @c-3
         </th>

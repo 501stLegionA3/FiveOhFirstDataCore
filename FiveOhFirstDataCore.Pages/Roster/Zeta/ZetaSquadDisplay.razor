@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Squad.SquadLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.SquadLeader?.Id)">
+    <tr role="@(Squad.SquadLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.SquadLeader?.BirthNumber)">
         <th scope="row" class="text-end w-50">
             Squad Leader
         </th>
@@ -23,7 +23,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Squad.Leader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Leader?.Id)">
+    <tr role="@(Squad.Leader is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Leader?.BirthNumber)">
         <th scope="row" class="text-end">
             Team Leader
         </th>
@@ -38,7 +38,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Squad.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.RT?.Id)">
+    <tr role="@(Squad.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.RT?.BirthNumber)">
         <th scope="row" class="text-end">
             RT
         </th>
@@ -53,7 +53,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Squad.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Medic?.Id)">
+    <tr role="@(Squad.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Medic?.BirthNumber)">
         <th scope="row" class="text-end">
             Medic
         </th>
@@ -72,7 +72,7 @@
     @for(int i = 0; i < Squad.Troopers.Length; i++)
     {
         var c = i;
-        <tr role="@(Squad.Troopers[c] is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Troopers[c]?.Id)">
+        <tr role="@(Squad.Troopers[c] is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Troopers[c]?.BirthNumber)">
             <th scope="row" class="text-end">
                 Trooper
             </th>

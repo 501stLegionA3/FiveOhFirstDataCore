@@ -1,7 +1,6 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Roster;
-using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using System.Security.Claims;
@@ -101,6 +100,14 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <param name="loadNotificationTrackers">If this action should load trooper notification trackers.</param>
         /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
         public Task<Trooper?> GetTrooperFromIdAsync(int id, bool loadNotificationTrackers = false);
+
+        /// <summary>
+        /// Gets a <see cref="Trooper"/> from their Birth Number.
+        /// </summary>
+        /// <param name="birthNumber">The Birth Number of the trooper.</param>
+        /// <param name="loadNotificationTrackers">If this action should load trooper notification trackers.</param>
+        /// <returns>A task that returns a <see cref="Trooper"/> object.</returns>
+        public Task<Trooper?> GetTrooperFromBirthNumberAsync(int birthNumber, bool loadNotificationTrackers = false);
 
         /// <summary>
         /// Get the direct subordinates of a <see cref="Trooper"/>

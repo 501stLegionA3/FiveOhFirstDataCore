@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr role="@(Flight.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Commander?.Id)">
+    <tr role="@(Flight.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Commander?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Flight Commander
         </th>

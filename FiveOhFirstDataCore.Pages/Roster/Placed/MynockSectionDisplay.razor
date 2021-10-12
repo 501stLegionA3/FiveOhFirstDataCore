@@ -8,7 +8,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr class="table-warning" role="@(Section.Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Lead?.Id)">
+    <tr class="table-warning" role="@(Section.Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Lead?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Section Leader
         </th>
@@ -23,7 +23,7 @@
             }
         </td>
     </tr>
-    <tr class="table-warning" role="@(Section.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.RT?.Id)">
+    <tr class="table-warning" role="@(Section.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.RT?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Section RT
         </th>
@@ -40,10 +40,10 @@
     </tr>
 
     <tr>
-        <th scope="row" class="table-danger text-end" role="@(Section.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Lead?.Id)">
+        <th scope="row" class="table-danger text-end" role="@(Section.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Lead?.BirthNumber)">
             Alpha Team Leader
         </th>
-        <td class="table-danger text-start" role="@(Section.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Lead?.Id)">
+        <td class="table-danger text-start" role="@(Section.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Lead?.BirthNumber)">
             @if (Section.Teams[0].Lead is null)
             {
                 <span>TBD</span>
@@ -53,10 +53,10 @@
                 @Section.Teams[0].Lead.DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.Id)">
+        <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.BirthNumber)">
             Bravo Team Leader
         </th>
-        <td class="table-primary text-start" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.Id)">
+        <td class="table-primary text-start" role="@(Section.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Lead?.BirthNumber)">
             @if (Section.Teams[1].Lead is null)
             {
                 <span>TBD</span>
@@ -68,10 +68,10 @@
         </td>
     </tr>
     <tr>
-        <th scope="row" class="table-danger text-end" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.Id)">
+        <th scope="row" class="table-danger text-end" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.BirthNumber)">
             Alpha Trooper 
         </th>
-        <td class="table-danger text-start" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.Id)">
+        <td class="table-danger text-start" role="@(AT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT1?.BirthNumber)">
             @if (AT1 is null)
             {
                 <span>TBD</span>
@@ -81,10 +81,10 @@
                 @AT1.DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
+        <th scope="row" class="table-primary text-end" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.BirthNumber)">
             Bravo Trooper
         </th>
-        <td class="table-primary text-start" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.Id)">
+        <td class="table-primary text-start" role="@(BT1 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT1?.BirthNumber)">
             @if (BT1 is null)
             {
                 <span>TBD</span>
@@ -97,10 +97,10 @@
     </tr>
 
     <tr>
-        <th scope="row" class="table-danger text-end" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.Id)">
+        <th scope="row" class="table-danger text-end" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.BirthNumber)">
             Alpha Trooper 
         </th>
-        <td class="table-danger text-start" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.Id)">
+        <td class="table-danger text-start" role="@(AT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT2?.BirthNumber)">
             @if (AT2 is null)
             {
                 <span>TBD</span>
@@ -110,10 +110,10 @@
                 @AT2.DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
+        <th scope="row" class="table-primary text-end" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.BirthNumber)">
             Bravo Trooper
         </th>
-        <td class="table-primary text-start" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.Id)">
+        <td class="table-primary text-start" role="@(BT2 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT2?.BirthNumber)">
             @if (BT2 is null)
             {
                 <span>TBD</span>
@@ -140,10 +140,10 @@
         }
 
         <tr>
-            <th scope="row" class="table-danger text-end" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.Id)">
+            <th scope="row" class="table-danger text-end" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.BirthNumber)">
                 Alpha Trooper 
             </th>
-            <td class="table-danger text-start" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.Id)">
+            <td class="table-danger text-start" role="@(AT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(AT3?.BirthNumber)">
                 @if (AT3 is null)
                 {
                     <span>TBD</span>
@@ -153,10 +153,10 @@
                     @AT3.DisplayRankName()                
                 }
             </td>
-            <th scope="row" class="table-primary text-end" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
+            <th scope="row" class="table-primary text-end" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.BirthNumber)">
                 Bravo Trooper
             </th>
-            <td class="table-primary text-start" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.Id)">
+            <td class="table-primary text-start" role="@(BT3 is null ? "" : "button")" @onclick="(x) => TrooperNav(BT3?.BirthNumber)">
                 @if (BT3 is null)
                 {
                     <span>TBD</span>
@@ -170,10 +170,10 @@
     }
 
     <tr>
-        <th scope="row" class="table-danger text-end" role="@(Section.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Medic?.Id)">
+        <th scope="row" class="table-danger text-end" role="@(Section.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Medic?.BirthNumber)">
             Alpha Medic 
         </th>
-        <td class="table-danger text-start" role="@(Section.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Medic?.Id)">
+        <td class="table-danger text-start" role="@(Section.Teams[0].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[0].Medic?.BirthNumber)">
             @if (Section.Teams[0].Medic is null)
             {
                 <span>TBD</span>
@@ -183,10 +183,10 @@
                 @Section.Teams[0].Medic.DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.Id)">
+        <th scope="row" class="table-primary text-end" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.BirthNumber)">
             Bravo Medic
         </th>
-        <td class="table-primary text-start" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.Id)">
+        <td class="table-primary text-start" role="@(Section.Teams[1].Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.Teams[1].Medic?.BirthNumber)">
             @if (Section.Teams[1].Medic is null)
             {
                 <span>TBD</span>

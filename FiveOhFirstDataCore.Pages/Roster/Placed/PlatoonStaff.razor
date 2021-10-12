@@ -1,7 +1,7 @@
 ﻿@inherits RosterModel
 
 <tbody>
-    <tr role="@(Platoon.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Commander?.Id)">
+    <tr role="@(Platoon.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Commander?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Commander
         </th>
@@ -16,7 +16,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Platoon.SergeantMajor is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.SergeantMajor?.Id)">
+    <tr role="@(Platoon.SergeantMajor is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.SergeantMajor?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Sergeant Major
         </th>
@@ -31,7 +31,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Platoon.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Medic?.Id)">
+    <tr role="@(Platoon.Medic is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.Medic?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Platoon Medic
         </th>
@@ -46,7 +46,7 @@
             }
         </td>
     </tr>
-    <tr role="@(Platoon.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.RT?.Id)">
+    <tr role="@(Platoon.RT is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.RT?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
             Platoon RT
         </th>
@@ -63,7 +63,7 @@
     </tr>
     @if (!Airborne)
     {
-        <tr role="@(Platoon.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.ARC?.Id)">
+        <tr role="@(Platoon.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Platoon.ARC?.BirthNumber)">
             <th scope="row" colspan="2" class="text-end">
                 Platoon ARC
             </th>

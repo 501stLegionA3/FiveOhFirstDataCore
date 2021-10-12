@@ -24,7 +24,7 @@
         @((int)DateTime.UtcNow.Subtract(Trooper.StartOfService).TotalDays) DAY(S)
     </td>
     <td>
-        <a href="/trooper/@Trooper.Id" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
+        <a href="/trooper/@Trooper.BirthNumber" class="oi oi-arrow-circle-right btn btn-outline-primary" aria-hidden="true"></a>
     </td>
     <DynamicAuthorizeView SectionName="Roster Row Edit Button" IsPage="false">
         <Authorized>

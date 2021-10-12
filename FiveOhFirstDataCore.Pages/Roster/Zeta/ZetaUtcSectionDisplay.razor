@@ -13,7 +13,7 @@
     </tr>
 </thead>
 <tbody>
-    <tr class="table-warning" role="@(UTCSection.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSection.Commander?.Id)">
+    <tr class="table-warning" role="@(UTCSection.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSection.Commander?.BirthNumber)">
         <th scope="row" class="text-end">
             Section Commander
         </th>
@@ -28,7 +28,7 @@
             }
         </td>
     </tr>
-    <tr class="table-warning" role="@(UTCSection.Subordinate is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSection.Subordinate?.Id)">
+    <tr class="table-warning" role="@(UTCSection.Subordinate is null ? "" : "button")" @onclick="(x) => TrooperNav(UTCSection.Subordinate?.BirthNumber)">
         <th scope="row" class="text-end">
             Section Subordinate
         </th>

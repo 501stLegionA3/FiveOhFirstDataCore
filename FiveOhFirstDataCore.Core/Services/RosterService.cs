@@ -126,6 +126,16 @@ namespace FiveOhFirstDataCore.Data.Services
             return trooper;
         }
 
+        public async Task<Trooper?> GetTrooperFromBirthNumberAsync(int birthNumber, bool loadNotificationTrackers = false)
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            var trooperId = (await _dbContext.Users
+                .Where(e => e.BirthNumber == birthNumber)
+                .AsNoTracking()
+                .FirstOrDefaultAsync())?.Id ?? 0;
+            return await GetTrooperFromIdAsync(trooperId, loadNotificationTrackers);
+        }
+
         public async Task<Trooper?> GetTrooperFromClaimsPrincipalAsync(ClaimsPrincipal claims, bool loadNotificationTrackers = false)
         {
             _ = int.TryParse(_userManager.GetUserId(claims), out int id);
