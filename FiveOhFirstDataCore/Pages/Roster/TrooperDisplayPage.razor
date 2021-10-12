@@ -31,7 +31,7 @@ else
     {
         await base.OnAfterRenderAsync(firstRender);
 
-        if(firstRender)
+        if(firstRender || TrooperId != Trooper?.Id.ToString())
         {
             var user = (await AuthStateTask).User;
 
