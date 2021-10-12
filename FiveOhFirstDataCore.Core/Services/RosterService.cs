@@ -611,7 +611,7 @@ namespace FiveOhFirstDataCore.Data.Services
                     else break;
                 }
             }
-            if (t.Slot == Slot.Warden && t.Role != Role.ChiefWarden)
+            if (t.Slot == Slot.Warden && t.Role != Role.MasterWarden)
             {
                 superior = await _dbContext.Users
                     .Where(e => e.Role == Role.MasterWarden)
