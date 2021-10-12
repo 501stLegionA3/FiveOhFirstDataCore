@@ -1,4 +1,4 @@
-﻿@page "/trooper/{TrooperId}"
+﻿@page "/trooper/{TrooperBirthNumber}"
 @inject IRosterService _roster
 @inject NavigationManager _nav
 
@@ -16,34 +16,4 @@
 else
 {
     <em>Loading...</em>
-}
-
-@code {
-    [Parameter]
-    public string TrooperId { get; set; } = "";
-
-    private Trooper? Trooper { get; set; } = null;
-
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender || TrooperId != Trooper?.Id.ToString())
-        {
-            var user = (await AuthStateTask).User;
-
-            if(int.TryParse(TrooperId, out int id))
-                Trooper = await _roster.GetTrooperFromIdAsync(id);
-            else if (TrooperId == "me")
-                Trooper = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
-
-            
-            if (Trooper is null) Trooper = new();
-
-            StateHasChanged();
-        }
-    }
 }
