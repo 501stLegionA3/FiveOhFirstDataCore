@@ -51,7 +51,8 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
         public DbSet<CShopRoleBinding> CShopRoles { get; internal set; }
         public DbSet<DiscordRoleDetails> DiscordRoles { get; internal set; }
         public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
-        public DbSet<CShopDepartmentBinding> CShopDepartmentBinding { get; internal set;  }
+        public DbSet<CShopDepartmentBinding> CShopDepartmentBinding { get; internal set; }
+        public DbSet<DiscordPostActionConfiguration> PostActions { get; internal set; }
         #endregion
 
         #region Notifications
@@ -86,6 +87,9 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
             #region Website Settings
             var promoReq = builder.Entity<PromotionDetails>();
             promoReq.HasKey(p => p.RequirementsFor);
+
+            var dPost = builder.Entity<DiscordPostActionConfiguration>();
+            dPost.HasKey(p => p.Action);
 
             var cshopClaims = builder.Entity<CShopClaim>();
             cshopClaims.HasKey(p => p.Key);

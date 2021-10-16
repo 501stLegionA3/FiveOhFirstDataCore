@@ -10,5 +10,5 @@ public class DiscordPostActionConfiguration
 {
     public DiscordAction Action { get; set; }
     public ulong DiscordChannel { get; set; }
-    public string RawMessage { get; set; }
+    public string? RawMessage { get; set; }
 }
