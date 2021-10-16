@@ -292,7 +292,7 @@ namespace FiveOhFirstDataCore
                 {
                     HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"])
                 })
-                .AddScoped<IDiscordService, DiscordService>();
+                .AddSingleton<IDiscordService, DiscordService>();
             #endregion
 
             #region Account Tools
@@ -334,6 +334,9 @@ namespace FiveOhFirstDataCore
 
             var claims = scope.ServiceProvider.GetRequiredService<IWebsiteSettingsService>();
             claims.InitalizeAsync().GetAwaiter().GetResult();
+
+            var discord = scope.ServiceProvider.GetRequiredService<IDiscordService>();
+            discord.InitalizeAsync().GetAwaiter().GetResult();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions()
             {

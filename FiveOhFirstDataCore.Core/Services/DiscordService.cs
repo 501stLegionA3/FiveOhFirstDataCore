@@ -2,10 +2,11 @@
 using DSharpPlus.Entities;
 using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Structures;
-using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Discord;
 using FiveOhFirstDataCore.Data.Structures.Updates;
+using FiveOhFirstDataCore.Data.Structuresbase;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using System.Collections.Concurrent;
@@ -26,7 +27,7 @@ namespace FiveOhFirstDataCore.Data.Services
         private readonly DiscordClient _client;
         private readonly DiscordBotConfiguration _discordConfig;
         private readonly IWebsiteSettingsService _settings;
-        private readonly UserManager<Trooper> _manager;
+        private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
         private ConcurrentQueue<(ulong, ulong, bool)> RoleChanges { get; init; } = new();
         private ConcurrentDictionary<ulong, UpdateDetails> UpdateMessages { get; init; } = new();
@@ -36,71 +37,71 @@ namespace FiveOhFirstDataCore.Data.Services
 
 
         public DiscordService(DiscordRestClient rest, DiscordClient client, DiscordBotConfiguration discordConfig,
-            IWebsiteSettingsService settings, UserManager<Trooper> manager)
+            IWebsiteSettingsService settings, IDbContextFactory<ApplicationDbContext> dbContextFactory)
         {
             _rest = rest;
             _client = client;
             _discordConfig = discordConfig;
             _settings = settings;
-            _manager = manager;
+            _dbContextFactory = dbContextFactory;
             ChangeTimer = new Timer(async (x) => await DoRoleChange(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
         public async Task InitalizeAsync()
         {
+            await _client.ConnectAsync();
+
             HomeGuild = await _client.GetGuildAsync(_discordConfig.HomeGuild);
         }
 
-        private async Task<string> ConvertTokenAsync(string token, ulong user, int userId, HashSet<ulong> add, HashSet<ulong> remove)
+        private async Task<string> ConvertMessageAsync(string msg, ulong user, int userId, HashSet<ulong> add, HashSet<ulong> remove)
         {
-            switch(token.ToUpper())
+            if (HomeGuild is null) return msg;
+
+            msg = msg.Replace("{{USER}}", $"<@{user}>");
+                
+            List<string> data = new();
+            foreach(var id in add)
             {
-                case "{{USER}}":
-                    return $"<@{user}>";
-                case "{{ROLESADDED}}":
-                    List<string> data = new();
-                    foreach(var id in add)
-                    {
-                        if(HomeGuild.Roles.TryGetValue(id, out var role))
-                        {
-                            data.Add(role.Name);
-                        }
-                    }
-
-                    return string.Join(", ", data);
-                case "{{MENTIONROLESADDED}}":
-                    data = new();
-                    foreach (var id in add)
-                        data.Add($"<@{id}>");
-
-                    return string.Join(", ", data);
-                case "{{ROLESREMOVED}}":
-                    data = new();
-                    foreach (var id in remove)
-                    {
-                        if (HomeGuild.Roles.TryGetValue(id, out var role))
-                        {
-                            data.Add(role.Name);
-                        }
-                    }
-
-                    return string.Join(", ", data);
-                case "{{MENTIONROLESREMOVED}}":
-                    data = new();
-                    foreach (var id in add)
-                        data.Add($"<@{id}>");
-
-                    return string.Join(", ", data);
-                case "{{ID}}":
-                case "{{BIRTHNUMBER}}":
-                    var actual = await _manager.FindByIdAsync(userId.ToString());
-                    return actual?.BirthNumber.ToString() ?? "n/a";
-                case "{{RANK}}":
-                    actual = await _manager.FindByIdAsync(userId.ToString());
-                    return actual?.GetRankName() ?? "n/a";
-                default:
-                    return token;
+                if(HomeGuild.Roles.TryGetValue(id, out var role))
+                {
+                    data.Add(role.Name);
+                }
             }
+
+            msg = msg.Replace("{{ROLESADDED}}", string.Join(", ", data));
+
+            data = new();
+            foreach (var id in add)
+                data.Add($"<@{id}>");
+
+            msg = msg.Replace("{{MENTIONROLESADDED}}", string.Join(", ", data));
+            
+            data = new();
+            foreach (var id in remove)
+            {
+                if (HomeGuild.Roles.TryGetValue(id, out var role))
+                {
+                    data.Add(role.Name);
+                }
+            }
+
+            msg = msg.Replace("{{ROLESREMOVED}}", string.Join(", ", data));
+            
+            data = new();
+            foreach (var id in add)
+                data.Add($"<@{id}>");
+
+            msg = msg.Replace("{{MENTIONROLESREMOVED}}", string.Join(", ", data));
+
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+                    
+            var actual = await _dbContext.FindAsync<Trooper>(userId);
+            msg = msg.Replace("{{ID}}", actual?.BirthNumber.ToString() ?? "n/a");
+            msg = msg.Replace("{{BIRTHNUMBER}}", actual?.BirthNumber.ToString() ?? "n/a");
+            msg = msg.Replace("{{RANK}}", actual?.GetRankName() ?? "n/a");
+
+            return msg;
         }
 
         private async Task DoRoleChange()
@@ -136,14 +137,12 @@ namespace FiveOhFirstDataCore.Data.Services
             if (!UpdateMessages.TryRemove(changeFor, out var messageDetails))
                 return;
 
+            if (HomeGuild is null) return;
+
             var action = await _settings.GetDiscordPostActionConfigurationAsync(DiscordAction.TagUpdate);
             if (action is null) return;
-
-            List<string> parts = new();
-            foreach (var c in action.RawMessage.Split(' ', StringSplitOptions.RemoveEmptyEntries))
-                parts.Add(await ConvertTokenAsync(c, changeFor, messageDetails.Id, messageDetails.ToAdd, messageDetails.ToRemove));
-
-            string msg = string.Join(" ", parts.ToArray());
+                
+            var msg = await ConvertMessageAsync(action.RawMessage ?? "", changeFor, messageDetails.Id, messageDetails.ToAdd, messageDetails.ToRemove);
 
             DiscordMessageBuilder builder = new();
             builder.WithContent(msg);
