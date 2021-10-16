@@ -47,5 +47,10 @@ namespace FiveOhFirstDataCore.Data.Services
         /// </summary>
         /// <returns>A <see cref="IReadOnlyList{T}"/> of <see cref="DiscordRole"/> objects.</returns>
         public Task<IReadOnlyList<DiscordRole>> GetAllHomeGuildRolesAsync();
+        /// <summary>
+        /// Gets all <see cref="DiscordChannel"/> objects for the home guild.
+        /// </summary>
+        /// <returns>A <see cref="IReadOnlyList{T}"/> of <see cref="DiscordChannel"/> objects.</returns>
+        public Task<IReadOnlyList<DiscordChannel>> GetAllHomeGuildChannelsAsync();
     }
 }

@@ -38,6 +38,11 @@ public partial class RoleBindingSettingDisplay
 
     private IReadOnlyList<DiscordRole> DiscordRoles { get; set; } = Array.Empty<DiscordRole>();
 
+    private IReadOnlyList<DiscordChannel> DiscordChannels { get; set; } = Array.Empty<DiscordChannel>();
+    private ulong[] Channel { get; set; } = new ulong[1];
+    private string RawMessage { get; set; } = "";
+    private DiscordPostActionConfiguration ActionConfig { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -54,6 +59,10 @@ public partial class RoleBindingSettingDisplay
         CShopRoleBindings = await Settings.GetAllCShopRoleBindingDataAsync();
         CShopClaims = await Settings.GetFullClaimsTreeAsync();
         DiscordRoles = await Discord.GetAllHomeGuildRolesAsync();
+        DiscordChannels = await Discord.GetAllHomeGuildChannelsAsync();
+        ActionConfig = await Settings.GetDiscordPostActionConfigurationAsync(DiscordAction.TagUpdate) ??  new() { Action = DiscordAction.TagUpdate };
+        RawMessage = ActionConfig.RawMessage;
+        Channel[0] = DiscordChannels.FirstOrDefault(x => x.Id == ActionConfig.DiscordChannel)?.Id ?? 0;
         StateHasChanged();
     }
 
@@ -177,5 +186,19 @@ public partial class RoleBindingSettingDisplay
         {
             CShopRoleBindings.RemoveAt(index);
         }
+    }
+
+    private async Task SavePostAction()
+    {
+        await Settings.UpdateDiscordPostActionConfigurationAsync(DiscordAction.TagUpdate, Channel[0], RawMessage);
+        await RevertPostAction();
+    }
+
+    private async Task RevertPostAction()
+    {
+        DiscordChannels = await Discord.GetAllHomeGuildChannelsAsync();
+        ActionConfig = await Settings.GetDiscordPostActionConfigurationAsync(DiscordAction.TagUpdate) ?? new() { Action = DiscordAction.TagUpdate };
+        RawMessage = ActionConfig.RawMessage;
+        Channel[0] = DiscordChannels.FirstOrDefault(x => x.Id == ActionConfig.DiscordChannel)?.Id ?? 0;
     }
 }

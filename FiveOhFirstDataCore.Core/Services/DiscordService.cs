@@ -1,11 +1,11 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
-
+using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Discord;
 using FiveOhFirstDataCore.Data.Structures.Updates;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
 using System.Collections.Concurrent;
@@ -26,7 +26,7 @@ namespace FiveOhFirstDataCore.Data.Services
         private readonly DiscordClient _client;
         private readonly DiscordBotConfiguration _discordConfig;
         private readonly IWebsiteSettingsService _settings;
-        private readonly IRosterService _roster;
+        private readonly UserManager<Trooper> _manager;
 
         private ConcurrentQueue<(ulong, ulong, bool)> RoleChanges { get; init; } = new();
         private ConcurrentDictionary<ulong, UpdateDetails> UpdateMessages { get; init; } = new();
@@ -36,13 +36,13 @@ namespace FiveOhFirstDataCore.Data.Services
 
 
         public DiscordService(DiscordRestClient rest, DiscordClient client, DiscordBotConfiguration discordConfig,
-            IWebsiteSettingsService settings, IRosterService roster)
+            IWebsiteSettingsService settings, UserManager<Trooper> manager)
         {
             _rest = rest;
             _client = client;
             _discordConfig = discordConfig;
             _settings = settings;
-            _roster = roster;
+            _manager = manager;
             ChangeTimer = new Timer(async (x) => await DoRoleChange(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
@@ -93,10 +93,10 @@ namespace FiveOhFirstDataCore.Data.Services
                     return string.Join(", ", data);
                 case "{{ID}}":
                 case "{{BIRTHNUMBER}}":
-                    var actual = await _roster.GetTrooperFromIdAsync(userId);
+                    var actual = await _manager.FindByIdAsync(userId.ToString());
                     return actual?.BirthNumber.ToString() ?? "n/a";
                 case "{{RANK}}":
-                    actual = await _roster.GetTrooperFromIdAsync(userId);
+                    actual = await _manager.FindByIdAsync(userId.ToString());
                     return actual?.GetRankName() ?? "n/a";
                 default:
                     return token;
@@ -348,6 +348,12 @@ namespace FiveOhFirstDataCore.Data.Services
         {
             var roles = await _rest.GetGuildRolesAsync(_discordConfig.HomeGuild);
             return roles;
+        }
+
+        public async Task<IReadOnlyList<DiscordChannel>> GetAllHomeGuildChannelsAsync()
+        {
+            var channels = await _rest.GetGuildChannelsAsync(_discordConfig.HomeGuild);
+            return channels;
         }
     }
 }

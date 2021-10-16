@@ -1,0 +1,24 @@
+﻿<EditForm class="form" Model="this">
+    @if (Item[0] != 0)
+    {
+        var name = Source.FirstOrDefault(x => x.Id == Item[0])?.Name ?? "err";
+        <div class="input-group">
+            <InputText @bind-Value="name" class="form-control" disabled="true" />
+        </div>
+        <br />
+    }
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-text">Filter</span>
+            <InputText class="form-control" @bind-Value="NewValueFilter" />
+            <span class="input-group-text">Roles</span>
+            <InputSelect class="form-control" @bind-Value="NewValue">
+                @foreach(var i in Source.Where(x => x.Name.StartsWith(NewValueFilter, StringComparison.OrdinalIgnoreCase)))
+                {
+                    <option value="@i.Id">@i.Name</option>
+                }
+            </InputSelect>
+            <button class="btn btn-outline-success" @onclick="AddValue">Select Item</button>
+        </div>
+    </div>
+</EditForm>
