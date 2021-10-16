@@ -17,8 +17,8 @@ namespace FiveOhFirstDataCore.Data.Services
     {
         private class UpdateDetails
         {
-            public List<ulong> ToAdd { get; set; } = new();
-            public List<ulong> ToRemove { get; set; } = new();
+            public HashSet<ulong> ToAdd { get; set; } = new();
+            public HashSet<ulong> ToRemove { get; set; } = new();
             public int Id { get; set; } = 0;
         }
 
@@ -51,7 +51,7 @@ namespace FiveOhFirstDataCore.Data.Services
             HomeGuild = await _client.GetGuildAsync(_discordConfig.HomeGuild);
         }
 
-        private async Task<string> ConvertTokenAsync(string token, ulong user, int userId, List<ulong> add, List<ulong> remove)
+        private async Task<string> ConvertTokenAsync(string token, ulong user, int userId, HashSet<ulong> add, HashSet<ulong> remove)
         {
             switch(token.ToUpper())
             {
@@ -131,31 +131,6 @@ namespace FiveOhFirstDataCore.Data.Services
             ChangeTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
-        public async Task UpdateCShopAsync(List<Claim> add, List<Claim> remove, ulong changeFor, int changeForId)
-        {
-            if (changeFor == 0) return;
-
-            foreach (var claim in add)
-            {
-                var ids = await GetCShopIdAsync(claim);
-
-                if (ids is null) continue;
-                foreach (var id in ids)
-                    RoleChanges.Enqueue((changeFor, id, true));
-            }
-
-            foreach (var claim in remove)
-            {
-                var ids = await GetCShopIdAsync(claim);
-
-                if (ids is null) continue;
-                foreach (var id in ids)
-                    RoleChanges.Enqueue((changeFor, id, false));
-            }
-
-            ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
-        }
-
         private async Task PostDiscordMessageAsync(ulong changeFor)
         {
             if (!UpdateMessages.TryRemove(changeFor, out var messageDetails))
@@ -182,6 +157,41 @@ namespace FiveOhFirstDataCore.Data.Services
             {
                 _rest.Logger.LogError(ex, $"Failed to post role updates for {changeFor}");
             }
+        }
+
+        public async Task UpdateCShopAsync(List<Claim> add, List<Claim> remove, ulong changeFor, int changeForId)
+        {
+            if (changeFor == 0) return;
+
+            HashSet<ulong> addU = new();
+            foreach (var claim in add)
+            {
+                var ids = await GetCShopIdAsync(claim);
+
+                if (ids is null) continue;
+                foreach (var id in ids)
+                {
+                    RoleChanges.Enqueue((changeFor, id, true));
+                    addU.Add(id);
+                }
+            }
+
+            HashSet<ulong> removeU = new();
+            foreach (var claim in remove)
+            {
+                var ids = await GetCShopIdAsync(claim);
+
+                if (ids is null) continue;
+                foreach (var id in ids)
+                {
+                    RoleChanges.Enqueue((changeFor, id, false));
+                    removeU.Add(id);
+                }
+            }
+
+            UpdateMessageDetails(addU, removeU, changeFor, changeForId);
+
+            ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
         private async Task<IReadOnlyList<ulong>?> GetCShopIdAsync(Claim value)
@@ -218,6 +228,8 @@ namespace FiveOhFirstDataCore.Data.Services
             foreach (var v in del)
                 RoleChanges.Enqueue((changeFor, v, false));
 
+            UpdateMessageDetails(add, del, changeFor, changeForId);
+
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
@@ -250,6 +262,8 @@ namespace FiveOhFirstDataCore.Data.Services
                 RoleChanges.Enqueue((changeFor, v, true));
             foreach (var v in del)
                 RoleChanges.Enqueue((changeFor, v, false));
+
+            UpdateMessageDetails(add, del, changeFor, changeForId);
 
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
@@ -321,6 +335,8 @@ namespace FiveOhFirstDataCore.Data.Services
             foreach (var v in del)
                 RoleChanges.Enqueue((changeFor, v, false));
 
+            UpdateMessageDetails(add, del, changeFor, changeForId);
+
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
@@ -342,6 +358,26 @@ namespace FiveOhFirstDataCore.Data.Services
             }
 
             return (add, del);
+        }
+
+        private void UpdateMessageDetails(HashSet<ulong> add, HashSet<ulong> del, ulong user, int userId)
+        {
+            if(UpdateMessages.TryGetValue(user, out var details))
+            {
+                details.ToAdd.UnionWith(add);
+                details.ToRemove.UnionWith(del);
+                details.Id = userId;
+            }
+            else
+            {
+                details = new()
+                {
+                    ToAdd = add,
+                    ToRemove = del,
+                    Id = userId
+                };
+                UpdateMessages[user] = details;
+            }
         }
 
         public async Task<IReadOnlyList<DiscordRole>> GetAllHomeGuildRolesAsync()
