@@ -287,6 +287,7 @@ namespace FiveOhFirstDataCore
                 MessageCacheSize = 0
             })
                 .AddSingleton<DiscordRestClient>()
+                .AddSingleton<DiscordClient>()
                 .AddSingleton<DiscordBotConfiguration>(x => new()
                 {
                     HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"])

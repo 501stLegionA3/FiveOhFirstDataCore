@@ -16,16 +16,18 @@ namespace FiveOhFirstDataCore.Data.Services
     public class DiscordService : IDiscordService
     {
         private readonly DiscordRestClient _rest;
+        private readonly DiscordClient _client;
         private readonly DiscordBotConfiguration _discordConfig;
         private readonly IWebsiteSettingsService _settings;
 
         private ConcurrentQueue<(ulong, ulong, bool)> RoleChanges { get; init; } = new();
         private Timer ChangeTimer { get; init; }
 
-        public DiscordService(DiscordRestClient rest, DiscordBotConfiguration discordConfig,
+        public DiscordService(DiscordRestClient rest, DiscordClient client, DiscordBotConfiguration discordConfig,
             IWebsiteSettingsService settings)
         {
             _rest = rest;
+            _client = client;
             _discordConfig = discordConfig;
             _settings = settings;
             ChangeTimer = new Timer(async (x) => await DoRoleChange(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
