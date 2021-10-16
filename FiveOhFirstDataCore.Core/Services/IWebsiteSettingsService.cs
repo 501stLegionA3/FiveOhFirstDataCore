@@ -7,6 +7,7 @@ using FiveOhFirstDataCore.Core.Structures.Policy;
 
 using System.Collections.Concurrent;
 using System.Security.Claims;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore.Data.Services
 {

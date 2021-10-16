@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using Newtonsoft.Json;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore.Data.Structuresbase
 {

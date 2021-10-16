@@ -9,6 +9,7 @@ using FiveOhFirstDataCore.Core.Structures.Policy;
 using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore.Data.Services
 {

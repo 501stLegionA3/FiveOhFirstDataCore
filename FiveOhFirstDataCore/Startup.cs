@@ -27,6 +27,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore
 {

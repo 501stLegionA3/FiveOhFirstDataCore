@@ -3,6 +3,7 @@ using DSharpPlus.Entities;
 
 using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 using FiveOhFirstDataCore.Data.Structures.Updates;
 
 using Microsoft.Extensions.Logging;

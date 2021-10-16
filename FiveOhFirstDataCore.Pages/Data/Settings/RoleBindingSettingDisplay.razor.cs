@@ -2,6 +2,7 @@
 
 using FiveOhFirstDataCore.Data.Services;
 using FiveOhFirstDataCore.Data.Structures;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 using FiveOhFirstDataCore.Data.Structures.Notice;
 
 using Microsoft.AspNetCore.Components;
