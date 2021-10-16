@@ -15,22 +15,92 @@ namespace FiveOhFirstDataCore.Data.Services
 {
     public class DiscordService : IDiscordService
     {
+        private class UpdateDetails
+        {
+            public List<ulong> ToAdd { get; set; } = new();
+            public List<ulong> ToRemove { get; set; } = new();
+            public int Id { get; set; } = 0;
+        }
+
         private readonly DiscordRestClient _rest;
         private readonly DiscordClient _client;
         private readonly DiscordBotConfiguration _discordConfig;
         private readonly IWebsiteSettingsService _settings;
+        private readonly IRosterService _roster;
 
         private ConcurrentQueue<(ulong, ulong, bool)> RoleChanges { get; init; } = new();
+        private ConcurrentDictionary<ulong, UpdateDetails> UpdateMessages { get; init; } = new();
         private Timer ChangeTimer { get; init; }
 
+        private DiscordGuild HomeGuild { get; set; }
+
+
         public DiscordService(DiscordRestClient rest, DiscordClient client, DiscordBotConfiguration discordConfig,
-            IWebsiteSettingsService settings)
+            IWebsiteSettingsService settings, IRosterService roster)
         {
             _rest = rest;
             _client = client;
             _discordConfig = discordConfig;
             _settings = settings;
+            _roster = roster;
             ChangeTimer = new Timer(async (x) => await DoRoleChange(), null, Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
+        }
+
+        public async Task InitalizeAsync()
+        {
+            HomeGuild = await _client.GetGuildAsync(_discordConfig.HomeGuild);
+        }
+
+        private async Task<string> ConvertTokenAsync(string token, ulong user, int userId, List<ulong> add, List<ulong> remove)
+        {
+            switch(token.ToUpper())
+            {
+                case "{{USER}}":
+                    return $"<@{user}>";
+                case "{{ROLESADDED}}":
+                    List<string> data = new();
+                    foreach(var id in add)
+                    {
+                        if(HomeGuild.Roles.TryGetValue(id, out var role))
+                        {
+                            data.Add(role.Name);
+                        }
+                    }
+
+                    return string.Join(", ", data);
+                case "{{MENTIONROLESADDED}}":
+                    data = new();
+                    foreach (var id in add)
+                        data.Add($"<@{id}>");
+
+                    return string.Join(", ", data);
+                case "{{ROLESREMOVED}}":
+                    data = new();
+                    foreach (var id in remove)
+                    {
+                        if (HomeGuild.Roles.TryGetValue(id, out var role))
+                        {
+                            data.Add(role.Name);
+                        }
+                    }
+
+                    return string.Join(", ", data);
+                case "{{MENTIONROLESREMOVED}}":
+                    data = new();
+                    foreach (var id in add)
+                        data.Add($"<@{id}>");
+
+                    return string.Join(", ", data);
+                case "{{ID}}":
+                case "{{BIRTHNUMBER}}":
+                    var actual = await _roster.GetTrooperFromIdAsync(userId);
+                    return actual?.BirthNumber.ToString() ?? "n/a";
+                case "{{RANK}}":
+                    actual = await _roster.GetTrooperFromIdAsync(userId);
+                    return actual?.GetRankName() ?? "n/a";
+                default:
+                    return token;
+            }
         }
 
         private async Task DoRoleChange()
@@ -54,12 +124,14 @@ namespace FiveOhFirstDataCore.Data.Services
                 {
                     _rest.Logger.LogError(ex, $"Failed to update roles for {change.Item1}");
                 }
+
+                await PostDiscordMessageAsync(change.Item1);
             }
 
             ChangeTimer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
         }
 
-        public async Task UpdateCShopAsync(List<Claim> add, List<Claim> remove, ulong changeFor)
+        public async Task UpdateCShopAsync(List<Claim> add, List<Claim> remove, ulong changeFor, int changeForId)
         {
             if (changeFor == 0) return;
 
@@ -84,10 +156,38 @@ namespace FiveOhFirstDataCore.Data.Services
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
+        private async Task PostDiscordMessageAsync(ulong changeFor)
+        {
+            if (!UpdateMessages.TryRemove(changeFor, out var messageDetails))
+                return;
+
+            var action = await _settings.GetDiscordPostActionConfigurationAsync(DiscordAction.TagUpdate);
+            if (action is null) return;
+
+            List<string> parts = new();
+            foreach (var c in action.RawMessage.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                parts.Add(await ConvertTokenAsync(c, changeFor, messageDetails.Id, messageDetails.ToAdd, messageDetails.ToRemove));
+
+            string msg = string.Join(" ", parts.ToArray());
+
+            DiscordMessageBuilder builder = new();
+            builder.WithContent(msg);
+
+            try
+            {
+                var channel = HomeGuild.GetChannel(action.DiscordChannel);
+                await channel.SendMessageAsync(builder);
+            }
+            catch (Exception ex)
+            {
+                _rest.Logger.LogError(ex, $"Failed to post role updates for {changeFor}");
+            }
+        }
+
         private async Task<IReadOnlyList<ulong>?> GetCShopIdAsync(Claim value)
             => await _settings.GetCShopDiscordRolesAsync(value);
 
-        public async Task UpdateQualificationChangeAsync(QualificationUpdate change, ulong changeFor)
+        public async Task UpdateQualificationChangeAsync(QualificationUpdate change, ulong changeFor, int changeForId)
         {
             if (changeFor == 0) return;
             HashSet<ulong> add = new();
@@ -121,7 +221,7 @@ namespace FiveOhFirstDataCore.Data.Services
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
-        public async Task UpdateRankChangeAsync(RankUpdate change, ulong changeFor)
+        public async Task UpdateRankChangeAsync(RankUpdate change, ulong changeFor, int changeForId)
         {
             if (changeFor == 0
                 || change.ChangedFrom == 0
@@ -154,7 +254,7 @@ namespace FiveOhFirstDataCore.Data.Services
             ChangeTimer.Change(TimeSpan.FromSeconds(5), Timeout.InfiniteTimeSpan);
         }
 
-        public async Task UpdateSlotChangeAsync(SlotUpdate change, ulong changeFor)
+        public async Task UpdateSlotChangeAsync(SlotUpdate change, ulong changeFor, int changeForId)
         {
             if (changeFor == 0) return;
             HashSet<ulong> add = new();

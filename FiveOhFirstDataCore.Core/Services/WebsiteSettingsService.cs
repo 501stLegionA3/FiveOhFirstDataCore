@@ -1741,6 +1741,17 @@ namespace FiveOhFirstDataCore.Data.Services
                 return null;
             }
         }
+
+        public async Task<DiscordPostActionConfiguration?> GetDiscordPostActionConfigurationAsync(DiscordAction action)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.FindAsync<DiscordPostActionConfiguration>(action);
+        }
+
+        public Task<ResultBase> UpdateDiscordPostActionConfigurationAsync(DiscordAction action, ulong channelId, string message)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
