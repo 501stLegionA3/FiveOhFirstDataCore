@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace FiveOhFirstDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211016150358_Dev-Soyvolon-Discord-Post")]
-    partial class DevSoyvolonDiscordPost
+    [Migration("20211018181624_Release-Soyvolon-Version-Zero-Sixteen-Zero")]
+    partial class ReleaseSoyvolonVersionZeroSixteenZero
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
