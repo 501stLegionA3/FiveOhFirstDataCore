@@ -5,6 +5,76 @@
 </div>
 
 <div class="p-3">
+    <h3>Discord Tag Update Message</h3>
+</div>
+<div class="accordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="update-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#update-msg" aria-expanded="false" aria-controls="update-msg">
+                Update Message Config
+            </button>
+        </h2>
+        <div id="update-msg" class="accordion-collapse collapse" aria-labelledby="update-header" data-bs-parent="#cshop-claims-accordion">
+            <EditForm Model="this" class="p-3">
+                <div class="row p-3">
+                    <h5>Channel</h5>
+                    <StaticDiscordChannelInput Source="DiscordChannels" Item="Channel" />
+                </div>
+                <div class="row p-3">
+                    <h5>Wildcards</h5>
+                    <table class="table table-hover table-striped">
+                        <tr>
+                            <th>Value</th>
+                            <th>Replaced With</th>
+                        </tr>
+                        <tr>
+                            <td>{{USER}}</td>
+                            <td>Pings the user who a change is applied to.</td>
+                        </tr>
+                        <tr>
+                            <td>{{ROLESADDED}}</td>
+                            <td>Writes the name of all added roles.</td>
+                        </tr>
+                        <tr>
+                            <td>{{MENTIONROLESADDED}}</td>
+                            <td>Pings all added roles.</td>
+                        </tr>
+                        <tr>
+                            <td>{{ROLESREMOVED}}</td>
+                            <td>Writes the name of all removed roles.</td>
+                        </tr>
+                        <tr>
+                            <td>{{MENTIONROLESREMOVED}}</td>
+                            <td>Pings all removed roles.</td>
+                        </tr>
+                        <tr>
+                            <td>{{ID}}</td>
+                            <td>Writes the Birth Number of a Trooper.</td>
+                        </tr>
+                        <tr>
+                            <td>{{BIRTHNUMBER}}</td>
+                            <td>Writes the Birth Number of a Trooper.</td>
+                        </tr>
+                        <tr>
+                            <td>{{RANK}}</td>
+                            <td>Writes the Rank of a Trooper.</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row p-3">
+                    <h5>Message</h5>
+                    <InputTextArea @bind-Value="RawMessage" placeholder="The message to send to the select channel. Supports wildcards." />
+                </div>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" @onclick="SavePostAction">Save</button>
+                    <button class="btn btn-danger" @onclick="RevertPostAction">Revert</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<div class="p-3">
     <h3>Discord C-Shop Role Bindings</h3>
 </div>
 

@@ -7,6 +7,7 @@ using FiveOhFirstDataCore.Core.Structures.Policy;
 
 using System.Collections.Concurrent;
 using System.Security.Claims;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore.Data.Services
 {
@@ -209,5 +210,8 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<CShop?> ValidateCShopRoleBindClusterAsync(CShop cluster);
         public Task<Guid?> ValidateCShopRoleBindDepartmentAsync(string department, CShop forCluster);
         #endregion
+
+        public Task<DiscordPostActionConfiguration?> GetDiscordPostActionConfigurationAsync(DiscordAction action);
+        public Task<ResultBase> UpdateDiscordPostActionConfigurationAsync(DiscordAction action, ulong channelId, string message);
     }
 }

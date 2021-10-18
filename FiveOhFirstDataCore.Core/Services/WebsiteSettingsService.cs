@@ -9,6 +9,7 @@ using FiveOhFirstDataCore.Core.Structures.Policy;
 using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
+using FiveOhFirstDataCore.Data.Structures.Discord;
 
 namespace FiveOhFirstDataCore.Data.Services
 {
@@ -1739,6 +1740,36 @@ namespace FiveOhFirstDataCore.Data.Services
             {
                 return null;
             }
+        }
+
+        public async Task<DiscordPostActionConfiguration?> GetDiscordPostActionConfigurationAsync(DiscordAction action)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.FindAsync<DiscordPostActionConfiguration>(action);
+        }
+
+        public async Task<ResultBase> UpdateDiscordPostActionConfigurationAsync(DiscordAction action, ulong channelId, string message)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var data = await _dbContext.FindAsync<DiscordPostActionConfiguration>(action);
+
+            if (data is null)
+            {
+                data = new()
+                {
+                    Action = action
+                };
+
+                await _dbContext.AddAsync(data);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            data.DiscordChannel = channelId;
+            data.RawMessage = message;
+
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
         }
         #endregion
     }
