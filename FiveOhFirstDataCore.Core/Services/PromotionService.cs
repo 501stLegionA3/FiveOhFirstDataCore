@@ -18,13 +18,15 @@ namespace FiveOhFirstDataCore.Data.Services
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
         private readonly IWebsiteSettingsService _webSettings;
+        private readonly IDiscordService _discord;
 
         public PromotionService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
-            IWebsiteSettingsService webSettings)
+            IWebsiteSettingsService webSettings, IDiscordService discord)
         {
             _dbContextFactory = dbContextFactory;
             _userManager = userManager;
             _webSettings = webSettings;
+            _discord = discord;
         }
 
         public async Task<ResultBase> CancelPromotionAsync(Promotion promotion, Trooper denier)
@@ -162,6 +164,9 @@ namespace FiveOhFirstDataCore.Data.Services
             _dbContext.Remove(actual);
 
             await _dbContext.SaveChangesAsync();
+
+            if(ulong.TryParse(actual.PromotionFor.DiscordId, out var did))
+                await _discord.UpdateRankChangeAsync(log, did, actual.PromotionFor.Id);
 
             return new(true, null);
         }
