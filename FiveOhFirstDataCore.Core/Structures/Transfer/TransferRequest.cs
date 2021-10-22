@@ -18,10 +18,16 @@ public class TransferRequest
     public List<Trooper> Signees { get; set; } = new();
     public List<Slot> FiledTo { get; set; } = new();
     public List<Slot> ApprovedAt { get; set; } = new();
+    
     public Slot DeniedAt { get; set; }
+    public int DeniedById { get; set; }
+    public Trooper DeniedBy { get; set; }
 
     public Slot TransferFrom { get; set; }
     public Slot TransferTo { get; set; }
+
+    public Role TransferFromRole { get; set; }
+    public Role TransferToRole { get; set; }
 
     /// <summary>
     /// Has this paperwork been completed?

@@ -12,9 +12,9 @@ namespace FiveOhFirstDataCore.Data.Services;
 
 public interface ITransferService
 {
-    public Task<TransferResult> FileTransferRequestAsync(TransferRequest request, int filedBy, Slot filedAt);
-    public Task<TransferResult> ApproveTransferRequestAsync(TransferRequest request, int approvedBy, Slot approvedAt);
-    public Task<TransferResult> DenyTransferRequestAsync(TransferRequest request, int deniedBy, Slot deniedAt);
+    public Task<TransferResult> FileTransferRequestAsync(TransferRequest request, int transferFor, int filedBy, Slot filedAt);
+    public Task<TransferResult> ApproveTransferRequestAsync(TransferRequest request, int approvedBy, List<Slot> approvedAt);
+    public Task<TransferResult> DenyTransferRequestAsync(TransferRequest request, int deniedBy, Slot deniedAt, string deniedReason);
     public Task<List<Trooper>> GetTransferableTroopersAsync(int id);
     public Task<List<TransferRequest>> GetPendingTransfers(Slot slot);
 }
