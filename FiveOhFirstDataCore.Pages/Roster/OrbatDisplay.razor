@@ -1,6 +1,4 @@
-﻿@inject IRosterService _roster
-@inject IAdvancedRefreshService _advRefresh
-@implements IRefreshBase
+﻿@implements IRefreshBase
 
 
 @if(Data is not null)
@@ -9,7 +7,7 @@
         <HailstormDisplay Hailstorm="Data.Hailstorm" Single="false" />
         <CompanyDisplay Company="Data.Avalanche" Name="Avalanche" />
         <CompanyDisplay Company="Data.Cyclone" Name="Cyclone" />
-        <CompanyDisplay Company="Data.Acklay" Name="Acklay" Airborne="true" />
+        <CompanyDisplay Company="Data.Acklay" Name="Acklay" Airborne="true" Adjutant="Adjutant" />
         <MynockDisplay Mynock="Data.Mynock" />
         <RazorDisplay Razor="Data.Razor" />
     </table>
@@ -17,36 +15,4 @@
 else
 {
     <em>Loading...</em>
-}
-
-@code {
-    public OrbatData Data { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (firstRender)
-        {
-            _advRefresh.AddDataReloadListener("UserData", OnDataReloadRequests);
-            Data = await _roster.GetOrbatDataAsync();
-            StateHasChanged();
-        }
-    }
-
-    public async Task CallRefreshRequest()
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public async Task OnDataReloadRequests()
-    {
-        Data = await _roster.GetOrbatDataAsync();
-        await CallRefreshRequest();
-    }
-
-    public void Dispose()
-    {
-        _advRefresh.RemoveDataReloadListener(OnDataReloadRequests);
-    }
 }

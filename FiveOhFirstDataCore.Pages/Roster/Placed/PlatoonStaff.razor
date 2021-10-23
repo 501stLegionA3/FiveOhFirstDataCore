@@ -77,13 +77,24 @@
                     @Platoon.ARC.DisplayRankName()                
                 }
             </td>
-        </tr> 
+        </tr>
+    }
+    else
+    {
+        <tr role="@(Adjutant is null ? "" : "button")" @onclick="(x) => TrooperNav(Adjutant?.BirthNumber)">
+            <th scope="row" colspan="2" class="text-end">
+                Airborne Adjutant
+            </th>
+            <td colspan="2" class="text-start">
+                @if (Adjutant is null)
+                {
+                    <span>TBD</span>
+                }
+                else
+                {
+                    @Adjutant.DisplayRankName()                
+                }
+            </td>
+        </tr>
     }
 </tbody>
-
-@code {
-    [Parameter]
-    public PlatoonData Platoon { get; set; }
-    [CascadingParameter(Name = "Airborne")]
-    public bool Airborne { get; set; }
-}

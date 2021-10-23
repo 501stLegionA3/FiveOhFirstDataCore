@@ -19,18 +19,7 @@
     <CascadingValue Value="Airborne" Name="Airborne">
         @for(int i = 0; i < Company.Platoons.Length; i++)
         {
-            <PlatoonDisplay Platoon="Company.Platoons[i]" Number="i + 1" Airborne="Airborne" />
+            <PlatoonDisplay Platoon="Company.Platoons[i]" Number="i + 1" Adjutant="Adjutant" />
         }
     </CascadingValue>
 </CascadingValue>
-
-@code {
-    [Parameter]
-    public string Name { get; set; }
-
-    [Parameter]
-    public CompanyData Company { get; set; }
-
-    [Parameter]
-    public bool Airborne { get; set; } = false;
-}

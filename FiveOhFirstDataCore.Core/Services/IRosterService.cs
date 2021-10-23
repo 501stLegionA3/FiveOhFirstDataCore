@@ -238,6 +238,11 @@ namespace FiveOhFirstDataCore.Data.Services
         /// </summary>
         /// <returns>A task that has a <see cref="List{T}"/> of <see cref="Trooper"/> values.</returns>
         public Task<List<Trooper>> GetCurrentUTCCadets();
+        /// <summary>
+        /// Gets the current Acklay Adjutant
+        /// </summary>
+        /// <returns>A task the returns a <see cref="Trooper"/> if an adjutant is found, null if not.</returns>
+        public Task<Trooper?> GetAcklayAdjutantAsync();
         #endregion
 
         #region Roster Registration

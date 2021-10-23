@@ -996,5 +996,14 @@ namespace FiveOhFirstDataCore.Data.Services
                 .AsSplitQuery()
                 .ToListAsync();
         }
+
+        public async Task<Trooper?> GetAcklayAdjutantAsync()
+        {
+            using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.Users
+                .Where(x => x.Slot == Slot.AcklayOne)
+                .Where(x => x.Role == Role.Adjutant)
+                .FirstOrDefaultAsync();
+        }
     }
 }
