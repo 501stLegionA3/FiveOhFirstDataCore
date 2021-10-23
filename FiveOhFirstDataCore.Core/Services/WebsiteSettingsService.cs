@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 using System.Security.Claims;
 using FiveOhFirstDataCore.Data.Structures.Discord;
+using FiveOhFirstDataCore.Data.Structures.Transfer;
 
 namespace FiveOhFirstDataCore.Data.Services
 {
@@ -1770,6 +1771,46 @@ namespace FiveOhFirstDataCore.Data.Services
             await _dbContext.SaveChangesAsync();
 
             return new(true, null);
+        }
+        #endregion
+
+        #region Transfers
+        public Task<ResultBase> UpdateOrCreateTransferSettingsAsync(TransferSettings settings)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ResultBase> DeleteTransferSettingsAsync(TransferSettings settings)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            var actual = await _dbContext.FindAsync<TransferSettings>(settings.Key);
+
+            if (actual is null)
+                return new(false, new List<string> { "No settings found to delete." });
+
+            _dbContext.Remove(actual);
+            await _dbContext.SaveChangesAsync();
+
+            return new(true, null);
+        }
+
+        public async Task<TransferSettings?> FindTransferSettingsForSlotAsync(Slot slotFor)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.TransferSettings
+                .Where(x => x.SettingsFor.Contains(slotFor))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<TransferSettings?> GetTransferSettingsAsync(Guid key)
+        {
+            await using var _dbContext = _dbContextFactory.CreateDbContext();
+            return await _dbContext.FindAsync<TransferSettings>(key);
+        }
+
+        public Task<List<Slot>?> FindRequiredSignees(Slot start, Slot end)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

@@ -7,6 +7,7 @@ using FiveOhFirstDataCore.Data.Structures;
 using FiveOhFirstDataCore.Data.Structures.Notification;
 using FiveOhFirstDataCore.Data.Structures.Updates;
 using FiveOhFirstDataCore.Core.Structures.Policy;
+using FiveOhFirstDataCore.Data.Structures.Transfer;
 
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -53,6 +54,7 @@ namespace FiveOhFirstDataCore.Data.Structuresbase
         public DbSet<CShopRoleBindingData> CShopRoleData { get; internal set; }
         public DbSet<CShopDepartmentBinding> CShopDepartmentBinding { get; internal set; }
         public DbSet<DiscordPostActionConfiguration> PostActions { get; internal set; }
+        public DbSet<TransferSettings> TransferSettings { get; internal set; }
         #endregion
 
         #region Notifications
