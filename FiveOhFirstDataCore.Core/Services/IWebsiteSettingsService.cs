@@ -8,6 +8,7 @@ using FiveOhFirstDataCore.Core.Structures.Policy;
 using System.Collections.Concurrent;
 using System.Security.Claims;
 using FiveOhFirstDataCore.Data.Structures.Discord;
+using FiveOhFirstDataCore.Data.Structures.Transfer;
 
 namespace FiveOhFirstDataCore.Data.Services
 {
@@ -213,5 +214,39 @@ namespace FiveOhFirstDataCore.Data.Services
 
         public Task<DiscordPostActionConfiguration?> GetDiscordPostActionConfigurationAsync(DiscordAction action);
         public Task<ResultBase> UpdateDiscordPostActionConfigurationAsync(DiscordAction action, ulong channelId, string message);
+
+        #region Transfers
+        /// <summary>
+        /// Update or Create transfer settings.
+        /// </summary>
+        /// <param name="settings">The settings to update or create.</param>
+        /// <returns>A task the returns a <see cref="ResultBase"/> for this action.</returns>
+        public Task<ResultBase> UpdateOrCreateTransferSettingsAsync(TransferSettings settings);
+        /// <summary>
+        /// Delete transfer settings.
+        /// </summary>
+        /// <param name="settings">The settings to delete.</param>
+        /// <returns>A task the returns a <see cref="ResultBase"/> for this action.</returns>
+        public Task<ResultBase> DeleteTransferSettingsAsync(TransferSettings settings);
+        /// <summary>
+        /// Find the transfer settings for a specific slot.
+        /// </summary>
+        /// <param name="slotFor">The slot to search settings for.</param>
+        /// <returns>A task that returns a <see cref="TransferSettings"/> if one is found, otherwise null.</returns>
+        public Task<TransferSettings?> FindTransferSettingsForSlotAsync(Slot slotFor);
+        /// <summary>
+        /// Get the transfer service for a given key.
+        /// </summary>
+        /// <param name="key">The key for a <see cref="TransferSettings"/> object.</param>
+        /// <returns>A task that returns a <see cref="TransferSettings"/> if one exisits for the given <paramref name="key"/>, otherwise null.</returns>
+        public Task<TransferSettings?> GetTransferSettingsAsync(Guid key);
+        /// <summary>
+        /// Returns the list of required slots to sign for a given <paramref name="start"/> and <paramref name="end"/> slot.
+        /// </summary>
+        /// <param name="start">The <see cref="Slot"/> to start at.</param>
+        /// <param name="end">The <see cref="Slot"/> to end at.</param>
+        /// <returns>A task that returns a list of <see cref="Slot"/> objects. Will be null if no data was found for the request.</returns>
+        public Task<List<Slot>?> FindRequiredSignees(Slot start, Slot end); 
+        #endregion
     }
 }
