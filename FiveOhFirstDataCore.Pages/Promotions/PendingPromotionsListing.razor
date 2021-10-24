@@ -39,7 +39,7 @@
                                     <td>@promo.PromoteFrom.GetRank().AsFull()</td>
                                     <td>@promo.PromoteTo.GetRank().AsFull()</td>
                                     <td><a href="/trooper/@(promo.RequestedBy?.Id ?? 0)" target="_blank">@promo.RequestedBy?.NickName</a></td>
-                                    @if (CurrentUser.Id == promo.RequestedById)
+                                    @if (CurrentUser.Id == promo.RequestedById || Manager)
                                     {
                                         @if (!EditingReason)
                                         {

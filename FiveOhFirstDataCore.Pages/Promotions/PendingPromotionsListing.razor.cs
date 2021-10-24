@@ -1,6 +1,8 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
 using FiveOhFirstDataCore.Data.Structures.Promotions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +44,10 @@ namespace FiveOhFirstDataCore.Components.Promotions
         public bool EditingReason { get; set; } = false;
         public string NewReason { get; set; } = string.Empty;
 
+        [CascadingParameter]
+        public Task<AuthenticationState> AuthStateTask { get; set; }
+        private bool Manager { get; set; } = false;
+
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
@@ -70,6 +76,9 @@ namespace FiveOhFirstDataCore.Components.Promotions
                     }
                 }
             }
+
+            var user = (await AuthStateTask).User;
+            Manager = user.IsInRole("Manager") || user.IsInRole("Admin");
         }
 
         protected async Task ApprovePromotion(Promotion promo, int c)
