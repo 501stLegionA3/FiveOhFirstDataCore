@@ -64,8 +64,11 @@ namespace FiveOhFirstDataCore.Data.Structures
         Pilot,
         [Description("Subordinate")]
         Subordinate,
-        [Description("FOIC")]
-        FOIC
+        /// <summary>
+        /// Razor Adjutant
+        /// </summary>
+        [Description("Squadron Chief Logistics Officer")]
+        SCLO
     }
 
     public static class RoleExtensions

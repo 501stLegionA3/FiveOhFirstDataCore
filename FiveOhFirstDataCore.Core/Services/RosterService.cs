@@ -399,7 +399,7 @@ namespace FiveOhFirstDataCore.Data.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             Trooper? superior = null;
             List<Role> InfRoles = new() { Role.Commander, Role.XO, Role.NCOIC, Role.SergeantMajor };
-            List<Role> RazorRoles = new() { Role.Commander, Role.SubCommander, Role.FOIC };
+            List<Role> RazorRoles = new() { Role.Commander, Role.SubCommander, Role.SCLO };
             List<Role> WardenRoles = new() { Role.MasterWarden, Role.MasterWarden };
             List<Role> MynockRoles = new() { Role.Commander, Role.NCOIC };
 

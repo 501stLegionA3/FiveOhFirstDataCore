@@ -23,7 +23,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     case Role.SubCommander:
                         SubCommander = t;
                         break;
-                    case Role.FOIC:
+                    case Role.SCLO:
                         FOIC = t;
                         break;
                 }
