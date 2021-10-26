@@ -16,7 +16,7 @@ The roster pages contains 6 tabs.
 6. The Full Roster contains information on every trooper within the 501st. Period.
 
 ## ORBAT Sheets
-The ORBAT Sheets display the following units(including sub-units). 
+The ORBAT Sheets display the following units (including sub-units). 
 
 - ORBAT
     - Hailstorm Battalion Command
@@ -57,7 +57,7 @@ When you select a roster page, it will display as follows. The sheet will displa
 
 ![roster-display](_media/roster/roster-display.png)
 
-1. At the top of the sheet are the tabs to swith between different rosters.
+1. At the top of the sheet are the tabs to switch between different rosters.
 2. Below that are all the search options to search for specific troopers within that roster page.
 3. The first row of the data are the headers, which display what data is being shown.
 4. The `Trooper Details` Button will open a new page containing details of that specific trooper.
