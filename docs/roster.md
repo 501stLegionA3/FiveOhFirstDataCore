@@ -16,7 +16,7 @@ The roster pages contains 6 tabs.
 6. The Full Roster contains information on every trooper within the 501st. Period.
 
 ## ORBAT Sheets
-The ORBAT Sheets display the following units(including sub-units). 
+The ORBAT Sheets display the following units (including sub-units). 
 
 - ORBAT
     - Hailstorm Battalion Command
