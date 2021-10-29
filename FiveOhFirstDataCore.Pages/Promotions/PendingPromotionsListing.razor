@@ -34,11 +34,11 @@
                             @if (promo.CurrentBoard >= BoardLevel)
                             {
                                 <tr class="@(ForcedPromotions.Contains(promo.Id) ? "table-danger" : "")">
-                                    <td><a href="/trooper/@(promo.PromotionFor?.Id ?? 0)" target="_blank">@(promo.PromotionFor?.BirthNumber ?? 0)</a></td>
+                                    <td><a href="/trooper/@(promo.PromotionFor?.BirthNumber ?? 0)" target="_blank">@(promo.PromotionFor?.BirthNumber ?? 0)</a></td>
                                     <td>@(promo.PromotionFor?.NickName ?? "")</td>
                                     <td>@promo.PromoteFrom.GetRank().AsFull()</td>
                                     <td>@promo.PromoteTo.GetRank().AsFull()</td>
-                                    <td><a href="/trooper/@(promo.RequestedBy?.Id ?? 0)" target="_blank">@promo.RequestedBy?.NickName</a></td>
+                                    <td><a href="/trooper/@(promo.RequestedBy?.BirthNumber ?? 0)" target="_blank">@promo.RequestedBy?.NickName</a></td>
                                     @if (CurrentUser.Id == promo.RequestedById || Manager)
                                     {
                                         @if (!EditingReason)
