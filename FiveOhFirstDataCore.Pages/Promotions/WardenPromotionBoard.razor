@@ -39,10 +39,12 @@
         {
             if(warden.SectionLead is not null)
                 Troopers.Add(warden.SectionLead);
-            if(warden.WardenTwo is not null)
-                Troopers.Add(warden.WardenTwo);
-            if(warden.WardenThree is not null)
-                Troopers.Add(warden.WardenThree);
+            foreach(var t in warden.TeamOne)
+                if(t is not null)
+                    Troopers.Add(t);
+            foreach(var t in warden.TeamTwo)
+                if(t is not null)
+                    Troopers.Add(t);
         }
 
         if (CanPromote)

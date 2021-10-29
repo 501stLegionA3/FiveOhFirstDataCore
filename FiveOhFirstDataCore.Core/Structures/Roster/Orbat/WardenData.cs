@@ -6,7 +6,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
     {
         public Trooper Master { get; set; }
         public Trooper Chief { get; set; }
-        public WardenSection[] Wardens { get; set; } = new WardenSection[] { new(), new(), new() };
+        public WardenSection[] Wardens { get; set; } = new WardenSection[] { new(), new() };
 
         public void Assign(Trooper t)
         {
@@ -19,9 +19,16 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     Chief = t;
                     break;
                 case Role.Warden:
-                    int i = ((int)t.Slot % 10) - 1;
-                    if (i < Wardens.Length && i >= 0)
-                        Wardens[i].Assign(t);
+                    try
+                    {
+                        int i = ((int)t.Slot % 10) - 1;
+                        if (i < Wardens.Length && i >= 0)
+                            Wardens[i].Assign(t);
+                    }
+                    catch
+                    { 
+                        // Catch execptions from old warden data.
+                    }
                     break;
             }
         }

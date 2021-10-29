@@ -5,17 +5,31 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
     public class WardenSection : IAssignable<Trooper>
     {
         public Trooper SectionLead { get; set; }
-        public Trooper WardenTwo { get; set; }
-        public Trooper WardenThree { get; set; }
+        public Trooper[] TeamOne { get; set; } = new Trooper[4];
+        public Trooper[] TeamTwo { get; set; } = new Trooper[4];
 
         public void Assign(Trooper item)
         {
-            if (item.Flight == Flight.Alpha)
+            if (item.Slot == Slot.WardenTwo)
+            {
+                // Warden To Pilot Program.
+                if (item.Flight is not null)
+                    TeamOne[(int)item.Flight] = item;
+            }
+            else if (item.Team is null)
+            {
                 SectionLead = item;
-            else if (item.Flight == Flight.Bravo)
-                WardenTwo = item;
-            else if (item.Flight == Flight.Charlie)
-                WardenThree = item;
+            }
+            else if (item.Team == Team.Alpha)
+            {
+                if (item.Flight is not null)
+                    TeamOne[(int)item.Flight] = item;
+            }
+            else if (item.Team == Team.Bravo)
+            {
+                if (item.Flight is not null)
+                    TeamTwo[(int)item.Flight] = item;
+            }
         }
     }
 }

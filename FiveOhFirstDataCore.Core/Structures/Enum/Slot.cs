@@ -128,8 +128,8 @@ namespace FiveOhFirstDataCore.Data.Structures
         WardenOne,
         [Description("Warden 2")]
         WardenTwo,
-        [Description("Warden 3")]
-        WardenThree,
+        //[Description("Warden 3")]
+        //WardenThree,
         // Reserve.
         [Description("Zeta HQ")]
         ZetaCompany = 600,
