@@ -113,12 +113,20 @@ public class TransferService : ITransferService
         if (signee is null)
             return new(false, null, new List<string> { "No approver was found." });
 
-        request.FiledTo.Add(filedAt);
+        HashSet<Slot> filedTo = new() { filedAt };
+
         request.Signees.Add(signee);
         request.ApprovedAt.Add(filedAt);
 
-        // TODO: Connect to website settings service to get the needed approval locations.
-        throw new NotImplementedException();
+        var requirements = await _websiteSettingsService.FindRequiredTransferSigneesAsync(request.TransferFrom, request.TransferTo);
+
+        if (requirements is null)
+            return new(false, null, new List<string>() { "No transfer settings have been found for this transfer." });
+
+        foreach (var x in requirements)
+            filedTo.Add(x);
+
+        request.FiledTo.AddRange(filedTo);
 
         await _dbContext.AddAsync(request);
         await _dbContext.SaveChangesAsync();

@@ -246,7 +246,7 @@ namespace FiveOhFirstDataCore.Data.Services
         /// <param name="start">The <see cref="Slot"/> to start at.</param>
         /// <param name="end">The <see cref="Slot"/> to end at.</param>
         /// <returns>A task that returns a list of <see cref="Slot"/> objects. Will be null if no data was found for the request.</returns>
-        public Task<List<Slot>?> FindRequiredSignees(Slot start, Slot end); 
+        public Task<(List<Slot>, List<Slot>)?> FindRequiredTransferSigneesAsync(Slot start, Slot end); 
         #endregion
     }
 }
