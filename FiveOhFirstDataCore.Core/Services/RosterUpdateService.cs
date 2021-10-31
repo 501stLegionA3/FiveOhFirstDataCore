@@ -65,37 +65,31 @@ namespace FiveOhFirstDataCore.Data.Services
             if (UpdateRank((int?)primary.Rank, (int?)edit.Rank, ref primary, ref submitter, out var rankChange))
             {
                 primary.Rank = edit.Rank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             if (UpdateRank((int?)primary.RTORank, (int?)edit.RTORank, ref primary, ref submitter, out rankChange))
             {
                 primary.RTORank = edit.RTORank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             if (UpdateRank((int?)primary.MedicRank, (int?)edit.MedicRank, ref primary, ref submitter, out rankChange))
             {
                 primary.MedicRank = edit.MedicRank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             if (UpdateRank((int?)primary.PilotRank, (int?)edit.PilotRank, ref primary, ref submitter, out rankChange))
             {
                 primary.PilotRank = edit.PilotRank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             if (UpdateRank((int?)primary.WarrantRank, (int?)edit.WarrantRank, ref primary, ref submitter, out rankChange))
             {
                 primary.WarrantRank = edit.WarrantRank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             if (UpdateRank((int?)primary.WardenRank, (int?)edit.WardenRank, ref primary, ref submitter, out rankChange))
             {
                 primary.WardenRank = edit.WardenRank;
-                await _discord.UpdateRankChangeAsync(rankChange, pid, primary.BirthNumber);
             }
 
             // Time Updates
@@ -193,13 +187,11 @@ namespace FiveOhFirstDataCore.Data.Services
             }
 
             // Slot updates.
-            if (UpdateRosterPosition(edit, ref primary, ref submitter, out var slotChange))
-                await _discord.UpdateSlotChangeAsync(slotChange, pid, primary.BirthNumber);
+            _ = UpdateRosterPosition(edit, ref primary, ref submitter, out var slotChange);
 
             // C-Shop/Qual updates
             _ = UpdateCShop(edit, ref primary, ref submitter, out _);
-            if (UpdateQuals(edit, ref primary, ref submitter, out var qualChange))
-                await _discord.UpdateQualificationChangeAsync(qualChange, pid, primary.BirthNumber);
+            _ = UpdateQuals(edit, ref primary, ref submitter, out var qualChange);
 
             primary.InitialTraining = edit.InitialTraining;
             primary.UTC = edit.UTC;
@@ -242,8 +234,6 @@ namespace FiveOhFirstDataCore.Data.Services
 
                 return new(false, errors);
             }
-
-            await _discord.UpdateCShopAsync(add, remove, pid, primary.BirthNumber);
 
             primary.LastUpdate = DateTime.UtcNow;
 

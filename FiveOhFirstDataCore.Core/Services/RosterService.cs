@@ -17,16 +17,14 @@ namespace FiveOhFirstDataCore.Data.Services
     {
         private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
         private readonly UserManager<Trooper> _userManager;
-        private readonly IDiscordService _discord;
         private readonly ILogger _logger;
         private readonly IWebsiteSettingsService _settings;
 
         public RosterService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<Trooper> userManager,
-            IDiscordService discord, ILogger<RosterService> logger, IWebsiteSettingsService settings)
+            ILogger<RosterService> logger, IWebsiteSettingsService settings)
         {
             _dbContextFactory = dbContextFactory;
             _userManager = userManager;
-            _discord = discord;
             _logger = logger;
             _settings = settings;
         }
