@@ -1823,56 +1823,7 @@ namespace FiveOhFirstDataCore.Data.Services
             bool notifyCompany = false;
             bool notifyPlatoon = false;
 
-            // While there is a slot difference
-            // greater than a platoon value (diff of 10) ...
-            while (diff >= 10)
-            {
-
-                // ... Check company ...
-                if(startInt / 100 == endInt / 100)
-                {
-                    // ... if its the same company, check platoon ...
-                    if(startInt / 10 != endInt / 10)
-                    {
-                        // ... get the settings for the start value ...
-                        var startSettings = await FindTransferSettingsForSlotAsync((Slot)(startInt / 10));
-                        var endSettings = await FindTransferSettingsForSlotAsync((Slot)(endInt / 10));
-
-                        // ... At any point we are missing settings
-                        // return null - don't continue ...
-                        if (startSettings is null || endSettings is null) return null;
-
-                        // ... if its not the same platoon, get incoming platoon data ...
-
-                        foreach (var x in startSettings.ExitApproval)
-                        {
-                            var approveAt = (Slot)(startInt / 100 + x);
-                            approvals.Add(approveAt);
-                        }
-
-                        foreach(var x in endSettings.EnteringApproval)
-                        {
-                            var approveAt = (Slot)(endInt / 100 + x);
-                            approvals.Add(approveAt);
-                        }
-
-                        // ... then move values to the company level ...
-                        endInt /= 100;
-                        endInt *= 100;
-
-                        startInt /= 100;
-                        startInt *= 100;
-
-                        notifyCompany = true;
-                    }
-                }
-                else
-                {
-                    // ... if its not the same company, get incoming company data ...
-
-                    
-                }
-            }
+            
 
             // ... then add the settings for
             // the original start and end values ...
