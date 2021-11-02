@@ -398,7 +398,7 @@ namespace FiveOhFirstDataCore.Data.Services
             Trooper? superior = null;
             List<Role> InfRoles = new() { Role.Commander, Role.XO, Role.NCOIC, Role.SergeantMajor };
             List<Role> RazorRoles = new() { Role.Commander, Role.SubCommander, Role.SCLO };
-            List<Role> WardenRoles = new() { Role.MasterWarden, Role.MasterWarden };
+            List<Role> WardenRoles = new() { Role.MasterWarden, Role.ChiefWarden };
             List<Role> MynockRoles = new() { Role.Commander, Role.NCOIC };
 
             #region Squad
@@ -584,14 +584,41 @@ namespace FiveOhFirstDataCore.Data.Services
             #endregion
 
             #region Warden
-            if (t.Slot.IsWardenTeam() && t.Flight != Flight.Alpha)
+            if (t.Slot.IsWardenTeam() && t.Team is not null && t.Flight is not Flight.Alpha)
             {
                 superior = await _dbContext.Users
                     .Where(e => e.Role == Role.Warden)
                     .Where(e => e.Slot == t.Slot)
                     .Where(e => e.Flight == Flight.Alpha)
+                    .Where(e => e.Team == t.Team)
                     .AsNoTracking()
                     .FirstOrDefaultAsync();
+                
+                if (superior is null)
+                {
+                    foreach(var role in WardenRoles)
+                    {
+                        superior = await _dbContext.Users
+                            .Where(e => e.Role == role)
+                            .Where(e => e.Slot == Slot.Warden)
+                            .AsNoTracking()
+                            .FirstOrDefaultAsync();
+                        if (superior is null) continue;
+                        else break;
+                    }
+                }
+                
+            }
+            else if (t.Slot.IsWardenTeam() && t.Team is not null && t.Flight is Flight.Alpha)
+            {
+                superior = await _dbContext.Users
+                    .Where(e => e.Role == Role.Warden)
+                    .Where(e => e.Flight == null)
+                    .Where(e => e.Slot == t.Slot)
+                    .Where(e => e.Team == null)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync();
+                
                 if (superior is null)
                 {
                     foreach(var role in WardenRoles)
@@ -606,7 +633,7 @@ namespace FiveOhFirstDataCore.Data.Services
                     }
                 }
             }
-            else if (t.Slot.IsWardenTeam() && t.Flight == Flight.Alpha)
+            else if (t.Slot.IsWardenTeam() && t.Team is null && t.Flight is null)
             {
                 foreach (var role in WardenRoles)
                 {
@@ -619,6 +646,7 @@ namespace FiveOhFirstDataCore.Data.Services
                     else break;
                 }
             }
+
             if (t.Slot == Slot.Warden && t.Role != Role.MasterWarden)
             {
                 superior = await _dbContext.Users

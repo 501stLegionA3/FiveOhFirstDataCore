@@ -45,7 +45,7 @@
             <div class="stuff">
                 @if (Superior is not null)
                 {
-                    <p>Superior: <a href="/trooper/@Superior.Id" @onclick="(x) => ChangeTrooper(Superior.Id)"><RankDisplay Trooper="@Superior"/> @Superior.NickName</a></p>
+                    <p>Superior: <a href="/trooper/@Superior.BirthNumber" @onclick="(x) => ChangeTrooper(Superior.BirthNumber)"><RankDisplay Trooper="@Superior"/> @Superior.NickName</a></p>
                 } else
                 {
                     <p>Superior: TBD</p>
