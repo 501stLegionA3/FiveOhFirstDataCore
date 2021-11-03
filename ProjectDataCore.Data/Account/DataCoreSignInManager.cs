@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Account;
 
-internal class DataCoreSignInManager : SignInManager<DataCoreUser>
+public class DataCoreSignInManager : SignInManager<DataCoreUser>
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 

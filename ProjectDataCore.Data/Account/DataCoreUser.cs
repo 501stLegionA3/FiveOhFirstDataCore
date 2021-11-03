@@ -12,4 +12,8 @@ public class DataCoreUser : IdentityUser<int>
 {
     public int DisplayId { get; set; }
     public string NickName { get; set; }
+
+    public ulong? DiscordId { get; set; }
+    public string? SteamLink { get; set; }
+    public string? AccessCode { get; set; }
 }
