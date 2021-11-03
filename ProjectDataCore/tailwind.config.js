@@ -3,7 +3,8 @@ module.exports = {
 		enabled: true,
 		content: [
 			'./**/*.html',
-			'./**/*.razor'
+			'./**/*.razor',
+			'../ProjectDataCore.Components/**/*.razor'
 		],
 	},
 	darkMode: false, // or 'media' or 'class'
