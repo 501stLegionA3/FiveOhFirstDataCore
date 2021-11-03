@@ -27,7 +27,7 @@
                     </button>
                     <div id="login-menu" class="collapse">
                         <div class="text-small dropdown-menu-dark shadow p-2">
-                            <a href="trooper/me" class="dropdown-item">Profile</a>
+                            <a href="trooper/me" @onclick="() => ChangeTrooper()" class="dropdown-item">Profile</a>
                             <form method="post" action="Identity/Account/LogOut">
                                 <button type="submit" class="dropdown-item">Log out</button>
                             </form>
@@ -292,51 +292,3 @@
         v@(Version)
     </div>
 </div>
-
-@code {
-    [CascadingParameter]
-    public Trooper? CurrentUser { get; set; }
-
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
-
-    public bool InSquad { get; set; } = false;
-    public bool InPlatoon {get;set;} = false;
-    public bool InCompany { get; set; } = false;
-
-    private string Version { get; set; } = "";
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-
-        if(CurrentUser is not null)
-        {
-            _advRefresh.AddUserSpecificRefreshListener(CurrentUser.Id, 
-                "UserDetails", CallRefreshRequest);
-        }
-
-        Version = _config["Version"];
-
-        if(CurrentUser is not null)
-        {
-            var user = (await AuthStateTask).User;
-
-            bool manager = (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded;
-
-            InSquad = manager || CurrentUser.Slot.IsSquad();
-            InPlatoon = manager || InSquad || CurrentUser.Slot.IsPlatoon();
-            InCompany = manager || InPlatoon || CurrentUser.Slot.IsCompany();
-        }
-    }
-
-    public async Task CallRefreshRequest()
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        _advRefresh.RemoveRefreshListeners(CallRefreshRequest);
-    }
-}
