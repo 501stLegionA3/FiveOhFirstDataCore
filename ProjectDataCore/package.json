@@ -1,0 +1,17 @@
+{
+  "name": "projectdatacore",
+  "version": "0.17.0",
+  "description": "Project Data Core for ArmA unit tracking",
+  "main": "index.js",
+  "scripts": {
+    "buildcss": "postcss wwwroot/css/app.css -o wwwroot/css/app.min.css"
+  },
+  "author": "501st Holosite Support Team",
+  "license": "MIT",
+  "dependencies": {
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.3.11",
+    "postcss-cli": "^9.0.1",
+    "tailwindcss": "^2.2.19"
+  }
+}
