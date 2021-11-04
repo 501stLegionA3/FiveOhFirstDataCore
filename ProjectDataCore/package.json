@@ -3,9 +3,7 @@
   "version": "0.17.0",
   "description": "Project Data Core for ArmA unit tracking",
   "main": "index.js",
-  "scripts": {
-
-  },
+  "scripts": {},
   "author": "501st Holosite Support Team",
   "license": "MIT",
   "dependencies": {
