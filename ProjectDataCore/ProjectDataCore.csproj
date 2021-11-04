@@ -5,14 +5,12 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
-	<Target Name="PreCssBuild" BeforeTargets="PreBuildEvent">
-		<Exec Command="npm run buildappcss" />
-	</Target>
-
-  <Target Name="PostCssBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="npm run buildpagecss" />
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\bundle\$(ProjectName).styles.css -r" />
+    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\projectbundle\$(ProjectName).bundle.scp.css -r" />
+    <Exec Command="npx postcss wwwroot/css/app.css -o wwwroot/css/app.min.css" />
   </Target>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0-rc.2.21480.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-rc.2.21480.10" />
