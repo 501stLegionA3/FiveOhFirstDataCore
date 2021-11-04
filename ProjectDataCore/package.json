@@ -4,7 +4,8 @@
   "description": "Project Data Core for ArmA unit tracking",
   "main": "index.js",
   "scripts": {
-    "buildcss": "postcss wwwroot/css/app.css -o wwwroot/css/app.min.css"
+    "buildappcss": "postcss wwwroot/css/app.css -o wwwroot/css/app.min.css --verbose",
+    "buildpagecss": "postcss **/ProjectDataCore.styles.css --replace --verbose"
   },
   "author": "501st Holosite Support Team",
   "license": "MIT",

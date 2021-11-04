@@ -5,9 +5,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="npm run buildcss" />
+	<Target Name="PreCssBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="npm run buildappcss" />
 	</Target>
+
+  <Target Name="PostCssBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="npm run buildpagecss" />
+  </Target>
 	
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0-rc.2.21480.10" />
