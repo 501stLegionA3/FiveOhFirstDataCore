@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Result;
+using ProjectDataCore.Data.Structures.Roster;
 
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,16 @@ public interface IModularRosterService
     #endregion
 
     #region Roster Display Settings
-
+    public Task<ActionResult> AddRosterDisplaySettingsAsync(string name, bool whitelisted);
+    public Task<ActionResult> UpdateRosterDisplaySettingsAsync(Guid settings, bool? whitelisted = null);
+    public Task<ActionResult> AddTreeToDisplaySettingsAsync(Guid settings, Guid tree);
+    public Task<ActionResult> RemoveTreeFromDisplaySettingsAsync(Guid settings, Guid tree);
+    public Task<ActionResult> RemoveRosterDisplaySettingsAsync(Guid settings);
     #endregion
 
     #region Get Roster Display
-
+    public IAsyncEnumerable<RosterTree> GetFullRosterAsync();
+    public IAsyncEnumerable<RosterTree> GetRosterTreeForSettingsAsync(Guid settings);
+    public Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplays(); 
     #endregion
 }
