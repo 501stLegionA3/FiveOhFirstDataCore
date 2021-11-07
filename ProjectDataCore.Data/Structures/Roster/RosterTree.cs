@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Roster;
 
+/// <summary>
+/// A section on the roster, such as a platoon or squad.
+/// </summary>
 public class RosterTree : DataObject<Guid>
 {
     public List<RosterTree> ChildRosters { get; set; } = new();

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Roster;
 
+/// <summary>
+/// A position on the roster.
+/// </summary>
 public class RosterPosition : DataObject<Guid>
 {
     public string PositionName { get; set; }
