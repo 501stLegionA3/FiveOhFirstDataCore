@@ -12,7 +12,7 @@ namespace ProjectDataCore.Data.Structures.Roster;
 public class RosterTree : DataObject<Guid>
 {
     public List<RosterTree> ChildRosters { get; set; } = new();
-    public List<RosterPosition> RosterPositions { get; set; } = new();
+    public List<RosterSlot> RosterPositions { get; set; } = new();
     public string RosterName { get; set; }
 
     public RosterTree ParentRoster { get; set; }

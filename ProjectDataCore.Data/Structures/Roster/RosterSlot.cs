@@ -10,7 +10,7 @@ namespace ProjectDataCore.Data.Structures.Roster;
 /// <summary>
 /// A position on the roster.
 /// </summary>
-public class RosterPosition : DataObject<Guid>
+public class RosterSlot : DataObject<Guid>
 {
     public string PositionName { get; set; }
     public DataCoreUser OccupiedBy { get; set; }
