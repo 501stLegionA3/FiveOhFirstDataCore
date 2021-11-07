@@ -6,6 +6,7 @@
 # Custom Ignore list
 [Cc]onfig/
 unsafe_uploads/
+*.min.css
 
 # User-specific files
 *.rsuser
