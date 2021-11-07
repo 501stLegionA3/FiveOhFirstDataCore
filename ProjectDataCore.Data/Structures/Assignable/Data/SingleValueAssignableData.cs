@@ -9,4 +9,7 @@ namespace ProjectDataCore.Data.Structures.Assignable;
 public class SingleValueAssignableData : DataObject<Guid>
 {
     public string Value { get; set; }
+
+    public SingleValueAssignable Assignable { get; set; }
+    public Guid AssignableKey { get; set; }
 }

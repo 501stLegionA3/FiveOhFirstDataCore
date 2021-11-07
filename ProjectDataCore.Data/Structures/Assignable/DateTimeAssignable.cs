@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable;
 
-public class SingleValueAssignable
+public class DateTimeAssignable : DataObject<Guid>
 {
-    public List<SingleValueAssignableData> Assignables { get; set; } = new();
+    public DateTime DateTime { get; set; }
     public string Name { get; set; }
-    public bool AreSiteRoles { get; set; }
 }

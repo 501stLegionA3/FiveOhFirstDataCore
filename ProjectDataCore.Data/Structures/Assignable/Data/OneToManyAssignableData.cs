@@ -10,4 +10,7 @@ internal class OneToManyAssignableData : DataObject<Guid>
 {
     public string Primary { get; set; }
     public List<string> Secondaries { get; set; }
+
+    public OneToManyAssignable Assignable { get; set; }
+    public Guid AssignableKey { get; set; }
 }
