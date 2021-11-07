@@ -18,6 +18,7 @@ namespace FiveOhFirstDataCore.Data.Account
         public Slot? Slot { get; set; }
 
         public Qualification Qualifications { get; set; }
+        public bool QualsChanged { get; set; } = false;
 
         public DateTime? LastPromotion { get; set; }
         public DateTime? StartOfService { get; set; }
@@ -45,21 +46,22 @@ namespace FiveOhFirstDataCore.Data.Account
 
         public bool HasChange(bool includeAdditionalChanges = true)
         {
-            var val = !(Rank is null
-                && RTORank is null
-                && MedicRank is null
-                && WarrantRank is null
-                && WardenRank is null
-                && PilotRank is null
-                && Role is null
-                && Team is null
-                && Flight is null
-                && Slot is null
-                && LastPromotion is null
-                && StartOfService is null
-                && LastBilletChange is null
-                && GraduatedBCTOn is null
-                && GraduatedUTCOn is null);
+            var val = QualsChanged 
+                || !(Rank is null
+                    && RTORank is null
+                    && MedicRank is null
+                    && WarrantRank is null
+                    && WardenRank is null
+                    && PilotRank is null
+                    && Role is null
+                    && Team is null
+                    && Flight is null
+                    && Slot is null
+                    && LastPromotion is null
+                    && StartOfService is null
+                    && LastBilletChange is null
+                    && GraduatedBCTOn is null
+                    && GraduatedUTCOn is null);
 
             if (includeAdditionalChanges)
                 val = val || AdditionalChanges is not null;

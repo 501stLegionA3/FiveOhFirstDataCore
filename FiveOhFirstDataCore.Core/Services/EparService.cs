@@ -31,6 +31,9 @@ namespace FiveOhFirstDataCore.Data.Services
             // We can't add anything to a null item.
             if (trooper is null) return new(false, new List<string> { "There was no trooper found for the inputed ID." });
 
+            if (request.Qualifications != trooper.Qualifications)
+                request.QualsChanged = true;
+
             trooper.TrooperChangeRequests.Add(request);
 
             await _dbContext.SaveChangesAsync();
