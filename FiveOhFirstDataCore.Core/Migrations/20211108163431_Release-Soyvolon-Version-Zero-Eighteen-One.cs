@@ -2,7 +2,7 @@
 
 namespace FiveOhFirstDataCore.Data.Migrations
 {
-    public partial class DevSoyvolonQualEPARChecks : Migration
+    public partial class ReleaseSoyvolonVersionZeroEighteenOne : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
