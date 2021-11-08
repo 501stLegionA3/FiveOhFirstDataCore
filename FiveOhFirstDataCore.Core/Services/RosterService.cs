@@ -596,15 +596,26 @@ namespace FiveOhFirstDataCore.Data.Services
                 
                 if (superior is null)
                 {
-                    foreach(var role in WardenRoles)
+                    superior = await _dbContext.Users
+                        .Where(e => e.Role == Role.Warden)
+                        .Where(e => e.Slot == t.Slot)
+                        .Where(e => e.Team == null)
+                        .Where(e => e.Flight == null)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+
+                    if (superior is null)
                     {
-                        superior = await _dbContext.Users
-                            .Where(e => e.Role == role)
-                            .Where(e => e.Slot == Slot.Warden)
-                            .AsNoTracking()
-                            .FirstOrDefaultAsync();
-                        if (superior is null) continue;
-                        else break;
+                        foreach(var role in WardenRoles)
+                        {
+                            superior = await _dbContext.Users
+                                .Where(e => e.Role == role)
+                                .Where(e => e.Slot == Slot.Warden)
+                                .AsNoTracking()
+                                .FirstOrDefaultAsync();
+                            if (superior is null) continue;
+                            else break;
+                        }
                     }
                 }
                 
