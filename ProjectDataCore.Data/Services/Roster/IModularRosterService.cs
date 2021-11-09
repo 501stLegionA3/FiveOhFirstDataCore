@@ -15,7 +15,7 @@ namespace ProjectDataCore.Data.Services;
 public interface IModularRosterService
 {
     #region Roster Tree
-    public Task<ActionResult> AddRosterTreeAsync(string name, Guid parentTree);
+    public Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null);
     public Task<ActionResult> UpdateRosterTreeAsync(Guid tree, string? newName = null, Guid? newParent = null);
     public Task<ActionResult> AddChildRosterAsync(Guid tree, Guid child, int position);
     public Task<ActionResult> RemoveChildRosterAsync(Guid tree, Guid child);
