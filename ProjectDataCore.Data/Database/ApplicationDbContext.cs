@@ -17,4 +17,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     {
 
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+
+
+        base.OnModelCreating(builder);
+    }
 }
