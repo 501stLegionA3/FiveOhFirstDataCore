@@ -18,7 +18,18 @@ public class ModularRosterService : IModularRosterService
         };
 
         if (parentTree is not null)
+        {
+            var parent = await _dbContext.RosterTrees
+                .Where(x => x.Key == parentTree)
+                .Include(x => x.ChildRosters)
+                .FirstOrDefaultAsync();
+
+            if (parent is null)
+                return new(false, new List<string> { "No parent was found by the provided roster ID." });
+
             tree.ParentRosterId = parentTree.Value;
+            tree.Order = parent.ChildRosters.Count;
+        }
 
         await _dbContext.AddAsync(tree);
         await _dbContext.SaveChangesAsync();
@@ -26,23 +37,21 @@ public class ModularRosterService : IModularRosterService
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateRosterTreeAsync(Guid tree, string? newName = null, Guid? newParent = null)
+    public async Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterTreeEditModel> action)
     {
-        if (newName is null && newParent is null)
-            return new(false, new List<string> { "No update was provided." });
-
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var treeObject = await _dbContext.FindAsync<RosterTree>(tree);
 
         if (treeObject is null)
             return new(false, new List<string> { "No Roster Tree object was able to be found for the provided ID." });
+        
+        // TODO: Implement Roster tree edit model action for updates.
+        //if(newName is not null)
+        //    treeObject.RosterName = newName;
 
-        if(newName is not null)
-            treeObject.RosterName = newName;
-
-        if(newParent is not null)
-            treeObject.ParentRosterId = newParent.Value;
+        //if(newParent is not null)
+        //    treeObject.ParentRosterId = newParent.Value;
 
         await _dbContext.SaveChangesAsync();
 
@@ -155,12 +164,55 @@ public class ModularRosterService : IModularRosterService
     #region Roster Position
     public async Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var rosterTree = await _dbContext.RosterTrees
+            .Where(x => x.Key == parentTree)
+            .Include(x => x.ChildRosters)
+            .FirstOrDefaultAsync();
+
+        if (rosterTree is null)
+            return new(false, new List<string> { "No parent tree was found to add a slot to." });
+
+        var slot = new RosterSlot()
+        {
+            PositionName = name,
+            ParentTreeId = parentTree,
+            Order = rosterTree.RosterPositions.Count
+        };
+
+        await _dbContext.AddAsync(slot);
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateRosterSlotAsync(Guid slot, string? newName = null, Guid? newParent = null)
+    public async Task<ActionResult> UpdateRosterSlotAsync(Guid slot, Action<RosterSlotEditModel> action)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var slotData = await _dbContext.FindAsync<RosterSlot>(slot);
+
+        if (slotData is null)
+            return new(false, new List<string> { "No slot found for the provided ID." });
+
+        RosterSlotEditModel update = new();
+        action.Invoke(update);
+
+        if(update.UserId.HasValue)
+            slotData.OccupiedById = update.UserId.Value;
+
+        if (update.PositionName is not null)
+            slotData.PositionName = update.PositionName;
+
+        if (update.ParentTreeId is not null)
+        {
+            // TOOD: Implement parent change for roster slot.
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
     public async Task<ActionResult> UpdateRosterSlotPositionAsync(Guid parentTree, Guid slot, int newPosition)

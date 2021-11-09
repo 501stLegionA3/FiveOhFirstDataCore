@@ -15,7 +15,7 @@ public class RosterSlot : DataObject<Guid>
     public string PositionName { get; set; }
 
     public DataCoreUser? OccupiedBy { get; set; }
-    public int OccupiedById { get; set; }
+    public int? OccupiedById { get; set; }
 
     public RosterTree ParentTree { get; set; }
     public Guid ParentTreeId { get; set; }
