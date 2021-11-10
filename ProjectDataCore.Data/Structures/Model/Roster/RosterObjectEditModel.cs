@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Model.Roster;
 
-public class RosterTreeEditModel
+public class RosterObjectEditModel
 {
-    public string? RosterName { get; set; }
+    public string? Name { get; set; }
     public Optional<Guid?> ParentRosterId { get; set; }
 }

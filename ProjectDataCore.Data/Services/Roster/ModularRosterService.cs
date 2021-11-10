@@ -14,7 +14,7 @@ public class ModularRosterService : IModularRosterService
 
         var tree = new RosterTree()
         {
-            RosterName = name
+            Name = name
         };
 
         if (parentTree is not null)
@@ -37,7 +37,7 @@ public class ModularRosterService : IModularRosterService
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterTreeEditModel> action)
+    public async Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterObjectEditModel> action)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -46,11 +46,11 @@ public class ModularRosterService : IModularRosterService
         if (treeObject is null)
             return new(false, new List<string> { "No Roster Tree object was able to be found for the provided ID." });
 
-        RosterTreeEditModel update = new();
+        RosterObjectEditModel update = new();
         action.Invoke(update);
 
-        if(update.RosterName is not null)
-            treeObject.RosterName = update.RosterName;
+        if(update.Name is not null)
+            treeObject.Name = update.Name;
 
         // If the parent tree ID has a value...
         if (update.ParentRosterId.HasValue)
@@ -203,8 +203,8 @@ public class ModularRosterService : IModularRosterService
 
         var slot = new RosterSlot()
         {
-            PositionName = name,
-            ParentTreeId = parentTree,
+            Name = name,
+            ParentRosterId = parentTree,
             Order = rosterTree.RosterPositions.Count
         };
 
@@ -230,23 +230,23 @@ public class ModularRosterService : IModularRosterService
             // ...update the occupide ID.
             slotData.OccupiedById = update.UserId.Value;
         // If the position name has a value...
-        if (update.PositionName is not null)
+        if (update.Name is not null)
             // ...update the position name.
-            slotData.PositionName = update.PositionName;
+            slotData.Name = update.Name;
         // If the parent tree ID has a value...
-        if (update.ParentTreeId is not null)
+        if (update.Name is not null)
         {
             // ... attempt to get the parent tree object,
             // including all roster positions ...
             var parentTree = await _dbContext.RosterTrees
-                .Where(x => x.Key == update.ParentTreeId.Value)
+                .Where(x => x.Key == update.ParentRosterId.Value)
                 .Include(x => x.RosterPositions)
                 .FirstOrDefaultAsync();
             // ... if the parent tree is null, return a failure...
             if (parentTree is null)
                 return new(false, new List<string> { "No parent roster found to swtich to." });
             // ... otherwise update the slot with a new parent...
-            slotData.ParentTreeId = update.ParentTreeId.Value;
+            slotData.ParentRosterId = update.ParentRosterId.Value;
             slotData.Order = parentTree.RosterPositions.Count;
         }
         // ... then save changes.

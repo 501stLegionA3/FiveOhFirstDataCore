@@ -16,7 +16,7 @@ public interface IModularRosterService
 {
     #region Roster Tree
     public Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null);
-    public Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterTreeEditModel> action);
+    public Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterObjectEditModel> action);
     public Task<ActionResult> AddChildRosterAsync(Guid tree, Guid child, int position);
     public Task<ActionResult> RemoveChildRosterAsync(Guid tree, Guid child);
     public Task<ActionResult> UpdateChildRosterPositionAsync(Guid tree, Guid child, int newPosition);

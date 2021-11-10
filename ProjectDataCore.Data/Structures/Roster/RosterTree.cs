@@ -9,13 +9,8 @@ namespace ProjectDataCore.Data.Structures.Roster;
 /// <summary>
 /// A section on the roster, such as a platoon or squad.
 /// </summary>
-public class RosterTree : DataObject<Guid>
+public class RosterTree : RosterObject
 {
     public List<RosterTree> ChildRosters { get; set; } = new();
     public List<RosterSlot> RosterPositions { get; set; } = new();
-    public string RosterName { get; set; }
-
-    public RosterTree? ParentRoster { get; set; }
-    public Guid? ParentRosterId { get; set; }
-    public int Order { get; set; }
 }
