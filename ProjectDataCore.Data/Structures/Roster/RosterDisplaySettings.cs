@@ -14,5 +14,4 @@ public class RosterDisplaySettings : DataObject<Guid>
     public string Name { get; set; }
     public bool Whitelist { get; set; } = true;
     public List<Guid> TreeKeys { get; set; } = new();
-
 }

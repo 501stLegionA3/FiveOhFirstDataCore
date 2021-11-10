@@ -251,27 +251,91 @@ public class ModularRosterService : IModularRosterService
     #region Roster Display Settings
     public async Task<ActionResult> AddRosterDisplaySettingsAsync(string name, bool whitelisted)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settings = new RosterDisplaySettings()
+        {
+            Name = name,
+            Whitelist = whitelisted
+        };
+
+        await _dbContext.AddAsync(settings);
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateRosterDisplaySettingsAsync(Guid settings, bool? whitelisted = null)
+    public async Task<ActionResult> UpdateRosterDisplaySettingsAsync(Guid settings, Action<RosterDisplaySettingsEditModel> action)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
+
+        if (settingsObject is null)
+            return new(false, new List<string> { "No settings object found for the provided ID" });
+
+        RosterDisplaySettingsEditModel update = new();
+        action.Invoke(update);
+
+        if(update.Name is not null)
+            settingsObject.Name = update.Name;
+
+        if(update.WhiteList is not null)
+            settingsObject.Whitelist = update.WhiteList.Value;
+
+        if(update.TreeKeys is not null)
+            settingsObject.TreeKeys = update.TreeKeys;
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
     public async Task<ActionResult> AddTreeToDisplaySettingsAsync(Guid settings, Guid tree)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
+
+        if (settingsObject is null)
+            return new(false, new List<string> { "No settings object found for the provided ID" });
+
+        settingsObject.TreeKeys.Add(tree);
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
     public async Task<ActionResult> RemoveTreeFromDisplaySettingsAsync(Guid settings, Guid tree)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
+
+        if (settingsObject is null)
+            return new(false, new List<string> { "No settings object found for the provided ID" });
+
+        settingsObject.TreeKeys.Remove(tree);
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 
     public async Task<ActionResult> RemoveRosterDisplaySettingsAsync(Guid settings)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
+
+        if (settingsObject is null)
+            return new(false, new List<string> { "No settings object found for the provided ID" });
+
+        _dbContext.Remove(settingsObject);
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
     #endregion
 
