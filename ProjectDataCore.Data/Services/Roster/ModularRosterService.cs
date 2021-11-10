@@ -45,13 +45,40 @@ public class ModularRosterService : IModularRosterService
 
         if (treeObject is null)
             return new(false, new List<string> { "No Roster Tree object was able to be found for the provided ID." });
-        
-        // TODO: Implement Roster tree edit model action for updates.
-        //if(newName is not null)
-        //    treeObject.RosterName = newName;
 
-        //if(newParent is not null)
-        //    treeObject.ParentRosterId = newParent.Value;
+        RosterTreeEditModel update = new();
+        action.Invoke(update);
+
+        if(update.RosterName is not null)
+            treeObject.RosterName = update.RosterName;
+
+        // If the parent tree ID has a value...
+        if (update.ParentRosterId.HasValue)
+        {
+            // ... and the value is not null ...
+            if (update.ParentRosterId.Value is not null)
+            {
+                // ... attempt to get the parent tree object,
+                // including all roster positions ...
+                var parentTree = await _dbContext.RosterTrees
+                    .Where(x => x.Key == update.ParentRosterId.Value.Value)
+                    .Include(x => x.ChildRosters)
+                    .FirstOrDefaultAsync();
+                // ... if the parent tree is null, return a failure...
+                if (parentTree is null)
+                    return new(false, new List<string> { "No parent roster found to swtich to." });
+                // ... otherwise update the slot with a new parent...
+                treeObject.ParentRosterId = update.ParentRosterId.Value.Value;
+                treeObject.Order = parentTree.ChildRosters.Count;
+            }
+            else
+            {
+                // There is no parent roster anymore, set
+                // relationship to null.
+                treeObject.ParentRosterId = null;
+                treeObject.Order = 0;
+            }
+        }
 
         await _dbContext.SaveChangesAsync();
 
@@ -195,21 +222,34 @@ public class ModularRosterService : IModularRosterService
 
         if (slotData is null)
             return new(false, new List<string> { "No slot found for the provided ID." });
-
+        // Get an edit model
         RosterSlotEditModel update = new();
         action.Invoke(update);
-
+        // If the user ID has a value...
         if(update.UserId.HasValue)
+            // ...update the occupide ID.
             slotData.OccupiedById = update.UserId.Value;
-
+        // If the position name has a value...
         if (update.PositionName is not null)
+            // ...update the position name.
             slotData.PositionName = update.PositionName;
-
+        // If the parent tree ID has a value...
         if (update.ParentTreeId is not null)
         {
-            // TOOD: Implement parent change for roster slot.
+            // ... attempt to get the parent tree object,
+            // including all roster positions ...
+            var parentTree = await _dbContext.RosterTrees
+                .Where(x => x.Key == update.ParentTreeId.Value)
+                .Include(x => x.RosterPositions)
+                .FirstOrDefaultAsync();
+            // ... if the parent tree is null, return a failure...
+            if (parentTree is null)
+                return new(false, new List<string> { "No parent roster found to swtich to." });
+            // ... otherwise update the slot with a new parent...
+            slotData.ParentTreeId = update.ParentTreeId.Value;
+            slotData.Order = parentTree.RosterPositions.Count;
         }
-
+        // ... then save changes.
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);

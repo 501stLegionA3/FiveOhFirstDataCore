@@ -8,5 +8,6 @@ namespace ProjectDataCore.Data.Structures.Model.Roster;
 
 public class RosterTreeEditModel
 {
-    // TODO: Implement roster tree edit model.
+    public string? RosterName { get; set; }
+    public Optional<Guid?> ParentRosterId { get; set; }
 }

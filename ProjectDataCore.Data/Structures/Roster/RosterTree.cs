@@ -16,6 +16,6 @@ public class RosterTree : DataObject<Guid>
     public string RosterName { get; set; }
 
     public RosterTree? ParentRoster { get; set; }
-    public Guid ParentRosterId { get; set; }
+    public Guid? ParentRosterId { get; set; }
     public int Order { get; set; }
 }
