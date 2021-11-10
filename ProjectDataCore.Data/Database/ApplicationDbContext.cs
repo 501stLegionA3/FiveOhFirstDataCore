@@ -32,8 +32,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithOne(e => e.ParentRoster)
             .HasForeignKey(e => e.ParentRosterId);
         rosterTree.HasMany(e => e.RosterPositions)
-            .WithOne(e => e.ParentTree)
-            .HasForeignKey(e => e.ParentTreeId);
+            .WithOne(e => e.ParentRoster)
+            .HasForeignKey(e => e.ParentRosterId)
+            // Overwrite the default nulability of this
+            // relationship.
+            .IsRequired(true);
 
         var rosterSlot = builder.Entity<RosterSlot>();
         rosterSlot.HasKey(e => e.Key);

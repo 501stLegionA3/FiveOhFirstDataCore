@@ -15,18 +15,16 @@ namespace ProjectDataCore.Data.Services;
 public interface IModularRosterService
 {
     #region Roster Tree
-    public Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null);
+    public Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0);
     public Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterObjectEditModel> action);
     public Task<ActionResult> AddChildRosterAsync(Guid tree, Guid child, int position);
     public Task<ActionResult> RemoveChildRosterAsync(Guid tree, Guid child);
-    public Task<ActionResult> UpdateChildRosterPositionAsync(Guid tree, Guid child, int newPosition);
     public Task<ActionResult> RemoveRosterTreeAsync(Guid tree);
     #endregion
 
     #region Roster Position
-    public Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree);
+    public Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree, int position);
     public Task<ActionResult> UpdateRosterSlotAsync(Guid slot, Action<RosterSlotEditModel> action);
-    public Task<ActionResult> UpdateRosterSlotPositionAsync(Guid parentTree, Guid slot, int newPosition);
     public Task<ActionResult> RemoveRosterSlotAsync(Guid slot);
     #endregion
 

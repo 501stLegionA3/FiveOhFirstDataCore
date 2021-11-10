@@ -8,7 +8,7 @@ public class ModularRosterService : IModularRosterService
         => (_dbContextFactory) = (dbContextFactory);
 
     #region Roster Tree
-    public async Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null)
+    public async Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -33,6 +33,12 @@ public class ModularRosterService : IModularRosterService
 
         await _dbContext.AddAsync(tree);
         await _dbContext.SaveChangesAsync();
+
+        if (parentTree is not null)
+        {
+            await tree.MovePositionAsync(_dbContext, position);
+            await _dbContext.SaveChangesAsync();
+        }
 
         return new(true, null);
     }
@@ -80,6 +86,9 @@ public class ModularRosterService : IModularRosterService
             }
         }
 
+        if (update.Order is not null)
+            await treeObject.MovePositionAsync(_dbContext, update.Order.Value);
+
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);
@@ -89,26 +98,18 @@ public class ModularRosterService : IModularRosterService
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        var parentTree = await _dbContext.RosterTrees
-            .Where(x => x.Key == tree)
-            .Include(x => x.ChildRosters)
-            .FirstOrDefaultAsync();
-
-        if (parentTree is null)
-            return new(false, new List<string> { "No parent roster tree was found." });
-
         var childTree = await _dbContext.FindAsync<RosterTree>(child);
 
         if (childTree is null)
             return new(false, new List<string> { "No child roster tree was found." });
 
         childTree.ParentRosterId = tree;
-        parentTree.ChildRosters.ForEach(x =>
-        {
-            if (x.Order > position)
-                x.Order++;
-        });
-        childTree.Order = position;
+        childTree.Order = -1;
+
+        await _dbContext.SaveChangesAsync();
+
+        // Perform a reorder operation to insert at the correct spot.
+        await childTree.MovePositionAsync(_dbContext, position);
 
         await _dbContext.SaveChangesAsync();
 
@@ -132,46 +133,6 @@ public class ModularRosterService : IModularRosterService
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateChildRosterPositionAsync(Guid tree, Guid child, int newPosition)
-    {
-        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var parentTree = await _dbContext.RosterTrees
-            .Where(x => x.Key == tree)
-            .Include(x => x.ChildRosters)
-            .FirstOrDefaultAsync();
-
-        if (parentTree is null)
-            return new(false, new List<string> { "No parent roster tree was found." });
-
-        // Get an ordered lists of the child values.
-
-        var order = parentTree.ChildRosters
-            .OrderBy(x => x.Order)
-            .ToList();
-
-        // Find the object we are editing.
-        var childTree = order.Find(x => x.Key == child);
-
-        if(childTree is null)
-            return new(false, new List<string> { "No child roster tree was found." });
-
-        // Remove it and re-insert it into the list at
-        // its new position.
-        order.Remove(childTree);
-        order.Insert(newPosition, childTree);
-
-        // Reassign order values.
-        for(int i = 0; i < order.Count; i++)
-        {
-            order[i].Order = i;
-        }
-
-        await _dbContext.SaveChangesAsync();
-
-        return new(true, null);
-    }
-
     public async Task<ActionResult> RemoveRosterTreeAsync(Guid tree)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -184,12 +145,16 @@ public class ModularRosterService : IModularRosterService
         _dbContext.Remove(rosterTree);
         await _dbContext.SaveChangesAsync();
 
+        await rosterTree.MovePositionAsync(_dbContext);
+
+        await _dbContext.SaveChangesAsync();
+
         return new(true, null);
     }
     #endregion
 
     #region Roster Position
-    public async Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree)
+    public async Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree, int position)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -209,6 +174,10 @@ public class ModularRosterService : IModularRosterService
         };
 
         await _dbContext.AddAsync(slot);
+        await _dbContext.SaveChangesAsync();
+
+        await slot.MovePositionAsync(_dbContext, position);
+
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);
@@ -249,20 +218,33 @@ public class ModularRosterService : IModularRosterService
             slotData.ParentRosterId = update.ParentRosterId.Value;
             slotData.Order = parentTree.RosterPositions.Count;
         }
+
+        if (update.Order is not null)
+            await slotData.MovePositionAsync(_dbContext, update.Order.Value);
+
         // ... then save changes.
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateRosterSlotPositionAsync(Guid parentTree, Guid slot, int newPosition)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<ActionResult> RemoveRosterSlotAsync(Guid slot)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var rosterSlot = await _dbContext.FindAsync<RosterSlot>(slot);
+
+        if (rosterSlot is null)
+            return new(false, new List<string> { "No roster slot was found." });
+
+        _dbContext.Remove(rosterSlot);
+        await _dbContext.SaveChangesAsync();
+
+        await rosterSlot.MovePositionAsync(_dbContext);
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
     #endregion
 

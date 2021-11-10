@@ -57,6 +57,26 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RosterTrees",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ParentRosterId = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterTrees", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_RosterTrees_RosterTrees_ParentRosterId",
+                        column: x => x.ParentRosterId,
+                        principalTable: "RosterTrees",
+                        principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -162,6 +182,33 @@ namespace ProjectDataCore.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RosterSlots",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    OccupiedById = table.Column<int>(type: "integer", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    ParentRosterId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterSlots", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_RosterSlots_AspNetUsers_OccupiedById",
+                        column: x => x.OccupiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RosterSlots_RosterTrees_ParentRosterId",
+                        column: x => x.ParentRosterId,
+                        principalTable: "RosterTrees",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -198,6 +245,21 @@ namespace ProjectDataCore.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterSlots_OccupiedById",
+                table: "RosterSlots",
+                column: "OccupiedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterSlots_ParentRosterId",
+                table: "RosterSlots",
+                column: "ParentRosterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterTrees_ParentRosterId",
+                table: "RosterTrees",
+                column: "ParentRosterId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -218,10 +280,16 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "RosterSlots");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "RosterTrees");
         }
     }
 }

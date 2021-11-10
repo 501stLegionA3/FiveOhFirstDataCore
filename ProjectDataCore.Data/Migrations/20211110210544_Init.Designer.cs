@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211103015819_Init")]
+    [Migration("20211110210544_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,6 +239,64 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("OccupiedById")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ParentRosterId")
+                        .IsRequired()
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("OccupiedById");
+
+                    b.HasIndex("ParentRosterId");
+
+                    b.ToTable("RosterSlots");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ParentRosterId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ParentRosterId");
+
+                    b.ToTable("RosterTrees");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreRole", null)
@@ -288,6 +346,44 @@ namespace ProjectDataCore.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "OccupiedBy")
+                        .WithMany("RosterSlots")
+                        .HasForeignKey("OccupiedById");
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
+                        .WithMany("RosterPositions")
+                        .HasForeignKey("ParentRosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OccupiedBy");
+
+                    b.Navigation("ParentRoster");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
+                        .WithMany("ChildRosters")
+                        .HasForeignKey("ParentRosterId");
+
+                    b.Navigation("ParentRoster");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
+                {
+                    b.Navigation("RosterSlots");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
+                {
+                    b.Navigation("ChildRosters");
+
+                    b.Navigation("RosterPositions");
                 });
 #pragma warning restore 612, 618
         }
