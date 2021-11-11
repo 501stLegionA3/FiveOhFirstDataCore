@@ -8,57 +8,135 @@ namespace ProjectDataCore.Data.Structures.Roster;
 
 public abstract class RosterObject : DataObject<Guid>
 {
-    public int Order { get; set; }
     public string Name { get; set; }
-    public RosterTree? ParentRoster { get; set; }
-    public Guid? ParentRosterId { get; set; }
 }
 
 public static class RosterObjectExtenstions
 {
-    public static async Task MovePositionAsync(this RosterObject toMove, 
+    public static async Task MovePositionAsync(this RosterTree toMove, 
+        ApplicationDbContext _dbContext, Guid? parent = null, int newIndex = 0)
+    {
+        // See if we have a child value...
+        var dumpCheck = (await _dbContext.RosterParentLinks
+            .Where(x => x.ChildRosertId == toMove.Key)
+            .CountAsync()) <= 0;
+        // ... then start the query, filtering by a child value
+        // if we have one...
+        IQueryable<RosterParentLink> linksQuery;
+        if (dumpCheck)
+            linksQuery = _dbContext.RosterParentLinks;
+        else
+            linksQuery = _dbContext.RosterParentLinks
+                .Where(x => x.ChildRosertId == toMove.Key);
+        // ... and then filter by a parent value if
+        // we have one ...
+        if(parent is not null)
+            linksQuery = linksQuery.Where(x => x.ParentRosterId == parent.Value);
+        // ... then get the enumerable ...
+        var links = linksQuery
+            .Include(x => x.ParentRoster)
+            .ThenInclude(x => x.ChildRosters)
+            .ThenInclude(x => x.RosterParentLinks)
+            .AsAsyncEnumerable();
+        // ... setup a check so we don't repeat
+        // on specifc items ...
+        HashSet<Guid> filteredParents = new();
+        // ... then for each link in the query ...
+        await foreach(var link in links)
+        {
+            // ... check if the parent has already been computed,
+            // skip this link if it has ...
+            if (filteredParents.Contains(link.ParentRosterId))
+                continue;
+            // ... get the ordered child rosters
+            // of the parent ...
+            var set = link.ParentRoster.ChildRosters
+                .OrderBy(x => x.RosterParentLinks.Count)
+                .ToList();
+            // ... if there is a child object ...
+            if(!dumpCheck)
+            {
+                // ... find the actual item ...
+                var item = set.FirstOrDefault(x => x.Key == toMove.Key);
+
+                if (item is null)
+                    continue;
+                // ... and move it to its new position ...
+                set.Remove(item);
+                set.Insert(newIndex, item);
+            }
+            // ... then for every child in the parent ...
+            for (int i = 0; i < set.Count; i++)
+            {
+                // ... get the actual link object ...
+                var vals = set[i].RosterParentLinks
+                    .Where(x => x.ParentRosterId == link.ParentRosterId);
+                // ... and set the order value ...
+                foreach (var v in vals)
+                    v.Order = i;
+            }
+            // ... then add the parent key to the repat check.
+            filteredParents.Add(link.ParentRosterId);
+        }
+    }
+
+    public static async Task MovePositionAsync(this RosterSlot toMove,
         ApplicationDbContext _dbContext, int newIndex = 0)
     {
-        if (toMove.ParentRosterId is null)
-            throw new ArgumentNullException(nameof(toMove), 
-                $"The {toMove.GetType()} can not have the value null " +
-                $"for the {nameof(toMove.ParentRosterId)} parameter.");
-
-        var parent = await _dbContext.RosterTrees
-            .Where(x => toMove.ParentRosterId.Value == x.Key)
-            .Include(x => x.ChildRosters)
-            .FirstOrDefaultAsync();
-
-        if (parent is null)
-            throw new ArgumentException($"The {toMove.GetType()} can not find " +
-                $"a value in the database for the {nameof(toMove.ParentRosterId)} " +
-                $"parameter.", nameof(toMove));
-
-        // Get an ordered lists of the child values.
-
-        var order = parent.ChildRosters
-            .OrderBy(x => x.Order)
-            .ToList();
-
-        // Find the object we are editing.
-        var childTree = order.Find(x => x.Key == toMove.Key);
-
-        // If the child tree is not null...
-        if (childTree is not null)
+        // See if we have a child value...
+        var dumpCheck = (await _dbContext.RosterParentLinks
+            .Where(x => x.ChildRosertId == toMove.Key)
+            .CountAsync()) <= 0;
+        // ... then start the query, filtering by a child value
+        // if we have one...
+        IQueryable<RosterParentLink> linksQuery;
+        if (dumpCheck)
+            linksQuery = _dbContext.RosterParentLinks;
+        else
+            linksQuery = _dbContext.RosterParentLinks
+                .Where(x => x.ChildRosertId == toMove.Key);
+        // ... then get the enumerable ...
+        var links = linksQuery
+            .Where(x => x.ParentRosterId == toMove.RosterParentId)
+            .Include(x => x.ParentRoster)
+            .ThenInclude(x => x.RosterPositions)
+            .ThenInclude(x => x.RosterParent)
+            .AsAsyncEnumerable();
+        // ... setup a check so we don't repeat
+        // on specifc items ...
+        HashSet<Guid> filteredParents = new();
+        // ... then for each link in the query ...
+        await foreach (var link in links)
         {
-            // ...Remove it and re-insert it into the list at
-            // its new position
-            order.Remove(childTree);
-            order.Insert(newIndex, childTree);
-        }
+            // ... check if the parent has already been computed,
+            // skip this link if it has ...
+            if (filteredParents.Contains(link.ParentRosterId))
+                continue;
+            // ... get the ordered child rosters
+            // of the parent ...
+            var set = link.ParentRoster.RosterPositions
+                .OrderBy(x => x.RosterParent.Order)
+                .ToList();
+            // ... if there is a child object ...
+            if (!dumpCheck)
+            {
+                // ... find the actual item ...
+                var item = set.FirstOrDefault(x => x.Key == toMove.Key);
 
-        // ... otherwise we are just consolidating
-        // a gap in the order.
-
-        // Reassign order values.
-        for (int i = 0; i < order.Count; i++)
-        {
-            order[i].Order = i;
+                if (item is null)
+                    continue;
+                // ... and move it to its new position ...
+                set.Remove(item);
+                set.Insert(newIndex, item);
+            }
+            // ... then for every child in the parent ...
+            for (int i = 0; i < set.Count; i++)
+            {
+                // ... set the order value...
+                set[i].RosterParent.Order = i;
+            }
+            // ... then add the parent key to the repat check.
+            filteredParents.Add(link.ParentRosterId);
         }
     }
 }

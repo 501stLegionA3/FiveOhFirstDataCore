@@ -9,6 +9,4 @@ namespace ProjectDataCore.Data.Structures.Model.Roster;
 public class RosterObjectEditModel
 {
     public string? Name { get; set; }
-    public Optional<Guid?> ParentRosterId { get; set; }
-    public int? Order { get; set; }
 }

@@ -15,6 +15,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     #region Roster
     public DbSet<RosterTree> RosterTrees { get; internal set; }
     public DbSet<RosterSlot> RosterSlots { get; internal set; }
+    public DbSet<RosterDisplaySettings> RosterDisplaySettings { get; internal set; }
+    public DbSet<RosterParentLink> RosterParentLinks { get; internal set; }
     #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -28,18 +30,13 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         #region Roster
         var rosterTree = builder.Entity<RosterTree>();
         rosterTree.HasKey(e => e.Key);
-        rosterTree.HasMany(e => e.ChildRosters)
-            .WithOne(e => e.ParentRoster)
-            .HasForeignKey(e => e.ParentRosterId);
-        rosterTree.HasMany(e => e.RosterPositions)
-            .WithOne(e => e.ParentRoster)
-            .HasForeignKey(e => e.ParentRosterId)
-            // Overwrite the default nulability of this
-            // relationship.
-            .IsRequired(true);
+
 
         var rosterSlot = builder.Entity<RosterSlot>();
         rosterSlot.HasKey(e => e.Key);
+
+        var rosertDisplaySettings = builder.Entity<RosterDisplaySettings>();
+        rosertDisplaySettings.HasKey(e => e.Key);
         #endregion
 
         #region User

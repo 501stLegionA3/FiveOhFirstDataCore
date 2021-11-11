@@ -13,4 +13,5 @@ public class RosterTree : RosterObject
 {
     public List<RosterTree> ChildRosters { get; set; } = new();
     public List<RosterSlot> RosterPositions { get; set; } = new();
+    public List<RosterParentLink> RosterParentLinks { get; set; } = new();
 }
