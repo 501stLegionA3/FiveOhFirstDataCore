@@ -374,9 +374,13 @@ public class ModularRosterService : IModularRosterService
     {
         await _dbContext.Entry(parent).Collection(x => x.RosterPositions).LoadAsync();
 
+        // TODO Sort roster positions.
+
         yield return parent;
 
         await _dbContext.Entry(parent).Collection(x => x.ChildRosters).LoadAsync();
+
+        // TODO Implement a form of sorting child values.
 
         foreach (var child in parent.ChildRosters)
             await foreach (var x in LoadRosterTreeAsync(child, _dbContext))
