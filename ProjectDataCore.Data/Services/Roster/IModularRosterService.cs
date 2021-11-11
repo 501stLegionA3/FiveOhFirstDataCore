@@ -29,10 +29,8 @@ public interface IModularRosterService
     #endregion
 
     #region Roster Display Settings
-    public Task<ActionResult> AddRosterDisplaySettingsAsync(string name, bool whitelisted);
+    public Task<ActionResult> AddRosterDisplaySettingsAsync(string name, Guid host);
     public Task<ActionResult> UpdateRosterDisplaySettingsAsync(Guid settings, Action<RosterDisplaySettingsEditModel> action);
-    public Task<ActionResult> AddTreeToDisplaySettingsAsync(Guid settings, Guid tree);
-    public Task<ActionResult> RemoveTreeFromDisplaySettingsAsync(Guid settings, Guid tree);
     public Task<ActionResult> RemoveRosterDisplaySettingsAsync(Guid settings);
     #endregion
 

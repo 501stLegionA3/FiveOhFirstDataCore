@@ -12,6 +12,6 @@ namespace ProjectDataCore.Data.Structures.Roster;
 public class RosterDisplaySettings : DataObject<Guid>
 {
     public string Name { get; set; }
-    public bool Whitelist { get; set; } = true;
-    public List<Guid> TreeKeys { get; set; } = new();
+    public RosterTree HostRoster { get; set; }
+    public Guid HostRosterId { get; set; }
 }

@@ -296,14 +296,14 @@ public class ModularRosterService : IModularRosterService
     #endregion
 
     #region Roster Display Settings
-    public async Task<ActionResult> AddRosterDisplaySettingsAsync(string name, bool whitelisted)
+    public async Task<ActionResult> AddRosterDisplaySettingsAsync(string name, Guid host)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var settings = new RosterDisplaySettings()
         {
             Name = name,
-            Whitelist = whitelisted
+            HostRosterId = host
         };
 
         await _dbContext.AddAsync(settings);
@@ -327,43 +327,8 @@ public class ModularRosterService : IModularRosterService
         if(update.Name is not null)
             settingsObject.Name = update.Name;
 
-        if(update.WhiteList is not null)
-            settingsObject.Whitelist = update.WhiteList.Value;
-
-        if(update.TreeKeys is not null)
-            settingsObject.TreeKeys = update.TreeKeys;
-
-        await _dbContext.SaveChangesAsync();
-
-        return new(true, null);
-    }
-
-    public async Task<ActionResult> AddTreeToDisplaySettingsAsync(Guid settings, Guid tree)
-    {
-        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
-
-        if (settingsObject is null)
-            return new(false, new List<string> { "No settings object found for the provided ID" });
-
-        settingsObject.TreeKeys.Add(tree);
-
-        await _dbContext.SaveChangesAsync();
-
-        return new(true, null);
-    }
-
-    public async Task<ActionResult> RemoveTreeFromDisplaySettingsAsync(Guid settings, Guid tree)
-    {
-        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var settingsObject = await _dbContext.FindAsync<RosterDisplaySettings>(settings);
-
-        if (settingsObject is null)
-            return new(false, new List<string> { "No settings object found for the provided ID" });
-
-        settingsObject.TreeKeys.Remove(tree);
+        if(update.HostRosterId is not null)
+            settingsObject.HostRosterId = update.HostRosterId.Value;
 
         await _dbContext.SaveChangesAsync();
 
@@ -389,7 +354,33 @@ public class ModularRosterService : IModularRosterService
     #region Get Roster Display
     public async IAsyncEnumerable<RosterTree> GetRosterTreeForSettingsAsync(Guid settings)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var settingsObject = await _dbContext.RosterDisplaySettings
+            .Where(x => x.Key == settings)
+            .Include(x => x.HostRoster)
+            .FirstOrDefaultAsync();
+
+        if (settingsObject is null)
+            throw new ArgumentNullException(nameof(settings), 
+                $"ID does not yield a valid settings object.");
+
+        await foreach (var res in LoadRosterTreeAsync(settingsObject.HostRoster, _dbContext))
+            yield return res;
+    }
+
+    private async IAsyncEnumerable<RosterTree> LoadRosterTreeAsync(RosterTree parent, 
+        ApplicationDbContext _dbContext)
+    {
+        await _dbContext.Entry(parent).Collection(x => x.RosterPositions).LoadAsync();
+
+        yield return parent;
+
+        await _dbContext.Entry(parent).Collection(x => x.ChildRosters).LoadAsync();
+
+        foreach (var child in parent.ChildRosters)
+            await foreach (var x in LoadRosterTreeAsync(child, _dbContext))
+                yield return x;
     }
 
     public async Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplays()
