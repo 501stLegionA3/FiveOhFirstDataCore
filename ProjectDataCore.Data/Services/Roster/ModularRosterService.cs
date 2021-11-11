@@ -372,16 +372,43 @@ public class ModularRosterService : IModularRosterService
     private async IAsyncEnumerable<RosterTree> LoadRosterTreeAsync(RosterTree parent, 
         ApplicationDbContext _dbContext)
     {
-        await _dbContext.Entry(parent).Collection(x => x.RosterPositions).LoadAsync();
+        // Load this entrys slots...
+        await _dbContext.Entry(parent)
+            .Collection(x => x.RosterPositions)
+            .Query()
+            .Include(x => x.RosterParent)
+            .LoadAsync();
 
-        // TODO Sort roster positions.
+        // ... order the entrys slots ...
 
+        parent.RosterPositions.Sort((x, y) 
+            => x.RosterParent.Order.CompareTo(y.RosterParent.Order));
+
+        // ... then yield the inital parent value ...
         yield return parent;
 
-        await _dbContext.Entry(parent).Collection(x => x.ChildRosters).LoadAsync();
+        // ... before loading the child rosters ...
+        await _dbContext.Entry(parent)
+            .Collection(x => x.ChildRosters)
+            .Query()
+            .Include(x => x.RosterParentLinks)
+            .LoadAsync();
 
-        // TODO Implement a form of sorting child values.
+        // ... then properly order them ...
 
+        parent.ChildRosters.Sort((x, y) =>
+        {
+            // ... get the proper parent link ...
+            var xVal = x.RosterParentLinks.FirstOrDefault(z => z.ParentRosterId == parent.Key);
+            var yVal = y.RosterParentLinks.FirstOrDefault(z => z.ParentRosterId == parent.Key);
+            // ... find the ordering values ....
+            var xOr = xVal?.Order ?? -1;
+            var yOr = yVal?.Order ?? -1;
+            // ... return the comparison ...
+            return xOr.CompareTo(yOr);
+        });
+
+        // ... then yield return all values for this recursive function.
         foreach (var child in parent.ChildRosters)
             await foreach (var x in LoadRosterTreeAsync(child, _dbContext))
                 yield return x;
