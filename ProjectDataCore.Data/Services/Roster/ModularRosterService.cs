@@ -365,12 +365,12 @@ public class ModularRosterService : IModularRosterService
             throw new ArgumentNullException(nameof(settings), 
                 $"ID does not yield a valid settings object.");
 
-        await foreach (var res in LoadRosterTreeAsync(settingsObject.HostRoster, _dbContext))
+        await foreach (var res in LoadRosterTreeAsync(settingsObject.HostRoster, settings, _dbContext))
             yield return res;
     }
 
     private async IAsyncEnumerable<RosterTree> LoadRosterTreeAsync(RosterTree parent, 
-        ApplicationDbContext _dbContext)
+        Guid settingsKey, ApplicationDbContext _dbContext)
     {
         // Load this entrys slots...
         await _dbContext.Entry(parent)
@@ -399,8 +399,8 @@ public class ModularRosterService : IModularRosterService
         parent.ChildRosters.Sort((x, y) =>
         {
             // ... get the proper parent link ...
-            var xVal = x.RosterParentLinks.FirstOrDefault(z => z.ParentRosterId == parent.Key);
-            var yVal = y.RosterParentLinks.FirstOrDefault(z => z.ParentRosterId == parent.Key);
+            var xVal = x.RosterParentLinks.FirstOrDefault(z => z.ForRosterSettingsId == settingsKey);
+            var yVal = y.RosterParentLinks.FirstOrDefault(z => z.ForRosterSettingsId == settingsKey);
             // ... find the ordering values ....
             var xOr = xVal?.Order ?? -1;
             var yOr = yVal?.Order ?? -1;
@@ -410,7 +410,7 @@ public class ModularRosterService : IModularRosterService
 
         // ... then yield return all values for this recursive function.
         foreach (var child in parent.ChildRosters)
-            await foreach (var x in LoadRosterTreeAsync(child, _dbContext))
+            await foreach (var x in LoadRosterTreeAsync(child, settingsKey, _dbContext))
                 yield return x;
     }
 

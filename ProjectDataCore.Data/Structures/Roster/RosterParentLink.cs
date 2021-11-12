@@ -13,4 +13,6 @@ public class RosterParentLink : DataObject<Guid>
     public Guid ParentRosterId { get; set; }
     public RosterObject ChildRoster { get; set; }
     public Guid ChildRosertId { get; set; }
+    public RosterDisplaySettings ForRosterSettings { get; set; }
+    public Guid ForRosterSettingsId { get; set; }
 }
