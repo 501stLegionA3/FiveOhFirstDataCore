@@ -1,1 +1,11 @@
-﻿<h4>RosterTreeDisplay</h4>
+﻿<div class="border-black border-2 rounded-lg bg-blue-300 text-white mb-2">
+    <h3 class="p-2 font-bold border-b-2 border-black text-center text-black">
+        @Tree.Name
+    </h3>
+    <RosterSlotsDisplay Slots="Tree.RosterPositions" />
+</div>
+
+@foreach(var child in Tree.ChildRosters)
+{
+    <RosterTreeDisplay Tree="child" />
+}

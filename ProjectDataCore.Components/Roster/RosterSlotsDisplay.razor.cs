@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Roster;
 public partial class RosterSlotsDisplay
 {
-
+    [Parameter]
+    public List<RosterSlot> Slots { get; set; } = new();
 }
