@@ -81,7 +81,15 @@ namespace FiveOhFirstDataCore.Data.Services
             var user = await _dbContext.FindAsync<Trooper>(approver.Id);
             await _dbContext.Entry(actual).Collection(e => e.ApprovedBy).LoadAsync();
 
-            actual.CurrentBoard++;
+            if (actual.CurrentBoard > PromotionBoardLevel.Battalion
+                    && actual.NeededBoard == PromotionBoardLevel.Battalion)
+            {
+                actual.CurrentBoard = PromotionBoardLevel.Battalion;
+            }
+            else
+            {
+                actual.CurrentBoard++;
+            }
 
             if (actual.CurrentBoard > actual.NeededBoard)
             {
@@ -189,8 +197,23 @@ namespace FiveOhFirstDataCore.Data.Services
             // eligible.
             PromotionBoardLevel neededLevel;
             if (currentBoard > promoReq.NeededLevel)
-                neededLevel = currentBoard;
-            else neededLevel = promoReq.NeededLevel;
+            {
+                // If the promoton needs to go to battalion and is above (aka razor/mynock)
+                // let it check for a lower board.
+                if (currentBoard > PromotionBoardLevel.Battalion
+                    && promoReq.NeededLevel == PromotionBoardLevel.Battalion)
+                {
+                    neededLevel = promoReq.NeededLevel;
+                }
+                else 
+                {
+                    neededLevel = currentBoard;
+                }
+            }
+            else
+            {
+                neededLevel = promoReq.NeededLevel;
+            }
 
             var promotion = new Promotion()
             {
