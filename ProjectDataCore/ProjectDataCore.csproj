@@ -23,6 +23,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\ProjectDataCore.Components\ProjectDataCore.Components.csproj" />
 		<ProjectReference Include="..\ProjectDataCore.Data\ProjectDataCore.Data.csproj" />
 	</ItemGroup>
 
