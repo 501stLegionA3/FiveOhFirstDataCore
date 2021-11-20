@@ -14,6 +14,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Promotions
 
         public List<Trooper> ApprovedBy { get; set; } = new();
 
+        public PromotionBoardLevel StartingBoard { get; set; }
         public PromotionBoardLevel NeededBoard { get; set; }
         public PromotionBoardLevel CurrentBoard { get; set; }
 

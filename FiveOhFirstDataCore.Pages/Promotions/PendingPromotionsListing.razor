@@ -30,8 +30,10 @@
                         foreach(var promo in trooper.PendingPromotions)
                         {
                             if (promo is null) continue;
-
-                            @if (promo.CurrentBoard >= BoardLevel)
+                            bool oneCheck = promo.CurrentBoard >= BoardLevel;
+                            bool twoCheck = BoardLevel == PromotionBoardLevel.Battalion && promo.CurrentBoard > PromotionBoardLevel.Battalion;
+                            bool threeCheck = BoardLevel > PromotionBoardLevel.Battalion && promo.StartingBoard > PromotionBoardLevel.Battalion;
+                            @if ((oneCheck != twoCheck) || threeCheck)
                             {
                                 <tr class="@(ForcedPromotions.Contains(promo.Id) ? "table-danger" : "")">
                                     <td><a href="/trooper/@(promo.PromotionFor?.BirthNumber ?? 0)" target="_blank">@(promo.PromotionFor?.BirthNumber ?? 0)</a></td>

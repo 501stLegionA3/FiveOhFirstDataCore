@@ -217,6 +217,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
             var promotion = new Promotion()
             {
+                StartingBoard = currentBoard,
                 CurrentBoard = currentBoard,
                 NeededBoard = neededLevel,
 
