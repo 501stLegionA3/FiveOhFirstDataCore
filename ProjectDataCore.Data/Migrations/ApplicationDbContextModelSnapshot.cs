@@ -237,10 +237,13 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("HostRosterId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("LastEdit")
@@ -249,50 +252,106 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("HostRosterId");
+
+                    b.ToTable("RosterDisplaySettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterObject", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("RosterObject");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("RosterObject");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterParentLink", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChildRosertId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ChildRosterKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ForRosterSettingsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ParentRosterId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ChildRosterKey");
+
+                    b.HasIndex("ForRosterSettingsId");
+
+                    b.HasIndex("ParentRosterId");
+
+                    b.ToTable("RosterParentLinks");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
 
                     b.Property<int?>("OccupiedById")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ParentRosterId")
-                        .IsRequired()
+                    b.Property<Guid>("RosterParentId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("Key");
+                    b.Property<Guid?>("RosterTreeKey")
+                        .HasColumnType("uuid");
 
                     b.HasIndex("OccupiedById");
 
-                    b.HasIndex("ParentRosterId");
+                    b.HasIndex("RosterParentId");
 
-                    b.ToTable("RosterSlots");
+                    b.HasIndex("RosterTreeKey");
+
+                    b.HasDiscriminator().HasValue("RosterSlot");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
 
-                    b.Property<DateTime>("LastEdit")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<Guid?>("RosterTreeKey")
+                        .HasColumnType("uuid")
+                        .HasColumnName("RosterTreeKey1");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.HasIndex("RosterTreeKey");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ParentRosterId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("ParentRosterId");
-
-                    b.ToTable("RosterTrees");
+                    b.HasDiscriminator().HasValue("RosterTree");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -346,30 +405,70 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "HostRoster")
+                        .WithMany()
+                        .HasForeignKey("HostRosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("HostRoster");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterParentLink", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterObject", "ChildRoster")
+                        .WithMany()
+                        .HasForeignKey("ChildRosterKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", "ForRosterSettings")
+                        .WithMany()
+                        .HasForeignKey("ForRosterSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
+                        .WithMany("RosterParentLinks")
+                        .HasForeignKey("ParentRosterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ChildRoster");
+
+                    b.Navigation("ForRosterSettings");
+
+                    b.Navigation("ParentRoster");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "OccupiedBy")
                         .WithMany("RosterSlots")
                         .HasForeignKey("OccupiedById");
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
-                        .WithMany("RosterPositions")
-                        .HasForeignKey("ParentRosterId")
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterParentLink", "RosterParent")
+                        .WithMany()
+                        .HasForeignKey("RosterParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
+                        .WithMany("RosterPositions")
+                        .HasForeignKey("RosterTreeKey");
+
                     b.Navigation("OccupiedBy");
 
-                    b.Navigation("ParentRoster");
+                    b.Navigation("RosterParent");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
                         .WithMany("ChildRosters")
-                        .HasForeignKey("ParentRosterId");
-
-                    b.Navigation("ParentRoster");
+                        .HasForeignKey("RosterTreeKey");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
@@ -380,6 +479,8 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
                     b.Navigation("ChildRosters");
+
+                    b.Navigation("RosterParentLinks");
 
                     b.Navigation("RosterPositions");
                 });

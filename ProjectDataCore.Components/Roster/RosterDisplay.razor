@@ -1,6 +1,24 @@
-﻿@if(Roster is not null)
-{
-	<div class="bg-gray-100 p-2 mr-10">
-		<RosterTreeDisplay Tree="Roster" />
+﻿<div>
+	@*Roster Configuration Settings Portion*@
+
+	<div>
+		<EditForm Context="">
+
+		</EditForm>
 	</div>
-}
+
+	@*Roster User Settings Portion*@
+
+	<div>
+
+	</div>
+
+	@*Roster Display Portion*@
+
+	@if(Roster is not null)
+	{
+		<div class="bg-gray-100 p-2 mr-10">
+			<RosterTreeDisplay Tree="Roster" />
+		</div>
+	}
+</div>

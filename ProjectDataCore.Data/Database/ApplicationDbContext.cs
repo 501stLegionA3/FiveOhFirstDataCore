@@ -28,12 +28,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     protected override void OnModelCreating(ModelBuilder builder)
     {
         #region Roster
-        var rosterTree = builder.Entity<RosterTree>();
-        rosterTree.HasKey(e => e.Key);
+        var rosterObject = builder.Entity<RosterObject>();
+        rosterObject.HasKey(e => e.Key);
 
-
-        var rosterSlot = builder.Entity<RosterSlot>();
-        rosterSlot.HasKey(e => e.Key);
+        var rosterParentLink = builder.Entity<RosterParentLink>();
+        rosterParentLink.HasKey(e => e.Key);
 
         var rosertDisplaySettings = builder.Entity<RosterDisplaySettings>();
         rosertDisplaySettings.HasKey(e => e.Key);

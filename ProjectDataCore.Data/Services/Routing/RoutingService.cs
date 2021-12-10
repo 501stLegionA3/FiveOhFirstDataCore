@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Pages.Roster;
-public partial class PrimaryRosterDisplayPage
-{
+namespace ProjectDataCore.Data.Services.Routing;
 
+public class RoutingService : IRoutingService
+{
 }
