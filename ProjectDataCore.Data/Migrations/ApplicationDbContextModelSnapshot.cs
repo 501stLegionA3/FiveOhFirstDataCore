@@ -287,6 +287,9 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
+                    b.HasIndex("Route")
+                        .IsUnique();
+
                     b.ToTable("CustomPageSettings");
                 });
 

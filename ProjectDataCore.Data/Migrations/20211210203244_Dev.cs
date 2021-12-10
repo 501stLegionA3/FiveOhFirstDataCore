@@ -328,6 +328,12 @@ namespace ProjectDataCore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_CustomPageSettings_Route",
+                table: "CustomPageSettings",
+                column: "Route",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
                 table: "PageComponentSettingsBase",
                 column: "ParentLayoutId");

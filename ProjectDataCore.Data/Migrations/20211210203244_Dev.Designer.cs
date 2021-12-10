@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211210194549_Dev")]
+    [Migration("20211210203244_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,6 +288,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Key");
+
+                    b.HasIndex("Route")
+                        .IsUnique();
 
                     b.ToTable("CustomPageSettings");
                 });

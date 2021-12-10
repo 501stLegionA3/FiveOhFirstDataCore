@@ -56,6 +56,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         customPageSettings.HasOne(e => e.Layout)
             .WithOne(p => p.ParentPage)
             .HasForeignKey<CustomPageSettings>(e => e.LayoutId);
+        customPageSettings.HasIndex(e => e.Route)
+            .IsUnique(true);
 
         var layoutComponentSettings = builder.Entity<LayoutComponentSettings>();
         layoutComponentSettings.HasOne(e => e.ParentPage)

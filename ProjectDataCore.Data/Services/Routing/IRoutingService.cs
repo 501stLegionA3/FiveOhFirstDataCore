@@ -31,8 +31,8 @@ public interface IRoutingService
     /// object into the <see cref="LoadPageSettingsAsync(CustomPageSettings)"/> method.
     /// </remarks>
     /// <param name="route">The route to get a settings object for.</param>
-    /// <returns>A <see cref="CustomPageSettings"/> object if the route is valid.</returns>
-    public Task<CustomPageSettings> GetPageSettingsFromRouteAsync(string route);
+    /// <returns>A <see cref="CustomPageSettings"/> object if the route is valid, otherwise null.</returns>
+    public Task<CustomPageSettings?> GetPageSettingsFromRouteAsync(string route);
 
     /// <summary>
     /// Loads the full settings for a page.
