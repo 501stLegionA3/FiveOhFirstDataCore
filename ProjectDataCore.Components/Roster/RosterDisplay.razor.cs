@@ -11,7 +11,7 @@ public partial class RosterDisplay
 		/// </summary>
 		/// <remarks>
 		/// When this option is true further details can be displayed about a single
-		/// user. Furthermore, this allows further sorting and serach options to
+		/// user. Furthermore, this allows further sorting and search options to
 		/// be conducted on the roster iteself.
 		/// </remarks>
 		public bool ShowUserLisiting { get; set; } = false;
