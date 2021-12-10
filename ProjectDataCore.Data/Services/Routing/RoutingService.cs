@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Page;
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,10 @@ public class RoutingService : IRoutingService
 {
     public class RoutingServiceSettings
     {
-        public Assembly assembly;
+        public Assembly Assembly { get; init; }
+
+        public RoutingServiceSettings(Assembly asm)
+            => Assembly = asm;
     }
 
     private ConcurrentDictionary<string, Type> ComponentCache { get; init; }
@@ -21,7 +26,7 @@ public class RoutingService : IRoutingService
     public RoutingService(RoutingServiceSettings settings)
     {
         ComponentCache = new ConcurrentDictionary<string, Type>();
-        ComponentAssembly = settings.assembly;
+        ComponentAssembly = settings.Assembly;
     }
 
     public Type GetComponentType(string qualifiedName, bool forceUpdate = false)
@@ -38,5 +43,15 @@ public class RoutingService : IRoutingService
         }
 
         return type;
+    }
+
+    public Task<CustomPageSettings> GetPageSettingsFromRouteAsync(string route)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<bool> LoadPageSettingsAsync(CustomPageSettings settings)
+    {
+        throw new NotImplementedException();
     }
 }

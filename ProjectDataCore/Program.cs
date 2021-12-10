@@ -58,7 +58,7 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
         if (asm is null)
             throw new Exception("Missing components assembly.");
 
-        return new() { assembly = asm };
+        return new(asm);
     });
 
 // END SERVICE SETUP
