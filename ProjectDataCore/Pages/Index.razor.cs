@@ -6,7 +6,5 @@ namespace ProjectDataCore.Pages
     {
         [Parameter]
         public string? Route { get; set; }
-
-
     }
 }

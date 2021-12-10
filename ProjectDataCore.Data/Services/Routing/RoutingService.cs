@@ -10,7 +10,7 @@ namespace ProjectDataCore.Data.Services.Routing;
 
 public class RoutingService : IRoutingService
 {
-    public struct RoutingServiceSettings
+    public class RoutingServiceSettings
     {
         public Assembly assembly;
     }

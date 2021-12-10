@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Database;
 using ProjectDataCore.Data.Services;
+using ProjectDataCore.Data.Services.Routing;
+
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +49,17 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // END BLAZOR SETUP
 
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>();
+
+builder.Services.AddSingleton<IRoutingService, RoutingService>()
+    .AddSingleton<RoutingService.RoutingServiceSettings>(x =>
+    {
+        var asm = Assembly.GetAssembly(typeof(ProjectDataCore.Components._Imports));
+
+        if (asm is null)
+            throw new Exception("Missing components assembly.");
+
+        return new() { assembly = asm };
+    });
 
 // END SERVICE SETUP
 
