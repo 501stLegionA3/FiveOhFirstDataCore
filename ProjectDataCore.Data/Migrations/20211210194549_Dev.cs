@@ -57,6 +57,20 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CustomPageSettings",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Route = table.Column<string>(type: "text", nullable: false),
+                    LayoutId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomPageSettings", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -160,6 +174,38 @@ namespace ProjectDataCore.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageComponentSettingsBase",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    QualifiedTypeName = table.Column<string>(type: "text", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    ParentLayoutId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    PropertyToEdit = table.Column<string>(type: "text", nullable: true),
+                    StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
+                    Label = table.Column<string>(type: "text", nullable: true),
+                    Placeholder = table.Column<string>(type: "text", nullable: true),
+                    MaxChildComponents = table.Column<int>(type: "integer", nullable: true),
+                    ParentPageId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageComponentSettingsBase", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_CustomPageSettings_ParentPageId",
+                        column: x => x.ParentPageId,
+                        principalTable: "CustomPageSettings",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
+                        column: x => x.ParentLayoutId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
                 });
 
             migrationBuilder.CreateTable(
@@ -282,6 +328,17 @@ namespace ProjectDataCore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_ParentLayoutId",
+                table: "PageComponentSettingsBase",
+                column: "ParentLayoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_ParentPageId",
+                table: "PageComponentSettingsBase",
+                column: "ParentPageId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RosterDisplaySettings_HostRosterId",
                 table: "RosterDisplaySettings",
                 column: "HostRosterId");
@@ -364,7 +421,13 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "PageComponentSettingsBase");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "CustomPageSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

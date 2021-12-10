@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Components;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +22,13 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<RosterParentLink> RosterParentLinks { get; internal set; }
     #endregion
 
+    #region Page
+    public DbSet<DisplayComponentSettings> DisplayComponentSettings { get; internal set; }
+    public DbSet<EditableComponentSettings> EditableComponentSettings { get; internal set; }
+    public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
+    public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
+    #endregion
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
     {
@@ -27,6 +37,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
+        base.OnModelCreating(builder);
+
         #region Roster
         var rosterObject = builder.Entity<RosterObject>();
         rosterObject.HasKey(e => e.Key);
@@ -38,6 +50,25 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         rosertDisplaySettings.HasKey(e => e.Key);
         #endregion
 
+        #region Page
+        var customPageSettings = builder.Entity<CustomPageSettings>();
+        customPageSettings.HasKey(e => e.Key);
+        customPageSettings.HasOne(e => e.Layout)
+            .WithOne(p => p.ParentPage)
+            .HasForeignKey<CustomPageSettings>(e => e.LayoutId);
+
+        var layoutComponentSettings = builder.Entity<LayoutComponentSettings>();
+        layoutComponentSettings.HasOne(e => e.ParentPage)
+            .WithOne(p => p.Layout)
+            .HasForeignKey<LayoutComponentSettings>(p => p.ParentPageId);
+
+        var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
+        pageComponentSettingsBase.HasKey(e => e.Key);
+        pageComponentSettingsBase.HasOne(e => e.ParentLayout)
+            .WithMany(p => p.ChildComponents)
+            .HasForeignKey(e => e.ParentLayoutId);
+        #endregion
+
         #region User
         var dataCoreUser = builder.Entity<DataCoreUser>();
         dataCoreUser.HasMany(e => e.RosterSlots)
@@ -45,7 +76,5 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey(e => e.OccupiedById);
             
         #endregion
-
-        base.OnModelCreating(builder);
     }
 }
