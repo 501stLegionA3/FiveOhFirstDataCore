@@ -173,6 +173,9 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CX-W")]
         [Description("Master Chief Petty Officer")]
         Master,
+        [RankDisplay("CX-W")]
+        [Description("Command Master Chief Petty Officer")]
+        Command
     }
 
     [AttributeUsage(AttributeTargets.All)]
