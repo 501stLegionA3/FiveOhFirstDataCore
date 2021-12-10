@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Parts\" />
     <Folder Include="Roster\Edit\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
