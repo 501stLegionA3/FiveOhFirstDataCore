@@ -38,6 +38,7 @@ public partial class PageEditor
 
     private async Task OnNewPageSubmitAsync()
     {
+        // Creates a new page as per the form.
         var res = await PageEditService.CreateNewPageAsync(NewPageData.Name, NewPageData.Route);
 
         if (!res.GetResult(out var err))

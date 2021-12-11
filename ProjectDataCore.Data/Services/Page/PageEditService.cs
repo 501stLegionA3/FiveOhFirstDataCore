@@ -159,6 +159,7 @@ public class PageEditService : IPageEditService
         if (pageData is null)
             return new(false, new List<string>() { "No page settings object was found for the provided ID." });
 
+        // Run update based on the action values that were passed.
         CustomPageSettingsEditModel update = new();
         action.Invoke(update);
 

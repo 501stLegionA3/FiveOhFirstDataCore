@@ -42,21 +42,34 @@ namespace ProjectDataCore.Components.Parts
         [Parameter]
         public string? Route { get; set; }
 
+        /// <summary>
+        /// The settings for the page to display
+        /// </summary>
         private CustomPageSettings? PageSettings { get; set; }
+        /// <summary>
+        /// The type of base layout component to display.
+        /// </summary>
         private Type? ComponentType { get; set; }
+        /// <summary>
+        /// The parameters for the component.
+        /// </summary>
         private Dictionary<string, object> ComponentParams { get; } = new()
         {
             { "ComponentData", null }
         };
+        /// <summary>
+        /// The types of attributes that can be added to a mian page.
+        /// </summary>
         private Type[] AttributeTypes { get; } = new Type[] { typeof(LayoutComponentAttribute) };
 
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
-
+            // If the route is null or has been changed ...
             if (Route is not null 
                 && (PageSettings?.Route ?? null) != Route)
             {
+                // ... Get the new route settings ...
                 PageSettings = await RoutingService.GetPageSettingsFromRouteAsync(Route);
                 if (PageSettings is null)
                 {
@@ -64,6 +77,7 @@ namespace ProjectDataCore.Components.Parts
                 }
                 else
                 {
+                    // ... and start the page reloader.
                     _ = Task.Run(async () => await ReloadPage());
                 }
             }
@@ -71,19 +85,23 @@ namespace ProjectDataCore.Components.Parts
 
         private async Task ReloadPage()
         {
+            // ... if there are no setting, return.
             if (PageSettings is null)
                 return;
 
             bool first = true;
+            // ... otherwise, for each setp in the load method ...
             await foreach(bool _ in RoutingService.LoadPageSettingsAsync(PageSettings))
             {
                 if (first && PageSettings.Layout is not null)
                 {
+                    // ... if its the first load, set the layout parameter ...
                     ComponentParams["ComponentData"] = PageSettings.Layout;
+                    // ... and the component type ...
                     ComponentType = RoutingService.GetComponentType(PageSettings.Layout.QualifiedTypeName);
                     first = false;
                 }
-
+                // ... refresh the page ...
                 await InvokeAsync(StateHasChanged);
             }
         }
