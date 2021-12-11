@@ -20,6 +20,11 @@ public class CustomPageSettings : DataObject<Guid>
     public string Route { get; set; }
 
     /// <summary>
+    /// The Display name for this page
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// The component to display on this page. It can be a layout
     /// component, meaning the page can have multiple different
     /// items displayed.

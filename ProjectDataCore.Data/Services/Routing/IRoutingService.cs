@@ -12,6 +12,11 @@ namespace ProjectDataCore.Data.Services.Routing;
 /// Handles custom routing and delivering route information
 /// to the page generator.
 /// </summary>
+/// <remarks>
+/// Due to the nature of loading larger page values, this service
+/// should be run as a singleton so the cache systems will operate
+/// properly accross all users.
+/// </remarks>
 public interface IRoutingService
 {
     /// <summary>
