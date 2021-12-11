@@ -7,5 +7,6 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
 public partial class OneByTwoLayoutPart
 {
-
+    [CascadingParameter(Name = "CoreRoute")]
+    public string? Route { get; set; }
 }
