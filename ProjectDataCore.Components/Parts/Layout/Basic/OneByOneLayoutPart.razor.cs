@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
 
-[LayoutComponent(Name = "1x3 Layout")]
-public partial class OneByThreeLayoutPart
+[LayoutComponent(Name = "1x1 Layout")]
+public partial class OneByOneLayoutPart
 {
     [CascadingParameter(Name = "CoreRoute")]
     public string? Route { get; set; }

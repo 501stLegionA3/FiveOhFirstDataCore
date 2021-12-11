@@ -1,17 +1,3 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-
-using ProjectDataCore.Data.Account;
-using ProjectDataCore.Data.Database;
-using ProjectDataCore.Data.Services;
-using ProjectDataCore.Data.Services.Routing;
-
-using System.Reflection;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile(Path.Join("Config", "website_config.json"));
@@ -48,7 +34,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // END BLAZOR SETUP
 
-builder.Services.AddScoped<IModularRosterService, ModularRosterService>();
+builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
+    .AddScoped<IPageEditService, PageEditService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>

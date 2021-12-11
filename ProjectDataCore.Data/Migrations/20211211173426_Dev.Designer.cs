@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211210203244_Dev")]
+    [Migration("20211211173426_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -282,6 +282,10 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<Guid?>("LayoutId")
                         .HasColumnType("uuid");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Route")
                         .IsRequired()

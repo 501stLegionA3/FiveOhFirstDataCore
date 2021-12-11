@@ -62,6 +62,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     Route = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     LayoutId = table.Column<Guid>(type: "uuid", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

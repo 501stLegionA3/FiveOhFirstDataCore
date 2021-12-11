@@ -1,5 +1,8 @@
 {
   "devDependencies": {
     "tailwindcss": "^3.0.0"
+  },
+  "dependencies": {
+    "@tailwindcss/forms": "^0.4.0"
   }
 }

@@ -5,8 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
+
+[LayoutComponent(Name = "2x3 Layout")]
 public partial class TwoByThreeLayoutPart
 {
     [CascadingParameter(Name = "CoreRoute")]
     public string? Route { get; set; }
+
+    [Parameter]
+    public LayoutComponentSettings? ComponentData { get; set; }
 }
