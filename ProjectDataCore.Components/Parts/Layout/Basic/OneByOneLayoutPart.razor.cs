@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
 
 [LayoutComponent(Name = "1x1 Layout")]
-public partial class OneByOneLayoutPart
+public partial class OneByOneLayoutPart : LayoutBase
 {
-    [CascadingParameter(Name = "CoreRoute")]
-    public string? Route { get; set; }
 
-    [Parameter]
-    public LayoutComponentSettings? ComponentData { get; set; }
 }

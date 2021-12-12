@@ -7,11 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
 
 [LayoutComponent(Name = "2x3 Layout")]
-public partial class TwoByThreeLayoutPart
+public partial class TwoByThreeLayoutPart : LayoutBase
 {
-    [CascadingParameter(Name = "CoreRoute")]
-    public string? Route { get; set; }
 
-    [Parameter]
-    public LayoutComponentSettings? ComponentData { get; set; }
 }
