@@ -1,10 +1,12 @@
 ﻿using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Attributes;
 using ProjectDataCore.Data.Structures.Page.Components;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -181,6 +183,76 @@ public class PageEditService : IPageEditService
             // return the error.
             return new(false, new List<string>() { "Route name is already in use.", ex.Message });
         }
+    }
+    #endregion
+
+    #region Layout Component Actions
+    public async Task<ActionResult> SetLayoutChildAsync(Guid layout, Type component, int position)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the current layout data.
+        var layoutData = await _dbContext.LayoutComponentSettings
+            .Where(x => x.Key == layout)
+            .Include(x => x.ChildComponents)
+            .FirstOrDefaultAsync();
+
+        if (layoutData is null)
+            return new(false, new List<string>() { "No page settings object was found for the provided ID." });
+
+        // Remove any old component data.
+        PageComponentSettingsBase? oldComponent;
+        if ((oldComponent = layoutData.ChildComponents.FirstOrDefault(x => x.Order == position)) is not null)
+        {
+            layoutData.ChildComponents.Remove(oldComponent);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        // Validate component name
+        var name = component.FullName;
+
+        if (name is null)
+            return new(false, new List<string>() { $"No qualified type name was able to be found for the provided {nameof(component)}." });
+
+        // Add the new component type.
+        PageComponentSettingsBase newComponent;
+        if(component.GetCustomAttributes<LayoutComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is a layout componenet,
+            // add a layout component settings object.
+            newComponent = new LayoutComponentSettings();
+        }
+        else if (component.GetCustomAttributes<EditableComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is an editable component,
+            // add an editable component settings object.
+            newComponent = new EditableComponentSettings();
+        }
+        else if (component.GetCustomAttributes<DisplayComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is a display component,
+            // add a display component settings object.
+            newComponent = new DisplayComponentSettings();
+        }
+        else
+        {
+            // Otherwise, return the error.
+            return new(false, new List<string>() { "No valid component type was provided." });
+        }
+
+        // Set the values for this component.
+        newComponent.QualifiedTypeName = name;
+        newComponent.Order = position;
+
+        // Add the new child component.
+        layoutData.ChildComponents.Add(newComponent);
+
+        // Save changes and return true.
+        await _dbContext.SaveChangesAsync();
+        return new(true, null);
     }
     #endregion
 }

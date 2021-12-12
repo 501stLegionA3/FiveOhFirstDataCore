@@ -1,14 +1,16 @@
-﻿@if(ComponentType is not null)
-{
-    <CascadingValue Value="@Route" Name="CoreRoute">
-        <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
-    </CascadingValue>
-}
-else if (Editing)
-{
-    <div class="mx-auto py-6 sm:px-6 lg:px-8 inset-0 h-screen">
-        <div class="px-4 py-6 sm:px-0 columns-3 grid gap-3 grid-rows-1 gird-cols-1">
-            <AddComponentDialog AllowedAttributes="AttributeTypes" BasePage="PageSettings?.Key" />
+﻿<CascadingValue Value="RefreshRequest" Name="RefreshRequest">
+    @if(ComponentType is not null)
+    {
+        <CascadingValue Value="@Route" Name="CoreRoute">
+            <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+        </CascadingValue>
+    }
+    else if (Editing)
+    {
+        <div class="mx-auto py-6 sm:px-6 lg:px-8 inset-0">
+            <div class="px-4 py-6 sm:px-0 columns-3 grid gap-3 grid-rows-1 gird-cols-1">
+                <AddComponentDialog AllowedAttributes="AttributeTypes" BasePage="PageSettings?.Key" />
+            </div>
         </div>
-    </div>
-}
+    }
+</CascadingValue>

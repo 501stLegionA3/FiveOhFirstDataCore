@@ -75,7 +75,15 @@ public interface IPageEditService
     #endregion
 
     #region Layout Component Actions
-
+    /// <summary>
+    /// Set a child value for a layout component. Overwrites any component that has
+    /// the same position value.
+    /// </summary>
+    /// <param name="layout">The ID of the layout to add a child to.</param>
+    /// <param name="component">The type of component to add.</param>
+    /// <param name="position">The position value for the new component.</param>
+    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> SetLayoutChildAsync(Guid layout, Type component, int position);
     #endregion
 
     #region Editable Component Actions

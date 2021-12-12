@@ -13,6 +13,9 @@ public partial class AddComponentDialog
     public IPageEditService PageEditService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+    [CascadingParameter(Name = "RefreshRequest")]
+    public Func<Task> CallRefreshRequest { get; set; }
+
     /// <summary>
     /// The allowed attributes that a type of componenet can be selected from.
     /// </summary>
@@ -92,11 +95,20 @@ public partial class AddComponentDialog
             throw new Exception($"Both {nameof(BasePage)} and {nameof(ParentComponent)} can not have a value.");
         // ... if it is a page requesting this, run the page method ...
         if (BasePage is not null)
+        {
             await PageEditService.SetPageLayoutAsync(BasePage.Value, typ);
+
+            if (CallRefreshRequest is not null)
+                await CallRefreshRequest.Invoke();
+        }
         else if (ParentComponent is not null)
+        {
             // ... otherwise run the layout method ...
-            // TODO: Add component assigment for layout componenets.
-            return;
+            await PageEditService.SetLayoutChildAsync(ParentComponent.Value, typ, Position);
+
+            if (CallRefreshRequest is not null)
+                await CallRefreshRequest.Invoke();
+        }
         else
             // ... otherwise throw an exception if there are not parents found.
             throw new Exception($"Either {nameof(BasePage)} or {nameof(ParentComponent)} must have a value, but not both.");

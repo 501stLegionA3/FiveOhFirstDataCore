@@ -62,9 +62,14 @@ namespace ProjectDataCore.Components.Parts
         /// </summary>
         private Type[] AttributeTypes { get; } = new Type[] { typeof(LayoutComponentAttribute) };
 
+        private Func<Task> RefreshRequest { get; set; }
+
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
+
+            RefreshRequest = ReloadPage;
+
             // If the route is null or has been changed ...
             if (Route is not null 
                 && (PageSettings?.Route ?? null) != Route)
