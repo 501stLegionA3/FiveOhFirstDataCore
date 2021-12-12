@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Basic;
 
-[LayoutComponent(Name = "3x1 Layout")]
+[LayoutComponent(Name = "2x1 Layout")]
 public partial class TwoByOneLayoutPart : LayoutBase
 {
 

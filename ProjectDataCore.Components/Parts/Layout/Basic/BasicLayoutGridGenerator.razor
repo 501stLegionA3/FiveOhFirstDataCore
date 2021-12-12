@@ -1,0 +1,24 @@
+﻿@inherits LayoutBase
+
+<div class="mx-auto py-6 sm:px-6 lg:px-8 inset-0 h-screen">
+    <div class="px-4 py-6 sm:px-0 columns-3 grid gap-3 grid-rows-@Height gird-cols-@Width">
+        @for (var x = 0; x < Width; x++)
+        {
+            var xa = x;
+            for(var y = 0; y < Height; y++)
+            {
+                var pos = y + xa;
+                @if (ConfiguredSettings[pos] is not null)
+                {
+                    <DynamicComponent Type="ConfiguredTypes[pos]" Parameters="ConfiguredParameters[pos]" />
+                }
+                else if(Editing && ComponentSettings is not null)
+                {
+                    <AddComponentDialog ParentComponent="ComponentSettings.Key" 
+                        Position="pos" 
+                        AllowedAttributes="AllowedAttributes" />
+                }
+            }
+        }
+    </div>
+</div>

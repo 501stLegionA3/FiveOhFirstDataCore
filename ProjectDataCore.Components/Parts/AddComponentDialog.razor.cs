@@ -35,6 +35,13 @@ public partial class AddComponentDialog
     /// </remarks>
     [Parameter]
     public Guid? ParentComponent { get; set; }
+    /// <summary>
+    /// A part of the parent component tracker,
+    /// the position value determines where in a 
+    /// parent component the new component is placed.
+    /// </summary>
+    [Parameter]
+    public int Position { get; set; } = 0;
 
     private int ComponentTypeIndex { get; set; }
     /// <summary>
@@ -86,7 +93,7 @@ public partial class AddComponentDialog
         // ... if it is a page requesting this, run the page method ...
         if (BasePage is not null)
             await PageEditService.SetPageLayoutAsync(BasePage.Value, typ);
-        else if (BasePage is not null)
+        else if (ParentComponent is not null)
             // ... otherwise run the layout method ...
             // TODO: Add component assigment for layout componenets.
             return;
