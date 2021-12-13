@@ -1,7 +1,8 @@
 module.exports = {
 	mode: 'jit',
-	purge: [
-		'../**/*.{html,razor,razor.css,cshtml,cshtml.css}'
+	content: [
+		'../ProjectDataCore/**/*.{html,razor,razor.css,cshtml,cshtml.css}',
+		'../ProjectDataCore.Components/**/*.{html,razor,razor.css,cshtml,cshtml.css}'
 	],
 	theme: {
 		extend: {},
