@@ -260,5 +260,49 @@ public class PageEditService : IPageEditService
         await _dbContext.SaveChangesAsync();
         return new(true, null);
     }
+
+    public async Task<ActionResult> DeleteLayoutComponentAsync(Guid layout)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the layout.
+        var layoutData = await _dbContext.LayoutComponentSettings
+            .Where(x => x.Key == layout)
+            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentPage)
+            .Include(x => x.ChildComponents)
+            .FirstOrDefaultAsync();
+
+        if (layoutData is null)
+            return new(false, new List<string>() { "No page settings object was found for the provided ID." });
+
+        // Load the child components into a queue ...
+        Queue<PageComponentSettingsBase> settings = new();
+        foreach (var c in layoutData.ChildComponents)
+            settings.Enqueue(c);
+        // ... then load all child components under the item to delete ...
+        while (settings.TryDequeue(out var c))
+        {
+            if (c is LayoutComponentSettings ls)
+            {
+                var cInstance = _dbContext.Entry(ls);
+                await cInstance.Collection(x => x.ChildComponents).LoadAsync();
+                foreach (var nextC in ls.ChildComponents)
+                    settings.Enqueue(nextC);
+            }
+        }
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(layoutData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The layout component was unable to be deleted.", ex.Message });
+        }
+    }
     #endregion
 }

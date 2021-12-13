@@ -84,6 +84,12 @@ public interface IPageEditService
     /// <param name="position">The position value for the new component.</param>
     /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> SetLayoutChildAsync(Guid layout, Type component, int position);
+    /// <summary>
+    /// Deletes a layout component and all of its children.
+    /// </summary>
+    /// <param name="layout">The layout to remove.</param>
+    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> DeleteLayoutComponentAsync(Guid layout);
     #endregion
 
     #region Editable Component Actions

@@ -62,7 +62,7 @@ namespace ProjectDataCore.Components.Parts
         /// </summary>
         private Type[] AttributeTypes { get; } = new Type[] { typeof(LayoutComponentAttribute) };
 
-        private Func<Task> RefreshRequest { get; set; }
+        private Func<Task>? RefreshRequest { get; set; }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -94,6 +94,9 @@ namespace ProjectDataCore.Components.Parts
             if (PageSettings is null)
                 return;
 
+            // Clear any existing data if it exisits ...
+            PageSettings.Layout = null;
+
             bool first = true;
             // ... otherwise, for each setp in the load method ...
             await foreach(bool _ in RoutingService.LoadPageSettingsAsync(PageSettings))
@@ -106,6 +109,14 @@ namespace ProjectDataCore.Components.Parts
                     ComponentType = RoutingService.GetComponentType(PageSettings.Layout.QualifiedTypeName);
                     first = false;
                 }
+                else if (first && PageSettings.Layout is null)
+                {
+                    // Set the values to null if they do not exist ...
+                    ComponentParams["ComponentData"] = null;
+                    ComponentType = null;
+                    first = false;
+                }
+
                 // ... refresh the page ...
                 await InvokeAsync(StateHasChanged);
             }
