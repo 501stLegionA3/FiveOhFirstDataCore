@@ -1,8 +1,25 @@
 {
+  "name": "projectdatacore",
+  "version": "0.17.0",
+  "description": "Project Data Core for ArmA unit tracking",
+  "scripts": {},
+  "author": "501st Holosite Support Team",
+  "license": "MIT",
   "devDependencies": {
-    "tailwindcss": "^3.0.0"
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.5",
+    "postcss-cli": "^9.1.0",
+    "tailwindcss": "^3.0.2"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.4.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/501stLegionA3/FiveOhFirstDataCore.git"
+  },
+  "bugs": {
+    "url": "https://github.com/501stLegionA3/FiveOhFirstDataCore/issues"
+  },
+  "homepage": "https://github.com/501stLegionA3/FiveOhFirstDataCore#readme"
 }
