@@ -4,7 +4,7 @@
     <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-@Height grid-cols-@Width">
         @for (var x = 0; x < Width; x++)
         {
-            var xa = x;
+            var xa = x * Width;
             for(var y = 0; y < Height; y++)
             {
                 var pos = y + xa;
