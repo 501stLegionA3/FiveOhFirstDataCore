@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Model.Page;
+﻿using ProjectDataCore.Data.Services.Routing;
+using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Attributes;
 using ProjectDataCore.Data.Structures.Page.Components;
@@ -15,9 +16,10 @@ namespace ProjectDataCore.Data.Services.Page;
 public class PageEditService : IPageEditService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+    private readonly IRoutingService _routingService;
 
-    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
-        => (_dbContextFactory) = (dbContextFactory);
+    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRoutingService routingService)
+        => (_dbContextFactory, _routingService) = (dbContextFactory, routingService);
 
     #region Page Actions
     public async Task<ActionResult> CreateNewPageAsync(string name, string route)
@@ -53,6 +55,10 @@ public class PageEditService : IPageEditService
 
         if (obj is null)
             return new(false, new List<string>() { "No page for the provided ID was found." });
+
+        // Load the settings using the currently tracked object
+        // so we can do a proper cascade delete ...
+        await foreach (var _ in _routingService.LoadPageSettingsAsync(obj)) { }
 
         _dbContext.Remove(obj);
         await _dbContext.SaveChangesAsync();

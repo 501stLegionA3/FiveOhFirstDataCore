@@ -64,4 +64,18 @@ public partial class PageEditor
         EditRoute = settings.Route;
         StateHasChanged();
     }
+
+    private async void DeletePage(CustomPageSettings settings)
+    {
+        var res = await PageEditService.DeletePageAsync(settings.Key);
+        if(!res.GetResult(out var err))
+        {
+            Error = err[0];
+        }
+        else
+        {
+            Error = null;
+            await ReloadPagesAsync();
+        }
+    }
 }
