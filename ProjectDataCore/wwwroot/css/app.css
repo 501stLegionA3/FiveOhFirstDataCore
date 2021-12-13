@@ -2,10 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/*Core Lib*/
+
 .form-label {
     @apply block text-sm font-medium text-gray-700;
 }
 
 .form-control {
     @apply mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-800 focus:border-blue-800 sm:text-sm;
+}
+
+/*Components Lib*/
+
+.part-edit-container {
+    @apply mx-auto py-6 sm:px-6 lg:px-8 inset-0 relative;
 }

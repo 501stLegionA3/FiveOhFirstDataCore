@@ -1,10 +1,10 @@
 ﻿@inherits LayoutBase
 
-<div class="mx-auto py-6 sm:px-6 lg:px-8 inset-0 relative">
+<div class="part-edit-container">
     <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-@Height grid-cols-@Width">
         @for (var x = 0; x < Width; x++)
         {
-            var xa = x * Width;
+            var xa = x * Height;
             for(var y = 0; y < Height; y++)
             {
                 var pos = y + xa;

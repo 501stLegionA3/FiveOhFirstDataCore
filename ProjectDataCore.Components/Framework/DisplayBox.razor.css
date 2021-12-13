@@ -1,0 +1,11 @@
+﻿.display-box-frame {
+    @apply py-6 flex flex-col justify-center relative overflow-hidden sm:py-12;
+}
+
+.display-box {
+    @apply relative px-6 pt-10 pb-8 bg-white shadow-xl ring-1 ring-gray-900/5 sm:max-w-lg sm:mx-auto sm:rounded-lg sm:px-10;
+}
+
+.display-box-content {
+    @apply max-w-md mx-auto text-center;
+}

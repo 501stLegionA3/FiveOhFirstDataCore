@@ -274,7 +274,7 @@ public class PageEditService : IPageEditService
             .FirstOrDefaultAsync();
 
         if (layoutData is null)
-            return new(false, new List<string>() { "No page settings object was found for the provided ID." });
+            return new(false, new List<string>() { "No layout settings object was found for the provided ID." });
 
         // Load the child components into a queue ...
         Queue<PageComponentSettingsBase> settings = new();
@@ -302,6 +302,62 @@ public class PageEditService : IPageEditService
         catch (Exception ex)
         {
             return new(false, new List<string>() { "The layout component was unable to be deleted.", ex.Message });
+        }
+    }
+    #endregion
+
+    #region Editable Component Actions
+    public async Task<ActionResult> DeleteEditableComponentAsync(Guid comp)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the layout.
+        var compData = await _dbContext.EditableComponentSettings
+            .Where(x => x.Key == comp)
+            .Include(x => x.ParentLayout)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No editable component was found for the provided ID." });
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(compData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The editable component was unable to be deleted.", ex.Message });
+        }
+    }
+    #endregion
+
+    #region Display Component Actions
+    public async Task<ActionResult> DeleteDisplayComponentAsync(Guid comp)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the layout.
+        var compData = await _dbContext.DisplayComponentSettings
+            .Where(x => x.Key == comp)
+            .Include(x => x.ParentLayout)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No display component was found for the provided ID." });
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(compData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The display component was unable to be deleted.", ex.Message });
         }
     }
     #endregion

@@ -6,6 +6,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,8 +44,7 @@ public class RoutingService : IRoutingService
             type = ComponentAssembly.GetType(qualifiedName);
             // ... if it does not exist, throw an error ...
             if (type is null)
-                throw new ArgumentException("The provided qualified name was not found in the components assembly.", 
-                    nameof(qualifiedName));
+                throw new MissingComponentException("The provided qualified name was not found in the components assembly.");
             // ... otherwise add it to the cache ...
             ComponentCache[qualifiedName] = type;
         }
@@ -106,4 +106,15 @@ public class RoutingService : IRoutingService
         // return one last time for loading purposes.
         yield return true;
     }
+}
+
+/// <summary>
+/// Exception for when a component type can not be loaded.
+/// </summary>
+public class MissingComponentException : Exception
+{
+    public MissingComponentException() { }
+    public MissingComponentException(string? message) : base(message) { }
+    public MissingComponentException(string? message, Exception? innerException) : base(message, innerException) { }
+    protected MissingComponentException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }

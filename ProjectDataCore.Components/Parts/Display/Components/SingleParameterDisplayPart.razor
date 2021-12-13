@@ -1,0 +1,25 @@
+﻿@inherits DisplayBase
+
+@if(!Editing)
+{
+	<DisplayBox>
+		<Contnet>
+			<p class="font-bold p-2">@ComponentData.Label</p>
+			<hr />
+			<p class="stroke-gray-500 p-3">@DisplayValue</p>
+		</Contnet>
+	</DisplayBox>
+}
+else
+{
+	<div class="part-edit-container">
+		<DisplayBox>
+			<Contnet>
+				<p class="font-bold p-2">@ComponentData.Label</p>
+				<hr />
+				<p class="stroke-gray-500 p-3">@DisplayValue</p>
+			</Contnet>
+		</DisplayBox>
+		<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+	</div>
+}

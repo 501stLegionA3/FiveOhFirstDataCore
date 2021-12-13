@@ -93,10 +93,20 @@ public interface IPageEditService
     #endregion
 
     #region Editable Component Actions
-
+    /// <summary>
+    /// Deletes an editable component.
+    /// </summary>
+    /// <param name="comp">The component to delete.</param>
+    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> DeleteEditableComponentAsync(Guid comp);
     #endregion
 
     #region Display Component Actions
-
+    /// <summary>
+    /// Deletes a display component.
+    /// </summary>
+    /// <param name="comp">The component to delete.</param>
+    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> DeleteDisplayComponentAsync(Guid comp);
     #endregion
 }
