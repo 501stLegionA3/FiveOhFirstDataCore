@@ -28,4 +28,14 @@ public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
     /// The label to display alongside this property.
     /// </summary>
     public string? Label { get; set; }
+
+    /// <summary>
+    /// The component to pull a <see cref="Account.DataCoreUser"/> from. Leave as null to pull
+    /// from the currently signed in user.
+    /// </summary>
+    public PageComponentSettingsBase? UserScope { get; set; }
+    /// <summary>
+    /// The ID of the <see cref="UserScope"/>
+    /// </summary>
+    public Guid? UserScopeId { get; set; }
 }

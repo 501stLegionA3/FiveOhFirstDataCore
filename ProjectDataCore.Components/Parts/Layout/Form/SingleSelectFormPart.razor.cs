@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Form;
-public partial class SingleSelectFormPart
+
+[LayoutComponent(Name = "Single-select Form")]
+public partial class SingleSelectFormPart : FormLayoutBase
 {
 
 }

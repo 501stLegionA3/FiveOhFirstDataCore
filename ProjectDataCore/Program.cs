@@ -35,7 +35,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 // END BLAZOR SETUP
 
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
-    .AddScoped<IPageEditService, PageEditService>();
+    .AddScoped<IPageEditService, PageEditService>()
+    .AddScoped<IScopedUserService, ScopedUserService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>

@@ -186,12 +186,13 @@ namespace ProjectDataCore.Data.Migrations
                     Order = table.Column<int>(type: "integer", nullable: false),
                     ParentLayoutId = table.Column<Guid>(type: "uuid", nullable: true),
                     Discriminator = table.Column<string>(type: "text", nullable: false),
+                    MaxChildComponents = table.Column<int>(type: "integer", nullable: true),
+                    ParentPageId = table.Column<Guid>(type: "uuid", nullable: true),
                     PropertyToEdit = table.Column<string>(type: "text", nullable: true),
                     StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
                     Label = table.Column<string>(type: "text", nullable: true),
+                    UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
                     Placeholder = table.Column<string>(type: "text", nullable: true),
-                    MaxChildComponents = table.Column<int>(type: "integer", nullable: true),
-                    ParentPageId = table.Column<Guid>(type: "uuid", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -205,6 +206,11 @@ namespace ProjectDataCore.Data.Migrations
                     table.ForeignKey(
                         name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
                         column: x => x.ParentLayoutId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_UserSco~",
+                        column: x => x.UserScopeId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key");
                 });
@@ -344,6 +350,11 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase",
                 column: "ParentPageId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_UserScopeId",
+                table: "PageComponentSettingsBase",
+                column: "UserScopeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RosterDisplaySettings_HostRosterId",

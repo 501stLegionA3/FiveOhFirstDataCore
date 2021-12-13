@@ -1,11 +1,13 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <main>
+<CascadingValue Name="ActiveUser" Value="@ActiveUser">
+    <div class="page">
+        <main>
 
 
-        <article class="">
-            @Body
-        </article>
-    </main>
-</div>
+            <article class="">
+                @Body
+            </article>
+        </main>
+    </div>
+</CascadingValue>

@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Form;
-public partial class BasicFormPart
+
+[LayoutComponent(Name = "Basic Form")]
+public partial class BasicFormPart : FormLayoutBase
 {
 
 }

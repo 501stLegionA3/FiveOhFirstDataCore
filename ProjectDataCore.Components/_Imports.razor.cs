@@ -6,7 +6,7 @@ global using ProjectDataCore.Data.Structures.Result;
 global using ProjectDataCore.Data.Structures.Roster;
 global using ProjectDataCore.Data.Structures.Model.Roster;
 global using ProjectDataCore.Data.Structures.Util;
-
+global using ProjectDataCore.Data.Account;
 global using ProjectDataCore.Data.Services;
 global using ProjectDataCore.Data.Services.Page;
 global using ProjectDataCore.Data.Structures.Page.Components;

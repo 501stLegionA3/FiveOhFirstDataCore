@@ -69,6 +69,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         pageComponentSettingsBase.HasOne(e => e.ParentLayout)
             .WithMany(p => p.ChildComponents)
             .HasForeignKey(e => e.ParentLayoutId);
+
+        var parameterComponentSettings = builder.Entity<ParameterComponentSettingsBase>();
+        parameterComponentSettings.HasOne(e => e.UserScope)
+            .WithMany(p => p.AttachedScopes)
+            .HasForeignKey(e => e.UserScopeId);
         #endregion
 
         #region User

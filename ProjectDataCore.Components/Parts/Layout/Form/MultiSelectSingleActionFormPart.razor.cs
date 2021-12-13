@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace ProjectDataCore.Components.Parts.Layout.Form;
 
-namespace ProjectDataCore.Components.Parts.Layout.Form;
-public partial class MultiSelectSingleActionFormPart
+[LayoutComponent(Name = "Multi-select Single-action Form")]
+public partial class MultiSelectSingleActionFormPart : FormLayoutBase
 {
 
 }

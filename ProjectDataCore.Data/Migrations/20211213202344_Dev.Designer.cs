@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211211173426_Dev")]
+    [Migration("20211213202344_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,49 +381,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("RosterParentLinks");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.DisplayComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("Label")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PropertyToEdit")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("boolean");
-
-                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("Label")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Placeholder")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PropertyToEdit")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("boolean");
-
-                    b.HasDiscriminator().HasValue("EditableComponentSettings");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -438,6 +395,28 @@ namespace ProjectDataCore.Data.Migrations
                         .IsUnique();
 
                     b.HasDiscriminator().HasValue("LayoutComponentSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<string>("Label")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PropertyToEdit")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("StaticProperty")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UserScopeId")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("UserScopeId");
+
+                    b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
@@ -473,6 +452,23 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("RosterTreeKey");
 
                     b.HasDiscriminator().HasValue("RosterTree");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.DisplayComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
+
+                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
+
+                    b.Property<string>("Placeholder")
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue("EditableComponentSettings");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -582,6 +578,15 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("ParentPage");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "UserScope")
+                        .WithMany("AttachedScopes")
+                        .HasForeignKey("UserScopeId");
+
+                    b.Navigation("UserScope");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "OccupiedBy")
@@ -613,6 +618,11 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
                     b.Navigation("RosterSlots");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
+                {
+                    b.Navigation("AttachedScopes");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>

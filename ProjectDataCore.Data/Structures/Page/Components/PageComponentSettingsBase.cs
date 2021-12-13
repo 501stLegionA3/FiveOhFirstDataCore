@@ -38,4 +38,10 @@ public class PageComponentSettingsBase : DataObject<Guid>
     /// The key for the <see cref="ParentLayout"/>
     /// </summary>
     public Guid? ParentLayoutId { get; set; }
+
+    /// <summary>
+    /// A list of parameter components that are using this page component as a scope
+    /// to retrive a <see cref="Account.DataCoreUser"/> from.
+    /// </summary>
+    public List<ParameterComponentSettingsBase> AttachedScopes { get; set; } = new();
 }
