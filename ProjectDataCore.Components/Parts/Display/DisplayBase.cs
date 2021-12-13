@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Display;
 
-[DisplayComponent(Name = "Single Value")]
-public partial class SingleParameterDisplayPart : DisplayBase
+public class DisplayBase : CustomComponentBase
 {
-
+    [Parameter]
+    public DisplayComponentSettings? ComponentData { get; set; }
 }

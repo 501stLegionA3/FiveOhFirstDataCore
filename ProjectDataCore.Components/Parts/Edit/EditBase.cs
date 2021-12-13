@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Edit;
 
-[EditableComponent(Name = "Single Value")]
-public partial class SingleParameterEditPart : EditBase
+public class EditBase : CustomComponentBase
 {
-
+    [Parameter]
+    public EditableComponentSettings? ComponentData { get; set; }
 }
