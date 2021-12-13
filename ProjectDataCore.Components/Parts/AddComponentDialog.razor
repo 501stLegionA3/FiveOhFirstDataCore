@@ -3,23 +3,72 @@
         <div></div>
         <div></div>
         <div></div>
+        
+        @if (DisplayTypes.Count > 0)
+        {
+            <div class="relative w-16 h-16 sm:w-32 sm:h-32">
+                <EditForm Model="this">
+                    <InputSelect class="absolute w-full inset-x-0 top-0 p-2 bg-blue-300 rounded-lg valid" @bind-Value="DisplayComponentTypeIndex">
+                        @for (var i = 0; i < DisplayTypes.Count; i++)
+                        {
+                            var ix = i;
+                        <option value="@ix">@DisplayTypes[ix].Item2</option>
+                        }
+                    </InputSelect>
+                </EditForm>
+                <button class="absolute w-full inset-x-0 bottom-0 p-2 bg-pink-300 rounded-lg" @onclick="OnAddDisplayComponentAsync">
+                    Add Display
+                </button>
+            </div>
+        }
+        else
+        {
+            <div></div>
+        }
 
-        <div></div>
-        <div class="relative w-16 h-16 sm:w-32 sm:h-32">
-            <EditForm Model="this">
-                <InputSelect class="absolute w-full inset-x-0 top-0 p-2 bg-pink-300 rounded-lg valid" @bind-Value="ComponentTypeIndex">
-                    @for (var i = 0; i < AvalibleTypes.Count; i++)
-                    {
-                        var ix = i;
-                        <option value="@ix">@AvalibleTypes[ix].Item2</option>
-                    }
-                </InputSelect>
-            </EditForm>
-            <button class="absolute w-full inset-x-0 bottom-0 p-2 bg-pink-300 rounded-lg" @onclick="OnAddComponentAsync">
-                Add Component
-            </button>
-        </div>
-        <div></div>
+        @if (LayoutTypes.Count > 0)
+        {
+            <div class="relative w-16 h-16 sm:w-32 sm:h-32">
+                <EditForm Model="this">
+                    <InputSelect class="absolute w-full inset-x-0 top-0 p-2 bg-pink-300 rounded-lg valid" @bind-Value="LayoutComponentTypeIndex">
+                        @for (var i = 0; i < LayoutTypes.Count; i++)
+                        {
+                            var ix = i;
+                        <option value="@ix">@LayoutTypes[ix].Item2</option>
+                        }
+                    </InputSelect>
+                </EditForm>
+                <button class="absolute w-full inset-x-0 bottom-0 p-2 bg-pink-300 rounded-lg" @onclick="OnAddLayoutComponentAsync">
+                    Add Layout
+                </button>
+            </div>
+        }
+        else
+        {
+            <div></div>
+        }
+        
+        @if (EditableTypes.Count > 0)
+        {
+            <div class="relative w-16 h-16 sm:w-32 sm:h-32">
+                <EditForm Model="this">
+                    <InputSelect class="absolute w-full inset-x-0 top-0 p-2 bg-green-300 rounded-lg valid" @bind-Value="EditableComponentTypeIndex">
+                        @for (var i = 0; i < EditableTypes.Count; i++)
+                        {
+                            var ix = i;
+                        <option value="@ix">@EditableTypes[ix].Item2</option>
+                        }
+                    </InputSelect>
+                </EditForm>
+                <button class="absolute w-full inset-x-0 bottom-0 p-2 bg-pink-300 rounded-lg" @onclick="OnAddEditableComponentAsync">
+                    Add Editable
+                </button>
+            </div>
+        }
+        else
+        {
+            <div></div>
+        }
 
         <div></div>
         <div></div>

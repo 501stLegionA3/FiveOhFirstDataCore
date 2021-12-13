@@ -46,11 +46,21 @@ public partial class AddComponentDialog
     [Parameter]
     public int Position { get; set; } = 0;
 
-    private int ComponentTypeIndex { get; set; }
+    private int LayoutComponentTypeIndex { get; set; }
+    private int DisplayComponentTypeIndex { get; set; }
+    private int EditableComponentTypeIndex { get; set; }
     /// <summary>
-    /// The types avalbile to select from when adding new components.
+    /// The types avalbile to select from when adding new layout components.
     /// </summary>
-    private List<(Type, string)> AvalibleTypes { get; set; } = new();
+    private List<(Type, string)> LayoutTypes { get; set; } = new();
+    /// <summary>
+    /// The types avalbile to select from when adding new display components.
+    /// </summary>
+    private List<(Type, string)> DisplayTypes { get; set; } = new();
+    /// <summary>
+    /// The types avalbile to select from when adding new editable components.
+    /// </summary>
+    private List<(Type, string)> EditableTypes { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -58,7 +68,9 @@ public partial class AddComponentDialog
 
         if(firstRender)
         {
-            AvalibleTypes.Clear();
+            LayoutTypes.Clear();
+            DisplayTypes.Clear();
+            EditableTypes.Clear();
             // On load, get the current assembly ...
             var asm = Assembly.GetAssembly(GetType());
             // ... and the types from it ...
@@ -74,7 +86,19 @@ public partial class AddComponentDialog
                     // ... and add it to the avalible types list if it does ...
                     if (attr is not null && t.FullName is not null)
                     {
-                        AvalibleTypes.Add((t, attr.Name));
+                        switch(attr)
+                        {
+                            case LayoutComponentAttribute:
+                                LayoutTypes.Add((t, attr.Name));
+                                break;
+                            case DisplayComponentAttribute:
+                                DisplayTypes.Add((t, attr.Name));
+                                break;
+                            case EditableComponentAttribute:
+                                EditableTypes.Add((t, attr.Name));
+                                break;
+                        }
+
                         break;
                     }
                 }
@@ -84,12 +108,31 @@ public partial class AddComponentDialog
         }
     }
 
-    private async Task OnAddComponentAsync()
+    private async Task OnAddDisplayComponentAsync()
+    {
+        // On the add component action, get the item to add ...
+        var typ = DisplayTypes[DisplayComponentTypeIndex].Item1;
+        await OnAddComponentAsync(typ);
+    }
+
+    private async Task OnAddLayoutComponentAsync()
+    {
+        // On the add component action, get the item to add ...
+        var typ = LayoutTypes[LayoutComponentTypeIndex].Item1;
+        await OnAddComponentAsync(typ);
+    }
+
+    private async Task OnAddEditableComponentAsync()
+    {
+        // On the add component action, get the item to add ...
+        var typ = EditableTypes[EditableComponentTypeIndex].Item1;
+        await OnAddComponentAsync(typ);
+    }
+
+    private async Task OnAddComponentAsync(Type typ)
     {
         // TODO: Error displays for the Page Edit Service Methods.
 
-        // On the add component action, get the item to add ...
-        var typ = AvalibleTypes[ComponentTypeIndex].Item1;
         // ... ensure there is not two parent values ...
         if (BasePage is not null && ParentComponent is not null)
             throw new Exception($"Both {nameof(BasePage)} and {nameof(ParentComponent)} can not have a value.");
