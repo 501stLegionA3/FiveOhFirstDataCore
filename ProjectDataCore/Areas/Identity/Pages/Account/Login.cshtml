@@ -1,0 +1,39 @@
+﻿@page "/login"
+@model LoginModel
+
+@{
+
+}
+
+<div class="p-3 inset-0 bg-slat-300 p-3 rounded-lg">
+    <form id="account" method="post" class="grid gap-2">
+        <div asp-validation-summary="ModelOnly" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></div>
+        
+        <br />
+
+        <input asp-for="Input.Username" type="text" autocomplete="username" aria-required="true" />
+        <label asp-for="Input.Username"></label>
+        <span asp-validation-for="Input.Username" class="text-white bg-red-800/90 p-2"></span>
+        
+        <br />
+
+        <input asp-for="Input.Password" type="text" autocomplete="current-password" aria-required="true" />
+        <label asp-for="Input.Password"></label>
+        <span asp-validation-for="Input.Password" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></span>
+
+        <br />
+
+        <label asp-for="Input.RememberMe" class="inline-flex items-center">
+            <input type="checkbox" asp-for="Input.RememberMe" />
+            <span class="ml-2">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+        </label>
+        
+        <br />
+
+        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

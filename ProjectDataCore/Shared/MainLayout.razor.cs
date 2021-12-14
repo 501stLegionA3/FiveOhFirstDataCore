@@ -1,10 +1,12 @@
-﻿namespace ProjectDataCore.Shared;
+﻿using ProjectDataCore.Data.Services.User;
+
+namespace ProjectDataCore.Shared;
 
 public partial class MainLayout : LayoutComponentBase
 {
 #pragma warning disable CS8618 // Injections are never null.
     [Inject]
-    public UserManager<DataCoreUser> UserManager { get; set; }
+    public IUserService UserService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter]
@@ -22,7 +24,7 @@ public partial class MainLayout : LayoutComponentBase
         {
             var user = (await AuthStateTask).User;
 
-            ActiveUser = await UserManager.GetUserAsync(user);
+            ActiveUser = await UserService.GetUserFromClaimsPrinciaplAsync(user);
         }
     }
 }

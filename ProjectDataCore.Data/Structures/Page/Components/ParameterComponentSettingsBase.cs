@@ -23,7 +23,6 @@ public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
     /// If it is False, then it will search through assignable values.
     /// </remarks>
     public bool StaticProperty { get; set; }
-
     /// <summary>
     /// The label to display alongside this property.
     /// </summary>

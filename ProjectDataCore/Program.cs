@@ -1,3 +1,8 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using ProjectDataCore.Data.Database;
+using ProjectDataCore.Data.Services.User;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile(Path.Join("Config", "website_config.json"));
@@ -34,9 +39,22 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // END BLAZOR SETUP
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 2;
+    options.Password.RequiredUniqueChars = 0;
+});
+
+// END PASSWORD SETUP
+
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IPageEditService, PageEditService>()
-    .AddScoped<IScopedUserService, ScopedUserService>();
+    .AddScoped<IScopedUserService, ScopedUserService>()
+    .AddScoped<IUserService, UserService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>

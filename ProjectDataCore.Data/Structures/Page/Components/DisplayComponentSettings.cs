@@ -11,5 +11,8 @@ namespace ProjectDataCore.Data.Structures.Page.Components;
 /// </summary>
 public class DisplayComponentSettings : ParameterComponentSettingsBase
 {
-    
+    /// <summary>
+    /// The format string for a static property.
+    /// </summary>
+    public string? FormatString { get; set; }
 }

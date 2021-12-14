@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Pages.Admin.Page;
-public partial class RosterEditor
+public partial class RosterEditor : ComponentBase
 {
 
 }

@@ -192,6 +192,7 @@ namespace ProjectDataCore.Data.Migrations
                     StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
                     Label = table.Column<string>(type: "text", nullable: true),
                     UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    FormatString = table.Column<string>(type: "text", nullable: true),
                     Placeholder = table.Column<string>(type: "text", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

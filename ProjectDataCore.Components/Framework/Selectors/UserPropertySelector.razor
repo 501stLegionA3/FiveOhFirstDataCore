@@ -1,0 +1,17 @@
+﻿<label class="form-label" for="property-selector">Select Property</label>
+<InputSelect id="property-selector" class="form-control" Value="PropertyName"
+	ValueExpression="() => PropertyName" ValueChanged="OnNameChanged" TValue="string" >
+	<option value="">n/a</option>
+	@foreach(var item in Properties)
+	{
+		<option value="@item.Item1">@item.Item2</option>
+	}
+</InputSelect>
+
+<br />
+
+<label class="inline-flex items-center">
+	<InputCheckbox Value="UseStaticProperties" ValueExpression="() => UseStaticProperties" 
+		ValueChanged="OnStaticSelectorChanged" />
+	<span class="ml-2">Display Static Properties</span>
+</label>

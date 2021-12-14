@@ -332,6 +332,27 @@ public class PageEditService : IPageEditService
             return new(false, new List<string>() { "The editable component was unable to be deleted.", ex.Message });
         }
     }
+
+    public async Task<ActionResult> UpdateEditableComponentAsync(Guid comp, 
+        Action<EditableComponentSettingsEditModel> action)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.EditableComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No editable component was found for the provided ID." });
+
+        EditableComponentSettingsEditModel model = new();
+        action.Invoke(model);
+
+        ApplyParameterComponentEdits(compData, model);
+
+        await _dbContext.SaveChangesAsync();
+        return new(true, null);
+    }
     #endregion
 
     #region Display Component Actions
@@ -360,5 +381,39 @@ public class PageEditService : IPageEditService
             return new(false, new List<string>() { "The display component was unable to be deleted.", ex.Message });
         }
     }
+
+    public async Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, 
+        Action<DisplayComponentSettingsEditModel> action)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.DisplayComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No display component was found for the provided ID." });
+
+        DisplayComponentSettingsEditModel model = new();
+        action.Invoke(model);
+
+        ApplyParameterComponentEdits(compData, model);
+
+        await _dbContext.SaveChangesAsync();
+        return new(true, null);
+    }
     #endregion
+
+    private void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
+        ParameterComponentSettingsEditModel model)
+    {
+        if (model.PropertyToEdit is not null)
+            compData.PropertyToEdit = model.PropertyToEdit;
+
+        if (model.StaticProperty is not null)
+            compData.StaticProperty = model.StaticProperty.Value;
+
+        if (model.Label.HasValue)
+            compData.Label = model.Label.Value;
+    }
 }

@@ -456,6 +456,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
+                    b.Property<string>("FormatString")
+                        .HasColumnType("text");
+
                     b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 

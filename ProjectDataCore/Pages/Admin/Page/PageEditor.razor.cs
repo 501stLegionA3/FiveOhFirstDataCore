@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Pages.Admin.Page;
-public partial class PageEditor
+public partial class PageEditor : ComponentBase
 {
 #pragma warning disable CS8618 // Inject is always non-null.
     [Inject]

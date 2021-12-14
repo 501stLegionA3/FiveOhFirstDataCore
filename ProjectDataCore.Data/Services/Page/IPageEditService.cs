@@ -97,8 +97,15 @@ public interface IPageEditService
     /// Deletes an editable component.
     /// </summary>
     /// <param name="comp">The component to delete.</param>
-    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> DeleteEditableComponentAsync(Guid comp);
+    /// <summary>
+    /// Update an Editable component.
+    /// </summary>
+    /// <param name="comp">The ID of the component to update.</param>
+    /// <param name="action">The update action to take.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateEditableComponentAsync(Guid comp, Action<EditableComponentSettingsEditModel> action);
     #endregion
 
     #region Display Component Actions
@@ -106,7 +113,14 @@ public interface IPageEditService
     /// Deletes a display component.
     /// </summary>
     /// <param name="comp">The component to delete.</param>
-    /// <returns>A task that returns <see cref="ActionResult"/> for this action.</returns>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> DeleteDisplayComponentAsync(Guid comp);
+    /// <summary>
+    /// Update a display component.
+    /// </summary>
+    /// <param name="comp">The ID of the component to update.</param>
+    /// <param name="action">The update action to take.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, Action<DisplayComponentSettingsEditModel> action);
     #endregion
 }
