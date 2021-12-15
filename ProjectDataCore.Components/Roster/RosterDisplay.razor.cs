@@ -1,31 +1,15 @@
 ﻿namespace ProjectDataCore.Components.Roster;
 public partial class RosterDisplay
 {
-	private class RosterDisplayOptions
-	{
-		public Guid SelectedRoster { get; set; }
-		public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
-		/// <summary>
-		/// IF true the roster will only show a list of members rather than
-		/// an ordered collection of elements for this roster.
-		/// </summary>
-		/// <remarks>
-		/// When this option is true further details can be displayed about a single
-		/// user. Furthermore, this allows further sorting and search options to
-		/// be conducted on the roster iteself.
-		/// </remarks>
-		public bool ShowUserLisiting { get; set; } = false;
 
-		// TODO: Other display settings.
-	}
-
-	private RosterTree? Roster { get; set; } = null;
-	private RosterDisplayOptions Options { get; set; } = new();
-
+#pragma warning disable CS8618 // Injections are never null.
 	[Inject]
 	public IModularRosterService RosterService { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+	private Guid SelectedRoster { get; set; }
+	private RosterTree? Roster { get; set; } = null;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		await base.OnAfterRenderAsync(firstRender);
 
@@ -57,7 +41,7 @@ public partial class RosterDisplay
 		try
 		{
 			// Start getting roster data.
-			var rosterParts = RosterService.GetRosterTreeForSettingsAsync(Options.SelectedRoster);
+			var rosterParts = RosterService.GetRosterTreeForSettingsAsync(SelectedRoster);
 
 			Stack<RosterTree> parents = new();
 			await foreach (var x in rosterParts)
@@ -74,7 +58,7 @@ public partial class RosterDisplay
 					// ... while the current value does not match the parent
 					// value ...
 					while (!x.RosterParentLinks.Any(x
-						=> x.ForRosterSettingsId == Options.SelectedRoster
+						=> x.ForRosterSettingsId == SelectedRoster
 						&& x.ParentRosterId == last.Key))
 					{
 						// ... pop the stack and peek the next value ...

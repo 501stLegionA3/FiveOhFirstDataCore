@@ -8,6 +8,8 @@ namespace ProjectDataCore.Data.Structures.Page.Components;
 
 public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
 {
+    // TODO switch over to using a DataCoreUserProperty insated.
+
     /// <summary>
     /// The name of the property to edit.
     /// </summary>

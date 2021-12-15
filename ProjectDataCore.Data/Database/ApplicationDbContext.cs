@@ -27,6 +27,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<EditableComponentSettings> EditableComponentSettings { get; internal set; }
     public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
+    public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
     #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -74,6 +75,22 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         parameterComponentSettings.HasOne(e => e.UserScope)
             .WithMany(p => p.AttachedScopes)
             .HasForeignKey(e => e.UserScopeId);
+
+        var rosterComponentSettings = builder.Entity<RosterComponentSettings>();
+        rosterComponentSettings.HasMany(e => e.DefaultDisplayedProperties)
+            .WithOne()
+            .HasForeignKey(p => p.RosterComponentDefaultDisplayId);
+        rosterComponentSettings.Navigation(e => e.DefaultDisplayedProperties)
+            .AutoInclude(true);
+        rosterComponentSettings.HasMany(e => e.UserListDisplayedProperties)
+            .WithOne()
+            .HasForeignKey(p => p.RosterComponentUserListingDisplayId);
+        rosterComponentSettings.Navigation(e => e.UserListDisplayedProperties)
+            .AutoInclude(true);
+        rosterComponentSettings.HasMany(e => e.AvalibleRosters)
+            .WithMany(p => p.DisplayComponents);
+        rosterComponentSettings.Navigation(e => e.AvalibleRosters)
+            .AutoInclude(true);
         #endregion
 
         #region User
@@ -82,6 +99,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithOne(e => e.OccupiedBy)
             .HasForeignKey(e => e.OccupiedById);
             
+        var dataCoreUserProperty = builder.Entity<DataCoreUserProperty>();
+        dataCoreUserProperty.HasKey(e => e.Key);
         #endregion
     }
 }

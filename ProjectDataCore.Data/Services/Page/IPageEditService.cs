@@ -123,4 +123,20 @@ public interface IPageEditService
     /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, Action<DisplayComponentSettingsEditModel> action);
     #endregion
+
+    #region Roster Component Actions
+    /// <summary>
+    /// Deletes a roster component.
+    /// </summary>
+    /// <param name="comp">The component to delete.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> DeleteRosterComponentAsync(Guid comp);
+    /// <summary>
+    /// Update a roster component.
+    /// </summary>
+    /// <param name="comp">The ID of the component to update.</param>
+    /// <param name="action">The update action to take.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateRosterComponentAsync(Guid comp, Action<RosterComponentSettingsEditModel> action);
+    #endregion
 }

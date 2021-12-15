@@ -23,4 +23,9 @@
     <ProjectReference Include="..\ProjectDataCore.Data\ProjectDataCore.Data.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Parts\Roster\Unscoped\" />
+    <Folder Include="Parts\Roster\Scoped\" />
+  </ItemGroup>
+
 </Project>

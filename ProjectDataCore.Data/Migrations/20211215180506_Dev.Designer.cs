@@ -12,14 +12,14 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211214172711_Dev")]
+    [Migration("20211215180506_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.0-rc.2.21480.5")
+                .HasAnnotation("ProductVersion", "6.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -381,6 +381,62 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("RosterParentLinks");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Alias")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FormatString")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsStatic")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("RosterComponentDefaultDisplayId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("RosterComponentUserListingDisplayId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("RosterComponentDefaultDisplayId");
+
+                    b.HasIndex("RosterComponentUserListingDisplayId");
+
+                    b.ToTable("DataCoreUserProperty");
+                });
+
+            modelBuilder.Entity("RosterComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.Property<Guid>("AvalibleRostersKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DisplayComponentsKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AvalibleRostersKey", "DisplayComponentsKey");
+
+                    b.HasIndex("DisplayComponentsKey");
+
+                    b.ToTable("RosterComponentSettingsRosterDisplaySettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -417,6 +473,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("UserScopeId");
 
                     b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<bool>("AllowUserLisiting")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Depth")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("LevelFromTop")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("Scoped")
+                        .HasColumnType("boolean");
+
+                    b.HasDiscriminator().HasValue("RosterComponentSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
@@ -572,6 +647,33 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("ParentRoster");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", null)
+                        .WithMany("DefaultDisplayedProperties")
+                        .HasForeignKey("RosterComponentDefaultDisplayId");
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", null)
+                        .WithMany("UserListDisplayedProperties")
+                        .HasForeignKey("RosterComponentUserListingDisplayId")
+                        .HasConstraintName("FK_DataCoreUserProperty_PageComponentSettingsBase_RosterCompo~1");
+                });
+
+            modelBuilder.Entity("RosterComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
+                        .WithMany()
+                        .HasForeignKey("AvalibleRostersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", null)
+                        .WithMany()
+                        .HasForeignKey("DisplayComponentsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "ParentPage")
@@ -636,6 +738,13 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.Navigation("ChildComponents");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>
+                {
+                    b.Navigation("DefaultDisplayedProperties");
+
+                    b.Navigation("UserListDisplayedProperties");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>

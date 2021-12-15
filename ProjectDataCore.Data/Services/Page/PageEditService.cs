@@ -404,6 +404,86 @@ public class PageEditService : IPageEditService
     }
     #endregion
 
+    #region Roster Component Actions
+    public async Task<ActionResult> DeleteRosterComponentAsync(Guid comp)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the layout.
+        var compData = await _dbContext.RosterComponentSettings
+            .Where(x => x.Key == comp)
+            .Include(x => x.ParentLayout)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No roster component was found for the provided ID." });
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(compData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The roster component was unable to be deleted.", ex.Message });
+        }
+    }
+
+    public async Task<ActionResult> UpdateRosterComponentAsync(Guid comp, Action<RosterComponentSettingsEditModel> action)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.RosterComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No roster component was found for the provided ID." });
+
+        RosterComponentSettingsEditModel model = new();
+        action.Invoke(model);
+
+        if(model.Scoped is not null)
+            compData.Scoped = model.Scoped.Value;
+
+        if(model.AllowUserListing is not null)
+            compData.AllowUserLisiting = model.AllowUserListing.Value;
+
+        if (model.UserListDisplayedProperties is not null)
+            compData.UserListDisplayedProperties = model.UserListDisplayedProperties;
+
+        if (model.DefaultDisplayedProperties is not null)
+            compData.DefaultDisplayedProperties = model.DefaultDisplayedProperties;
+
+        if(model.LevelFromTop is not null)
+            compData.LevelFromTop = model.LevelFromTop.Value;
+
+        if(model.Depth is not null)
+            compData.Depth = model.Depth.Value;
+
+        if(model.AvalibleRosters is not null)
+        {
+            compData.AvalibleRosters = new();
+
+            await _dbContext.RosterDisplaySettings
+                .Where(x => model.AvalibleRosters.Contains(x.Key))
+                .ForEachAsync(x => compData.AvalibleRosters.Add(x));
+        }
+
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The roster component changes were unable to be saved.", ex.Message });
+        }
+    }
+    #endregion
+
     private void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
         ParameterComponentSettingsEditModel model)
     {

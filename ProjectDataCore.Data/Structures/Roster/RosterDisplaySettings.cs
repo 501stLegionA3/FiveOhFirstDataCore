@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Page.Components;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,4 +16,6 @@ public class RosterDisplaySettings : DataObject<Guid>
     public string Name { get; set; }
     public RosterTree HostRoster { get; set; }
     public Guid HostRosterId { get; set; }
+
+    public List<RosterComponentSettings> DisplayComponents { get; set; } = new();
 }

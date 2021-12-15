@@ -194,6 +194,10 @@ namespace ProjectDataCore.Data.Migrations
                     UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
                     FormatString = table.Column<string>(type: "text", nullable: true),
                     Placeholder = table.Column<string>(type: "text", nullable: true),
+                    Scoped = table.Column<bool>(type: "boolean", nullable: true),
+                    AllowUserLisiting = table.Column<bool>(type: "boolean", nullable: true),
+                    LevelFromTop = table.Column<int>(type: "integer", nullable: true),
+                    Depth = table.Column<int>(type: "integer", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -214,6 +218,53 @@ namespace ProjectDataCore.Data.Migrations
                         column: x => x.UserScopeId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DataCoreUserProperty",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyName = table.Column<string>(type: "text", nullable: false),
+                    IsStatic = table.Column<bool>(type: "boolean", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    FormatString = table.Column<string>(type: "text", nullable: false),
+                    Alias = table.Column<int>(type: "integer", nullable: false),
+                    RosterComponentUserListingDisplayId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RosterComponentDefaultDisplayId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataCoreUserProperty", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_DataCoreUserProperty_PageComponentSettingsBase_RosterCompo~1",
+                        column: x => x.RosterComponentUserListingDisplayId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_DataCoreUserProperty_PageComponentSettingsBase_RosterCompon~",
+                        column: x => x.RosterComponentDefaultDisplayId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RosterComponentSettingsRosterDisplaySettings",
+                columns: table => new
+                {
+                    AvalibleRostersKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    DisplayComponentsKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterComponentSettingsRosterDisplaySettings", x => new { x.AvalibleRostersKey, x.DisplayComponentsKey });
+                    table.ForeignKey(
+                        name: "FK_RosterComponentSettingsRosterDisplaySettings_PageComponentS~",
+                        column: x => x.DisplayComponentsKey,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -342,6 +393,16 @@ namespace ProjectDataCore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DataCoreUserProperty_RosterComponentDefaultDisplayId",
+                table: "DataCoreUserProperty",
+                column: "RosterComponentDefaultDisplayId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DataCoreUserProperty_RosterComponentUserListingDisplayId",
+                table: "DataCoreUserProperty",
+                column: "RosterComponentUserListingDisplayId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
                 table: "PageComponentSettingsBase",
                 column: "ParentLayoutId");
@@ -356,6 +417,11 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_PageComponentSettingsBase_UserScopeId",
                 table: "PageComponentSettingsBase",
                 column: "UserScopeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterComponentSettingsRosterDisplaySettings_DisplayCompone~",
+                table: "RosterComponentSettingsRosterDisplaySettings",
+                column: "DisplayComponentsKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RosterDisplaySettings_HostRosterId",
@@ -398,6 +464,14 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentRosterId");
 
             migrationBuilder.AddForeignKey(
+                name: "FK_RosterComponentSettingsRosterDisplaySettings_RosterDisplayS~",
+                table: "RosterComponentSettingsRosterDisplaySettings",
+                column: "AvalibleRostersKey",
+                principalTable: "RosterDisplaySettings",
+                principalColumn: "Key",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
                 name: "FK_RosterDisplaySettings_RosterObject_HostRosterId",
                 table: "RosterDisplaySettings",
                 column: "HostRosterId",
@@ -421,8 +495,16 @@ namespace ProjectDataCore.Data.Migrations
                 table: "RosterObject");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_RosterObject_RosterParentLinks_RosterParentId",
-                table: "RosterObject");
+                name: "FK_RosterParentLinks_RosterDisplaySettings_ForRosterSettingsId",
+                table: "RosterParentLinks");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_RosterParentLinks_RosterObject_ChildRosterKey",
+                table: "RosterParentLinks");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_RosterParentLinks_RosterObject_ParentRosterId",
+                table: "RosterParentLinks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -440,10 +522,16 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "PageComponentSettingsBase");
+                name: "DataCoreUserProperty");
+
+            migrationBuilder.DropTable(
+                name: "RosterComponentSettingsRosterDisplaySettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "PageComponentSettingsBase");
 
             migrationBuilder.DropTable(
                 name: "CustomPageSettings");
@@ -452,13 +540,13 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "RosterParentLinks");
-
-            migrationBuilder.DropTable(
                 name: "RosterDisplaySettings");
 
             migrationBuilder.DropTable(
                 name: "RosterObject");
+
+            migrationBuilder.DropTable(
+                name: "RosterParentLinks");
         }
     }
 }
