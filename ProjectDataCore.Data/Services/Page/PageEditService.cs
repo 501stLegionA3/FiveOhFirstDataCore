@@ -484,7 +484,7 @@ public class PageEditService : IPageEditService
     }
     #endregion
 
-    private void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
+    private static void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
         ParameterComponentSettingsEditModel model)
     {
         if (model.PropertyToEdit is not null)
