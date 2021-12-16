@@ -23,8 +23,4 @@
     <ProjectReference Include="..\ProjectDataCore.Data\ProjectDataCore.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Parts\Roster\Parts\" />
-  </ItemGroup>
-
 </Project>
