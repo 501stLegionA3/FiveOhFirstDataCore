@@ -11,6 +11,7 @@ global using ProjectDataCore.Data.Services;
 global using ProjectDataCore.Data.Services.Page;
 global using ProjectDataCore.Data.Structures.Page.Components;
 global using ProjectDataCore.Data.Structures.Page.Attributes;
+global using ProjectDataCore.Data.Structures.Model.Page;
 
 global using System;
 global using System.Collections.Generic;

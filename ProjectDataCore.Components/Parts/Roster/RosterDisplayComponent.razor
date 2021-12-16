@@ -5,14 +5,103 @@
 		@if(Editing)
 		{
 			@*Roster Manager Edit Form*@
+			<EditForm Context="RosterDisplaySettingsContext" Model="RosterDisplaySettings">
+
+			</EditForm>
 		}
-		else
+		else if (ComponentData is not null)
 		{
-			@*Roster User Settings*@
+			<div class="display-box-text grid grid-cols-1">
+				@*Roster User Settings*@
+				@if (RosterUserSettings.UserListing || CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
+				{
+					<EditForm Context="RosterUserSettingsContext" Model="RosterUserSettings" class="grid gird-cols-1">
+						@if (RosterUserSettings.UserListing)
+						{
+							<div class="p-2 flex">
+								<InputSelect class="form-left" TValue="DataCoreUserProperty" Value="RosterUserSettings.SelectedParameter"
+									ValueExpression="() => RosterUserSettings.SelectedParameter"
+									ValueChanged="SelectedParameterChanged">
+									@foreach(var item in ComponentData.UserListDisplayedProperties)
+									{
+										<option value="@item">@item.PropertyName</option>
+									}
+								</InputSelect>
+								<InputText class="form-center" Value="RosterUserSettings.Search"
+									ValueExpression="() => RosterUserSettings.Search" 
+									ValueChanged="SearchValueChanged" />
+								<button class="form-right-button" @onclick="OnChangeSortDirection">
+									@if(RosterUserSettings.SortAscending)
+									{
+										<span class="material-icons-round">arrow_upward</span>
+									}
+									else
+									{
+										<span class="material-icons-round">arrow_downward</span>
+									}
+								</button>
+							</div>
+						}
 
+						@if (CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
+						{
+							<div class="p-2 flex">
+								@if (CanSwitchRosterSelection)
+								{
+									<label for="" class="form-left">
+										Displayed Roster
+									</label>
+									<InputSelect class="form-center" TValue="Guid?" Value="RosterUserSettings.SelectedRoster"
+										ValueExpression="() => RosterUserSettings.SelectedRoster"
+										ValueChanged="SelectedRosterChangedAsync">
 
-			@*Roster Display*@
-			<RosterTreeDisplay Tree="ActiveTree" />
+									</InputSelect>
+									@if (ComponentData.AllowUserLisiting)
+									{
+										<button class="form-right-button" @onclick="OnChangeViewMode">
+											@if(RosterUserSettings.UserListing)
+											{
+												<span class="material-icons-round">view_list</span>
+											}
+											else
+											{
+												<span class="material-icons-round">account_tree</span>
+											}
+										</button>
+									}
+								}
+								else if (ComponentData.AllowUserLisiting)
+								{
+									<button class="w-full border-blue-500" @onclick="OnChangeViewMode">
+										@if(RosterUserSettings.UserListing)
+										{
+											<span class="material-icons-round">view_list</span>
+										}
+										else
+										{
+											<span class="material-icons-round">account_tree</span>
+										}
+									</button>
+								}
+							</div>
+						}
+					</EditForm>
+				}
+
+				@if(RosterUserSettings.UserListing)
+				{
+					<div class="p-2">
+
+					</div>
+				}
+				else
+				{
+					<div class="p-2">
+						@*Roster Display*@
+						<RosterTreeDisplay Tree="ActiveTree" />
+					</div>
+				}
+			</div>
 		}
 	</Contnet>
 </DisplayBox>

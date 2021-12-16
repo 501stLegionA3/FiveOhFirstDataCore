@@ -70,6 +70,16 @@ public class RosterComponentSettings : PageComponentSettingsBase
     #endregion
 
     /// <summary>
+    /// The default roster to display. If left null the roster at index 0
+    /// will be displayed.
+    /// </summary>
+    /// <remarks>
+    /// Due to the nature of a database, the item at index 0 can change
+    /// depending on how the data is loaded.
+    /// </remarks>
+    public Guid? DefaultRoster { get; set; }
+
+    /// <summary>
     /// The avalible rosters to display.
     /// </summary>
     /// <remarks>
