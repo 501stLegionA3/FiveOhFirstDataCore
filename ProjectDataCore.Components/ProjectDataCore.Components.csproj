@@ -24,8 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Parts\Roster\Unscoped\" />
-    <Folder Include="Parts\Roster\Scoped\" />
+    <Folder Include="Parts\Roster\Parts\" />
   </ItemGroup>
 
 </Project>

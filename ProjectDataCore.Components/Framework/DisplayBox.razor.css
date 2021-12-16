@@ -3,9 +3,9 @@
 }
 
 .display-box {
-    @apply relative px-6 pt-10 pb-8 bg-white shadow-xl ring-1 ring-gray-900/20 sm:max-w-lg sm:mx-auto sm:rounded-lg sm:px-10;
+    @apply relative px-6 pt-10 pb-8 bg-white shadow-xl ring-gray-900/20 sm:mx-10 sm:rounded-lg sm:px-10;
 }
 
 .display-box-content {
-    @apply max-w-md mx-auto text-center;
+    @apply mx-auto py-6 sm:px-6 inset-0 relative text-center;
 }

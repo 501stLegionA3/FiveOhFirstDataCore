@@ -15,5 +15,5 @@
 /*Components Lib*/
 
 .part-edit-container {
-    @apply mx-auto py-6 sm:px-6 lg:px-8 inset-0 relative;
+    @apply py-6 sm:px-6 lg:px-8 inset-0 relative h-full;
 }

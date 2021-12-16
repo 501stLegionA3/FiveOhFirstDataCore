@@ -47,8 +47,16 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         var rosterParentLink = builder.Entity<RosterParentLink>();
         rosterParentLink.HasKey(e => e.Key);
 
-        var rosertDisplaySettings = builder.Entity<RosterDisplaySettings>();
-        rosertDisplaySettings.HasKey(e => e.Key);
+        var rosterDisplaySettings = builder.Entity<RosterDisplaySettings>();
+        rosterDisplaySettings.HasKey(e => e.Key);
+
+        var rosterTree = builder.Entity<RosterTree>();
+        rosterTree.Navigation(e => e.RosterParentLinks)
+            .AutoInclude(true);
+
+        var rosterSlot = builder.Entity<RosterSlot>();
+        rosterSlot.Navigation(e => e.RosterParent)
+            .AutoInclude(true);
         #endregion
 
         #region Page

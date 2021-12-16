@@ -1,4 +1,6 @@
-﻿namespace ProjectDataCore.Data.Services;
+﻿using System.Runtime.Serialization;
+
+namespace ProjectDataCore.Data.Services;
 
 public class ModularRosterService : IModularRosterService
 {
@@ -352,8 +354,59 @@ public class ModularRosterService : IModularRosterService
     #endregion
 
     #region Get Roster Display
-    public async IAsyncEnumerable<RosterTree> GetRosterTreeForSettingsAsync(Guid settings)
+    public async IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree)
     {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // attach the tree object...
+        var obj = _dbContext.Attach(tree);
+
+        if (obj is null)
+            // ... a roster tree was not found,
+            throw new MissingRosterTreeException("The base roster tree can not be loaded.");
+
+        // ... then load the base roster positions ...
+        await obj.Collection(e => e.RosterPositions)
+            .Query()
+            .OrderBy(e => e.RosterParent.Order)
+            .LoadAsync();
+        // ... and return true now that some data is loaded ...
+        yield return true;
+        // ... then load the child rosters ...
+        await obj.Collection(e => e.ChildRosters).LoadAsync();
+        // ... and place the child rosters into a queue ...
+        Queue<RosterTree> rosters = new();
+        foreach (var t in tree.ChildRosters)
+            rosters.Enqueue(t);
+        // ... then for each child roster ...
+        while(rosters.TryDequeue(out RosterTree? roster))
+        {
+            obj = _dbContext.Entry(roster);
+
+            // ... then load the roster positions ...
+            await obj.Collection(e => e.RosterPositions)
+                .Query()
+                .OrderBy(e => e.RosterParent.Order)
+                .LoadAsync();
+
+            // ... let the page know a new roster has been loaded ...
+            yield return true;
+
+            // ... and load + enque any child further child rosters ...
+            await obj.Collection(e => e.ChildRosters).LoadAsync();
+            foreach (var t in roster.ChildRosters)
+                rosters.Enqueue(t);
+        }
+
+        // ... then let the page know to refresh one more time ...
+        yield return true;
+    }
+
+    public async Task<ActionResult<RosterTree>> GetRosterTreeForSettingsAsync(Guid settings)
+    {
+        // TODO rework this to load from a roster tree object insated of requiring the component
+        // to sort the values. (see the loading of a component tree in the RoutingService).
+
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var settingsObject = await _dbContext.RosterDisplaySettings
@@ -362,56 +415,9 @@ public class ModularRosterService : IModularRosterService
             .FirstOrDefaultAsync();
 
         if (settingsObject is null)
-            throw new ArgumentNullException(nameof(settings), 
-                $"ID does not yield a valid settings object.");
+            return new(false, new List<string>() { "No settings object was found for the provided ID." });
 
-        await foreach (var res in LoadRosterTreeAsync(settingsObject.HostRoster, settings, _dbContext))
-            yield return res;
-    }
-
-    private async IAsyncEnumerable<RosterTree> LoadRosterTreeAsync(RosterTree parent, 
-        Guid settingsKey, ApplicationDbContext _dbContext)
-    {
-        // Load this entrys slots...
-        await _dbContext.Entry(parent)
-            .Collection(x => x.RosterPositions)
-            .Query()
-            .Include(x => x.RosterParent)
-            .LoadAsync();
-
-        // ... order the entrys slots ...
-
-        parent.RosterPositions.Sort((x, y) 
-            => x.RosterParent.Order.CompareTo(y.RosterParent.Order));
-
-        // ... then yield the inital parent value ...
-        yield return parent;
-
-        // ... before loading the child rosters ...
-        await _dbContext.Entry(parent)
-            .Collection(x => x.ChildRosters)
-            .Query()
-            .Include(x => x.RosterParentLinks)
-            .LoadAsync();
-
-        // ... then properly order them ...
-
-        parent.ChildRosters.Sort((x, y) =>
-        {
-            // ... get the proper parent link ...
-            var xVal = x.RosterParentLinks.FirstOrDefault(z => z.ForRosterSettingsId == settingsKey);
-            var yVal = y.RosterParentLinks.FirstOrDefault(z => z.ForRosterSettingsId == settingsKey);
-            // ... find the ordering values ....
-            var xOr = xVal?.Order ?? -1;
-            var yOr = yVal?.Order ?? -1;
-            // ... return the comparison ...
-            return xOr.CompareTo(yOr);
-        });
-
-        // ... then yield return all values for this recursive function.
-        foreach (var child in parent.ChildRosters)
-            await foreach (var x in LoadRosterTreeAsync(child, settingsKey, _dbContext))
-                yield return x;
+        return new(true, null, settingsObject.HostRoster);
     }
 
     public async Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplays()
@@ -428,4 +434,15 @@ public class ModularRosterService : IModularRosterService
         return new(true, null, rosterDisplays);
     }
     #endregion
+}
+
+/// <summary>
+/// Exception for when a roster tree can not be loaded.
+/// </summary>
+public class MissingRosterTreeException : Exception
+{
+    public MissingRosterTreeException() { }
+    public MissingRosterTreeException(string? message) : base(message) { }
+    public MissingRosterTreeException(string? message, Exception? innerException) : base(message, innerException) { }
+    protected MissingRosterTreeException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
