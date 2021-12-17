@@ -49,6 +49,8 @@ public partial class RosterDisplayManagerEdit
         public void ULPE_StaticChanged(bool newStatic)
             => ULPE_Static = newStatic;
 
+        // See code comments for the RDPE methods - they are the exact same
+        // except they modify a different list.
         public async Task ULPE_AddProperty(Func<Task> RefreshCaller)
         {
             UserListingProperties.Add(UserListingProperties.Count, new()
@@ -120,6 +122,11 @@ public partial class RosterDisplayManagerEdit
         public void RDPE_StaticChanged(bool newStatic)
             => RDPE_Static = newStatic;
 
+        /// <summary>
+        /// Adds a new property for the Roster Display Property list.
+        /// </summary>
+        /// <param name="RefreshCaller">The pages refresh caller.</param>
+        /// <returns>A task for this action</returns>
         public async Task RDPE_AddProperty(Func<Task> RefreshCaller)
         {
             RosterDisplayProperties.Add(RosterDisplayProperties.Count, new()
@@ -134,6 +141,12 @@ public partial class RosterDisplayManagerEdit
             await RefreshCaller.Invoke();
         }
 
+        /// <summary>
+        /// Removes a property from the Roster Display Property list.
+        /// </summary>
+        /// <param name="pos">The position to remove.</param>
+        /// <param name="RefreshCaller">The pages refresh caller.</param>
+        /// <returns>A task for this action.</returns>
         public async Task RDPE_RemoveProperty(int pos, Func<Task> RefreshCaller)
         {
             RosterDisplayProperties.RemoveAt(pos);
@@ -156,6 +169,13 @@ public partial class RosterDisplayManagerEdit
             await RefreshCaller.Invoke();
         }
 
+        /// <summary>
+        /// Moves an item in the Roster Display Property list.
+        /// </summary>
+        /// <param name="start">The starting elemnts position.</param>
+        /// <param name="moveBy">The relative index to siwtch the item with. (-1 move left by one, 1 move right by one).</param>
+        /// <param name="RefreshCaller">The pages refresh caller.</param>
+        /// <returns>A task for this action.</returns>
         public async Task RDPE_MoveItem(int start, int moveBy, Func<Task> RefreshCaller)
         {
             // Already as far to the left as possible.
@@ -180,6 +200,11 @@ public partial class RosterDisplayManagerEdit
         public void SelectedRosterChanged(RosterDisplaySettings? settings)
             => SelectedRoster = settings;
 
+        /// <summary>
+        /// Adds a roster to the avalible rosters.
+        /// </summary>
+        /// <param name="RefreshCaller">The pages refresh caller.</param>
+        /// <returns>A task representing this action.</returns>
         public async Task AddRoster(Func<Task> RefreshCaller)
         {
             if(SelectedRoster is not null)
@@ -188,6 +213,12 @@ public partial class RosterDisplayManagerEdit
             await RefreshCaller.Invoke();
         }
 
+        /// <summary>
+        /// Removes a roster from the avalible rosters.
+        /// </summary>
+        /// <param name="pos">The position to remove a roster from.</param>
+        /// <param name="RefreshCaller">The pages refresh caller.</param>
+        /// <returns>A task representing this action.</returns>
         public async Task RemoveRoster(int pos, Func<Task> RefreshCaller)
         {
             AvalibleRosters.RemoveAt(pos);
@@ -227,6 +258,7 @@ public partial class RosterDisplayManagerEdit
     {
         await base.OnParametersSetAsync();
 
+        // Load the roster settings.
         if(CurrentSettings is not null)
             RosterComponentSettings = new(CurrentSettings);
     }
@@ -243,10 +275,12 @@ public partial class RosterDisplayManagerEdit
 
     protected async Task ReloadRosterDisplays()
     {
+        // Get all avalible rosters to display ...
         var res = await ModularRosterService.GetAvalibleRosterDisplays();
 
         if (res.GetResult(out var displays, out var err))
         {
+            // ... and add them as options.
             AvalibleRostersToDisplay = displays;
         }
         else
@@ -266,6 +300,8 @@ public partial class RosterDisplayManagerEdit
     {
         if (CurrentSettings is not null && RosterComponentSettings is not null)
         {
+            // Take the settings from Roster Component Settings and send them
+            // to the Page Edit Service to update the database
             var res = await PageEditService.UpdateRosterComponentAsync(CurrentSettings.Key, (x) =>
             {
                 x.AllowUserListing = RosterComponentSettings.AllowUserListing;
@@ -284,6 +320,9 @@ public partial class RosterDisplayManagerEdit
 
             // TODO handle errors.
 
+            // Then refresh the entire page just
+            // to make sure all settings were saved
+            // properly.
             if (CallRefreshRequest is not null)
                 await CallRefreshRequest.Invoke();
         }
