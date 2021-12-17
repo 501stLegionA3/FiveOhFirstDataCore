@@ -243,6 +243,13 @@ public class PageEditService : IPageEditService
             // add a display component settings object.
             newComponent = new DisplayComponentSettings();
         }
+        else if (component.GetCustomAttributes<RosterComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is a roster component,
+            // add a roster component settings object.
+            newComponent = new RosterComponentSettings();
+        }
         else
         {
             // Otherwise, return the error.
@@ -467,8 +474,12 @@ public class PageEditService : IPageEditService
         {
             compData.AvalibleRosters = new();
 
+            var keys = new List<Guid>();
+            foreach (var i in model.AvalibleRosters)
+                keys.Add(i.Key);
+
             await _dbContext.RosterDisplaySettings
-                .Where(x => model.AvalibleRosters.Contains(x.Key))
+                .Where(x => keys.Contains(x.Key))
                 .ForEachAsync(x => compData.AvalibleRosters.Add(x));
         }
 

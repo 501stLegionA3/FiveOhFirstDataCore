@@ -14,8 +14,13 @@ public partial class RosterDisplayManagerEdit
     public IPageEditService PageEditService { get; set; }
     [Inject]
     public IJSRuntime JS { get; set; }
+    [Inject]
+    public IModularRosterService ModularRosterService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+    /// <summary>
+    /// Handles the edit form for the Roster Display component.
+    /// </summary>
     public class RosterComponentModel
     {
         public bool Scoped { get; set; }
@@ -54,7 +59,45 @@ public partial class RosterDisplayManagerEdit
             });
 
             ULPE_PropertyName = "";
-            ULPE_Static = false;
+
+            await RefreshCaller.Invoke();
+        }
+
+        public async Task ULPE_RemoveProperty(int pos, Func<Task> RefreshCaller)
+        {
+            UserListingProperties.RemoveAt(pos);
+
+            SortedList<int, DataCoreUserProperty> list = new();
+            var enumer = UserListingProperties.GetEnumerator();
+            enumer.MoveNext();
+
+            for (int i = 0; i < UserListingProperties.Count; i++)
+            {
+                var cur = enumer.Current;
+                cur.Value.Order = i;
+
+                list.Add(i, cur.Value);
+
+                enumer.MoveNext();
+            }
+
+            UserListingProperties = list;
+            await RefreshCaller.Invoke();
+        }
+
+        public async Task ULPE_MoveItem(int start, int moveBy, Func<Task> RefreshCaller)
+        {
+            // Already as far to the left as possible.
+            var otherIndex = start + moveBy;
+            if (otherIndex < 0 || otherIndex > UserListingProperties.Count - 1)
+                return;
+
+            var prev = UserListingProperties[otherIndex];
+            UserListingProperties[otherIndex] = UserListingProperties[start];
+            UserListingProperties[start] = prev;
+
+            UserListingProperties[otherIndex].Order = otherIndex;
+            UserListingProperties[start].Order = start;
 
             await RefreshCaller.Invoke();
         }
@@ -87,13 +130,71 @@ public partial class RosterDisplayManagerEdit
             });
 
             RDPE_PropertyName = "";
-            RDPE_Static = false;
+
+            await RefreshCaller.Invoke();
+        }
+
+        public async Task RDPE_RemoveProperty(int pos, Func<Task> RefreshCaller)
+        {
+            RosterDisplayProperties.RemoveAt(pos);
+
+            SortedList<int, DataCoreUserProperty> list = new();
+            var enumer = RosterDisplayProperties.GetEnumerator();
+            enumer.MoveNext();
+
+            for (int i = 0; i < RosterDisplayProperties.Count; i++)
+            {
+                var cur = enumer.Current;
+                cur.Value.Order = i;
+
+                list.Add(i, cur.Value);
+
+                enumer.MoveNext();
+            }
+
+            RosterDisplayProperties = list;
+            await RefreshCaller.Invoke();
+        }
+
+        public async Task RDPE_MoveItem(int start, int moveBy, Func<Task> RefreshCaller)
+        {
+            // Already as far to the left as possible.
+            var otherIndex = start + moveBy;
+            if (otherIndex < 0 || otherIndex > RosterDisplayProperties.Count - 1)
+                return;
+
+            var prev = RosterDisplayProperties[otherIndex];
+            RosterDisplayProperties[otherIndex] = RosterDisplayProperties[start];
+            RosterDisplayProperties[start] = prev;
+
+            RosterDisplayProperties[otherIndex].Order = otherIndex;
+            RosterDisplayProperties[start].Order = start;
 
             await RefreshCaller.Invoke();
         }
         #endregion
-        
+
         public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
+        #region Avalible Roster Edits
+        public RosterDisplaySettings? SelectedRoster { get; set; }
+        public void SelectedRosterChanged(RosterDisplaySettings? settings)
+            => SelectedRoster = settings;
+
+        public async Task AddRoster(Func<Task> RefreshCaller)
+        {
+            if(SelectedRoster is not null)
+                AvalibleRosters.Add(SelectedRoster);
+
+            await RefreshCaller.Invoke();
+        }
+
+        public async Task RemoveRoster(int pos, Func<Task> RefreshCaller)
+        {
+            AvalibleRosters.RemoveAt(pos);
+
+            await RefreshCaller.Invoke();
+        }
+        #endregion
 
         public RosterComponentModel(RosterComponentSettings settings)
         {
@@ -109,18 +210,18 @@ public partial class RosterDisplayManagerEdit
             RosterDisplayProperties = new();
             foreach (var i in settings.DefaultDisplayedProperties)
                 RosterDisplayProperties.Add(i.Order, i);
-
         }
     }
 
     [CascadingParameter(Name = "ActiveUser")]
     public DataCoreUser? ActiveUser { get; set; }
-
+    [CascadingParameter(Name = "RefreshRequest")]
+    public Func<Task>? CallRefreshRequest { get; set; }
     [Parameter]
     public RosterComponentSettings? CurrentSettings { get; set; }
 
     public RosterComponentModel? RosterComponentSettings { get; set; }
-    public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
+    public List<RosterDisplaySettings> AvalibleRostersToDisplay { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -130,8 +231,69 @@ public partial class RosterDisplayManagerEdit
             RosterComponentSettings = new(CurrentSettings);
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            await ReloadRosterDisplays();
+        }
+    }
+
+    protected async Task ReloadRosterDisplays()
+    {
+        var res = await ModularRosterService.GetAvalibleRosterDisplays();
+
+        if (res.GetResult(out var displays, out var err))
+        {
+            AvalibleRostersToDisplay = displays;
+        }
+        else
+        {
+            // TODO do something with the error if it occours.
+        }
+
+        StateHasChanged();
+    }
+
     protected async Task OnRefreshRequested()
     {
         await InvokeAsync(StateHasChanged);
+    }
+
+    protected async Task SaveChangesAsync()
+    {
+        if (CurrentSettings is not null && RosterComponentSettings is not null)
+        {
+            var res = await PageEditService.UpdateRosterComponentAsync(CurrentSettings.Key, (x) =>
+            {
+                x.AllowUserListing = RosterComponentSettings.AllowUserListing;
+                x.UserListDisplayedProperties = RosterComponentSettings.UserListingProperties
+                                                    .Select(x => x.Value).ToList();
+                
+                x.Scoped = RosterComponentSettings.Scoped;
+                x.LevelFromTop = RosterComponentSettings.LevelFromTop;
+                x.Depth = RosterComponentSettings.Depth;
+
+                x.DefaultDisplayedProperties = RosterComponentSettings.RosterDisplayProperties
+                                                    .Select(x => x.Value).ToList();
+
+                x.AvalibleRosters = RosterComponentSettings.AvalibleRosters;
+            });
+
+            // TODO handle errors.
+
+            if (CallRefreshRequest is not null)
+                await CallRefreshRequest.Invoke();
+        }
+    }
+
+    protected void ResetChanges()
+    {
+        if(CurrentSettings is not null)
+            RosterComponentSettings = new(CurrentSettings);
+
+        StateHasChanged();
     }
 }

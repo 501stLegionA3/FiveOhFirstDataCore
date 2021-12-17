@@ -4,10 +4,12 @@
 		class="grid grid-cols-1 p-2 w-full gap-2">
 		
 		<p class="text-lg">Scoped Roster Settings</p>
-		
+
+		@*Relative roster settings*@
+
 		<label class="inline-flex items-center">
-			Relative Roster
 			<InputCheckbox class="mr-2" @bind-Value="RosterComponentSettings.Scoped" />
+			Relative Roster
 		</label>
 		@if (RosterComponentSettings.Scoped)
 		{
@@ -23,29 +25,57 @@
 		<p class="text-lg">User Listing Settings</p>
 
 		<label class="inline-flex items-center">
-			Allow User Listing
 			<InputCheckbox class="mr-2" @bind-Value="RosterComponentSettings.AllowUserListing" />
+			Allow User Listing
 		</label>
 		@if(RosterComponentSettings.AllowUserListing)
 		{
 			<div class="grid grid-cols-1 gap-2">
 				<div class="grid grid-cols-2 gap-2 text-center">
-					<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.RDPE_AllowedStatic"
-						PropertyName="@RosterComponentSettings.RDPE_PropertyName" SetPropertyName="RosterComponentSettings.RDPE_ProeprtyNameChanged"
-						UseStaticProperties="RosterComponentSettings.RDPE_Static" SetPropertyType="RosterComponentSettings.RDPE_StaticChanged" />
-					<button class="border border-blue-700 hover:text-white hover:bg-blue-700" 
-						@onclick="async () => await RosterComponentSettings.RDPE_AddProperty(OnRefreshRequested)">
+
+					@*Add new properties to the user list display*@
+
+					<div class="grid grid-cols-1 gap-2">
+						<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.ULPE_AllowedStatic"
+							PropertyName="@RosterComponentSettings.ULPE_PropertyName" SetPropertyName="RosterComponentSettings.ULPE_ProeprtyNameChanged"
+							UseStaticProperties="RosterComponentSettings.ULPE_Static" SetPropertyType="RosterComponentSettings.ULPE_StaticChanged" />
+					</div>
+					<button class="add-button" 
+						@onclick="async () => await RosterComponentSettings.ULPE_AddProperty(OnRefreshRequested)">
 						Add Property
 					</button>
 				</div>
 				<table class="table-auto mb-10">
 					<thead>
+						@*Selected properties display*@
 						<tr class="border border-black bg-gray-300">
 							@for(int i = 0; i < RosterComponentSettings.UserListingProperties.Count; i++)
 							{
 								var ia = i;
 								<th id="ptable-@ia" class="p-2 relative @(i + 1 != RosterComponentSettings.UserListingProperties.Count ? "border-gray-700 border-r-2" : "")">
-									@RosterComponentSettings.UserListingProperties[i].PropertyName;
+									@RosterComponentSettings.UserListingProperties[i].PropertyName
+
+									@*Delete property from list button*@
+
+									<button class="absolute right-0 -bottom-7 px-1 border-red-500 border hover:bg-red-500 hover:text-white"
+											@onclick="async () => await RosterComponentSettings.ULPE_RemoveProperty(ia, OnRefreshRequested)">
+										<span class="material-icons-round">
+											delete
+										</span>
+									</button>
+
+									@*Buttons to control left and right movement of properties*@
+
+									<div class="absolute left-0 -bottom-7 grid grid-cols-2 grid-rows-1 gap-1">
+										<button class="add-button" 
+											@onclick="async () => await RosterComponentSettings.ULPE_MoveItem(ia, -1, OnRefreshRequested)">
+											<span class="material-icons-round">chevron_left</span>
+										</button>
+										<button class="add-button" 
+											@onclick="async () => await RosterComponentSettings.ULPE_MoveItem(ia, 1, OnRefreshRequested)">
+											<span class="material-icons-round">chevron_right</span>
+										</button>
+									</div>
 								</th>
 							}
 						</tr>
@@ -58,19 +88,101 @@
 
 		<p class="text-lg">Default Display Settings</p>
 
+		@*This follows the same as the parts above (method
+		prefix changed to indicate a different set of values)*@
+
 		<div class="grid grid-cols-1 gap-2">
 			<div class="grid grid-cols-2 gap-2 text-center">
-				<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.ULPE_AllowedStatic"
-					PropertyName="@RosterComponentSettings.ULPE_PropertyName" SetPropertyName="RosterComponentSettings.ULPE_ProeprtyNameChanged"
-					UseStaticProperties="RosterComponentSettings.ULPE_Static" SetPropertyType="RosterComponentSettings.ULPE_StaticChanged" />
-				<button class="border border-blue-700 hover:text-white hover:bg-blue-700" 
-					@onclick="async () => await RosterComponentSettings.ULPE_AddProperty(OnRefreshRequested)">
+				<div class="grid grid-cols-1 gap-2">
+					<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.RDPE_AllowedStatic"
+						PropertyName="@RosterComponentSettings.RDPE_PropertyName" SetPropertyName="RosterComponentSettings.RDPE_ProeprtyNameChanged"
+						UseStaticProperties="RosterComponentSettings.RDPE_Static" SetPropertyType="RosterComponentSettings.RDPE_StaticChanged" />
+				</div>
+				<button class="add-button" 
+					@onclick="async () => await RosterComponentSettings.RDPE_AddProperty(OnRefreshRequested)">
 					Add Property
 				</button>
 			</div>
 
-			<p>@string.Join(" ", RosterComponentSettings.RosterDisplayProperties.Select(x => x.Value.PropertyName))</p>
+			<div class="grid grid-rows-1 grid-flow-col gap-2 border border-gray-200 mb-10">
+				@for(int i = 0; i < RosterComponentSettings.RosterDisplayProperties.Count; i++)
+				{
+					var ia = i;
+					<div class="relative">
+						@RosterComponentSettings.RosterDisplayProperties[i].PropertyName
+						<button class="absolute right-0 -bottom-7 px-1 border-red-500 border hover:bg-red-500 hover:text-white"
+							@onclick="async () => await RosterComponentSettings.RDPE_RemoveProperty(ia, OnRefreshRequested)">
+							<span class="material-icons-round">
+								delete
+							</span>
+						</button>
+						<div class="absolute left-0 -bottom-7 grid grid-cols-2 grid-rows-1 gap-1">
+							<button class="add-button" 
+								@onclick="async () => await RosterComponentSettings.RDPE_MoveItem(ia, -1, OnRefreshRequested)">
+								<span class="material-icons-round">chevron_left</span>
+							</button>
+							<button class="add-button" 
+								@onclick="async () => await RosterComponentSettings.RDPE_MoveItem(ia, 1, OnRefreshRequested)">
+								<span class="material-icons-round">chevron_right</span>
+							</button>
+						</div>
+					</div>
+				}
+			</div>
 		</div>
+
+		<hr />
+		
+		<p class="text-lg">Roster Display Settings</p>
+
+		@*Allows selection of what rosters are allowed to be displayed from this page.*@
+
+		<div class="grid grid-cols-2 gap-2">
+			<div class="grid grid-cols-1 gap-2">
+				<InputSelect TValue="RosterDisplaySettings" ValueChanged="RosterComponentSettings.SelectedRosterChanged"
+					ValueExpression="() => RosterComponentSettings.SelectedRoster" 
+					Value="RosterComponentSettings.SelectedRoster" >
+					<option value="null">N/A</option>
+					@foreach(var i in AvalibleRostersToDisplay)
+					{
+						<option value="@i">@i.Name</option>
+					}
+				</InputSelect>
+				<button class="add-button p-2">
+					Add Roster
+				</button>
+			</div>
+			<div class="grid grid-flow-row grid-cols-1 gap-2">
+				@for(int i = 0; i < RosterComponentSettings.AvalibleRosters.Count; i++)
+				{
+					<div class="border-blue-700 grid grid-cols-3 grid-rows-1 gap-2">
+						<div>
+							@RosterComponentSettings.AvalibleRosters[i].Name
+						</div>
+
+						@*Configuration and deletion of selected rosters.*@
+
+						<button class="px-1 border-blue-700 border hover:bg-blue-700 hover:text-white">
+							<span class="material-buttons-round">settings</span>
+						</button>
+						<button class="px-1 border-red-500 border hover:bg-red-500 hover:text-white">
+							<span class="material-buttons-round">delete</span>
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+
+		<hr />
+
+		@*Save and cancel buttons for the entire component.*@
+
+		<button class="add-button p-2" @onclick="SaveChangesAsync">
+			Save Changes
+		</button>
+		<button class="p-2 border-red-500 border hover:bg-red-500 hover:text-white" @onclick="ResetChanges">
+			Cancel Changes
+		</button>
 
 	</EditForm>
 }

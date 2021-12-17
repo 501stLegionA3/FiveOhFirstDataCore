@@ -18,5 +18,5 @@ public class RosterComponentSettingsEditModel
     public int? LevelFromTop { get; set; }
     public int? Depth { get; set; }
 
-    public List<Guid>? AvalibleRosters { get; set; }
+    public List<RosterDisplaySettings>? AvalibleRosters { get; set; }
 }

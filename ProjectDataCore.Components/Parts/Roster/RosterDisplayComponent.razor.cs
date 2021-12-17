@@ -1,5 +1,6 @@
 ﻿namespace ProjectDataCore.Components.Parts.Roster;
 
+[RosterComponent(Name = "Roster")]
 public partial class RosterDisplayComponent : RosterDisplayBase
 {
     public class RosterUserSettingsModel

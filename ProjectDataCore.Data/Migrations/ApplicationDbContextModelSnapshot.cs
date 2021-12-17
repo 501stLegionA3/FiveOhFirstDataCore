@@ -480,6 +480,9 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<bool>("AllowUserLisiting")
                         .HasColumnType("boolean");
 
+                    b.Property<Guid?>("DefaultRoster")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Depth")
                         .HasColumnType("integer");
 

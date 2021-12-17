@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211215180506_Dev")]
+    [Migration("20211217160938_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -481,6 +481,9 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<bool>("AllowUserLisiting")
                         .HasColumnType("boolean");
+
+                    b.Property<Guid?>("DefaultRoster")
+                        .HasColumnType("uuid");
 
                     b.Property<int>("Depth")
                         .HasColumnType("integer");

@@ -1,0 +1,3 @@
+﻿.add-button {
+    @apply border border-blue-700 hover:text-white hover:bg-blue-700;
+}

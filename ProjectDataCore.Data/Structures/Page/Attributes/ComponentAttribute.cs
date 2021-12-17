@@ -18,3 +18,4 @@ public class ComponentAttribute : Attribute
 public class LayoutComponentAttribute : ComponentAttribute { }
 public class EditableComponentAttribute : ComponentAttribute { }
 public class DisplayComponentAttribute : ComponentAttribute { }
+public class RosterComponentAttribute : ComponentAttribute { }

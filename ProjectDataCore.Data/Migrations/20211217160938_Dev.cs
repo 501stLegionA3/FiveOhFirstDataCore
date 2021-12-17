@@ -198,6 +198,7 @@ namespace ProjectDataCore.Data.Migrations
                     AllowUserLisiting = table.Column<bool>(type: "boolean", nullable: true),
                     LevelFromTop = table.Column<int>(type: "integer", nullable: true),
                     Depth = table.Column<int>(type: "integer", nullable: true),
+                    DefaultRoster = table.Column<Guid>(type: "uuid", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
