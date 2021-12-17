@@ -92,6 +92,8 @@ public partial class RosterDisplayManagerEdit
             await RefreshCaller.Invoke();
         }
         #endregion
+        
+        public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
 
         public RosterComponentModel(RosterComponentSettings settings)
         {
@@ -118,6 +120,7 @@ public partial class RosterDisplayManagerEdit
     public RosterComponentSettings? CurrentSettings { get; set; }
 
     public RosterComponentModel? RosterComponentSettings { get; set; }
+    public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {

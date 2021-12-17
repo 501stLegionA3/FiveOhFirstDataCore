@@ -2,6 +2,9 @@
 {
 	<EditForm Context="RosterDisplaySettingsContext" Model="RosterComponentSettings"
 		class="grid grid-cols-1 p-2 w-full gap-2">
+		
+		<p class="text-lg">Scoped Roster Settings</p>
+		
 		<label class="inline-flex items-center">
 			Relative Roster
 			<InputCheckbox class="mr-2" @bind-Value="RosterComponentSettings.Scoped" />
@@ -17,6 +20,8 @@
 		
 		<hr />
 
+		<p class="text-lg">User Listing Settings</p>
+
 		<label class="inline-flex items-center">
 			Allow User Listing
 			<InputCheckbox class="mr-2" @bind-Value="RosterComponentSettings.AllowUserListing" />
@@ -25,11 +30,11 @@
 		{
 			<div class="grid grid-cols-1 gap-2">
 				<div class="grid grid-cols-2 gap-2 text-center">
-					<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.ULPE_AllowedStatic"
-						PropertyName="@RosterComponentSettings.ULPE_PropertyName" SetPropertyName="RosterComponentSettings.ULPE_ProeprtyNameChanged"
-						UseStaticProperties="RosterComponentSettings.ULPE_Static" SetPropertyType="RosterComponentSettings.ULPE_StaticChanged" />
+					<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.RDPE_AllowedStatic"
+						PropertyName="@RosterComponentSettings.RDPE_PropertyName" SetPropertyName="RosterComponentSettings.RDPE_ProeprtyNameChanged"
+						UseStaticProperties="RosterComponentSettings.RDPE_Static" SetPropertyType="RosterComponentSettings.RDPE_StaticChanged" />
 					<button class="border border-blue-700 hover:text-white hover:bg-blue-700" 
-						@onclick="async () => await RosterComponentSettings.ULPE_AddProperty(OnRefreshRequested)">
+						@onclick="async () => await RosterComponentSettings.RDPE_AddProperty(OnRefreshRequested)">
 						Add Property
 					</button>
 				</div>
@@ -38,7 +43,8 @@
 						<tr class="border border-black bg-gray-300">
 							@for(int i = 0; i < RosterComponentSettings.UserListingProperties.Count; i++)
 							{
-								<th class="p-2 relative @(i + 1 != RosterComponentSettings.UserListingProperties.Count ? "border-gray-700 border-r-2" : "")">
+								var ia = i;
+								<th id="ptable-@ia" class="p-2 relative @(i + 1 != RosterComponentSettings.UserListingProperties.Count ? "border-gray-700 border-r-2" : "")">
 									@RosterComponentSettings.UserListingProperties[i].PropertyName;
 								</th>
 							}
@@ -47,5 +53,24 @@
 				</table>
 			</div>
 		}
+
+		<hr />
+
+		<p class="text-lg">Default Display Settings</p>
+
+		<div class="grid grid-cols-1 gap-2">
+			<div class="grid grid-cols-2 gap-2 text-center">
+				<UserPropertySelector User="ActiveUser" AllowedStaticTypes="RosterComponentSettings.ULPE_AllowedStatic"
+					PropertyName="@RosterComponentSettings.ULPE_PropertyName" SetPropertyName="RosterComponentSettings.ULPE_ProeprtyNameChanged"
+					UseStaticProperties="RosterComponentSettings.ULPE_Static" SetPropertyType="RosterComponentSettings.ULPE_StaticChanged" />
+				<button class="border border-blue-700 hover:text-white hover:bg-blue-700" 
+					@onclick="async () => await RosterComponentSettings.ULPE_AddProperty(OnRefreshRequested)">
+					Add Property
+				</button>
+			</div>
+
+			<p>@string.Join(" ", RosterComponentSettings.RosterDisplayProperties.Select(x => x.Value.PropertyName))</p>
+		</div>
+
 	</EditForm>
 }
