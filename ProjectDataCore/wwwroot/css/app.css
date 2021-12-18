@@ -17,3 +17,15 @@
 .part-edit-container {
     @apply py-6 sm:px-6 lg:px-8 inset-0 relative h-full;
 }
+
+.form-left {
+    @apply inline-flex items-center border border-r-0 border-blue-700 focus:border-blue-900 focus:border-2 sm:min-w-fit;
+}
+
+.form-right-button {
+    @apply inline-flex items-center border border-l-0 border-blue-700 hover:border-blue-900 hover:bg-blue-700 hover:text-white px-4 sm:min-w-fit;
+}
+
+.form-center {
+    @apply w-full border border-blue-700 focus:border-blue-900 focus:border-2;
+}

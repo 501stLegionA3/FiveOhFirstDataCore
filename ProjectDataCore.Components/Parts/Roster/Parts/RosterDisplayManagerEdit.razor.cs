@@ -196,9 +196,13 @@ public partial class RosterDisplayManagerEdit
 
         public List<RosterDisplaySettings> AvalibleRosters { get; set; } = new();
         #region Avalible Roster Edits
-        public RosterDisplaySettings? SelectedRoster { get; set; }
-        public void SelectedRosterChanged(RosterDisplaySettings? settings)
-            => SelectedRoster = settings;
+        /// <summary>
+        /// A list of rosters to select from.
+        /// </summary>
+        public List<RosterDisplaySettings> RosterSelection { get; set; } = new();
+        public int? SelectedRoster { get; set; }
+        public void SelectedRosterChanged(int? index)
+            => SelectedRoster = index;
 
         /// <summary>
         /// Adds a roster to the avalible rosters.
@@ -208,7 +212,7 @@ public partial class RosterDisplayManagerEdit
         public async Task AddRoster(Func<Task> RefreshCaller)
         {
             if(SelectedRoster is not null)
-                AvalibleRosters.Add(SelectedRoster);
+                AvalibleRosters.Add(RosterSelection[SelectedRoster.Value]);
 
             await RefreshCaller.Invoke();
         }
@@ -252,7 +256,6 @@ public partial class RosterDisplayManagerEdit
     public RosterComponentSettings? CurrentSettings { get; set; }
 
     public RosterComponentModel? RosterComponentSettings { get; set; }
-    public List<RosterDisplaySettings> AvalibleRostersToDisplay { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -276,12 +279,13 @@ public partial class RosterDisplayManagerEdit
     protected async Task ReloadRosterDisplays()
     {
         // Get all avalible rosters to display ...
-        var res = await ModularRosterService.GetAvalibleRosterDisplays();
+        var res = await ModularRosterService.GetAvalibleRosterDisplaysAsync();
 
         if (res.GetResult(out var displays, out var err))
         {
             // ... and add them as options.
-            AvalibleRostersToDisplay = displays;
+            if(RosterComponentSettings is not null)
+                RosterComponentSettings.RosterSelection = displays;
         }
         else
         {

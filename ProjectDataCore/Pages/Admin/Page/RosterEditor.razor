@@ -1,4 +1,137 @@
 ﻿@page "/admin/roster/edit"
 
-<h4>RosterEditor</h4>
+<div class="p-4 grid grid-cols-1 gap-3">
+	<h4>Roster Editor</h4>
 
+	@if (Error is not null)
+	{
+		<div class="rounded-lg shadow-lg bg-red-500 text-center w-100 h-24">
+			<p>@Error</p>
+		</div>
+	}
+
+	<hr />
+
+	<div class="grid grid-cols-2 gap-2">
+
+		@*New Roster Display Form*@
+
+		<EditForm Context="AddNewRosterDisplayForm" Model="this" class="grid grid-cols-1 gap-2">
+			<p>New Roster and Roster Display</p>
+			<label for="roster-name-form">Roster Display Name</label>
+			<InputText type="text" id="roster-name-form" @bind-Value="NewRosterName" />
+			<label for="roster-name-form">Roster Tree Name</label>
+			<InputText type="text" id="roster-name-form" @bind-Value="TopLevelSectionName" />
+			<hr />
+			<button class="p-2 border border-blue-700 hover:bg-blue-700 hover:text-white"
+				@onclick="AddNewRosterDisplay">
+				Add Roster Display
+			</button>
+		</EditForm>
+
+		@*New Orphaned Roster Tree Form*@
+
+		<EditForm Context="AddNewRosterTreeForm" Model="this" class="grid grid-cols-1 gap-2">
+			<p>New Roster Tree (No Display)</p>
+			<label for="roster-name-form">Roster Tree Name</label>
+			<InputText type="text" id="roster-name-form" @bind-Value="TopLevelSectionName" />
+			<hr />
+			<button class="p-2 border border-blue-700 hover:bg-blue-700 hover:text-white"
+				@onclick="AddNewRosterTree">
+				Add Roster Tree
+			</button>
+		</EditForm>
+
+	</div>
+
+	<hr />
+
+	<div class="grid grid-cols-3 gap-4 text-center">
+		<div class="grid grid-cols-1">
+			<p>Roster Displays</p>
+
+			<div class="relative w-full flex gap-6 snap-x snap-mandatory overflow-x-auto py-4">
+
+				@*Avalible Roster Displays*@
+
+				@foreach(var i in AllRosterDisplays)
+				{
+					var roster = i;
+					<div class="border-2 border-blue-700 grid grid-cols-2 grid-rows-2 gap-2 snap-center snap-mandatory p-4 rounded-lg">
+						<div class="col-span-2">@i.Name</div>
+						<button class="border border-red-500 hover:bg-red-500 hover:text-white px-2 py-1"
+							@onclick="async () => await DeleteRosterDisplayAsync(roster)">
+							<span class="material-icons-round">delete</span>
+						</button>
+						<button class="border border-blue-700 hover:bg-blue-700 hover:text-white px-2 py-1"
+							@onclick="async () => await EditRosterFromDisplayAsync(roster)">
+							<span class="material-icons-round">edit</span>
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+
+		<div class="grid grid-cols-1">
+			<p>Orphaned Roster Trees</p>
+
+			<div class="relative w-full flex gap-6 snap-x snap-mandatory overflow-x-auto py-4">
+
+				@*Orphaned Roster Trees*@
+
+				@foreach(var i in AllOrphanedRosterTrees)
+				{
+					var tree = i;
+					<div class="border-2 border-blue-700 grid grid-cols-2 grid-rows-2 gap-2 snap-center snap-mandatory p-4 rounded-lg">
+						<div class="col-span-2">@i.Name</div>
+						<button class="border border-red-500 hover:bg-red-500 hover:text-white px-2 py-1"
+							@onclick="async () => await DeleteRosterTreeAsync(tree)">
+							<span class="material-icons-round">delete</span>
+						</button>
+						<button class="border border-blue-700 hover:bg-blue-700 hover:text-white px-2 py-1"
+							@onclick="() => EditRosterTree(tree)">
+							<span class="material-icons-round">edit</span>
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+
+		<div class="grid grid-cols-1">
+			<p>Top Level Roster Trees</p>
+
+			<div class="relative w-full flex gap-6 snap-x snap-mandatory overflow-x-auto py-4">
+
+				@*Top Level Roster Trees*@
+
+				@foreach(var i in AllTopLevelRosterTrees)
+				{
+					var tree = i;
+					<div class="border-2 border-blue-700 grid grid-cols-2 grid-rows-2 gap-2 snap-center snap-mandatory p-4 rounded-lg">
+						<div class="col-span-2">@i.Name</div>
+						<button class="border border-red-500 hover:bg-red-500 hover:text-white px-2 py-1"
+							@onclick="async () => await DeleteRosterTreeAsync(tree)">
+							<span class="material-icons-round">delete</span>
+						</button>
+						<button class="border border-blue-700 hover:bg-blue-700 hover:text-white px-2 py-1"
+							@onclick="() => EditRosterTree(tree)">
+							<span class="material-icons-round">edit</span>
+						</button>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+
+	<hr />
+
+	@*Roster Edit Display*@
+
+	@if(EditTree is not null)
+	{
+		<CascadingValue Name="RosterEdit" Value="true">
+			<RosterTreeDisplay Tree="EditTree" />
+		</CascadingValue>	
+	}
+
+</div>

@@ -15,7 +15,7 @@ namespace ProjectDataCore.Data.Services;
 public interface IModularRosterService
 {
     #region Roster Tree
-    public Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0);
+    public Task<ActionResult<Guid>> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0);
     public Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterTreeEditModel> action);
     public Task<ActionResult> AddChildRosterAsync(Guid tree, Guid child, int position);
     public Task<ActionResult> RemoveChildRosterAsync(Guid tree, Guid child);
@@ -37,6 +37,9 @@ public interface IModularRosterService
     #region Get Roster Display
     public IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree);
     public Task<ActionResult<RosterTree>> GetRosterTreeForSettingsAsync(Guid settings);
-    public Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplays(); 
+    public Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplaysAsync();
+    public Task<ActionResult<List<RosterTree>>> GetOrphanedRosterTreesAsync();
+    public Task<ActionResult<List<RosterTree>>> GetTopLevelRosterTreesAsync();
+    public Task<ActionResult<List<RosterTree>>> GetAllRosterTreesAsync();
     #endregion
 }

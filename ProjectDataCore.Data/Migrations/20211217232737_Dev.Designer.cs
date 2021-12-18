@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211217160938_Dev")]
+    [Migration("20211217232737_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -615,7 +615,7 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "HostRoster")
-                        .WithMany()
+                        .WithMany("DisplaySettings")
                         .HasForeignKey("HostRosterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -753,6 +753,8 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
                     b.Navigation("ChildRosters");
+
+                    b.Navigation("DisplaySettings");
 
                     b.Navigation("RosterParentLinks");
 

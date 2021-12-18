@@ -9,4 +9,7 @@ public partial class RosterTreeDisplay
 {
     [Parameter]
     public RosterTree Tree { get; set; }
+
+    [CascadingParameter(Name = "RosterEdit")]
+    public bool Editing { get; set; } = false;
 }

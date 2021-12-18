@@ -613,7 +613,7 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "HostRoster")
-                        .WithMany()
+                        .WithMany("DisplaySettings")
                         .HasForeignKey("HostRosterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -751,6 +751,8 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
                     b.Navigation("ChildRosters");
+
+                    b.Navigation("DisplaySettings");
 
                     b.Navigation("RosterParentLinks");
 

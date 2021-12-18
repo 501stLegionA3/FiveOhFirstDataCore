@@ -49,6 +49,9 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
 
         var rosterDisplaySettings = builder.Entity<RosterDisplaySettings>();
         rosterDisplaySettings.HasKey(e => e.Key);
+        rosterDisplaySettings.HasOne(e => e.HostRoster)
+            .WithMany(p => p.DisplaySettings)
+            .HasForeignKey(e => e.HostRosterId);
 
         var rosterTree = builder.Entity<RosterTree>();
         rosterTree.Navigation(e => e.RosterParentLinks)

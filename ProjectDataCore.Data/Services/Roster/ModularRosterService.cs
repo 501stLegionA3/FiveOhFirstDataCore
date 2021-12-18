@@ -10,7 +10,7 @@ public class ModularRosterService : IModularRosterService
         => (_dbContextFactory) = (dbContextFactory);
 
     #region Roster Tree
-    public async Task<ActionResult> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0)
+    public async Task<ActionResult<Guid>> AddRosterTreeAsync(string name, Guid? parentTree = null, int position = 0)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -36,7 +36,7 @@ public class ModularRosterService : IModularRosterService
             });
         }
 
-        await _dbContext.AddAsync(tree);
+        var tracker = await _dbContext.AddAsync(tree);
         await _dbContext.SaveChangesAsync();
 
         if (parentTree is not null)
@@ -45,7 +45,9 @@ public class ModularRosterService : IModularRosterService
             await _dbContext.SaveChangesAsync();
         }
 
-        return new(true, null);
+        await tracker.ReloadAsync();
+
+        return new(true, null, tree.Key);
     }
 
     public async Task<ActionResult> UpdateRosterTreeAsync(Guid tree, Action<RosterTreeEditModel> action)
@@ -420,7 +422,7 @@ public class ModularRosterService : IModularRosterService
         return new(true, null, settingsObject.HostRoster);
     }
 
-    public async Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplays()
+    public async Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplaysAsync()
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -433,7 +435,53 @@ public class ModularRosterService : IModularRosterService
 
         return new(true, null, rosterDisplays);
     }
-    #endregion
+
+	public async Task<ActionResult<List<RosterTree>>> GetOrphanedRosterTreesAsync()
+	{
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var trees = await _dbContext
+            .RosterTrees
+            .Include(x => x.RosterParentLinks)
+            .Include(x => x.DisplaySettings)
+            .Where(x => x.RosterParentLinks.Count <= 0)
+            .Where(x => x.DisplaySettings.Count <= 0)
+            .ToListAsync();
+
+        if (trees is null)
+            return new(false, new List<string> { "Unable to get a roster tree list." });
+
+        return new(true, null, trees);
+	}
+
+	public async Task<ActionResult<List<RosterTree>>> GetTopLevelRosterTreesAsync()
+	{
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var trees = await _dbContext
+            .RosterTrees
+            .Include(x => x.RosterParentLinks)
+            .Where(x => x.RosterParentLinks.Count <= 0)
+            .ToListAsync();
+
+        if (trees is null)
+            return new(false, new List<string> { "Unable to get a roster tree list." });
+
+        return new(true, null, trees);
+    }
+
+	public async Task<ActionResult<List<RosterTree>>> GetAllRosterTreesAsync()
+	{
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var trees = await _dbContext.RosterTrees.ToListAsync();
+
+        if (trees is null)
+            return new(false, new List<string> { "Unable to get a roster tree list." });
+
+        return new(true, null, trees);
+    }
+	#endregion
 }
 
 /// <summary>

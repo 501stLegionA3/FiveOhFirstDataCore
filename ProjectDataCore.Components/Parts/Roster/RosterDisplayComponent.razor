@@ -17,15 +17,15 @@
 						@if (RosterUserSettings.UserListing)
 						{
 							<div class="p-2 flex">
-								<InputSelect class="form-left" TValue="DataCoreUserProperty" Value="RosterUserSettings.SelectedParameter"
-									ValueExpression="() => RosterUserSettings.SelectedParameter"
+								<InputSelect class="form-left" TValue="int" Value="RosterUserSettings.SelectedParameter.Order"
+									ValueExpression="() => RosterUserSettings.SelectedParameter.Order"
 									ValueChanged="SelectedParameterChanged">
 									@foreach(var item in ComponentData.UserListDisplayedProperties)
 									{
-										<option value="@item">@item.PropertyName</option>
+										<option value="@item.Order">@item.PropertyName</option>
 									}
 								</InputSelect>
-								<InputText class="form-center" Value="RosterUserSettings.Search"
+								<InputText type="text" class="form-center" Value="@RosterUserSettings.Search"
 									ValueExpression="() => RosterUserSettings.Search" 
 									ValueChanged="SearchValueChanged" />
 								<button class="form-right-button" @onclick="OnChangeSortDirection">
@@ -49,10 +49,14 @@
 									<label for="" class="form-left">
 										Displayed Roster
 									</label>
-									<InputSelect class="form-center" TValue="Guid?" Value="RosterUserSettings.SelectedRoster"
-										ValueExpression="() => RosterUserSettings.SelectedRoster"
+									<InputSelect class="form-center" TValue="int" Value="RosterUserSettings.SelectedRosterPosition"
+										ValueExpression="() => RosterUserSettings.SelectedRosterPosition"
 										ValueChanged="SelectedRosterChangedAsync">
-
+										@for(int i = 0; i < ComponentData.AvalibleRosters.Count; i++)
+										{
+											var ia = i;
+											<option value="@ia">@ComponentData.AvalibleRosters[ia].Name</option>
+										}
 									</InputSelect>
 									@if (ComponentData.AllowUserLisiting)
 									{
@@ -70,7 +74,7 @@
 								}
 								else if (ComponentData.AllowUserLisiting)
 								{
-									<button class="w-full border-blue-500" @onclick="OnChangeViewMode">
+									<button class="w-full border border-blue-700 hover:bg-blue-700 hover:text-white items-center p-2" @onclick="OnChangeViewMode">
 										@if(RosterUserSettings.UserListing)
 										{
 											<span class="material-icons-round">view_list</span>
@@ -92,7 +96,7 @@
 
 					</div>
 				}
-				else
+				else if (ActiveTree is not null)
 				{
 					<div class="p-2">
 						@*Roster Display*@
