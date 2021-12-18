@@ -12,4 +12,6 @@ public partial class RosterTreeDisplay
 
     [CascadingParameter(Name = "RosterEdit")]
     public bool Editing { get; set; } = false;
+    [CascadingParameter(Name = "RosterReloader")]
+    public Func<Task>? ReloadListener { get; set; }
 }

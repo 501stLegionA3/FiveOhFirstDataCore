@@ -130,7 +130,9 @@
 	@if(EditTree is not null)
 	{
 		<CascadingValue Name="RosterEdit" Value="true">
-			<RosterTreeDisplay Tree="EditTree" />
+			<CascadingValue Name="RosterReloader" Value="FullReloadListener">
+				<RosterTreeDisplay Tree="EditTree" />
+			</CascadingValue>
 		</CascadingValue>	
 	}
 

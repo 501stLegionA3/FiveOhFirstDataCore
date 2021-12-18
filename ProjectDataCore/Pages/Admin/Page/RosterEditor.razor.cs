@@ -24,6 +24,14 @@ public partial class RosterEditor : ComponentBase
     public List<RosterTree> AllTopLevelRosterTrees { get; set; } = new();
 
     public RosterTree? EditTree { get; set; }
+    public Func<Task>? FullReloadListener { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await base.OnParametersSetAsync();
+
+        FullReloadListener = new(CallFullReload);
+	}
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -137,7 +145,7 @@ public partial class RosterEditor : ComponentBase
         else
             Error = err[0];
 
-        StateHasChanged();
+        _ = Task.Run(async () => await LoadRosterAsync());
 	}
 
     protected async Task DeleteRosterDisplayAsync(RosterDisplaySettings display)
@@ -154,7 +162,7 @@ public partial class RosterEditor : ComponentBase
 	{
         EditTree = tree;
 
-        StateHasChanged();
+        _ = Task.Run(async () => await LoadRosterAsync());
 	}
 
     protected async Task DeleteRosterTreeAsync(RosterTree tree)
@@ -166,4 +174,22 @@ public partial class RosterEditor : ComponentBase
 
         await ReloadRosterDisplaysAsync();
 	}
+
+    protected async Task LoadRosterAsync()
+	{
+        if (EditTree is not null)
+        {
+            var loader = ModularRosterService.LoadFullRosterTreeAsync(EditTree);
+
+            await foreach (var _ in loader)
+                await InvokeAsync(StateHasChanged);
+        }
+	}
+
+    protected async Task CallFullReload()
+	{
+        await ReloadRosterDisplaysAsync();
+
+        _ = Task.Run(async () => await LoadRosterAsync());
+    }
 }
