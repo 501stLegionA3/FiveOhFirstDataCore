@@ -9,6 +9,8 @@ public partial class RosterSlotsDisplay
 {
     [Parameter]
     public List<RosterSlot> Slots { get; set; } = new();
+    [Parameter]
+    public int Depth { get; set; }
 
     [CascadingParameter(Name = "RosterEdit")]
     public bool Editing { get; set; } = false;

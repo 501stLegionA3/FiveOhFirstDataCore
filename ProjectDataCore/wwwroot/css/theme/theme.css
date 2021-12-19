@@ -1,0 +1,33 @@
+﻿.theme {
+    /* 
+        Roster Colors
+
+        Colors related to the display of the roster.
+    */
+    --roster-primary: 29 78 216;
+    --roster-primary-text: 255 255 255;
+    /**/
+    --roster-secondary: 59 130 246;
+    --roster-secondary-text: 255 255 255;
+    /**/
+    --roster-tertiary: 147 197 253;
+    --roster-tertiary-text: 0 0 0;
+    /* 
+        Utility Colors
+
+        Colors that are related to the utility of the website.
+    */
+    --util-action: 16 185 129;
+    --util-action-text: 255 255 255;
+    /*
+        Operation Colors
+
+        Colors that are related to global operations, such as dangerous buttons
+        or successful actions.
+    */
+    --op-danger: 185 28 28;
+    --op-danger-text: 255 255 255;
+    /**/
+    --op-success: --util-action;
+    --op-success-text: --util-action-text;
+}
