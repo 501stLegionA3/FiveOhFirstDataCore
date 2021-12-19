@@ -31,7 +31,7 @@ module.exports = {
 				util_action_t: withOpacityValue('--util-action-text'),
 
 				// Operation Colors
-				op_danger: withOpacityValue('--op- danger'),
+				op_danger: withOpacityValue('--op-danger'),
 				op_danger_t: withOpacityValue('--op-danger-text'),
 				
 				op_success: withOpacityValue('--op-success'),

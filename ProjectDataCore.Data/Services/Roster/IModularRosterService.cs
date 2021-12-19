@@ -37,6 +37,7 @@ public interface IModularRosterService
     #region Get Roster Display
     public IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree);
     public Task<ActionResult<RosterTree>> GetRosterTreeForSettingsAsync(Guid settings);
+    public Task<ActionResult<RosterTree>> GetRosterTreeByIdAsync(Guid tree);
     public Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplaysAsync();
     public Task<ActionResult<List<RosterTree>>> GetOrphanedRosterTreesAsync();
     public Task<ActionResult<List<RosterTree>>> GetTopLevelRosterTreesAsync();

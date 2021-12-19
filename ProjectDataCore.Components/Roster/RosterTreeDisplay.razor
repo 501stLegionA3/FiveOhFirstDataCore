@@ -1,67 +1,189 @@
-﻿@if(Editing)
+﻿@if(Editing && Tree is not null)
 {
-    int AddIndex = 0;
-    <div class="mr-10">
+    int RosterIndex = 0;
+    <div class="mx-12">
         <div class="border grid grid-cols-1 text-center 
-            @(Depth > 2 ? "border-roster_tertiary bg-roster_tertiary" : 
-                Depth > 1 ? "border-roster_secondary  bg-roster_secondary" : "border-roster_primary  bg-roster_primary")">
-            <div class="p-2 border-b @(Depth > 2 ? "text-roster_tertiary_t border-roster_tertiary" : 
-                Depth > 1 ? "text-roster_secondary_t border-roster_secondary" : "text-roster_primary_t border-roster_primary")">
-                @Tree.Name
+            @(Depth >= 2 ? "border-roster_tertiary bg-roster_tertiary" : 
+                Depth >= 1 ? "border-roster_secondary  bg-roster_secondary" : "border-roster_primary  bg-roster_primary")">
+            <div class="p-2 border-b @(EditingRosterSection ? "pb-16 relative" : "flex items-center justify-center")
+                @(Depth >= 2 ? "text-roster_tertiary_t border-roster_tertiary" : 
+                Depth >= 1 ? "text-roster_secondary_t border-roster_secondary" : "text-roster_primary_t border-roster_primary")">
+                @if(!EditingRosterSection)
+                {
+                    <button class="mr-4 material-icons-round" @onclick="StartRosterSectionEdit">edit</button>
+                    <span>@Tree.Name</span>
+                }
+                else
+                {
+                    <EditForm Model="this">
+                        <InputText class="text-black p-2 text-center" placeholder="Roster Section Name" @bind-Value="EditSectionName" />
+                    </EditForm>
+
+                    @*Close Edit*@
+                    <button class="absolute top-0 left-0 w-8 h-8 rounded-br-lg material-icons-round bg-op_danger text-op_danger_t"
+                        @onclick="CancelRosterSectionEdit">
+                        close
+                    </button>
+                    @*Save Edits*@
+                    <button class="absolute top-0 left-10 w-8 h-8 rounded-b-lg material-icons-round bg-op_success text-op_success_t"
+                        @onclick="SaveRosterSectionEditAsync">
+                        save
+                    </button>
+
+                    @*Add Display*@
+                    if(!AddingDisplay)
+                    {
+                        <button class="absolute top-0 right-0 w-8 h-8 rounded-bl-lg material-icons-round bg-util_action text-util_action_t"
+                            @onclick="ToggleAddDisplay">
+                            tv
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="absolute top-0 right-0 w-8 h-10 material-icons-round bg-util_action text-util_action_t"
+                            @onclick="ToggleAddDisplay">
+                            tv
+                        </button>
+                        <div class="absolute top-10 right-0 w-auto rounded-l-lg p-1 bg-util_action text-util_action_t">
+                            <EditForm Model="this" class="grid grid-cols-5 grid-rows-1">
+                                <InputText class="text-black p-1 col-span-4 rounded-l-lg" placeholder="New Display Name" @bind-Value="NewDisplayName" />
+                                <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-icons-round"
+                                    @onclick="AddDisplayAsync">
+                                    add
+                                </button>
+                            </EditForm>
+                        </div>
+                    }
+
+                    @*Top level rosters have different methods of being deleted, and can not be moved.*@
+                    @if (Parent is not null)
+                    {
+                        @*Move Up*@
+                        <button class="absolute top-0 right-10 w-8 h-8 rounded-b-lg bg-util_action text-util_action_t material-icons-round"
+                            @onclick="OnRosterMoveUp">
+                            expand_less
+                        </button>
+
+                        @*Move Down*@
+                        <button class="absolute bottom-0 right-10 w-8 h-8 rounded-t-lg bg-util_action text-util_action_t material-icons-round"
+                            @onclick="OnRosterMoveDown">
+                            expand_more
+                        </button>
+
+                        @*Delete Roster*@
+                        @if(!ConfirmDelete)
+                        {
+                            <button class="absolute top-0 right-32 w-8 h-8 rounded-b-lg bg-op_danger text-op_danger_t material-icons-round"
+                                @onclick="ToggleDeleteDisplay">
+                                delete
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="absolute top-0 right-32 w-8 h-10 bg-op_danger text-op_danger_t material-icons-round"
+                                @onclick="ToggleDeleteDisplay">
+                                delete
+                            </button>
+                            <div class="absolute top-10 right-32 gird grid-cols-1 p-1 rounded-l-lg rounded-br-lg bg-op_danger text-op_danger_t">
+                                <button class="border-op_danger_t hover:bg-op_danger_t hover:text-op_danger p-1 rounded-lg"
+                                    @onclick="DeleteRosterTreeAsync">
+                                    Confirm Delete
+                                </button>
+                            </div>
+                        }
+
+                    }
+                }
             </div>
-            <RosterSlotsDisplay Slots="Tree.RosterPositions" Depth="Depth" />
+            <RosterSlotsDisplay Slots="Tree.RosterPositions" Depth="Depth" Parent="Tree" />
             @foreach(var child in Tree.ChildRosters)
             {
-                var ai = AddIndex;
-                <div class="relative border-y-2 border-util_action">
-                    <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
-                    <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
-                        @onclick="() => PendingAdd = ai">
-                        <span class="material-icons-round place-self-center text-util_action_t">add</span>
-                    </button>
-                    @if (PendingAdd == ai)
+                var ai = RosterIndex;
+                @if(!EditingRosterSection)
+                {
+                    <div class="relative border-y-2 border-util_action mb-6">
+                        @if (PendingAdd == ai)
+                        {
+                            <EditForm Model="this">
+                                <div class="p-3 grid grid-cols-3 grid-rows-2 gap-2
+                                    @(Depth >= 2 ? "text-roster_tertiary_t" : 
+                                        Depth >= 1 ? "text-roster_secondary_t" : "text-roster_primary_t")">
+                                    <div class="text-lg col-span-2">Add Roster Section (Parent: @Tree.Name | Position: @PendingAdd)</div>
+                                    <button class="p-1 border-op_danger border hover:bg-op_danger hover:text-op_danger_t" 
+                                        @onclick="() => SetPendingAdd(-1)">
+                                        Abort
+                                    </button>
+
+                                    <InputText @bind-Value="NewRosterSectionName" class="col-span-2 px-2 py-1 text-black" />
+                                    <button class="p-1 border-op_success border hover:bg-op_success hover:text-op_success_t" 
+                                        @onclick="AddNewRosterSection">
+                                        Add
+                                    </button>
+                                </div>
+                            </EditForm>
+                        }
+                        else
+                        {
+                            <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
+                            <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
+                                @onclick="() => SetPendingAdd(ai)">
+                                <span class="material-icons-round place-self-center text-util_action_t">add</span>
+                            </button>
+                        }
+                    </div>
+                }
+                <RosterTreeDisplay Tree="child" Depth="Depth + 1" Parent="Tree" />
+                RosterIndex++;
+            }
+            @if (!EditingRosterSection)
+            {
+                <div class="relative border-y-2 border-util_action mb-6">
+                    @if (PendingAdd == RosterIndex)
                     {
                         <EditForm Model="this">
-                            <div class="p-3 grid grid-cols-3 grid-rows-2 gap-2">
-                                <div class="text-lg col-span-2">Add Roster Section</div>
-                                <button class="p-1">Abort</button>
+                            <div class="p-3 grid grid-cols-3 grid-rows-2 gap-2
+                            @(Depth >= 2 ? "text-roster_tertiary_t" : 
+                                Depth >= 1 ? "text-roster_secondary_t" : "text-roster_primary_t")">
+                                <div class="text-lg col-span-2">Add Roster Section (Parent: @Tree.Name | Position: @PendingAdd)</div>
+                                <button class="p-1 border-op_danger border hover:bg-op_danger hover:text-op_danger_t" 
+                                @onclick="() => SetPendingAdd(-1)">
+                                    Abort
+                                </button>
 
-                                <InputText @bind-Value="NewRosterSectionName" class="col-span-2" />
-                                <button class="p-1">Add</button>
+                                <InputText @bind-Value="NewRosterSectionName" class="col-span-2 px-2 py-1 text-black" />
+                                <button class="p-1 border-op_success border hover:bg-op_success hover:text-op_success_t" 
+                                @onclick="AddNewRosterSection">
+                                    Add
+                                </button>
                             </div>
                         </EditForm>
                     }
+                    else
+                    {
+                        <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
+                        <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
+                        @onclick="() => SetPendingAdd(RosterIndex)">
+                            <span class="material-icons-round place-self-center text-util_action_t">add</span>
+                        </button>
+                    }
                 </div>
-                <RosterTreeDisplay Tree="child" Depth="Depth + 1" />
-                AddIndex++;
             }
-            <div class="relative border-y-2 border-util_action">
-                <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
-                <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
-                    @onclick="() => PendingAdd = AddIndex">
-                    <span class="material-icons-round place-self-center">add</span>
-                </button>
-                @if(PendingAdd == AddIndex)
-                {
-                    
-                }
-            </div>
         </div>
     </div>
 }
 else if (Tree is not null)
 {
     <div class="theme border grid grid-cols-1 text-center 
-        @(Depth > 2 ? "border-roster_tertiary bg-roster_tertiary" : 
-            Depth > 1 ? "border-roster_secondary  bg-roster_secondary" : "border-roster_primary  bg-roster_primary")">
-        <div class="p-2 border-b @(Depth > 2 ? "text-roster_tertiary_t border-roster_tertiary" : 
-            Depth > 1 ? "text-roster_secondary_t border-roster_secondary" : "text-roster_primary_t border-roster_primary")">
+        @(Depth >= 2 ? "border-roster_tertiary bg-roster_tertiary" : 
+            Depth >= 1 ? "border-roster_secondary  bg-roster_secondary" : "border-roster_primary  bg-roster_primary")">
+        <div class="p-2 border-b @(Depth >= 2 ? "text-roster_tertiary_t border-roster_tertiary" : 
+            Depth >= 1 ? "text-roster_secondary_t border-roster_secondary" : "text-roster_primary_t border-roster_primary")">
             @Tree.Name
         </div>
-        <RosterSlotsDisplay Slots="Tree.RosterPositions" Depth="Depth" />
+        <RosterSlotsDisplay Slots="Tree.RosterPositions" Depth="Depth" Parent="Tree" />
         @foreach(var child in Tree.ChildRosters)
         {
-            <RosterTreeDisplay Tree="child" Depth="Depth + 1" />
+            <RosterTreeDisplay Tree="child" Depth="Depth + 1" Parent="Tree" />
         }
     </div>
 }

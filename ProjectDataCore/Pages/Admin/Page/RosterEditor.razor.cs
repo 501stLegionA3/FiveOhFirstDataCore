@@ -1,6 +1,7 @@
 ﻿using ProjectDataCore.Data.Structures.Roster;
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,9 @@ public partial class RosterEditor : ComponentBase
     public List<RosterTree> AllTopLevelRosterTrees { get; set; } = new();
 
     public RosterTree? EditTree { get; set; }
-    public Func<Task>? FullReloadListener { get; set; }
+    public Func<bool, Task>? FullReloadListener { get; set; }
+
+    public ConcurrentDictionary<Guid, bool> OpenRosterEdits { get; set; } = new();
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -175,21 +178,36 @@ public partial class RosterEditor : ComponentBase
         await ReloadRosterDisplaysAsync();
 	}
 
-    protected async Task LoadRosterAsync()
+    protected async Task LoadRosterAsync(bool singleRefresh = false)
 	{
         if (EditTree is not null)
         {
-            var loader = ModularRosterService.LoadFullRosterTreeAsync(EditTree);
+            var editRes = await ModularRosterService.GetRosterTreeByIdAsync(EditTree.Key);
 
-            await foreach (var _ in loader)
-                await InvokeAsync(StateHasChanged);
+            if (editRes.GetResult(out var editTree, out _))
+            {
+                EditTree = editTree;
+
+                var loader = ModularRosterService.LoadFullRosterTreeAsync(EditTree);
+
+                if (!singleRefresh)
+                {
+                    await foreach (var _ in loader)
+                        await InvokeAsync(StateHasChanged);
+                }
+                else
+                {
+                    await foreach (var _ in loader) { }
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
         }
 	}
 
-    protected async Task CallFullReload()
+    protected async Task CallFullReload(bool singleRefresh)
 	{
         await ReloadRosterDisplaysAsync();
 
-        _ = Task.Run(async () => await LoadRosterAsync());
+        _ = Task.Run(async () => await LoadRosterAsync(singleRefresh));
     }
 }

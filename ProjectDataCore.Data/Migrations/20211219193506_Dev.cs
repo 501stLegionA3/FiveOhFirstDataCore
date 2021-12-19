@@ -178,6 +178,33 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RosterObject",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    OccupiedById = table.Column<int>(type: "integer", nullable: true),
+                    ParentRosterId = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterObject", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_RosterObject_AspNetUsers_OccupiedById",
+                        column: x => x.OccupiedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RosterObject_RosterObject_ParentRosterId",
+                        column: x => x.ParentRosterId,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageComponentSettingsBase",
                 columns: table => new
                 {
@@ -219,6 +246,82 @@ namespace ProjectDataCore.Data.Migrations
                         column: x => x.UserScopeId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RosterDisplaySettings",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    HostRosterId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterDisplaySettings", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_RosterDisplaySettings_RosterObject_HostRosterId",
+                        column: x => x.HostRosterId,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RosterOrders",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    TreeToOrderId = table.Column<Guid>(type: "uuid", nullable: true),
+                    SlotToOrderId = table.Column<Guid>(type: "uuid", nullable: true),
+                    ParentObjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterOrders", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_RosterOrders_RosterObject_ParentObjectId",
+                        column: x => x.ParentObjectId,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RosterOrders_RosterObject_SlotToOrderId",
+                        column: x => x.SlotToOrderId,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_RosterOrders_RosterObject_TreeToOrderId",
+                        column: x => x.TreeToOrderId,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RosterTreeRosterTree",
+                columns: table => new
+                {
+                    ChildRostersKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParentRostersKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RosterTreeRosterTree", x => new { x.ChildRostersKey, x.ParentRostersKey });
+                    table.ForeignKey(
+                        name: "FK_RosterTreeRosterTree_RosterObject_ChildRostersKey",
+                        column: x => x.ChildRostersKey,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RosterTreeRosterTree_RosterObject_ParentRostersKey",
+                        column: x => x.ParentRostersKey,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -266,86 +369,10 @@ namespace ProjectDataCore.Data.Migrations
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RosterDisplaySettings",
-                columns: table => new
-                {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    HostRosterId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RosterDisplaySettings", x => x.Key);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RosterObject",
-                columns: table => new
-                {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
-                    OccupiedById = table.Column<int>(type: "integer", nullable: true),
-                    RosterParentId = table.Column<Guid>(type: "uuid", nullable: true),
-                    RosterTreeKey = table.Column<Guid>(type: "uuid", nullable: true),
-                    RosterTreeKey1 = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RosterObject", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_RosterObject_AspNetUsers_OccupiedById",
-                        column: x => x.OccupiedById,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_RosterObject_RosterObject_RosterTreeKey",
-                        column: x => x.RosterTreeKey,
-                        principalTable: "RosterObject",
-                        principalColumn: "Key");
-                    table.ForeignKey(
-                        name: "FK_RosterObject_RosterObject_RosterTreeKey1",
-                        column: x => x.RosterTreeKey1,
-                        principalTable: "RosterObject",
-                        principalColumn: "Key");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RosterParentLinks",
-                columns: table => new
-                {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    ParentRosterId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChildRosterKey = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChildRosertId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ForRosterSettingsId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RosterParentLinks", x => x.Key);
-                    table.ForeignKey(
-                        name: "FK_RosterParentLinks_RosterDisplaySettings_ForRosterSettingsId",
-                        column: x => x.ForRosterSettingsId,
+                        name: "FK_RosterComponentSettingsRosterDisplaySettings_RosterDisplayS~",
+                        column: x => x.AvalibleRostersKey,
                         principalTable: "RosterDisplaySettings",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RosterParentLinks_RosterObject_ChildRosterKey",
-                        column: x => x.ChildRosterKey,
-                        principalTable: "RosterObject",
-                        principalColumn: "Key",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RosterParentLinks_RosterObject_ParentRosterId",
-                        column: x => x.ParentRosterId,
-                        principalTable: "RosterObject",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -435,78 +462,34 @@ namespace ProjectDataCore.Data.Migrations
                 column: "OccupiedById");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RosterObject_RosterParentId",
+                name: "IX_RosterObject_ParentRosterId",
                 table: "RosterObject",
-                column: "RosterParentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RosterObject_RosterTreeKey",
-                table: "RosterObject",
-                column: "RosterTreeKey");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RosterObject_RosterTreeKey1",
-                table: "RosterObject",
-                column: "RosterTreeKey1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RosterParentLinks_ChildRosterKey",
-                table: "RosterParentLinks",
-                column: "ChildRosterKey");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RosterParentLinks_ForRosterSettingsId",
-                table: "RosterParentLinks",
-                column: "ForRosterSettingsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RosterParentLinks_ParentRosterId",
-                table: "RosterParentLinks",
                 column: "ParentRosterId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_RosterComponentSettingsRosterDisplaySettings_RosterDisplayS~",
-                table: "RosterComponentSettingsRosterDisplaySettings",
-                column: "AvalibleRostersKey",
-                principalTable: "RosterDisplaySettings",
-                principalColumn: "Key",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterOrders_ParentObjectId",
+                table: "RosterOrders",
+                column: "ParentObjectId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_RosterDisplaySettings_RosterObject_HostRosterId",
-                table: "RosterDisplaySettings",
-                column: "HostRosterId",
-                principalTable: "RosterObject",
-                principalColumn: "Key",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterOrders_SlotToOrderId",
+                table: "RosterOrders",
+                column: "SlotToOrderId",
+                unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_RosterObject_RosterParentLinks_RosterParentId",
-                table: "RosterObject",
-                column: "RosterParentId",
-                principalTable: "RosterParentLinks",
-                principalColumn: "Key",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterOrders_TreeToOrderId",
+                table: "RosterOrders",
+                column: "TreeToOrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RosterTreeRosterTree_ParentRostersKey",
+                table: "RosterTreeRosterTree",
+                column: "ParentRostersKey");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_RosterObject_AspNetUsers_OccupiedById",
-                table: "RosterObject");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_RosterParentLinks_RosterDisplaySettings_ForRosterSettingsId",
-                table: "RosterParentLinks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_RosterParentLinks_RosterObject_ChildRosterKey",
-                table: "RosterParentLinks");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_RosterParentLinks_RosterObject_ParentRosterId",
-                table: "RosterParentLinks");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -529,25 +512,28 @@ namespace ProjectDataCore.Data.Migrations
                 name: "RosterComponentSettingsRosterDisplaySettings");
 
             migrationBuilder.DropTable(
+                name: "RosterOrders");
+
+            migrationBuilder.DropTable(
+                name: "RosterTreeRosterTree");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "PageComponentSettingsBase");
 
             migrationBuilder.DropTable(
-                name: "CustomPageSettings");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
-
-            migrationBuilder.DropTable(
                 name: "RosterDisplaySettings");
+
+            migrationBuilder.DropTable(
+                name: "CustomPageSettings");
 
             migrationBuilder.DropTable(
                 name: "RosterObject");
 
             migrationBuilder.DropTable(
-                name: "RosterParentLinks");
+                name: "AspNetUsers");
         }
     }
 }

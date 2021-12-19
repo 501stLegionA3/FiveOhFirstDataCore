@@ -17,8 +17,8 @@
 
         Colors that are related to the utility of the website.
     */
-    --util-action: 16 185 129;
-    --util-action-text: 255 255 255;
+    --util-action: 251 191 36;
+    --util-action-text: 0 0 0;
     /*
         Operation Colors
 
@@ -28,6 +28,6 @@
     --op-danger: 185 28 28;
     --op-danger-text: 255 255 255;
     /**/
-    --op-success: --util-action;
-    --op-success-text: --util-action-text;
+    --op-success: 16 185 129;
+    --op-success-text: 255 255 255;
 }

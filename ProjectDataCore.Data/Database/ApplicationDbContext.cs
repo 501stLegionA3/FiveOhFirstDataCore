@@ -19,7 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<RosterTree> RosterTrees { get; internal set; }
     public DbSet<RosterSlot> RosterSlots { get; internal set; }
     public DbSet<RosterDisplaySettings> RosterDisplaySettings { get; internal set; }
-    public DbSet<RosterParentLink> RosterParentLinks { get; internal set; }
+    public DbSet<RosterOrder> RosterOrders { get; internal set; }
     #endregion
 
     #region Page
@@ -44,8 +44,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         var rosterObject = builder.Entity<RosterObject>();
         rosterObject.HasKey(e => e.Key);
 
-        var rosterParentLink = builder.Entity<RosterParentLink>();
-        rosterParentLink.HasKey(e => e.Key);
+        var rosterOrder = builder.Entity<RosterOrder>();
+        rosterOrder.HasKey(e => e.Key);
 
         var rosterDisplaySettings = builder.Entity<RosterDisplaySettings>();
         rosterDisplaySettings.HasKey(e => e.Key);
@@ -54,11 +54,25 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey(e => e.HostRosterId);
 
         var rosterTree = builder.Entity<RosterTree>();
-        rosterTree.Navigation(e => e.RosterParentLinks)
+        rosterTree.HasMany(e => e.ChildRosters)
+            .WithMany(p => p.ParentRosters);
+        rosterTree.HasMany(e => e.RosterPositions)
+            .WithOne(p => p.ParentRoster)
+            .HasForeignKey(p => p.ParentRosterId);
+        rosterTree.HasMany(e => e.Order)
+            .WithOne(p => p.TreeToOrder)
+            .HasForeignKey(p => p.TreeToOrderId);
+        rosterTree.HasMany(e => e.OrderChildren)
+            .WithOne(p => p.ParentObject)
+            .HasForeignKey(p => p.ParentObjectId);
+        rosterTree.Navigation(e => e.Order)
             .AutoInclude(true);
 
         var rosterSlot = builder.Entity<RosterSlot>();
-        rosterSlot.Navigation(e => e.RosterParent)
+        rosterSlot.HasOne(e => e.Order)
+            .WithOne(p => p.SlotToOrder)
+            .HasForeignKey<RosterOrder>(p => p.SlotToOrderId);
+        rosterSlot.Navigation(e => e.Order)
             .AutoInclude(true);
         #endregion
 

@@ -11,9 +11,12 @@ namespace ProjectDataCore.Data.Structures.Roster;
 /// </summary>
 public class RosterTree : RosterObject
 {
-    public List<RosterTree> ChildRosters { get; set; } = new();
     public List<RosterSlot> RosterPositions { get; set; } = new();
-    public List<RosterParentLink> RosterParentLinks { get; set; } = new();
+    public List<RosterTree> ChildRosters { get; set; } = new();
+    public List<RosterTree> ParentRosters { get; set; } = new();
+
+    public List<RosterOrder> Order { get; set; } = new();
+    public List<RosterOrder> OrderChildren { get; set; } = new();
 
     public List<RosterDisplaySettings> DisplaySettings { get;set; } = new();
 }

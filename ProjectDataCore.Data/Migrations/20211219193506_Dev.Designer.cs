@@ -12,7 +12,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211217232737_Dev")]
+    [Migration("20211219193506_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -346,19 +346,10 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("RosterObject");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterParentLink", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterOrder", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ChildRosertId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ChildRosterKey")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ForRosterSettingsId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("LastEdit")
@@ -367,18 +358,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("ParentRosterId")
+                    b.Property<Guid>("ParentObjectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("SlotToOrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("TreeToOrderId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Key");
 
-                    b.HasIndex("ChildRosterKey");
+                    b.HasIndex("ParentObjectId");
 
-                    b.HasIndex("ForRosterSettingsId");
+                    b.HasIndex("SlotToOrderId")
+                        .IsUnique();
 
-                    b.HasIndex("ParentRosterId");
+                    b.HasIndex("TreeToOrderId");
 
-                    b.ToTable("RosterParentLinks");
+                    b.ToTable("RosterOrders");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
@@ -435,6 +433,21 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("DisplayComponentsKey");
 
                     b.ToTable("RosterComponentSettingsRosterDisplaySettings");
+                });
+
+            modelBuilder.Entity("RosterTreeRosterTree", b =>
+                {
+                    b.Property<Guid>("ChildRostersKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ParentRostersKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ChildRostersKey", "ParentRostersKey");
+
+                    b.HasIndex("ParentRostersKey");
+
+                    b.ToTable("RosterTreeRosterTree");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
@@ -504,17 +517,12 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<int?>("OccupiedById")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("RosterParentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("RosterTreeKey")
+                    b.Property<Guid>("ParentRosterId")
                         .HasColumnType("uuid");
 
                     b.HasIndex("OccupiedById");
 
-                    b.HasIndex("RosterParentId");
-
-                    b.HasIndex("RosterTreeKey");
+                    b.HasIndex("ParentRosterId");
 
                     b.HasDiscriminator().HasValue("RosterSlot");
                 });
@@ -522,12 +530,6 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
-
-                    b.Property<Guid?>("RosterTreeKey")
-                        .HasColumnType("uuid")
-                        .HasColumnName("RosterTreeKey1");
-
-                    b.HasIndex("RosterTreeKey");
 
                     b.HasDiscriminator().HasValue("RosterTree");
                 });
@@ -623,31 +625,27 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("HostRoster");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterParentLink", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterOrder", b =>
                 {
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterObject", "ChildRoster")
-                        .WithMany()
-                        .HasForeignKey("ChildRosterKey")
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentObject")
+                        .WithMany("OrderChildren")
+                        .HasForeignKey("ParentObjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", "ForRosterSettings")
-                        .WithMany()
-                        .HasForeignKey("ForRosterSettingsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterSlot", "SlotToOrder")
+                        .WithOne("Order")
+                        .HasForeignKey("ProjectDataCore.Data.Structures.Roster.RosterOrder", "SlotToOrderId");
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
-                        .WithMany("RosterParentLinks")
-                        .HasForeignKey("ParentRosterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "TreeToOrder")
+                        .WithMany("Order")
+                        .HasForeignKey("TreeToOrderId");
 
-                    b.Navigation("ChildRoster");
+                    b.Navigation("ParentObject");
 
-                    b.Navigation("ForRosterSettings");
+                    b.Navigation("SlotToOrder");
 
-                    b.Navigation("ParentRoster");
+                    b.Navigation("TreeToOrder");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
@@ -677,6 +675,21 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("RosterTreeRosterTree", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
+                        .WithMany()
+                        .HasForeignKey("ChildRostersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
+                        .WithMany()
+                        .HasForeignKey("ParentRostersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "ParentPage")
@@ -701,26 +714,15 @@ namespace ProjectDataCore.Data.Migrations
                         .WithMany("RosterSlots")
                         .HasForeignKey("OccupiedById");
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterParentLink", "RosterParent")
-                        .WithMany()
-                        .HasForeignKey("RosterParentId")
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", "ParentRoster")
+                        .WithMany("RosterPositions")
+                        .HasForeignKey("ParentRosterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
-                        .WithMany("RosterPositions")
-                        .HasForeignKey("RosterTreeKey");
-
                     b.Navigation("OccupiedBy");
 
-                    b.Navigation("RosterParent");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
-                        .WithMany("ChildRosters")
-                        .HasForeignKey("RosterTreeKey");
+                    b.Navigation("ParentRoster");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
@@ -750,13 +752,19 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("UserListDisplayedProperties");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
+                {
+                    b.Navigation("Order")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterTree", b =>
                 {
-                    b.Navigation("ChildRosters");
-
                     b.Navigation("DisplaySettings");
 
-                    b.Navigation("RosterParentLinks");
+                    b.Navigation("Order");
+
+                    b.Navigation("OrderChildren");
 
                     b.Navigation("RosterPositions");
                 });

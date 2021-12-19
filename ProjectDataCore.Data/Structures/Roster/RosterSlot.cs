@@ -14,6 +14,7 @@ public class RosterSlot : RosterObject
 {
     public DataCoreUser? OccupiedBy { get; set; }
     public int? OccupiedById { get; set; }
-    public RosterParentLink RosterParent { get; set; }
-    public Guid RosterParentId { get; set; }
+    public RosterOrder Order { get; set; }
+    public RosterTree ParentRoster { get; set; }
+    public Guid ParentRosterId { get; set; }
 }

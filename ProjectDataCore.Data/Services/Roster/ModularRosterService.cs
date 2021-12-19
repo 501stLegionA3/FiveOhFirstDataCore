@@ -19,8 +19,13 @@ public class ModularRosterService : IModularRosterService
             Name = name
         };
 
+        var tracker = await _dbContext.AddAsync(tree);
+        await _dbContext.SaveChangesAsync();
+
         if (parentTree is not null)
         {
+            await tracker.ReloadAsync();
+
             var parent = await _dbContext.RosterTrees
                 .Where(x => x.Key == parentTree)
                 .Include(x => x.ChildRosters)
@@ -29,15 +34,16 @@ public class ModularRosterService : IModularRosterService
             if (parent is null)
                 return new(false, new List<string> { "No parent was found by the provided roster ID." });
 
-            tree.RosterParentLinks.Add(new()
+            tree.ParentRosters.Add(parent);
+            tree.Order.Add(new()
             {
-                ParentRosterId = parent.Key,
-                Order = parent.ChildRosters.Count
+                ParentObjectId = parent.Key,
+                TreeToOrderId = tree.Key,
+                Order = 0,
             });
-        }
 
-        var tracker = await _dbContext.AddAsync(tree);
-        await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
+        }
 
         if (parentTree is not null)
         {
@@ -54,7 +60,10 @@ public class ModularRosterService : IModularRosterService
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        var treeObject = await _dbContext.FindAsync<RosterTree>(tree);
+        var treeObject = await _dbContext.RosterTrees
+            .Where(x => x.Key == tree)
+            .Include(x => x.ParentRosters)
+            .FirstOrDefaultAsync();
 
         if (treeObject is null)
             return new(false, new List<string> { "No Roster Tree object was able to be found for the provided ID." });
@@ -79,40 +88,40 @@ public class ModularRosterService : IModularRosterService
                 // ... supress missing parent errors and just move on...
                 if (parent is null) continue;
                 // ... check to make sure this relation does not already exist ...
-                if(!await _dbContext.RosterParentLinks
-                    .Where(x => x.ChildRosertId == treeObject.Key)
-                    .Where(x => x.ParentRosterId == parent.Key).AnyAsync())
+                if(!treeObject.ParentRosters.Any(x => x.Key == parent.Key))
                 {
-                    // ... and that it doesn't exist in the inverse ...
-                     if(!await _dbContext.RosterParentLinks
-                        .Where(x => x.ChildRosertId == parent.Key)
-                        .Where(x => x.ParentRosterId == treeObject.Key).AnyAsync())
+                    // ... then add the relation ...
+                    treeObject.ParentRosters.Add(parent);
+                    treeObject.Order.Add(new()
                     {
-                        // ... then add the new link ...
-                        treeObject.RosterParentLinks.Add(new()
-                        {
-                            ParentRosterId = parent.Key,
-                            Order = parent.ChildRosters.Count
-                        });
-                    }
+                        ParentObjectId = parent.Key,
+                        Order = 0
+                    });
+
+                    await treeObject.MovePositionAsync(_dbContext, parent.Key, 0);
                 }
             }
+
+            // ... save changes to ensure order values propogate for later ...
+            await _dbContext.SaveChangesAsync();
         }
+
         // ... if there are parents to remove ...
         if(update.RemoveParents is not null)
         {
-            // ... for each guid to remove ...
-            foreach(var guid in update.RemoveParents)
+            // ... find guids to remove ...
+            var toRemove = treeObject.ParentRosters
+                            .Where(x => update.RemoveParents.Contains(x.Key));
+            // ... then for each item to remove ...
+            foreach(var item in toRemove)
             {
-                // ... find the link ...
-                var link = await _dbContext.RosterParentLinks
-                    .Where(x => x.ChildRosertId == treeObject.Key)
-                    .Where(x => x.ParentRosterId == guid)
-                    .FirstOrDefaultAsync();
-                // ... skip and invalid links ...
-                if(link is null) continue;
-                // ... and remove the link ...
-                _dbContext.Remove(link);
+                // ... remove it ...
+                treeObject.ParentRosters.Remove(item);
+                // ... and remove the order object for it ...
+                var orderObject = treeObject.Order.FirstOrDefault(x =>
+                                    x.ParentObjectId == item.Key);
+                if(orderObject is not null)
+                    treeObject.Order.Remove(orderObject);
             }
         }
 
@@ -138,10 +147,16 @@ public class ModularRosterService : IModularRosterService
         if (childTree is null)
             return new(false, new List<string> { "No child roster tree was found." });
 
-        childTree.RosterParentLinks.Add(new()
+        var parentTree = await _dbContext.FindAsync<RosterTree>(tree);
+
+        if (parentTree is null)
+            return new(false, new List<string> { "No parent roster tree was found." });
+
+        childTree.ParentRosters.Add(parentTree);
+        childTree.Order.Add(new()
         {
-            ParentRosterId = tree,
-            Order = -1
+            ParentObjectId = parentTree.Key,
+            Order = position
         });
 
         await _dbContext.SaveChangesAsync();
@@ -157,16 +172,28 @@ public class ModularRosterService : IModularRosterService
     public async Task<ActionResult> RemoveChildRosterAsync(Guid tree, Guid child)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var link = _dbContext.RosterParentLinks
-            .Where(x => x.ParentRosterId == tree)
-            .Where(x => x.ChildRosertId == child)
+        // Find the parent ...
+        var parentTree = await _dbContext.RosterTrees
+            .Where(x => x.Key == tree)
+            .Include(x => x.ChildRosters)
             .FirstOrDefaultAsync();
 
-        if (link is null)
-            return new(false, new List<string> { "No link was found for the provided IDs" });
+        if (parentTree is null)
+            return new(false, new List<string> { "No parent roster tree was found." });
+        // ... then the child based on this parent ...
+        var childData = parentTree.ChildRosters.FirstOrDefault(x => x.Key == child);
 
-        _dbContext.Remove(link);
+        if(childData is null)
+            return new(false, new List<string> { "No child roster tree was found." });
+        // ... then detach the child ...
+        parentTree.ChildRosters.Remove(childData);
+        var childOrder = childData.Order.FirstOrDefault(x => x.ParentObjectId == tree);
+        // ... and delete the order object if it exiists ...
+        if (childOrder is not null)
+        {
+            _dbContext.Remove(childOrder);
+        }
+
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);
@@ -182,9 +209,6 @@ public class ModularRosterService : IModularRosterService
             return new(false, new List<string> { "No roster tree was found." });
 
         _dbContext.Remove(rosterTree);
-        await _dbContext.SaveChangesAsync();
-
-        await rosterTree.MovePositionAsync(_dbContext);
 
         await _dbContext.SaveChangesAsync();
 
@@ -208,11 +232,12 @@ public class ModularRosterService : IModularRosterService
         var slot = new RosterSlot()
         {
             Name = name,
-            RosterParent = new()
+            Order = new()
             {
                 Order = rosterTree.RosterPositions.Count,
-                ParentRosterId = rosterTree.Key
-            }
+                ParentObjectId = rosterTree.Key
+            },
+            ParentRosterId = rosterTree.Key,
         };
 
         await _dbContext.AddAsync(slot);
@@ -259,11 +284,12 @@ public class ModularRosterService : IModularRosterService
                 return new(false, new List<string> { "No parent roster found to swtich to." });
 
             // ... otherwise update the slot with a new parent...
-            slotData.RosterParent = new()
+            slotData.Order = new()
             {
-                ParentRosterId = parentTree.Key,
+                ParentObjectId = parentTree.Key,
                 Order = parentTree.RosterPositions.Count
             };
+            slotData.ParentRosterId = parentTree.Key;
         }
 
         await _dbContext.SaveChangesAsync();
@@ -370,7 +396,7 @@ public class ModularRosterService : IModularRosterService
         // ... then load the base roster positions ...
         await obj.Collection(e => e.RosterPositions)
             .Query()
-            .OrderBy(e => e.RosterParent.Order)
+            .OrderBy(e => e.Order.Order)
             .LoadAsync();
         // ... and return true now that some data is loaded ...
         yield return true;
@@ -388,7 +414,7 @@ public class ModularRosterService : IModularRosterService
             // ... then load the roster positions ...
             await obj.Collection(e => e.RosterPositions)
                 .Query()
-                .OrderBy(e => e.RosterParent.Order)
+                .OrderBy(e => e.Order.Order)
                 .LoadAsync();
 
             // ... let the page know a new roster has been loaded ...
@@ -442,9 +468,9 @@ public class ModularRosterService : IModularRosterService
 
         var trees = await _dbContext
             .RosterTrees
-            .Include(x => x.RosterParentLinks)
+            .Include(x => x.ParentRosters)
             .Include(x => x.DisplaySettings)
-            .Where(x => x.RosterParentLinks.Count <= 0)
+            .Where(x => x.ParentRosters.Count <= 0)
             .Where(x => x.DisplaySettings.Count <= 0)
             .ToListAsync();
 
@@ -460,8 +486,8 @@ public class ModularRosterService : IModularRosterService
 
         var trees = await _dbContext
             .RosterTrees
-            .Include(x => x.RosterParentLinks)
-            .Where(x => x.RosterParentLinks.Count <= 0)
+            .Include(x => x.ParentRosters)
+            .Where(x => x.ParentRosters.Count <= 0)
             .ToListAsync();
 
         if (trees is null)
@@ -481,7 +507,21 @@ public class ModularRosterService : IModularRosterService
 
         return new(true, null, trees);
     }
-	#endregion
+
+    public async Task<ActionResult<RosterTree>> GetRosterTreeByIdAsync(Guid tree)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var treeObject = await _dbContext.RosterTrees
+            .Where(x => x.Key == tree)
+            .FirstOrDefaultAsync();
+
+        if (treeObject is null)
+            return new(false, new List<string>() { "No roster tree object was found for the provided ID." });
+
+        return new(true, null, treeObject);
+    }
+    #endregion
 }
 
 /// <summary>

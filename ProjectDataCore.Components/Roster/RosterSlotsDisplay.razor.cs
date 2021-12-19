@@ -11,9 +11,11 @@ public partial class RosterSlotsDisplay
     public List<RosterSlot> Slots { get; set; } = new();
     [Parameter]
     public int Depth { get; set; }
+    [Parameter]
+    public RosterTree Parent { get; set; }
 
     [CascadingParameter(Name = "RosterEdit")]
     public bool Editing { get; set; } = false;
     [CascadingParameter(Name = "RosterReloader")]
-    public Func<Task>? ReloadListener { get; set; }
+    public Func<bool, Task>? ReloadListener { get; set; }
 }

@@ -131,7 +131,9 @@
 	{
 		<CascadingValue Name="RosterEdit" Value="true">
 			<CascadingValue Name="RosterReloader" Value="FullReloadListener">
-				<RosterTreeDisplay Tree="EditTree" />
+				<CascadingValue Name="OpenEdits" Value="OpenRosterEdits">
+					<RosterTreeDisplay Tree="EditTree" />
+				</CascadingValue>
 			</CascadingValue>
 		</CascadingValue>	
 	}
