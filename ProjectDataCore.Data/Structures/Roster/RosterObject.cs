@@ -90,7 +90,7 @@ public static class RosterObjectExtenstions
         // ... load the parent value ...
         await tracker.Reference(x => x.ParentRoster)
             .Query()
-            .Include(x => x.ChildRosters)
+            .Include(x => x.RosterPositions)
             .LoadAsync();
 
         // ... then get the parent object ...

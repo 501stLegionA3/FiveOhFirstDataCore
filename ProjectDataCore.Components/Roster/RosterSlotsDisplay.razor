@@ -1,12 +1,79 @@
 ﻿@if(Editing)
 {
-    <div class="grid grid-cols-2 mx-4 bg-white">
+    <div class="grid grid-cols-1 mx-4 bg-white mb-10 relative">
         @foreach(var pos in Slots)
         {
-            <div class="text-right p-2 border-r @(Depth > 2 ? "border-rostert" : 
-            Depth > 1 ? "border-rosters" : "border-rosterp")">@pos.Name</div>
-            <div class="text-left p-2">@(pos.OccupiedBy?.NickName ?? "TBD")</div>
+            var pa = pos;
+            <div class="relative group grid grid-cols-2 hover:border-2 hover:border-util_action">
+                @if (SlotToEdit != pa)
+                {
+                    <div class="text-right p-2 border-r @(Depth > 2 ? "border-rostert" : 
+                    Depth > 1 ? "border-rosters" : "border-rosterp")">@pos.Name</div>
+                }
+                else
+                {
+                    
+                }
+
+                @if (ConfirmDelete != pa)
+                {
+                    <div class="text-left p-2">@(pos.OccupiedBy?.NickName ?? "TBD")</div>
+                }
+                else
+                {
+                    
+                }
+
+                @if(ConfirmDelete is null && SlotToEdit is null)
+                {
+                    @*Move Up*@
+                    <div class="hidden group-hover:block absolute top-0 right-0 w-8 h-8 rounded-bl-lg 
+                        bg-util_action text-util_action_t">
+                        <button class="material-icons-round"
+                            @onclick="async () => await OnSlotMoveUp(pa)">
+                            expand_less
+                        </button>
+                    </div>
+
+                    @*Move Down*@
+                    <div class="hidden group-hover:block absolute bottom-0 right-10 w-8 h-8 rounded-t-lg 
+                        bg-util_action text-util_action_t">
+                        <button class="material-icons-round"
+                            @onclick="async () => await OnSlotMoveDown(pa)">
+                            expand_more
+                        </button>
+                    </div>
+
+                    @*Edit*@
+                    <div class="hidden group-hover:block absolute bottom-0 left-20 w-8 h-8 rounded-t-lg
+                        bg-util_action text-util_action_t">
+                        <button class="material-icons-round"
+                            @onclick="() => OnEditSlot(pa)">
+                            edit
+                        </button>
+                    </div>
+
+                    @*Delete*@
+                    <div class="hidden group-hover:block absolute top-0 left-0 w-8 h-8 rounded-br-lg
+                        bg-op_danger text-op_danger_t">
+                        <button class="material-icons-round"
+                            @onclick="() => OnStartDelete(pa)">
+                            delete
+                        </button>
+                    </div>
+                }
+            </div>
         }
+
+        <div class="absolute -bottom-8 left-10 rounded-b-lg bg-util_action text-util_action_t hover:bg-op_success hover:text-op_success_t">
+            <EditForm class="grid grid-cols-5 grid-rows-1" Model="this">
+                <InputText class="col-span-4 rounded-b-lg p-1 text-black focus:ring-0" placeholder="Roster Slot Name" @bind-Value="NewRosterSlotName" />
+                <button class="material-icons-round"
+                    @onclick="OnAddRosterSlot">
+                    add
+                </button>
+            </EditForm>
+        </div>
     </div>
 }
 else
