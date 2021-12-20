@@ -17,18 +17,56 @@ public partial class RosterSlotsDisplay
     [Parameter]
     public int Depth { get; set; }
     [Parameter]
-    public RosterTree Parent { get; set; }
+    public RosterTree? Parent { get; set; }
 
     [CascadingParameter(Name = "RosterEdit")]
     public bool Editing { get; set; } = false;
     [CascadingParameter(Name = "RosterReloader")]
     public Func<bool, Task>? ReloadListener { get; set; }
+    [CascadingParameter(Name = "RosterComponent")]
+    public RosterComponentSettings? ComponentData { get; set; }
+
+    public string[] DisplayValues { get; set; } = Array.Empty<string>();
 
     public string NewRosterSlotName { get; set; } = "";
     public RosterSlot? SlotToEdit { get; set; }
     public string EditSlotName { get; set; } = "";
 
     public RosterSlot? ConfirmDelete { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+
+        LoadDisplayValues();
+    }
+
+    protected void LoadDisplayValues()
+    {
+        if (ComponentData is not null)
+        {
+            DisplayValues = new string[Slots.Count];
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                if(Slots[i].OccupiedBy is not null)
+                {
+                    List<string> parts = new();
+                    foreach(var property in ComponentData.DefaultDisplayedProperties)
+                    {
+                        if (property.IsStatic)
+                            parts.Add(Slots[i].OccupiedBy!.GetStaticProperty(property.PropertyName, property.FormatString));
+                        else
+                            parts.Add(Slots[i].OccupiedBy!.GetAssignableProperty(property.PropertyName, property.FormatString));
+                    }
+                    DisplayValues[i] = string.Join(" ", parts);
+                }
+                else
+                {
+                    DisplayValues[i] = "TBD";
+                }
+            }
+        }
+    }
 
     protected async Task OnSlotMoveUp(RosterSlot slot)
     {

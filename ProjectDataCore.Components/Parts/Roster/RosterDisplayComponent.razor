@@ -2,65 +2,80 @@
 
 <DisplayBox>
 	<Contnet>
-		@if(Editing)
-		{
-			@*Roster Manager Edit Form*@
-			<RosterDisplayManagerEdit CurrentSettings="ComponentData" />
-		}
-		else if (ComponentData is not null)
-		{
-			<div class="display-box-text grid grid-cols-1">
-				@*Roster User Settings*@
-				@if (RosterUserSettings.UserListing || CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
-				{
-					<EditForm Context="RosterUserSettingsContext" Model="RosterUserSettings" class="grid gird-cols-1">
-						@if (RosterUserSettings.UserListing)
-						{
-							<div class="p-2 flex">
-								<InputSelect class="form-left" TValue="int" Value="RosterUserSettings.SelectedParameter.Order"
-									ValueExpression="() => RosterUserSettings.SelectedParameter.Order"
-									ValueChanged="SelectedParameterChanged">
-									@foreach(var item in ComponentData.UserListDisplayedProperties)
-									{
-										<option value="@item.Order">@item.PropertyName</option>
-									}
-								</InputSelect>
-								<InputText type="text" class="form-center" Value="@RosterUserSettings.Search"
-									ValueExpression="() => RosterUserSettings.Search" 
-									ValueChanged="SearchValueChanged" />
-								<button class="form-right-button" @onclick="OnChangeSortDirection">
-									@if(RosterUserSettings.SortAscending)
-									{
-										<span class="material-icons-round">arrow_upward</span>
-									}
-									else
-									{
-										<span class="material-icons-round">arrow_downward</span>
-									}
-								</button>
-							</div>
-						}
-
-						@if (CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
-						{
-							<div class="p-2 flex">
-								@if (CanSwitchRosterSelection)
-								{
-									<label for="" class="form-left">
-										Displayed Roster
-									</label>
-									<InputSelect class="form-center" TValue="int" Value="RosterUserSettings.SelectedRosterPosition"
-										ValueExpression="() => RosterUserSettings.SelectedRosterPosition"
-										ValueChanged="SelectedRosterChangedAsync">
-										@for(int i = 0; i < ComponentData.AvalibleRosters.Count; i++)
+		<CascadingValue Name="RosterComponent" Value="ComponentData">
+			@if(Editing)
+			{
+				@*Roster Manager Edit Form*@
+				<RosterDisplayManagerEdit CurrentSettings="ComponentData" />
+			}
+			else if (ComponentData is not null)
+			{
+				<div class="display-box-text grid grid-cols-1">
+					@*Roster User Settings*@
+					@if (RosterUserSettings.UserListing || CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
+					{
+						<EditForm Context="RosterUserSettingsContext" Model="RosterUserSettings" class="grid gird-cols-1">
+							@if (RosterUserSettings.UserListing)
+							{
+								<div class="p-2 flex">
+									<InputSelect class="form-left" TValue="int" Value="RosterUserSettings.SelectedParameter.Order"
+										ValueExpression="() => RosterUserSettings.SelectedParameter.Order"
+										ValueChanged="SelectedParameterChanged">
+										@foreach(var item in ComponentData.UserListDisplayedProperties)
 										{
-											var ia = i;
-											<option value="@ia">@ComponentData.AvalibleRosters[ia].Name</option>
+											<option value="@item.Order">@item.PropertyName</option>
 										}
 									</InputSelect>
-									@if (ComponentData.AllowUserLisiting)
+									<InputText type="text" class="form-center" Value="@RosterUserSettings.Search"
+										ValueExpression="() => RosterUserSettings.Search" 
+										ValueChanged="SearchValueChanged" />
+									<button class="form-right-button" @onclick="OnChangeSortDirection">
+										@if(RosterUserSettings.SortAscending)
+										{
+											<span class="material-icons-round">arrow_upward</span>
+										}
+										else
+										{
+											<span class="material-icons-round">arrow_downward</span>
+										}
+									</button>
+								</div>
+							}
+
+							@if (CanSwitchRosterSelection || ComponentData.AllowUserLisiting)
+							{
+								<div class="p-2 flex">
+									@if (CanSwitchRosterSelection)
 									{
-										<button class="form-right-button" @onclick="OnChangeViewMode">
+										<label for="" class="form-left">
+											Displayed Roster
+										</label>
+										<InputSelect class="form-center" TValue="int" Value="RosterUserSettings.SelectedRosterPosition"
+											ValueExpression="() => RosterUserSettings.SelectedRosterPosition"
+											ValueChanged="SelectedRosterChangedAsync">
+											@for(int i = 0; i < ComponentData.AvalibleRosters.Count; i++)
+											{
+												var ia = i;
+												<option value="@ia">@ComponentData.AvalibleRosters[ia].Name</option>
+											}
+										</InputSelect>
+										@if (ComponentData.AllowUserLisiting)
+										{
+											<button class="form-right-button" @onclick="OnChangeViewMode">
+												@if(RosterUserSettings.UserListing)
+												{
+													<span class="material-icons-round">view_list</span>
+												}
+												else
+												{
+													<span class="material-icons-round">account_tree</span>
+												}
+											</button>
+										}
+									}
+									else if (ComponentData.AllowUserLisiting)
+									{
+										<button class="w-full border border-blue-700 hover:bg-blue-700 hover:text-white items-center p-2" @onclick="OnChangeViewMode">
 											@if(RosterUserSettings.UserListing)
 											{
 												<span class="material-icons-round">view_list</span>
@@ -71,49 +86,36 @@
 											}
 										</button>
 									}
-								}
-								else if (ComponentData.AllowUserLisiting)
-								{
-									<button class="w-full border border-blue-700 hover:bg-blue-700 hover:text-white items-center p-2" @onclick="OnChangeViewMode">
-										@if(RosterUserSettings.UserListing)
-										{
-											<span class="material-icons-round">view_list</span>
-										}
-										else
-										{
-											<span class="material-icons-round">account_tree</span>
-										}
-									</button>
-								}
-							</div>
-						}
-					</EditForm>
-				}
-
-				@if(RosterUserSettings.UserListing)
-				{
-					<div class="p-2">
-						<div class="flex text-center">
-							@for(int i = 0; i < ComponentData.UserListDisplayedProperties.Count; i++)
-							{
-								var ia = i;
-								<div id="rt-size-@ia" class="flex-grow grid grid-cols-1">
-									<div class="bg-roster_primary text-roster_primary_t">@ComponentData.UserListDisplayedProperties[i].PropertyName</div>
-									
-
 								</div>
 							}
+						</EditForm>
+					}
+
+					@if(RosterUserSettings.UserListing)
+					{
+						<div class="p-2">
+							<div class="flex text-center">
+								@for(int i = 0; i < ComponentData.UserListDisplayedProperties.Count; i++)
+								{
+									var ia = i;
+									<div id="rt-size-@ia" class="flex-grow grid grid-cols-1">
+										<div class="bg-roster_primary text-roster_primary_t">@ComponentData.UserListDisplayedProperties[i].PropertyName</div>
+									
+
+									</div>
+								}
+							</div>
 						</div>
-					</div>
-				}
-				else if (ActiveTree is not null)
-				{
-					<div class="p-2">
-						@*Roster Display*@
-						<RosterTreeDisplay Tree="ActiveTree" />
-					</div>
-				}
-			</div>
-		}
+					}
+					else if (ActiveTree is not null)
+					{
+						<div class="p-2">
+							@*Roster Display*@
+							<RosterTreeDisplay Tree="ActiveTree" />
+						</div>
+					}
+				</div>
+			}
+		</CascadingValue>
 	</Contnet>
 </DisplayBox>
