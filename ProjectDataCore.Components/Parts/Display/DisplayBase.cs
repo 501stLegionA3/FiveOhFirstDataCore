@@ -104,22 +104,17 @@ public class DisplayBase : ParameterBase
         if (ScopedUser is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
         {
-            var typ = ScopedUser.GetType();
-            var p = typ.GetProperty(ComponentData.PropertyToEdit);
-            if (p is not null)
-            {
-                var val = p.GetValue(ScopedUser);
-
-                var s = Convert.ToString(val);
-
-                DisplayValue = string.Format(ComponentData.FormatString ?? "{0}", s);
-            }
+            DisplayValue = ScopedUser.GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
         }
     }
 
     protected override async Task LoadDynamicPropertyAsync()
     {
-        // TODO
+        if (ScopedUser is not null && ComponentData is not null
+            && ComponentData.PropertyToEdit is not null)
+        {
+            DisplayValue = ScopedUser.GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
+        }
     }
     #endregion
 }

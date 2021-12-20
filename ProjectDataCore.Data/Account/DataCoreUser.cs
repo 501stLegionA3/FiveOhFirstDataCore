@@ -30,4 +30,27 @@ public class DataCoreUser : IdentityUser<int>
     public string? SteamLink { get; set; }
     [Description("Access Code")]
     public string? AccessCode { get; set; }
+
+    public string GetStaticProperty(string property, string? format = null)
+    {
+        var typ = GetType();
+        var p = typ.GetProperty(property);
+        if (p is not null)
+        {
+            var val = p.GetValue(this);
+
+            var s = Convert.ToString(val);
+
+            return string.Format(format ?? "{0}", s);
+        }
+
+        return string.Empty;
+    }
+
+    public string GetAssignableProperty(string property, string? format = null)
+    {
+        // TODO
+
+        throw new NotImplementedException();
+    }
 }

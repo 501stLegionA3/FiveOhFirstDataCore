@@ -19,6 +19,52 @@ public partial class RosterDisplayComponent : RosterDisplayBase
         public bool UserListing { get; set; } = false;
         public List<DataCoreUser> UserListingValues { get; set; } = new();
         public bool SortAscending { get; set; } = true;
+
+        public List<string>[] DisplayedProperties { get; set; } = Array.Empty<List<string>>();
+        private int RegisterIndex { get; set; } = 0;
+
+        public void StartUserLoad(int paramSize)
+        {
+            UserListingValues.Clear();
+            RegisterIndex = 0;
+            DisplayedProperties = new List<string>[paramSize];
+
+            for (int i = 0; i < DisplayedProperties.Length; i++)
+                DisplayedProperties[i] = new();
+        }
+
+        public void RegisterBatch(List<DataCoreUserProperty> properties)
+        {
+            if(properties.Count != DisplayedProperties.Length)
+                throw new ArgumentException("The length of properties must be the same as the param size passed during" +
+                    " start user load.", nameof(properties));
+
+            for(int i = RegisterIndex; i < UserListingValues.Count; i++)
+            {
+                var user = UserListingValues[i];
+
+                for(int x = 0; x < properties.Count; x++)
+                {
+                    string disp = "";
+                    if(properties[x].IsStatic)
+                    {
+                        disp = user.GetStaticProperty(properties[x].PropertyName, properties[x].FormatString);
+                    }
+                    else
+                    {
+                        disp = user.GetAssignableProperty(properties[x].PropertyName, properties[x].FormatString);
+                    }
+                    DisplayedProperties[x].Add(disp);
+                }
+            }
+
+            RegisterIndex = UserListingValues.Count;
+        }
+
+        public IEnumerable<bool> RunSort(int paramIndex, string value)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public RosterUserSettingsModel RosterUserSettings { get; set; } = new();
@@ -78,7 +124,7 @@ public partial class RosterDisplayComponent : RosterDisplayBase
 
     protected async Task ReloadRosterTreeAsync()
     {
-        if (RosterUserSettings.SelectedRosterSettings is not null)
+        if (RosterUserSettings.SelectedRosterSettings is not null && ComponentData is not null)
         {
             var res = await ModularRosterService.GetRosterTreeForSettingsAsync(
                                 RosterUserSettings.SelectedRosterSettings.Value);
@@ -90,14 +136,21 @@ public partial class RosterDisplayComponent : RosterDisplayBase
                 List<DataCoreUser>? users = null;
                 if (RosterUserSettings.UserListing)
                 {
+                    RosterUserSettings.StartUserLoad(ComponentData.UserListDisplayedProperties.Count);
                     users = RosterUserSettings.UserListingValues;
-                    users.Clear();
                 }
 
                 var loader = ModularRosterService.LoadFullRosterTreeAsync(tree, users);
 
                 await foreach (var _ in loader)
+                {
+                    if(RosterUserSettings.UserListing)
+                    {
+                        RosterUserSettings.RegisterBatch(ComponentData.UserListDisplayedProperties);
+                    }
+
                     StateHasChanged();
+                }
 
                 if (RosterUserSettings.UserListing)
                     await ReloadInterop();
