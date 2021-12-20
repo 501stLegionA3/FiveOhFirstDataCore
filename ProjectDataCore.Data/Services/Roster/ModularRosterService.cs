@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using ProjectDataCore.Data.Account;
+
+using System.Runtime.Serialization;
 
 namespace ProjectDataCore.Data.Services;
 
@@ -381,7 +383,7 @@ public class ModularRosterService : IModularRosterService
     #endregion
 
     #region Get Roster Display
-    public async IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree)
+    public async IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree, List<DataCoreUser>? userList = null)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -397,6 +399,17 @@ public class ModularRosterService : IModularRosterService
             .Query()
             .OrderBy(e => e.Order.Order)
             .LoadAsync();
+
+        // ... if it is not null ...
+        if(userList is not null)
+        {
+            // ... then add the loaded trooperes to the user list ...
+            // (defined select statement to prevet null warnings)
+            userList.AddRange(tree.RosterPositions
+                .Where(x => x.OccupiedBy is not null)
+                .Select<RosterSlot, DataCoreUser>(x => x.OccupiedBy));
+        }
+
         // ... and return true now that some data is loaded ...
         yield return true;
         // ... then load the child rosters ...
@@ -415,6 +428,15 @@ public class ModularRosterService : IModularRosterService
                 .Query()
                 .OrderBy(e => e.Order.Order)
                 .LoadAsync();
+
+            if(userList is not null)
+            {
+                // ... then add the loaded trooperes to the user list ...
+                // (defined select statement to prevet null warnings)
+                userList.AddRange(roster.RosterPositions
+                    .Where(x => x.OccupiedBy is not null)
+                    .Select<RosterSlot, DataCoreUser>(x => x.OccupiedBy));
+            }
 
             // ... let the page know a new roster has been loaded ...
             yield return true;

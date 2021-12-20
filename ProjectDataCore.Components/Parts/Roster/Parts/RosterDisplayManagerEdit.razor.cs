@@ -245,6 +245,8 @@ public partial class RosterDisplayManagerEdit
             RosterDisplayProperties = new();
             foreach (var i in settings.DefaultDisplayedProperties)
                 RosterDisplayProperties.Add(i.Order, i);
+
+            AvalibleRosters.AddRange(settings.AvalibleRosters); 
         }
     }
 

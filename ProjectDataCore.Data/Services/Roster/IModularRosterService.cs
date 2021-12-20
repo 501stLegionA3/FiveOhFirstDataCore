@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Result;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Result;
 using ProjectDataCore.Data.Structures.Roster;
 
 using System;
@@ -35,7 +36,7 @@ public interface IModularRosterService
     #endregion
 
     #region Get Roster Display
-    public IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree);
+    public IAsyncEnumerable<bool> LoadFullRosterTreeAsync(RosterTree tree, List<DataCoreUser>? userList = null);
     public Task<ActionResult<RosterTree>> GetRosterTreeForSettingsAsync(Guid settings);
     public Task<ActionResult<RosterTree>> GetRosterTreeByIdAsync(Guid tree);
     public Task<ActionResult<List<RosterDisplaySettings>>> GetAvalibleRosterDisplaysAsync();

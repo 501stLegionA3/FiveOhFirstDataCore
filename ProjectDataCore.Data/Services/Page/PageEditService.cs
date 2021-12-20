@@ -459,10 +459,34 @@ public class PageEditService : IPageEditService
             compData.AllowUserLisiting = model.AllowUserListing.Value;
 
         if (model.UserListDisplayedProperties is not null)
-            compData.UserListDisplayedProperties = model.UserListDisplayedProperties;
+        {
+            // Remove any current that is missing from the new set ...
+            foreach(var exisitng in compData.UserListDisplayedProperties)
+            {
+                if(!model.UserListDisplayedProperties.Any(x => x.Key == exisitng.Key))
+                {
+                    _dbContext.Remove(exisitng);
+                }
+            }
+            // .. then add any completely new values ...
+            var dataSet = model.UserListDisplayedProperties.Where(x => x.Key == Guid.Empty || !compData.UserListDisplayedProperties.Any(y => y.Key == x.Key));
+            compData.UserListDisplayedProperties.AddRange(dataSet);
+        }
 
         if (model.DefaultDisplayedProperties is not null)
-            compData.DefaultDisplayedProperties = model.DefaultDisplayedProperties;
+        {
+            // Remove any current that is missing from the new set ...
+            foreach (var exisitng in compData.DefaultDisplayedProperties)
+            {
+                if (!model.DefaultDisplayedProperties.Any(x => x.Key == exisitng.Key))
+                {
+                    _dbContext.Remove(exisitng);
+                }
+            }
+            // .. then add any completely new values ...
+            var dataSet = model.DefaultDisplayedProperties.Where(x => x.Key == Guid.Empty || !compData.DefaultDisplayedProperties.Any(y => y.Key == x.Key));
+            compData.DefaultDisplayedProperties.AddRange(dataSet);
+        }
 
         if(model.LevelFromTop is not null)
             compData.LevelFromTop = model.LevelFromTop.Value;

@@ -93,7 +93,18 @@
 				@if(RosterUserSettings.UserListing)
 				{
 					<div class="p-2">
-
+						<div class="flex text-center">
+							@for(int i = 0; i < ComponentData.UserListDisplayedProperties.Count; i++)
+							{
+								var ia = i;
+								<div id="rt-size-@ia" class="flex-grow grid grid-cols-1">
+									<div class="bg-roster_primary text-roster_primary_t">@ComponentData.UserListDisplayedProperties[i].PropertyName</div>
+								
+									<div>Item</div>
+									<div>Item</div>
+								</div>
+							}
+						</div>
 					</div>
 				}
 				else if (ActiveTree is not null)

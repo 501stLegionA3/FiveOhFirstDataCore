@@ -181,9 +181,11 @@ else if (Tree is not null)
             @Tree.Name
         </div>
         <RosterSlotsDisplay Slots="Tree.RosterPositions" Depth="Depth" Parent="Tree" />
-        @foreach(var child in Tree.ChildRosters)
-        {
-            <RosterTreeDisplay Tree="child" Depth="Depth + 1" Parent="Tree" />
-        }
+        <div class="mx-4">
+            @foreach(var child in Tree.ChildRosters)
+            {
+                <RosterTreeDisplay Tree="child" Depth="Depth + 1" Parent="Tree" />
+            }
+        </div>
     </div>
 }
