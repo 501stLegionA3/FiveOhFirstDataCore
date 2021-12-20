@@ -92,7 +92,15 @@ public partial class RosterSlotsDisplay
         if(SlotToEdit is not null
             && !string.IsNullOrWhiteSpace(EditSlotName))
         {
+            var res = await ModularRosterService.UpdateRosterSlotAsync(SlotToEdit.Key,
+                x => x.Name = EditSlotName);
 
+            // TODO handle errors.
+
+            if (ReloadListener is not null)
+                await ReloadListener.Invoke(true);
+
+            OnEditSlot(null);
         }
     }
 
@@ -105,7 +113,12 @@ public partial class RosterSlotsDisplay
     {
         if(ConfirmDelete is not null)
         {
+            var res = await ModularRosterService.RemoveRosterSlotAsync(ConfirmDelete.Key);
 
+            // TODO handle errors
+
+            if (ReloadListener is not null)
+                await ReloadListener.Invoke(true);
         }
     }
 }

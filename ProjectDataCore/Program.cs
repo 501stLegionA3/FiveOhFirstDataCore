@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+
 using ProjectDataCore.Data.Database;
 using ProjectDataCore.Data.Services.User;
 
@@ -15,6 +17,11 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     .EnableSensitiveDataLogging()
     .EnableDetailedErrors()
 #endif
+    // Warnings for loading multiple collections without splitting the query.
+    // We want this behaviour for accurate data loading (and our lists are not
+    // of any large size for the roster) so we are ignoring these.
+    .ConfigureWarnings(w =>
+        w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning))
     , ServiceLifetime.Singleton);
 
 builder.Services.AddScoped(p

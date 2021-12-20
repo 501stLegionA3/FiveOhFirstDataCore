@@ -4,30 +4,56 @@
         @foreach(var pos in Slots)
         {
             var pa = pos;
-            <div class="relative group grid grid-cols-2 hover:border-2 hover:border-util_action">
-                @if (SlotToEdit != pa)
-                {
-                    <div class="text-right p-2 border-r @(Depth > 2 ? "border-rostert" : 
-                    Depth > 1 ? "border-rosters" : "border-rosterp")">@pos.Name</div>
-                }
-                else
-                {
-                    
-                }
-
+            <div class="relative group grid grid-cols-2">
                 @if (ConfirmDelete != pa)
                 {
+                    if (SlotToEdit != pa)
+                    {
+                        <div class="text-right p-2 border-r @(Depth > 2 ? "border-rostert" : 
+                        Depth > 1 ? "border-rosters" : "border-rosterp")">@pos.Name</div>
+                    }
+                    else
+                    {
+                        <div class="p-2 border-r @(Depth > 2 ? "border-rostert" : 
+                            Depth > 1 ? "border-rosters" : "border-rosterp")">
+                            <EditForm Model="this" class="grid grid-cols-10">
+                                <button class="border border-op_danger hover:bg-op_danger hover:text-op_danger_t material-icons-round"
+                                    @onclick="() => OnEditSlot(null)">
+                                    close
+                                </button>
+                                <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-icons-round"
+                                    @onclick="OnSaveSlotEdit">
+                                    save
+                                </button>
+                                <InputText class="text-right text-black col-span-8 border border-util_action" @bind-Value="EditSlotName" />
+                            </EditForm>
+                        </div>
+                    }
                     <div class="text-left p-2">@(pos.OccupiedBy?.NickName ?? "TBD")</div>
                 }
                 else
                 {
-                    
+                    <div class="text-center p-2">
+                        <button class="border border-op_success hover:bg-op_success hover:text-op_success_t w-full"
+                            @onclick="() => OnStartDelete(null)">
+                            Cancel Delete Action
+                        </button>
+                    </div>
+                    <div class="text-center p-2 grid grid-cols-2 gap-2">
+                        <div>
+                            @pos.Name
+                        </div>
+                        <button class="border border-op_danger hover:bg-op_danger hover:text-op_danger_t"
+                            @onclick="OnDeleteSlot">
+                            Confirm Delete Action
+                        </button>
+                    </div>
                 }
 
                 @if(ConfirmDelete is null && SlotToEdit is null)
                 {
                     @*Move Up*@
-                    <div class="hidden group-hover:block absolute top-0 right-0 w-8 h-8 rounded-bl-lg 
+                    <div class="hidden group-hover:block absolute top-0 right-0 w-8 h-8 rounded-l-lg 
                         bg-util_action text-util_action_t">
                         <button class="material-icons-round"
                             @onclick="async () => await OnSlotMoveUp(pa)">
@@ -36,7 +62,7 @@
                     </div>
 
                     @*Move Down*@
-                    <div class="hidden group-hover:block absolute bottom-0 right-10 w-8 h-8 rounded-t-lg 
+                    <div class="hidden group-hover:block absolute bottom-0 right-10 w-8 h-8 rounded-lg 
                         bg-util_action text-util_action_t">
                         <button class="material-icons-round"
                             @onclick="async () => await OnSlotMoveDown(pa)">
@@ -45,7 +71,7 @@
                     </div>
 
                     @*Edit*@
-                    <div class="hidden group-hover:block absolute bottom-0 left-20 w-8 h-8 rounded-t-lg
+                    <div class="hidden group-hover:block absolute bottom-0 left-20 w-8 h-8 rounded-lg
                         bg-util_action text-util_action_t">
                         <button class="material-icons-round"
                             @onclick="() => OnEditSlot(pa)">
@@ -54,7 +80,7 @@
                     </div>
 
                     @*Delete*@
-                    <div class="hidden group-hover:block absolute top-0 left-0 w-8 h-8 rounded-br-lg
+                    <div class="hidden group-hover:block absolute top-0 left-0 w-8 h-8 rounded-r-lg
                         bg-op_danger text-op_danger_t">
                         <button class="material-icons-round"
                             @onclick="() => OnStartDelete(pa)">

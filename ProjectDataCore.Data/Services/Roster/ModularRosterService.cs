@@ -315,9 +315,8 @@ public class ModularRosterService : IModularRosterService
             return new(false, new List<string> { "No roster slot was found." });
 
         _dbContext.Remove(rosterSlot);
-        await _dbContext.SaveChangesAsync();
 
-        await rosterSlot.MovePositionAsync(_dbContext);
+        await rosterSlot.MovePositionAsync(_dbContext, -1);
 
         await _dbContext.SaveChangesAsync();
 

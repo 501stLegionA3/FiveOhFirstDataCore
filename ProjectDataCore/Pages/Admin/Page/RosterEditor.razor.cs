@@ -175,7 +175,7 @@ public partial class RosterEditor : ComponentBase
         if (!res.GetResult(out var err))
             Error = err[0];
 
-        await ReloadRosterDisplaysAsync();
+        await CallFullReload(true);
 	}
 
     protected async Task LoadRosterAsync(bool singleRefresh = false)
