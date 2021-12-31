@@ -43,22 +43,29 @@ public partial class RosterSlotsDisplay
 
     protected void LoadDisplayValues()
     {
-        if (ComponentData is not null)
+        if (ComponentData is not null || Editing)
         {
             DisplayValues = new string[Slots.Count];
             for (int i = 0; i < Slots.Count; i++)
             {
                 if(Slots[i].OccupiedBy is not null)
                 {
-                    List<string> parts = new();
-                    foreach(var property in ComponentData.DefaultDisplayedProperties)
+                    if (Editing)
                     {
-                        if (property.IsStatic)
-                            parts.Add(Slots[i].OccupiedBy!.GetStaticProperty(property.PropertyName, property.FormatString));
-                        else
-                            parts.Add(Slots[i].OccupiedBy!.GetAssignableProperty(property.PropertyName, property.FormatString));
+                        DisplayValues[i] = Slots[i].OccupiedBy!.UserName + "/" + Slots[i].OccupiedBy!.Id;
                     }
-                    DisplayValues[i] = string.Join(" ", parts);
+                    else
+                    {
+                        List<string> parts = new();
+                        foreach (var property in ComponentData!.DefaultDisplayedProperties)
+                        {
+                            if (property.IsStatic)
+                                parts.Add(Slots[i].OccupiedBy!.GetStaticProperty(property.PropertyName, property.FormatString));
+                            else
+                                parts.Add(Slots[i].OccupiedBy!.GetAssignableProperty(property.PropertyName, property.FormatString));
+                        }
+                        DisplayValues[i] = string.Join(" ", parts);
+                    }
                 }
                 else
                 {
