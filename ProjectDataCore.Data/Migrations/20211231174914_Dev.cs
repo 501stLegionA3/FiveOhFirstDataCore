@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -54,6 +55,28 @@ namespace ProjectDataCore.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AssignableConfigurations",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyName = table.Column<string>(type: "text", nullable: false),
+                    AllowMultiple = table.Column<bool>(type: "boolean", nullable: false),
+                    AllowedInput = table.Column<int>(type: "integer", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    AvalibleValues = table.Column<List<DateOnly>>(type: "date[]", nullable: true),
+                    DateTimeValueAssignableConfiguration_AvalibleValues = table.Column<List<DateTime>>(type: "timestamp with time zone[]", nullable: true),
+                    DoubleValueAssignableConfiguration_AvalibleValues = table.Column<List<double>>(type: "double precision[]", nullable: true),
+                    IntegerValueAssignableConfiguration_AvalibleValues = table.Column<List<int>>(type: "integer[]", nullable: true),
+                    StringValueAssignableConfiguration_AvalibleValues = table.Column<List<string>>(type: "text[]", nullable: true),
+                    TimeOnlyValueAssignableConfiguration_AvalibleValues = table.Column<List<TimeOnly>>(type: "time without time zone[]", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssignableConfigurations", x => x.Key);
                 });
 
             migrationBuilder.CreateTable(
@@ -504,6 +527,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AssignableConfigurations");
 
             migrationBuilder.DropTable(
                 name: "DataCoreUserProperty");

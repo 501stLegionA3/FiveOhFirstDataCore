@@ -11,5 +11,5 @@ namespace ProjectDataCore.Data.Services.Roster;
 /// </summary>
 public interface IAssignableDataService
 {
-
+    
 }

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components;
 
@@ -28,6 +29,16 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
+    #endregion
+
+    #region Assignable Values
+    public DbSet<BaseAssignableConfiguration> AssignableConfigurations { get; internal set; }
+    public DbSet<StringValueAssignableConfiguration> StringValueAssignableConfigurations { get; internal set; }
+    public DbSet<IntegerValueAssignableConfiguration> IntegerValueAssignableConfigurations { get;internal set; }
+    public DbSet<DoubleValueAssignableConfiguration> DoubleValueAssignableConfigurations { get; internal set; }
+    public DbSet<DateTimeValueAssignableConfiguration> DateTimeValueAssignableConfigurations { get; internal set; }
+    public DbSet<DateOnlyValueAssignableConfiguration> DateOnlyValueAssignableConfigurations { get; internal set; }
+    public DbSet<TimeOnlyValueAssignableConfiguration> TimeOnlyValueAssignableConfigurations{ get; internal set; }
     #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -116,6 +127,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithMany(p => p.DisplayComponents);
         rosterComponentSettings.Navigation(e => e.AvalibleRosters)
             .AutoInclude(true);
+        #endregion
+
+        #region Assignable Values
+        var baseAssignableConfiguration = builder.Entity<BaseAssignableConfiguration>();
+        baseAssignableConfiguration.HasKey(e => e.Key);
         #endregion
 
         #region User

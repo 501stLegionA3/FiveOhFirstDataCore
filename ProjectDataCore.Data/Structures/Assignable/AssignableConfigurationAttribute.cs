@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable;
 
-public class SingleValueAssignable
+[AttributeUsage(AttributeTargets.Class)]
+public class AssignableConfigurationAttribute : Attribute
 {
-    public List<SingleValueAssignableData> Assignables { get; set; } = new();
     public string Name { get; set; }
-    public bool AreSiteRoles { get; set; }
+
+    public AssignableConfigurationAttribute(string name)
+        => Name = name;
 }
