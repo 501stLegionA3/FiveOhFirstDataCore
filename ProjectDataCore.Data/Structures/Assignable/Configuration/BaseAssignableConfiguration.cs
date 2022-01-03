@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Assignable.Value;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,4 +38,8 @@ public class BaseAssignableConfiguration : DataObject<Guid>
     /// Determines the type of inputs allowed for this property.
     /// </summary>
     public InputType AllowedInput { get; set; } = InputType.StaticOnly;
+    /// <summary>
+    /// The list of values that use this configuration.
+    /// </summary>
+    public List<BaseAssignableValue> AssignableValues { get; set; } = new();
 }

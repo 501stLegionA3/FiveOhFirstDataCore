@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
+using ProjectDataCore.Data.Structures.Assignable.Value;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,7 +19,7 @@ public class DataCoreUser : IdentityUser<int>
     public string NickName { get; set; }
 
     #region Assignable
-
+    public List<BaseAssignableValue> AssignableValues { get; set; } = new();
     #endregion
 
     #region Roster

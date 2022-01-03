@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
+using ProjectDataCore.Data.Structures.Model.Assignable;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +14,13 @@ namespace ProjectDataCore.Data.Services.Roster;
 /// </summary>
 public interface IAssignableDataService
 {
-    
+    #region Configuration Editing
+    public Task<ActionResult> AddNewAssignableConfiguration(BaseAssignableConfiguration config);
+    public Task<ActionResult> UpdateAssignableConfiguration<T>(Guid configKey, Action<AssignableConfigurationEditModel<T>> update);
+    public Task<ActionResult> DeleteAssignableConfiguration(Guid configKey);
+    #endregion
+
+    #region Value Editing
+    public Task<ActionResult> UpdateAssignableValue(Guid user, Guid config, object value);
+    #endregion
 }

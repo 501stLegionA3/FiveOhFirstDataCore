@@ -10,7 +10,8 @@ namespace ProjectDataCore.Data.Structures.Assignable;
 public class AssignableConfigurationAttribute : Attribute
 {
     public string Name { get; set; }
+    public Type Configures { get; set; }
 
-    public AssignableConfigurationAttribute(string name)
-        => Name = name;
+    public AssignableConfigurationAttribute(string name, Type configures)
+        => (Name, Configures) = (name, configures);
 }

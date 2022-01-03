@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
+using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components;
 
@@ -32,6 +33,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     #endregion
 
     #region Assignable Values
+    // Configuration Sets
     public DbSet<BaseAssignableConfiguration> AssignableConfigurations { get; internal set; }
     public DbSet<StringValueAssignableConfiguration> StringValueAssignableConfigurations { get; internal set; }
     public DbSet<IntegerValueAssignableConfiguration> IntegerValueAssignableConfigurations { get;internal set; }
@@ -39,6 +41,15 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<DateTimeValueAssignableConfiguration> DateTimeValueAssignableConfigurations { get; internal set; }
     public DbSet<DateOnlyValueAssignableConfiguration> DateOnlyValueAssignableConfigurations { get; internal set; }
     public DbSet<TimeOnlyValueAssignableConfiguration> TimeOnlyValueAssignableConfigurations{ get; internal set; }
+
+    // Assigned Value Setes
+    public DbSet<BaseAssignableValue> AssignableValues { get; internal set; }
+    public DbSet<StringAssignableValue> StringAssignableValues { get; internal set; }
+    public DbSet<IntegerAssignableValue> IntegerAssignableValues { get; internal set; }
+    public DbSet<DoubleAssignableValue> DoubleAssignableValues { get; internal set; }
+    public DbSet<DateTimeAssignableValue> DateTimeAssignableValues { get; internal set; }
+    public DbSet<DateOnlyAssignableValue> DateOnlyAssignableValues { get; internal set; }
+    public DbSet<TimeOnlyAssignableValue> TimeOnlyAssignableValues { get; internal set; }
     #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -132,6 +143,15 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         #region Assignable Values
         var baseAssignableConfiguration = builder.Entity<BaseAssignableConfiguration>();
         baseAssignableConfiguration.HasKey(e => e.Key);
+
+        var baseAssignableValues = builder.Entity<BaseAssignableValue>();
+        baseAssignableValues.HasKey(e => e.Key);
+        baseAssignableValues.HasOne(e => e.AssignableConfiguration)
+            .WithMany(p => p.AssignableValues)
+            .HasForeignKey(e => e.AssignableConfigurationId);
+        baseAssignableValues.HasOne(e => e.ForUser)
+            .WithMany(p => p.AssignableValues)
+            .HasForeignKey(e => e.ForUserId);
         #endregion
 
         #region User

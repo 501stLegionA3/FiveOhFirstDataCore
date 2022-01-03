@@ -228,6 +228,39 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AssignableValues",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    ForUserId = table.Column<int>(type: "integer", nullable: false),
+                    AssignableConfigurationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    SetValue = table.Column<DateOnly>(type: "date", nullable: true),
+                    DateTimeAssignableValue_SetValue = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DoubleAssignableValue_SetValue = table.Column<double>(type: "double precision", nullable: true),
+                    IntegerAssignableValue_SetValue = table.Column<int>(type: "integer", nullable: true),
+                    StringAssignableValue_SetValue = table.Column<string>(type: "text", nullable: true),
+                    TimeOnlyAssignableValue_SetValue = table.Column<TimeOnly>(type: "time without time zone", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssignableValues", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_AssignableValues_AspNetUsers_ForUserId",
+                        column: x => x.ForUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AssignableValues_AssignableConfigurations_AssignableConfigu~",
+                        column: x => x.AssignableConfigurationId,
+                        principalTable: "AssignableConfigurations",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "PageComponentSettingsBase",
                 columns: table => new
                 {
@@ -438,6 +471,16 @@ namespace ProjectDataCore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_AssignableValues_AssignableConfigurationId",
+                table: "AssignableValues",
+                column: "AssignableConfigurationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssignableValues_ForUserId",
+                table: "AssignableValues",
+                column: "ForUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CustomPageSettings_Route",
                 table: "CustomPageSettings",
                 column: "Route",
@@ -529,7 +572,7 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "AssignableConfigurations");
+                name: "AssignableValues");
 
             migrationBuilder.DropTable(
                 name: "DataCoreUserProperty");
@@ -545,6 +588,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AssignableConfigurations");
 
             migrationBuilder.DropTable(
                 name: "PageComponentSettingsBase");

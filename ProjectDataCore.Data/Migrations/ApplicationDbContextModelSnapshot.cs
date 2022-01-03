@@ -268,6 +268,36 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableConfiguration");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AssignableConfigurationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ForUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("AssignableConfigurationId");
+
+                    b.HasIndex("ForUserId");
+
+                    b.ToTable("AssignableValues");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableValue");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.Property<Guid>("Key")
@@ -550,6 +580,72 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TimeOnlyValueAssignableConfiguration");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DateOnlyAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<DateOnly>("SetValue")
+                        .HasColumnType("date");
+
+                    b.HasDiscriminator().HasValue("DateOnlyAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DateTimeAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<DateTime>("SetValue")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("DateTimeAssignableValue_SetValue");
+
+                    b.HasDiscriminator().HasValue("DateTimeAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DoubleAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<double>("SetValue")
+                        .HasColumnType("double precision")
+                        .HasColumnName("DoubleAssignableValue_SetValue");
+
+                    b.HasDiscriminator().HasValue("DoubleAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.IntegerAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<int>("SetValue")
+                        .HasColumnType("integer")
+                        .HasColumnName("IntegerAssignableValue_SetValue");
+
+                    b.HasDiscriminator().HasValue("IntegerAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.StringAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<string>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("StringAssignableValue_SetValue");
+
+                    b.HasDiscriminator().HasValue("StringAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.TimeOnlyAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<TimeOnly>("SetValue")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("TimeOnlyAssignableValue_SetValue");
+
+                    b.HasDiscriminator().HasValue("TimeOnlyAssignableValue");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -705,6 +801,25 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", "AssignableConfiguration")
+                        .WithMany("AssignableValues")
+                        .HasForeignKey("AssignableConfigurationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "ForUser")
+                        .WithMany("AssignableValues")
+                        .HasForeignKey("ForUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssignableConfiguration");
+
+                    b.Navigation("ForUser");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
@@ -827,7 +942,14 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
+                    b.Navigation("AssignableValues");
+
                     b.Navigation("RosterSlots");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>
+                {
+                    b.Navigation("AssignableValues");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
