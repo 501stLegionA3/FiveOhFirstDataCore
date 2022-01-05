@@ -1,0 +1,25 @@
+﻿.top-link {
+    @apply hover:bg-emerald-700 relative p-1 min-h-full rounded-sm;
+}
+
+.link {
+    @apply hover:bg-emerald-700 px-3 py-1;
+}
+
+.has-dropdown::after {
+    content: "+";
+    @apply pl-1;
+}
+
+li > ul {
+    transform: translatex(100%) scale(0);
+}
+li:hover > ul {
+    transform: translatex(101%) scale(1);
+}
+li > button svg {
+    transform: rotate(-90deg);
+}
+li:hover > button svg {
+    transform: rotate(-270deg);
+}
