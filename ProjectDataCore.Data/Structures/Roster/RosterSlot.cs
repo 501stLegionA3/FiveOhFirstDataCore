@@ -13,7 +13,7 @@ namespace ProjectDataCore.Data.Structures.Roster;
 public class RosterSlot : RosterObject
 {
     public DataCoreUser? OccupiedBy { get; set; }
-    public int? OccupiedById { get; set; }
+    public Guid? OccupiedById { get; set; }
     public RosterOrder Order { get; set; }
     public RosterTree ParentRoster { get; set; }
     public Guid ParentRosterId { get; set; }
