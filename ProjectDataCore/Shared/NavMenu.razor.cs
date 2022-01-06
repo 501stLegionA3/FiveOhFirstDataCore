@@ -2,15 +2,23 @@
 
 public partial class NavMenu
 {
-    [Inject]
-    public NavigationManager _navManager {get; set;}
-
-    private List<LinkGroup> _modules = new List<LinkGroup>()
+    private List<Link> _modules = new List<Link>
     {
-        new LinkGroup("Admin", "/admin", new List<Link>() {new Link("Page Editor", "/admin/page/edit"), new Link("Roster Editor", "/admin/roster/edit")}),
+        new("Admin", "/admin", new List<Link>
+        {
+            new("Page Editor", "/admin/page/edit"),
+            new("Roster Editor", "/admin/roster/edit", new List<Link>
+            {
+                new("Roster List", "/admin/roster/list", new List<Link>
+                {
+                    new("Test", "/admin/roster/list/test")
+                }, true)
+            }, true)
+        })
     };
-    
-    
+
+    [Inject] public NavigationManager _navManager { get; set; }
+
 
     private void Navigate(string href)
     {
@@ -18,30 +26,28 @@ public partial class NavMenu
     }
 }
 
-class LinkGroup
+/// <summary>
+/// Used to represent modules for the top navigation bar
+/// </summary>
+public class Link
 {
-    public LinkGroup(string displayName, string href, List<Link> links)
+    public Link(string displayName, string href, bool hasMainPage = false)
     {
         DisplayName = displayName;
-        HREF = href;
-        Links = links;
+        Href = href;
+        HasMainPage = hasMainPage;
     }
 
-    public String DisplayName { get; set; }
-    public List<Link> Links { get; set; }
-    public String HREF { get; set; }
-}
-
-class Link
-{
-    public Link(string display, string href)
+    public Link(string displayName, string href, List<Link> subLinks, bool hasMainPage = false)
     {
-        Display = display;
-        HREF = href;
+        DisplayName = displayName;
+        Href = href;
+        SubLinks = subLinks;
+        HasMainPage = hasMainPage;
     }
 
-    public String Display { get; set; }
-    public String HREF { get; set; }
-    
-    
+    public string DisplayName { get; set; }
+    public string Href { get; set; }
+    public List<Link>? SubLinks { get; set; }
+    public bool HasMainPage { get; set; } = false;
 }

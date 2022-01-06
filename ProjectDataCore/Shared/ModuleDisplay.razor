@@ -1,0 +1,71 @@
+﻿<li class="top-link group">
+    @if (Module.HasMainPage) //If the Module has a main page make the top button clickable
+    {
+        <button class="has-dropdown">
+            <NavLink href="@Module.Href" @onclick="() => Navigate(Module.Href)">@Module.DisplayName</NavLink>
+        </button>
+    }
+    else
+    {
+        <button class="has-dropdown">@Module.DisplayName</button>
+    }
+    <ul class="dropdown">
+        @foreach (var sM in Module.SubLinks) //List all sub Modules
+        {
+            var subModule = sM;
+            @if (subModule.SubLinks is not null) //If the sub Module has sub Modules list them 1 deep
+            {
+                <li class="drLink relative">
+                    @if (subModule.HasMainPage)
+                    {
+                        <button class="has-dropdown">
+                            <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
+                        </button>
+                    }
+                    else
+                    {
+                        <button class="has-dropdown">@subModule.DisplayName</button>
+                    }
+                    <ul class="nested">
+                        @foreach (var l in subModule.SubLinks)
+                        {
+                            var link = l;
+                            <li class="drLink">
+                                <NavLink href="@link.Href" @onclick="() => Navigate(link.Href)">@link.DisplayName</NavLink>
+                            </li>
+                        }
+                    </ul>
+                </li>
+            }
+            else
+            {
+                <li class="drLink">
+                    <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
+                </li>
+            }
+        }
+    </ul>
+</li>
+@foreach (var sM in Module.SubLinks)
+{
+    var subModule = sM;
+    @if (_navManager.Uri.Contains(subModule.Href) && subModule.SubLinks is not null)
+    {
+        <ModuleDisplay Module="subModule"/>
+    }
+}
+
+
+@code
+{
+    [Parameter]
+    public Link Module { get; set; }
+
+    [Inject]
+    public NavigationManager _navManager { get; set; }
+
+    private void Navigate(string href)
+    {
+        _navManager.NavigateTo(href, true);
+    }
+}
