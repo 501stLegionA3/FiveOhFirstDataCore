@@ -12,7 +12,7 @@ namespace ProjectDataCore.Data.Structures.Assignable.Value;
 public class BaseAssignableValue : DataObject<Guid>
 {
     public DataCoreUser ForUser { get; set; }
-    public int ForUserId { get; set; }
+    public Guid ForUserId { get; set; }
 
     public BaseAssignableConfiguration AssignableConfiguration { get; set; }
     public Guid AssignableConfigurationId { get; set; }

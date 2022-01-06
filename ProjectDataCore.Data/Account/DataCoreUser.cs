@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Account;
 
-public class DataCoreUser : IdentityUser<int>
+public class DataCoreUser : IdentityUser<Guid>
 {
     [Description("Display ID")]
     public int DisplayId { get; set; }

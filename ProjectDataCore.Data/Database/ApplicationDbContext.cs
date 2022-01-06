@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Database;
 
-public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole, int>
+public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole, Guid>
 {
     #region Roster
     public DbSet<RosterTree> RosterTrees { get; internal set; }

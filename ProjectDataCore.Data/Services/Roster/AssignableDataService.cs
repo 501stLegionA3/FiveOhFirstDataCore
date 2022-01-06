@@ -148,8 +148,47 @@ public class AssignableDataService : IAssignableDataService
         return new(true, null);
     }
 
-    public Task<ActionResult> UpdateAssignableValue(Guid user, Guid config, object value)
+    public async Task<ActionResult> UpdateAssignableValue(Guid user, Guid config, object value)
     {
-        throw new NotImplementedException();
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var assignable = await _dbContext.AssignableValues
+            .Where(x => x.ForUserId == user)
+            .Where(x => x.AssignableConfigurationId == config)
+            .Include(x => x.AssignableConfiguration)
+            .FirstOrDefaultAsync();
+
+        if (assignable is null)
+            return new(false, new List<string>() { "No assignable value was found." });
+
+        switch (assignable)
+        {
+            case DateTimeAssignableValue c:
+                c.SetValue = (DateTime)Convert.ChangeType(value, typeof(DateTime));
+                break;
+            case DateOnlyAssignableValue c:
+                c.SetValue = (DateOnly)Convert.ChangeType(value, typeof(DateOnly));
+                break;
+            case TimeOnlyAssignableValue c:
+                c.SetValue = (TimeOnly)Convert.ChangeType(value, typeof(TimeOnly));
+                break;
+
+
+            case IntegerAssignableValue c:
+                c.SetValue = (int)Convert.ChangeType(value, typeof(int));
+                break;
+            case DoubleAssignableValue c:
+                c.SetValue = (double)Convert.ChangeType(value, typeof(double));
+                break;
+
+
+            case StringAssignableValue c:
+                c.SetValue = (string?)Convert.ChangeType(value, typeof(string)) ?? "";
+                break;
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
     }
 }
