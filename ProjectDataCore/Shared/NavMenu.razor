@@ -1,10 +1,16 @@
-﻿<nav class="bg-emerald-800 h-[32px] text-white z-10">
+﻿<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
     <ul class="flex gap-4">
-        <li class="top-link">Your Roster</li>
+        <li class="top-link"><NavLink href="/" @onclick='() => Navigate("/")'>Your Roster</NavLink></li>
         
         <li class="top-link group">
-            <button class="has-dropdown">Modules</button>
+            <button class="has-dropdown">Modules (Ignore)</button>
             <ul class="bg-emerald-800 z-10 rounded-b-md transform scale-0 group-hover:scale-100 absolute left-0 top-full transition duration-150 ease-in-out origin-top w-max min-w-full">
+                <li class="link relative">
+                    <button class="has-dropdown">Admin</button>
+                    <ul class="bg-emerald-800 z-10 rounded-r-md absolute top-0 right-[2px] transition duration-150 ease-in-out origin-top-left w-max min-w-full">
+                        <li class="link rounded-r-md"><NavLink href="/admin/page/edit" @onclick='() => Navigate("/admin/page/edit")'>Page Editor</NavLink></li>
+                    </ul>
+                </li>
                 <li class="link">Roster Clerks</li>
                 <li class="link">Quals</li>
                 <li class="link relative rounded-bl-md">
@@ -18,5 +24,46 @@
                 </li>
             </ul>
         </li>
+        
+        <li class="top-link group">
+            <button class="has-dropdown">Modules</button>
+            <ul class="dropdown">
+                @foreach (LinkGroup m in _modules)
+                {
+                    LinkGroup _module = m;
+                    <li class="drLink relative">
+                        <button class="has-dropdown">@_module.DisplayName</button>
+                        <ul class="bg-emerald-800 z-10 rounded-r-md absolute top-0 right-[2px] transition duration-150 ease-in-out origin-top-left w-max min-w-full">
+                            @foreach (Link l in _module.Links)
+                            {
+                                Link link = l;
+                                <li class="drLink"><NavLink href="@link.HREF" @onclick='() => Navigate(link.HREF)'>@link.Display</NavLink></li>
+                            }
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </li>
+        
+        @foreach (LinkGroup m in _modules)
+        {
+            LinkGroup module = m;
+            @if (_navManager.Uri.Contains(module.HREF))
+            {
+                <li class="top-link group">
+                    <button class="has-dropdown">@module.DisplayName</button>
+                    <ul class="dropdown">
+                        @foreach (Link l in module.Links)
+                        {
+                            Link link = l;
+                            <li class="drLink"><NavLink href="@link.HREF" @onclick='() => Navigate(link.HREF)'>@link.Display</NavLink></li>
+                        }
+                    </ul>
+                </li>
+            }
+        }
+        
+        <span class="grow"></span>
+        <li class="top-link">@_navManager.Uri</li>
     </ul>
 </nav>

@@ -6,9 +6,25 @@
     @apply hover:bg-emerald-700 px-3 py-1;
 }
 
+.dropdown {
+    @apply bg-emerald-800 z-10 rounded-b-md transform scale-0 group-hover:scale-100 absolute left-0 top-full transition duration-150 ease-in-out origin-top w-max min-w-full;
+}
+
+.dropdown > li:last-child {
+    @apply rounded-b-md;
+}
+
 .has-dropdown::after {
     content: "+";
     @apply pl-1;
+}
+
+.drLink:first-child {
+    @apply rounded-tr-md hover:bg-emerald-700 px-3 py-1
+}
+
+.drLink:last-child {
+    @apply rounded-b-md hover:bg-emerald-700 px-3 py-1
 }
 
 li > ul {
