@@ -9,19 +9,13 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Assignable.Configuration;
 
 [AssignableConfiguration("Integer", typeof(IntegerAssignableValue))]
-public class IntegerValueAssignableConfiguration : BaseAssignableConfiguration
+public class IntegerValueAssignableConfiguration : ValueBaseAssignableConfiguration<int>
 {
-    /// <summary>
-    /// The avalible values to select from.
-    /// </summary>
-    public List<int> AvalibleValues { get; set; } = new();
+
 }
 
 [AssignableConfiguration("Decimal", typeof(DoubleAssignableValue))]
-public class DoubleValueAssignableConfiguration : BaseAssignableConfiguration
+public class DoubleValueAssignableConfiguration : ValueBaseAssignableConfiguration<double>
 {
-    /// <summary>
-    /// The avalible values to select from.
-    /// </summary>
-    public List<double> AvalibleValues { get; set; } = new();
+
 }

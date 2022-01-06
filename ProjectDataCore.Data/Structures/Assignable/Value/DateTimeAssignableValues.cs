@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable.Value;
 
-public class DateTimeAssignableValue : BaseAssignableValue
+public class DateTimeAssignableValue : BaseAssignableValue, IAssignableValue<DateTime>
 {
     /// <summary>
     /// The currently set value.
@@ -14,7 +14,7 @@ public class DateTimeAssignableValue : BaseAssignableValue
     public List<DateTime> SetValue { get; set; } = new();
 }
 
-public class DateOnlyAssignableValue : BaseAssignableValue
+public class DateOnlyAssignableValue : BaseAssignableValue, IAssignableValue<DateOnly>
 {
     /// <summary>
     /// The currently set value.
@@ -22,7 +22,7 @@ public class DateOnlyAssignableValue : BaseAssignableValue
     public List<DateOnly> SetValue { get; set; } = new();
 }
 
-public class TimeOnlyAssignableValue : BaseAssignableValue
+public class TimeOnlyAssignableValue : BaseAssignableValue, IAssignableValue<TimeOnly>
 {
     /// <summary>
     /// The currently set value.

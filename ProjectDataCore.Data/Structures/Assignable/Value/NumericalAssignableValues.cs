@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable.Value;
 
-public class IntegerAssignableValue : BaseAssignableValue
+public class IntegerAssignableValue : BaseAssignableValue, IAssignableValue<int>
 {
     /// <summary>
     /// The currently set value.
@@ -14,7 +14,7 @@ public class IntegerAssignableValue : BaseAssignableValue
     public List<int> SetValue { get; set; } = new();
 }
 
-public class DoubleAssignableValue : BaseAssignableValue
+public class DoubleAssignableValue : BaseAssignableValue, IAssignableValue<double>
 {
     /// <summary>
     /// The currently set value.

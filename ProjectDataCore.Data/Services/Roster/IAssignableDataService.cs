@@ -18,6 +18,7 @@ public interface IAssignableDataService
     public Task<ActionResult> AddNewAssignableConfiguration(BaseAssignableConfiguration config);
     public Task<ActionResult> UpdateAssignableConfiguration<T>(Guid configKey, Action<AssignableConfigurationEditModel<T>> update);
     public Task<ActionResult> DeleteAssignableConfiguration(Guid configKey);
+    public Task<ActionResult<List<BaseAssignableConfiguration>>> GetAllAssignableConfigurationsAsync();
     #endregion
 
     #region Value Editing

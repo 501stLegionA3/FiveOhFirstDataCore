@@ -31,6 +31,9 @@ public class AssignableDataService : IAssignableDataService
         if (attr is null)
             return new(false, new List<string>() { "No assignable configuration attribute was found for the provided config." });
 
+        // ... then use the attribute to set the type name ...
+        config.TypeName = attr.Name;
+
         // ... then save the new config to the database ...
         var res = await _dbContext.AddAsync(config);
         await _dbContext.SaveChangesAsync();
@@ -88,6 +91,15 @@ public class AssignableDataService : IAssignableDataService
         return new(true, null);
     }
 
+    public async Task<ActionResult<List<BaseAssignableConfiguration>>> GetAllAssignableConfigurationsAsync()
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var data = await _dbContext.AssignableConfigurations.ToListAsync();
+
+        return new(true, null, data);
+    }
+
     public async Task<ActionResult> UpdateAssignableConfiguration<T>(Guid configKey, Action<AssignableConfigurationEditModel<T>> update)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -118,26 +130,26 @@ public class AssignableDataService : IAssignableDataService
             {
 #pragma warning disable CS8605 // Unboxing a possibly null value.
                 case DateTimeValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (DateTime)Convert.ChangeType(x, typeof(DateTime)));
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (DateTime)Convert.ChangeType(x, typeof(DateTime)));
                     break;
                 case DateOnlyValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (DateOnly)Convert.ChangeType(x, typeof(DateOnly)));
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (DateOnly)Convert.ChangeType(x, typeof(DateOnly)));
                     break;
                 case TimeOnlyValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (TimeOnly)Convert.ChangeType(x, typeof(TimeOnly)));
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (TimeOnly)Convert.ChangeType(x, typeof(TimeOnly)));
                     break;
 
 
                 case IntegerValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (int)Convert.ChangeType(x, typeof(int)));
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (int)Convert.ChangeType(x, typeof(int)));
                     break;
                 case DoubleValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (double)Convert.ChangeType(x, typeof(double)));
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (double)Convert.ChangeType(x, typeof(double)));
                     break;
 
 
                 case StringValueAssignableConfiguration c:
-                    c.AvalibleValues = editModel.AllowedValues.ToList(x => (string?)Convert.ChangeType(x, typeof(string)) ?? "");
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (string?)Convert.ChangeType(x, typeof(string)) ?? "");
                     break;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
             }

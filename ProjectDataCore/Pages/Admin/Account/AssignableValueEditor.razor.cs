@@ -17,6 +17,8 @@ using ProjectDataCore.Components.Roster;
 using ProjectDataCore.Components.Parts;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
+using ProjectDataCore.Data.Structures.Result;
+using ProjectDataCore.Data.Structures.Assignable;
 
 namespace ProjectDataCore.Pages.Admin.Account
 {
@@ -27,21 +29,294 @@ namespace ProjectDataCore.Pages.Admin.Account
         public IAssignableDataService AssignableDataService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-        public List<BaseAssignableValue> CurrentAssignables { get; set; } = new();
+        public List<BaseAssignableConfiguration> CurrentAssignables { get; set; } = new();
 
-        public BaseAssignableValue? ToEdit { get; set; } = null;
-        public int MoveIndex = -1;
+        public BaseAssignableConfiguration? ToEdit { get; set; } = null;
+        public DateTime DateValue { get; set; }
+        public TimeSpan TimeValue { get; set; }
+        public string NewOptionTime 
+        { 
+            get 
+            {
+                return TimeValue.ToString();
+            } 
+            
+            set
+            {
+                if (TimeSpan.TryParse(value, out var t))
+                    TimeValue = t;
+                else
+                    TimeValue = TimeSpan.Zero;
+            }
+        }
+        public int IntValue { get; set; }
+        public double DoubleValue { get; set; }
+        public string StringValue { get; set; } = "";
+        public List<string> ItemList { get; set; } = new();
+        public int MoveIndex { get; set; } = -1;
 
         public string NewAssignable { get; set; } = "";
-        public Type? NewConfigurationType { get; set; } = null;
+        public int NewConfigurationType { get; set; } = -1;
 
         List<(Type, string)> ConfigurationTypes { get; set; } = new();
+
+        public bool ConfirmDelete = true;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await base.OnAfterRenderAsync(firstRender);
+
+            if (firstRender)
+                await RefreshAssignables();
+        }
 
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
 
-            
+            var asbly = Assembly.GetAssembly(typeof(BaseAssignableConfiguration));
+
+            if (asbly is not null)
+            {
+                var types = asbly.GetTypes()
+                    .Where(x => x.GetCustomAttribute<AssignableConfigurationAttribute>() is not null);
+
+                foreach(var t in types)
+                {
+                    var dets = t.GetCustomAttribute<AssignableConfigurationAttribute>();
+
+                    ConfigurationTypes.Add((t, dets!.Name));
+                }
+            }
+        }
+
+        private async Task RefreshAssignables()
+        {
+            var res = await AssignableDataService.GetAllAssignableConfigurationsAsync();
+
+            if(res.GetResult(out var data, out _))
+            {
+                CurrentAssignables = data;
+            }
+
+            ConfirmDelete = true;
+
+            StateHasChanged();
+        }
+
+        private async Task OnCreateAssignableAsync()
+		{
+            if (NewConfigurationType > -1)
+            {
+                var config = Activator.CreateInstance(ConfigurationTypes[NewConfigurationType].Item1) as BaseAssignableConfiguration;
+
+                if (config is not null)
+                {
+                    config.PropertyName = NewAssignable;
+
+                    var res = await AssignableDataService.AddNewAssignableConfiguration(config);
+
+                    if(!res.GetResult(out var err))
+                    {
+                        // TODO: handle errors.
+                    }
+
+                    await RefreshAssignables();
+                }
+            }
+		}
+
+        private void StartEdit(BaseAssignableConfiguration config)
+        {
+            ToEdit = config;
+            ItemList.Clear();
+            switch (ToEdit)
+            {
+                case IAssignableConfiguration<DateTime> c:
+                    foreach(var item in c.AllowedValues)
+                        ItemList.Add(item.ToShortDateString() + " " + item.ToShortTimeString());
+                    break;
+                case IAssignableConfiguration<DateOnly> c:
+                    foreach (var item in c.AllowedValues)
+                        ItemList.Add(item.ToShortDateString());
+                    break;
+                case IAssignableConfiguration<TimeOnly> c:
+                    foreach (var item in c.AllowedValues)
+                        ItemList.Add(item.ToString("hh:mm:ss"));
+                    break;
+
+                case IAssignableConfiguration<int> c:
+                    foreach (var item in c.AllowedValues)
+                        ItemList.Add(item.ToString());
+                    break;
+                case IAssignableConfiguration<double> c:
+                    foreach (var item in c.AllowedValues)
+                        ItemList.Add(item.ToString());
+                    break;
+
+                case IAssignableConfiguration<string> c:
+                    foreach (var item in c.AllowedValues)
+                        ItemList.Add(item);
+                    break;
+            }
+        }
+
+        private async Task SaveEditAsync()
+		{
+            ActionResult? res = null;
+            switch (ToEdit)
+            {
+                case ValueBaseAssignableConfiguration<DateTime> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<DateTime>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+                case ValueBaseAssignableConfiguration<DateOnly> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<DateOnly>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+                case ValueBaseAssignableConfiguration<TimeOnly> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<TimeOnly>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+
+                case ValueBaseAssignableConfiguration<int> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<int>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+                case ValueBaseAssignableConfiguration<double> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<double>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+
+                case ValueBaseAssignableConfiguration<string> c:
+                    res = await AssignableDataService.UpdateAssignableConfiguration<string>(ToEdit.Key, x =>
+                    {
+                        x.AllowedValues = c.AllowedValues;
+                        RunUpdate(c, ToEdit);
+                    });
+                    break;
+            }
+
+            if(res is not null)
+            {
+                if(!res.GetResult(out var err))
+                {
+                    // TODO handle errors
+                }
+
+                await DiscardEditAsync();
+            }
+		}
+
+        private void RunUpdate<T>(ValueBaseAssignableConfiguration<T> cfg, BaseAssignableConfiguration update)
+        {
+            cfg.AllowedInput = update.AllowedInput;
+            cfg.AllowMultiple = update.AllowMultiple;
+            cfg.PropertyName = update.PropertyName;
+            cfg.LastEdit = DateTime.UtcNow;
+        }
+
+        private async Task DiscardEditAsync()
+		{
+            ToEdit = null;
+            await RefreshAssignables();
+		}
+
+        private void AddNewOption()
+        {
+            switch(ToEdit)
+            {
+                case IAssignableConfiguration<DateTime> c:
+                    var dateTime = DateValue;
+                    dateTime += TimeValue;
+                    c.AddElement(dateTime);
+                    ItemList.Add(dateTime.ToShortDateString() + " " + dateTime.ToShortTimeString());
+                    break;
+                case IAssignableConfiguration<DateOnly> c:
+                    c.AddElement(DateOnly.FromDateTime(DateValue));
+                    ItemList.Add(DateValue.ToShortDateString());
+                    break;
+                case IAssignableConfiguration<TimeOnly> c:
+                    c.AddElement(TimeOnly.FromTimeSpan(TimeValue));
+                    ItemList.Add(TimeValue.ToString("hh:mm:ss"));
+                    break;
+
+                case IAssignableConfiguration<int> c:
+                    c.AddElement(IntValue);
+                    ItemList.Add(IntValue.ToString());
+                    break;
+                case IAssignableConfiguration<double> c:
+                    c.AddElement(DoubleValue);
+                    ItemList.Add(DoubleValue.ToString());
+                    break;
+
+                case IAssignableConfiguration<string> c:
+                    c.AddElement(StringValue);
+                    ItemList.Add(StringValue);
+                    break;
+            }
+
+            StateHasChanged();
+        }
+
+        private void OnMoveItem(int newPos)
+        {
+            if (ToEdit is IAssignableConfiguration config)
+            {
+                config.MoveElement(MoveIndex, newPos);
+
+                var item = ItemList[MoveIndex];
+                ItemList.RemoveAt(MoveIndex);
+                ItemList.Insert(newPos, item);
+
+                MoveIndex = -1;
+                StateHasChanged();
+            }
+        }
+
+        private void OnDeleteItem(int index)
+        {
+            if(ToEdit is IAssignableConfiguration config)
+            {
+                config.RemoveElement(index);
+                ItemList.RemoveAt(index);
+
+                StateHasChanged();
+            }
+        }
+
+        private async Task DeleteAsync()
+        {
+            if (ConfirmDelete)
+                ConfirmDelete = false;
+            else if (ToEdit is not null)
+            {
+                var res = await AssignableDataService.DeleteAssignableConfiguration(ToEdit.Key);
+
+                if(!res.GetResult(out var err))
+                {
+                    // TOOD handle errors
+                }
+                else
+                {
+                    await DiscardEditAsync();
+                }
+            }
         }
     }
 }

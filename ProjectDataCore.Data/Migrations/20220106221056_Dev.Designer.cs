@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220106034457_Dev")]
+    [Migration("20220106221056_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -256,6 +256,10 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TypeName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -511,7 +515,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<DateOnly>>("AvalibleValues")
+                    b.Property<List<DateOnly>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("date[]");
 
@@ -522,10 +526,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<DateTime>>("AvalibleValues")
+                    b.Property<List<DateTime>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("timestamp with time zone[]")
-                        .HasColumnName("DateTimeValueAssignableConfiguration_AvalibleValues");
+                        .HasColumnName("DateTimeValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("DateTimeValueAssignableConfiguration");
                 });
@@ -534,10 +538,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<double>>("AvalibleValues")
+                    b.Property<List<double>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("double precision[]")
-                        .HasColumnName("DoubleValueAssignableConfiguration_AvalibleValues");
+                        .HasColumnName("DoubleValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("DoubleValueAssignableConfiguration");
                 });
@@ -546,10 +550,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<int>>("AvalibleValues")
+                    b.Property<List<int>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("integer[]")
-                        .HasColumnName("IntegerValueAssignableConfiguration_AvalibleValues");
+                        .HasColumnName("IntegerValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("IntegerValueAssignableConfiguration");
                 });
@@ -558,10 +562,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<string>>("AvalibleValues")
+                    b.Property<List<string>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("text[]")
-                        .HasColumnName("StringValueAssignableConfiguration_AvalibleValues");
+                        .HasColumnName("StringValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("StringValueAssignableConfiguration");
                 });
@@ -570,10 +574,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<TimeOnly>>("AvalibleValues")
+                    b.Property<List<TimeOnly>>("AllowedValues")
                         .IsRequired()
                         .HasColumnType("time without time zone[]")
-                        .HasColumnName("TimeOnlyValueAssignableConfiguration_AvalibleValues");
+                        .HasColumnName("TimeOnlyValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("TimeOnlyValueAssignableConfiguration");
                 });
@@ -582,8 +586,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<DateOnly>("SetValue")
-                        .HasColumnType("date");
+                    b.Property<List<DateOnly>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("date[]");
 
                     b.HasDiscriminator().HasValue("DateOnlyAssignableValue");
                 });
@@ -592,8 +597,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<DateTime>("SetValue")
-                        .HasColumnType("timestamp with time zone")
+                    b.Property<List<DateTime>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("timestamp with time zone[]")
                         .HasColumnName("DateTimeAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("DateTimeAssignableValue");
@@ -603,8 +609,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<double>("SetValue")
-                        .HasColumnType("double precision")
+                    b.Property<List<double>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("double precision[]")
                         .HasColumnName("DoubleAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("DoubleAssignableValue");
@@ -614,8 +621,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<int>("SetValue")
-                        .HasColumnType("integer")
+                    b.Property<List<int>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
                         .HasColumnName("IntegerAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("IntegerAssignableValue");
@@ -625,9 +633,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<string>("SetValue")
+                    b.Property<List<string>>("SetValue")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasColumnType("text[]")
                         .HasColumnName("StringAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("StringAssignableValue");
@@ -637,8 +645,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
-                    b.Property<TimeOnly>("SetValue")
-                        .HasColumnType("time without time zone")
+                    b.Property<List<TimeOnly>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("time without time zone[]")
                         .HasColumnName("TimeOnlyAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("TimeOnlyAssignableValue");

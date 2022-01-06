@@ -31,6 +31,11 @@ public class BaseAssignableConfiguration : DataObject<Guid>
     /// </summary>
     public string PropertyName { get; set; }
     /// <summary>
+    /// The name of the type this configuration support. This value is assigned at creation
+    /// and should not be changed.
+    /// </summary>
+    public string TypeName { get; set; }
+    /// <summary>
     /// If this property allows for multiple of the values to be selected.
     /// </summary>
     public bool AllowMultiple { get; set; } = false;

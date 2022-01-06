@@ -9,10 +9,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Assignable.Configuration;
 
 [AssignableConfiguration("String", typeof(StringAssignableValue))]
-public class StringValueAssignableConfiguration : BaseAssignableConfiguration
+public class StringValueAssignableConfiguration : ValueBaseAssignableConfiguration<string>
 {
-    /// <summary>
-    /// The avalible values to select from.
-    /// </summary>
-    public List<string> AvalibleValues { get; set; } = new();
+
 }

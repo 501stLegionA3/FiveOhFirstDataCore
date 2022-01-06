@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable.Value;
 
-public class StringAssignableValue : BaseAssignableValue
+public class StringAssignableValue : BaseAssignableValue, IAssignableValue<string>
 {
     /// <summary>
     /// The currently set value.
