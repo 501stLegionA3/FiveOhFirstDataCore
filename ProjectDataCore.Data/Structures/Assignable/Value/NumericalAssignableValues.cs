@@ -11,7 +11,7 @@ public class IntegerAssignableValue : BaseAssignableValue
     /// <summary>
     /// The currently set value.
     /// </summary>
-    public int SetValue { get; set; } = 0;
+    public List<int> SetValue { get; set; } = new();
 }
 
 public class DoubleAssignableValue : BaseAssignableValue
@@ -19,5 +19,5 @@ public class DoubleAssignableValue : BaseAssignableValue
     /// <summary>
     /// The currently set value.
     /// </summary>
-    public double SetValue { get; set; } = 0.0;
+    public List<double> SetValue { get; set; } = new();
 }

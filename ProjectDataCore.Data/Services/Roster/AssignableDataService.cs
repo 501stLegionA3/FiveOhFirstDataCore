@@ -148,7 +148,7 @@ public class AssignableDataService : IAssignableDataService
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdateAssignableValue(Guid user, Guid config, object value)
+    public async Task<ActionResult> UpdateAssignableValue<T>(Guid user, Guid config, List<T> value)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -163,28 +163,48 @@ public class AssignableDataService : IAssignableDataService
 
         switch (assignable)
         {
+#pragma warning disable CS8605 // Unboxing a possibly null value.
             case DateTimeAssignableValue c:
-                c.SetValue = (DateTime)Convert.ChangeType(value, typeof(DateTime));
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (DateTime)Convert.ChangeType(x, typeof(DateTime)));
                 break;
             case DateOnlyAssignableValue c:
-                c.SetValue = (DateOnly)Convert.ChangeType(value, typeof(DateOnly));
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (DateOnly)Convert.ChangeType(x, typeof(DateOnly)));
                 break;
             case TimeOnlyAssignableValue c:
-                c.SetValue = (TimeOnly)Convert.ChangeType(value, typeof(TimeOnly));
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (TimeOnly)Convert.ChangeType(x, typeof(TimeOnly)));
                 break;
 
 
             case IntegerAssignableValue c:
-                c.SetValue = (int)Convert.ChangeType(value, typeof(int));
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (int)Convert.ChangeType(x, typeof(int)));
                 break;
             case DoubleAssignableValue c:
-                c.SetValue = (double)Convert.ChangeType(value, typeof(double));
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (double)Convert.ChangeType(x, typeof(double)));
                 break;
 
 
             case StringAssignableValue c:
-                c.SetValue = (string?)Convert.ChangeType(value, typeof(string)) ?? "";
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() { "Assignable value type missmatch." });
+
+                c.SetValue = value.ToList(x => (string?)Convert.ChangeType(x, typeof(string)) ?? "");
                 break;
+#pragma warning restore CS8605 // Unboxing a possibly null value.
         }
 
         await _dbContext.SaveChangesAsync();

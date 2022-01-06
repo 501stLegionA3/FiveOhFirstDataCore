@@ -11,7 +11,7 @@ public class DateTimeAssignableValue : BaseAssignableValue
     /// <summary>
     /// The currently set value.
     /// </summary>
-    public DateTime SetValue { get; set; } = DateTime.UtcNow;
+    public List<DateTime> SetValue { get; set; } = new();
 }
 
 public class DateOnlyAssignableValue : BaseAssignableValue
@@ -19,7 +19,7 @@ public class DateOnlyAssignableValue : BaseAssignableValue
     /// <summary>
     /// The currently set value.
     /// </summary>
-    public DateOnly SetValue { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
+    public List<DateOnly> SetValue { get; set; } = new();
 }
 
 public class TimeOnlyAssignableValue : BaseAssignableValue
@@ -27,5 +27,5 @@ public class TimeOnlyAssignableValue : BaseAssignableValue
     /// <summary>
     /// The currently set value.
     /// </summary>
-    public TimeOnly SetValue { get; set; } = TimeOnly.FromDateTime(DateTime.UtcNow);
+    public List<TimeOnly> SetValue { get; set; } = new();
 }

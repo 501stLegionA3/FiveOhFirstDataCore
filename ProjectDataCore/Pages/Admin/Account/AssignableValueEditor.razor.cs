@@ -15,6 +15,8 @@ using ProjectDataCore;
 using ProjectDataCore.Shared;
 using ProjectDataCore.Components.Roster;
 using ProjectDataCore.Components.Parts;
+using ProjectDataCore.Data.Structures.Assignable.Value;
+using ProjectDataCore.Data.Structures.Assignable.Configuration;
 
 namespace ProjectDataCore.Pages.Admin.Account
 {
@@ -25,6 +27,21 @@ namespace ProjectDataCore.Pages.Admin.Account
         public IAssignableDataService AssignableDataService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+        public List<BaseAssignableValue> CurrentAssignables { get; set; } = new();
 
+        public BaseAssignableValue? ToEdit { get; set; } = null;
+        public int MoveIndex = -1;
+
+        public string NewAssignable { get; set; } = "";
+        public Type? NewConfigurationType { get; set; } = null;
+
+        List<(Type, string)> ConfigurationTypes { get; set; } = new();
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
+            
+        }
     }
 }

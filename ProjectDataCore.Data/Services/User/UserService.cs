@@ -21,11 +21,11 @@ public class UserService : IUserService
 
 	public async Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims)
 	{
-		_ = int.TryParse(_userManager.GetUserId(claims), out int id);
+		_ = Guid.TryParse(_userManager.GetUserId(claims), out Guid id);
 		return await GetUserFromIdAsync(id);
 	}
 
-	public async Task<DataCoreUser?> GetUserFromIdAsync(int id)
+	public async Task<DataCoreUser?> GetUserFromIdAsync(Guid id)
 	{
 		await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 

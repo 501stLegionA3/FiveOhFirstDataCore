@@ -21,6 +21,6 @@ public interface IAssignableDataService
     #endregion
 
     #region Value Editing
-    public Task<ActionResult> UpdateAssignableValue(Guid user, Guid config, object value);
+    public Task<ActionResult> UpdateAssignableValue<T>(Guid user, Guid config, List<T> value);
     #endregion
 }

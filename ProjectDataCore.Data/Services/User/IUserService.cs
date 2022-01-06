@@ -12,5 +12,5 @@ namespace ProjectDataCore.Data.Services.User;
 public interface IUserService
 {
     public Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims);
-    public Task<DataCoreUser?> GetUserFromIdAsync(int id);
+    public Task<DataCoreUser?> GetUserFromIdAsync(Guid id);
 }

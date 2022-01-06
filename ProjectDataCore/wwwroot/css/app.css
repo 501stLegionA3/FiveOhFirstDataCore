@@ -30,6 +30,18 @@
     @apply w-full border border-blue-700 focus:border-blue-900 focus:border-2;
 }
 
+.input-group {
+    @apply relative mt-5;
+}
+
+.input-label {
+    @apply absolute left-0 -top-7 text-slate-800 text-sm peer-placeholder-shown:text-base peer-placeholder-shown:text-slate-600 peer-placeholder-shown:top-1.5 peer-placeholder-shown:left-2 peer-focus:left-0 peer-focus:-top-7 transition-all peer-focus:text-slate-800;
+}
+
+.input-control {
+    @apply w-full placeholder-transparent p-1 px-2 border border-slate-600 rounded-lg;
+}
+
 /* Resize Tool */
 
 .gutter {

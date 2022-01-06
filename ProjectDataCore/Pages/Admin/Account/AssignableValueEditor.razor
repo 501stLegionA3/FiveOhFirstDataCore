@@ -1,2 +1,87 @@
 ﻿@page "/admin/account/avedit"
 
+<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
+	<div>
+		<div class="grid grid-cols-1 grid-flow-row gap-2">
+			<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Assignable Value List</div>
+			<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+				<p class="flex-1">User ID</p>
+				<code class="flex-1">integer</code>
+				<button class="flex-auto bg-pink-400 rounded-lg">Edit</button>
+			</div>
+		</div>
+	</div>
+	<div class="col-span-2">
+		<div class="border-l-2 border-slate-400 pl-4">
+			<div class="grid grid-cols-1 grid-flow-row gap-2">
+				<div class="shadow-lg border-2 border-slate-400 rounded-lg">
+					<form>
+						<div class="grid grid-cols-1 gap-2 p-4">
+							<div class="text-lg font-bold text-center">Assignable Value Creator</div>
+							<div class="input-group">
+								<input id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+								<label for="name" class="input-label">Assignable Value Name</label>
+							</div>
+							<div class="input-group">
+								<select id="add-name" type="" class="input-control peer" placeholder="Assignable Value Type">
+									<option value="">Type One</option>
+								</select>
+								<label for="add-name" class="input-label">Assignable Value Type</label>
+							</div>
+							<button class="bg-pink-400 p-1 px-2 rounded-lg">Create</button>
+						</div>
+					</form>
+				</div>
+				<div class="border-2 border-slate-400 pt-4 p-2 rounded-lg shadow-lg">
+					<form>
+						<div class="grid grid-cols-1 grid-flow-row gap-2">
+							<div class="grid grid-cols-2 gap-4">
+								<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1">Save</button>
+								<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1">Discard</button>
+							</div>
+							<div class="grid grid-cols-2 gap-3">
+								<div class="input-group">
+									<input id="edit-name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+									<label for="edit-name" class="input-label">Assignable Value Name</label>
+								</div>
+								<div class="input-group">
+									<select id="allowed-inputs" type="" class="input-control peer" placeholder="Allowed Inputs">
+										<option value="">Input Option One</option>
+									</select>
+									<label for="allowed-inputs" class="input-label">Allowed Inputs</label>
+								</div>
+							</div>
+							<div class="justify-self-center">
+								<label class="inline-flex items-center">
+									<input type="checkbox" />
+									<span class="ml-2">Allow Multiple Values</span>
+								</label>
+							</div>
+							<div class="input-group">
+								<input id="option-name" type="text" class="input-control peer" placeholder="Option Name" />
+								<label for="option-name" class="input-label">Option Name</label>
+							</div>
+							<button class="bg-pink-400 p-1 px-2 rounded-lg">Add Option</button>
+							<div>
+								<div class="grid grid-cols-1 grid-flow-row gap-2">
+									<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Assignable Value List</div>
+									<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+										<button class="flex-0 px-2 border-green-400 hover:bg-green-400 border p-1 rounded-lg">Move</button>
+										<button class="px-2 rounded-lg p-1 border border-green-400 hover:bg-green-400">/\ Place Above /\</button>
+										<p class="flex-grow text-center p-1">Option Name</p>
+										<button class="px-2 rounded-lg p-1 border border-green-400 hover:bg-green-400">\/ Place Below \/</button>
+										<button class="flex-0 px-2 border-red-600 hover:bg-red-600 border p-1 rounded-lg">Delete</button>
+									</div>
+								</div>
+							</div>
+							<div class="grid grid-cols-2 gap-4">
+								<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1">Save</button>
+								<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1">Discard</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

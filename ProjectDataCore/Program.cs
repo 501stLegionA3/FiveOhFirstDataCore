@@ -61,7 +61,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IPageEditService, PageEditService>()
     .AddScoped<IScopedUserService, ScopedUserService>()
-    .AddScoped<IUserService, UserService>();
+    .AddScoped<IUserService, UserService>()
+    .AddScoped<IAssignableDataService, AssignableDataService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>
