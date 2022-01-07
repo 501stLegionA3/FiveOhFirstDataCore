@@ -34,6 +34,15 @@ public class AssignableDataService : IAssignableDataService
         // ... then use the attribute to set the type name ...
         config.TypeName = attr.Name;
 
+        config.NormalizedPropertyName = config.PropertyName.Normalize();
+
+        var curCount = await _dbContext.AssignableConfigurations
+            .Where(x => x.NormalizedPropertyName == config.NormalizedPropertyName)
+            .CountAsync();
+
+        if (curCount > 0)
+            return new(false, new List<string>() { "A property of this name alredy exists." });
+
         // ... then save the new config to the database ...
         var res = await _dbContext.AddAsync(config);
         await _dbContext.SaveChangesAsync();

@@ -31,6 +31,10 @@ public class BaseAssignableConfiguration : DataObject<Guid>
     /// </summary>
     public string PropertyName { get; set; }
     /// <summary>
+    /// A normalized version of the property name.
+    /// </summary>
+    public string NormalizedPropertyName { get; set; }
+    /// <summary>
     /// The name of the type this configuration support. This value is assigned at creation
     /// and should not be changed.
     /// </summary>
