@@ -152,6 +152,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         baseAssignableValues.HasOne(e => e.ForUser)
             .WithMany(p => p.AssignableValues)
             .HasForeignKey(e => e.ForUserId);
+        baseAssignableValues.Navigation(e => e.AssignableConfiguration)
+            .AutoInclude();
         #endregion
 
         #region User
@@ -159,6 +161,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         dataCoreUser.HasMany(e => e.RosterSlots)
             .WithOne(e => e.OccupiedBy)
             .HasForeignKey(e => e.OccupiedById);
+        dataCoreUser.Navigation(e => e.AssignableValues)
+            .AutoInclude();
             
         var dataCoreUserProperty = builder.Entity<DataCoreUserProperty>();
         dataCoreUserProperty.HasKey(e => e.Key);

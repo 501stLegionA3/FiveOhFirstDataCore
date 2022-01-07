@@ -18,10 +18,10 @@ public abstract class ParameterBase : CustomComponentBase
 
     #region Parameter Scope
     public string DisplayValue { get; set; }
-    protected abstract Task LoadDisplayValueAsync();
+    protected abstract void LoadDisplayValue();
 
     protected abstract void LoadStaticProperty();
 
-    protected abstract Task LoadDynamicPropertyAsync();
+    protected abstract void LoadDynamicProperty();
     #endregion
 }

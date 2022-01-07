@@ -22,10 +22,12 @@ namespace ProjectDataCore.Areas.Identity.Pages.Account
     {
         private readonly DataCoreSignInManager _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly IAssignableDataService _assignableDataService;
 
-        public LoginModel(DataCoreSignInManager signInManager, ILogger<LoginModel> logger)
+        public LoginModel(DataCoreSignInManager signInManager, IAssignableDataService assignableDataService, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
+            _assignableDataService = assignableDataService;
             _logger = logger;
         }
 
@@ -112,6 +114,7 @@ namespace ProjectDataCore.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Services.Roster;
+
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,6 +10,11 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Framework.Selectors;
 public partial class UserPropertySelector
 {
+#pragma warning disable CS8618 // Injects can not be null.
+    [Inject]
+    public IAssignableDataService AssignableDataService { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     [Parameter]
     public Action<string> SetPropertyName { get; set; }
 
@@ -66,7 +73,17 @@ public partial class UserPropertySelector
 	{
         Properties.Clear();
 
+        var propList = await AssignableDataService.GetAllAssignableConfigurationsAsync();
 
+        if(propList.GetResult(out var data, out var err))
+        {
+            foreach (var prop in data)
+                Properties.Add((prop.NormalizedPropertyName, prop.PropertyName));
+        }
+        else
+        {
+            // TODO handle errors
+        }
 	}
 
 	protected void OnNameChanged(string e)

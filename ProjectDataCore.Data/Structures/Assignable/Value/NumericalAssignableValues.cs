@@ -6,18 +6,12 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Assignable.Value;
 
-public class IntegerAssignableValue : BaseAssignableValue, IAssignableValue<int>
+public class IntegerAssignableValue : ValueBaseAssignableValue<int>
 {
-    /// <summary>
-    /// The currently set value.
-    /// </summary>
-    public List<int> SetValue { get; set; } = new();
+
 }
 
-public class DoubleAssignableValue : BaseAssignableValue, IAssignableValue<double>
+public class DoubleAssignableValue : ValueBaseAssignableValue<double>
 {
-    /// <summary>
-    /// The currently set value.
-    /// </summary>
-    public List<double> SetValue { get; set; } = new();
+
 }

@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220106221056_Dev")]
+    [Migration("20220107200810_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -254,6 +254,10 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NormalizedPropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("PropertyName")
                         .IsRequired()

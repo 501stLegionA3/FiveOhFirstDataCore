@@ -51,8 +51,30 @@ public class DataCoreUser : IdentityUser<Guid>
 
     public string GetAssignableProperty(string property, string? format = null)
     {
-        // TODO
+        var data = AssignableValues
+            .Where(x => x.AssignableConfiguration.NormalizedPropertyName == property)
+            .FirstOrDefault();
 
-        throw new NotImplementedException();
+        if (data is null)
+            return string.Empty;
+
+        if (data.AssignableConfiguration.AllowMultiple)
+        {
+            var vals = data.GetValues();
+            List<string> parts = new();
+            foreach (var v in vals)
+                if (v is not null)
+                    parts.Add(string.Format(format ?? "{0}", v));
+
+            return string.Join(", ", parts);
+        }
+        else
+        {
+            var val = data.GetValue();
+            if(val is not null)
+                return string.Format(format ?? "{0}", val);
+
+            return "";
+        }
     }
 }

@@ -61,6 +61,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     PropertyName = table.Column<string>(type: "text", nullable: false),
+                    NormalizedPropertyName = table.Column<string>(type: "text", nullable: false),
                     TypeName = table.Column<string>(type: "text", nullable: false),
                     AllowMultiple = table.Column<bool>(type: "boolean", nullable: false),
                     AllowedInput = table.Column<int>(type: "integer", nullable: false),

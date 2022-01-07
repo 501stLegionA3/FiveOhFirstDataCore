@@ -8,11 +8,19 @@ namespace ProjectDataCore.Data.Structures.Util;
 
 public static class ListExtensions
 {
-    public static List<Out> ToList<T, Out>(this List<T> list, Func<T, Out> converter)
+    public static List<TOut> ToList<T, TOut>(this List<T> list, Func<T, TOut> converter)
     {
-        var res = new List<Out>();
+        var res = new List<TOut>();
         foreach (var item in list)
             res.Add(converter.Invoke(item));
+        return res;
+    }
+
+    public static TOut[] ToArray<T, TOut> (this List<T> list, Func<T, TOut> converter)
+    {
+        var res = (TOut[])Array.CreateInstance(typeof(TOut), list.Count);
+        for(int i = 0; i < res.Length; i++)
+            res[i] = converter.Invoke(list[i]);
         return res;
     }
 }

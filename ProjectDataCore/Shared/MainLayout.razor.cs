@@ -7,6 +7,8 @@ public partial class MainLayout : LayoutComponentBase
 #pragma warning disable CS8618 // Injections are never null.
     [Inject]
     public IUserService UserService { get; set; }
+    [Inject]
+    public IAssignableDataService AssignableDataService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter]
@@ -23,8 +25,23 @@ public partial class MainLayout : LayoutComponentBase
         if (AuthStateTask is not null)
         {
             var user = (await AuthStateTask).User;
+            var newUser = await UserService.GetUserFromClaimsPrinciaplAsync(user);
+            var changed = ActiveUser?.Id != newUser?.Id;
 
-            ActiveUser = await UserService.GetUserFromClaimsPrinciaplAsync(user);
+            ActiveUser = newUser;
+
+            if (ActiveUser is not null && changed)
+            {
+                _ = Task.Run(async () =>
+                {
+                    var res = await AssignableDataService.EnsureAssignableValuesAsync(ActiveUser);
+
+                    if (!res.GetResult(out var err))
+                    {
+                        // TODO handle errors.
+                    }
+                });
+            }
         }
     }
 }

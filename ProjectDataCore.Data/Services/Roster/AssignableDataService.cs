@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Assignable;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Assignable;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Model.Assignable;
@@ -229,6 +230,58 @@ public class AssignableDataService : IAssignableDataService
         }
 
         await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
+    }
+
+    public async Task<ActionResult> EnsureAssignableValuesAsync(DataCoreUser user)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        if (user.Id == default)
+            return new(false, new List<string>() { "User must be a valid database object." });
+
+        // Reload the assignable values.
+        await _dbContext.Attach(user).Collection(e => e.AssignableValues).LoadAsync();
+
+        var keyMap = new HashSet<Guid>();
+        foreach (var i in user.AssignableValues)
+            keyMap.Add(i.AssignableConfigurationId);
+
+        // Validate that there are no values missing ...
+        var missing = await _dbContext.AssignableConfigurations
+            .Where(x => !keyMap.Contains(x.Key))
+            .ToListAsync();
+
+        // ... then for each value that is missing ...
+        foreach(var val in missing)
+        {
+            // ... get the attribute information ...
+            var attr = val.GetType().GetCustomAttributes<AssignableConfigurationAttribute>()
+                .FirstOrDefault();
+
+            if (attr is null)
+                continue;
+
+            // ... create the assignable value ...
+            if (Activator.CreateInstance(attr.Configures) is BaseAssignableValue assignable)
+            {
+                // ... set the links ...
+                assignable.AssignableConfigurationId = val.Key;
+                assignable.ForUserId = user.Id;
+                // ... then add it to the list of objects ...
+                await _dbContext.AddAsync(assignable);
+            }
+            else
+            {
+                // ... if an error occours, immedietly exit ...
+                return new(false, new List<string>() { "Unable to create an assignable value from the provided configuration." });
+            }
+        }
+
+        await _dbContext.SaveChangesAsync();
+
+        await _dbContext.Entry(user).ReloadAsync();
 
         return new(true, null);
     }

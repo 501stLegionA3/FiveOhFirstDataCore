@@ -16,4 +16,14 @@ public class BaseAssignableValue : DataObject<Guid>
 
     public BaseAssignableConfiguration AssignableConfiguration { get; set; }
     public Guid AssignableConfigurationId { get; set; }
+
+    public virtual object? GetValue()
+    {
+        return null;
+    }
+
+    public virtual object?[] GetValues()
+    {
+        return Array.Empty<object>();
+    }
 }

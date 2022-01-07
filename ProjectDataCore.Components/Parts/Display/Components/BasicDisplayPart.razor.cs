@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Display.Components;
 
 [DisplayComponent(Name = "Single Value")]
-public partial class SingleParameterDisplayPart : DisplayBase
+public partial class BasicDisplayPart : DisplayBase
 {
 	protected Type[] AllowedStaticTypes { get; set; } = new Type[]
 	{

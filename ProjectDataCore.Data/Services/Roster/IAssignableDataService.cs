@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Model.Assignable;
 
 using System;
@@ -23,5 +24,6 @@ public interface IAssignableDataService
 
     #region Value Editing
     public Task<ActionResult> UpdateAssignableValue<T>(Guid user, Guid config, List<T> value);
+    public Task<ActionResult> EnsureAssignableValuesAsync(DataCoreUser user);
     #endregion
 }

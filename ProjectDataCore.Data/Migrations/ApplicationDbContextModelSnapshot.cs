@@ -253,6 +253,10 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("NormalizedPropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PropertyName")
                         .IsRequired()
                         .HasColumnType("text");

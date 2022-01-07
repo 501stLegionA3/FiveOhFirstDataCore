@@ -34,7 +34,7 @@ public class DisplayBase : ParameterBase
         if (ComponentData is not null)
         {
             LoadScopedUser(ComponentData.UserScopeId);
-            await LoadDisplayValueAsync();
+            LoadDisplayValue();
         }
     }
 
@@ -84,7 +84,7 @@ public class DisplayBase : ParameterBase
     }
 
     #region Parameter Scope
-    protected override async Task LoadDisplayValueAsync()
+    protected override void LoadDisplayValue()
     {
         if (ComponentData is not null)
         {
@@ -94,7 +94,7 @@ public class DisplayBase : ParameterBase
             }
             else
             {
-                await LoadDynamicPropertyAsync();
+                LoadDynamicProperty();
             }
         }
     }
@@ -108,7 +108,7 @@ public class DisplayBase : ParameterBase
         }
     }
 
-    protected override async Task LoadDynamicPropertyAsync()
+    protected override void LoadDynamicProperty()
     {
         if (ScopedUser is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
