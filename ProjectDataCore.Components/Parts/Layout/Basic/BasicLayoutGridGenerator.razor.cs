@@ -67,12 +67,4 @@ public partial class BasicLayoutGridGenerator : LayoutBase
             }
         }
     }
-
-    private async Task RemoveCurrentLayoutAsync()
-    {
-        var res = await PageEditService.DeleteLayoutComponentAsync(ComponentSettings.Key);
-
-        if (CallRefreshRequest is not null)
-            await CallRefreshRequest.Invoke();
-    }
 }

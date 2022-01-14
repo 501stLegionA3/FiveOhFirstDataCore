@@ -1,3 +1,16 @@
 ﻿@inherits EditBase
 
-<h4>SingleParameterEditPart</h4>
+@if(!Editing)
+{
+	<DisplayBox>
+		<Contnet>
+			<p class="font-bold p-2">@ComponentData!.Label</p>
+			<hr />
+			
+		</Contnet>
+	</DisplayBox>
+}
+else
+{
+
+}

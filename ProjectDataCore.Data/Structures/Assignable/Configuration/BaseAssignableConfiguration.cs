@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,14 +16,17 @@ public class BaseAssignableConfiguration : DataObject<Guid>
         /// <summary>
         /// Only allow preset values to be selected.
         /// </summary>
+        [Description("Static Only")]
         StaticOnly = -1,
         /// <summary>
         /// Allow both preset values and custom input.
         /// </summary>
+        [Description("Both")]
         Both = 0,
         /// <summary>
         /// Only allow custom input.
         /// </summary>
+        [Description("Freehand Only")]
         FreehandOnly = 1,
     }
 

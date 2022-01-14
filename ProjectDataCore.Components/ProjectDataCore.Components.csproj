@@ -10,6 +10,14 @@
     <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\bundle\$(ProjectName).styles.css -r" />
     <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\projectbundle\$(ProjectName).bundle.scp.css -r" />
   </Target>
+
+  <ItemGroup>
+    <None Remove="Parts\Edit\NOTES.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Parts\Edit\NOTES.md" />
+  </ItemGroup>
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />

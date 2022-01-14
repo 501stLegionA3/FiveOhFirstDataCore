@@ -23,6 +23,7 @@
     </div>
     @if(Editing && ComponentSettings is not null)
     {
-        <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentLayoutAsync">Remove Layout</button>
+        <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
+            @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
     }
 </div>

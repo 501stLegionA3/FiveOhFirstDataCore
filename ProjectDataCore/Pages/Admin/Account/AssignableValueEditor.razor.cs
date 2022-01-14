@@ -19,6 +19,7 @@ using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Result;
 using ProjectDataCore.Data.Structures.Assignable;
+using ProjectDataCore.Data.Structures.Model.Assignable;
 
 namespace ProjectDataCore.Pages.Admin.Account
 {
@@ -159,6 +160,8 @@ namespace ProjectDataCore.Pages.Admin.Account
                         ItemList.Add(item);
                     break;
             }
+
+            StateHasChanged();
         }
 
         private async Task SaveEditAsync()
@@ -170,21 +173,21 @@ namespace ProjectDataCore.Pages.Admin.Account
                     res = await AssignableDataService.UpdateAssignableConfiguration<DateTime>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
                 case ValueBaseAssignableConfiguration<DateOnly> c:
                     res = await AssignableDataService.UpdateAssignableConfiguration<DateOnly>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
                 case ValueBaseAssignableConfiguration<TimeOnly> c:
                     res = await AssignableDataService.UpdateAssignableConfiguration<TimeOnly>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
 
@@ -192,14 +195,14 @@ namespace ProjectDataCore.Pages.Admin.Account
                     res = await AssignableDataService.UpdateAssignableConfiguration<int>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
                 case ValueBaseAssignableConfiguration<double> c:
                     res = await AssignableDataService.UpdateAssignableConfiguration<double>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
 
@@ -207,7 +210,7 @@ namespace ProjectDataCore.Pages.Admin.Account
                     res = await AssignableDataService.UpdateAssignableConfiguration<string>(ToEdit.Key, x =>
                     {
                         x.AllowedValues = c.AllowedValues;
-                        RunUpdate(c, ToEdit);
+                        RunUpdate(x, ToEdit);
                     });
                     break;
             }
@@ -223,12 +226,11 @@ namespace ProjectDataCore.Pages.Admin.Account
             }
 		}
 
-        private void RunUpdate<T>(ValueBaseAssignableConfiguration<T> cfg, BaseAssignableConfiguration update)
+        private static void RunUpdate<T>(AssignableConfigurationEditModel<T> cfg, BaseAssignableConfiguration update)
         {
             cfg.AllowedInput = update.AllowedInput;
             cfg.AllowMultiple = update.AllowMultiple;
             cfg.PropertyName = update.PropertyName;
-            cfg.LastEdit = DateTime.UtcNow;
         }
 
         private async Task DiscardEditAsync()

@@ -10,4 +10,6 @@ public class EditBase : CustomComponentBase
 {
     [Parameter]
     public EditableComponentSettings? ComponentData { get; set; }
+
+
 }

@@ -1,3 +1,32 @@
-﻿@inherits FormLayoutBase
+﻿@inherits LayoutBase
 
-<h4>BasicFormPart</h4>
+<div class="part-edit-container">
+    <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-1 grid-cols-1">
+        <div class="border border-black p-3 rounded-lg">
+            @if (FormCap is not null)
+            {
+                <div id="form-capstone">
+                    @FormCap
+                </div>
+            }
+
+            <div id="form-content">
+                @if (ComponentType is not null)
+                {
+                   <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                }
+                else if(Editing && ComponentSettings is not null)
+                {
+                    <AddComponentDialog ParentComponent="ComponentSettings.Key"
+                        AllowedAttributes="AllowedAttributes" />
+                }
+            </div>
+        </div>
+    </div>
+    
+    @if(Editing && ComponentSettings is not null)
+    {
+        <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
+            @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
+    }
+</div>
