@@ -9,17 +9,24 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Form;
 
-public partial class BasicFormPart : LayoutBase
+public partial class BasicFormPart : LayoutBase, IDisposable
 {
 #pragma warning disable CS8618 // Injections are non-nullable.
     [Inject]
     public IRoutingService RoutingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     
+    [CascadingParameter(Name = "UserScopes")]
+    public List<Guid> UserScopes { get; set; }
+    [CascadingParameter(Name = "MultiAction")]
+    public bool MultiAction { get; set; } = false;
+
     [Parameter]
     public LayoutComponentSettings ComponentSettings { get; set; }
     [Parameter]
     public RenderFragment? FormCap { get; set; }
+    [Parameter]
+    public List<DataCoreUser> MuiltActionScope { get; set; } = new();
 
     private Type[] AllowedAttributes { get; } = new Type[]
     {
@@ -48,6 +55,8 @@ public partial class BasicFormPart : LayoutBase
         var cfg = ComponentSettings?.ChildComponents.FirstOrDefault();
         if (cfg is not null)
         {
+            UserScopes.Add(ComponentSettings!.Key);
+
             try
             {
                 // Save the items to the array.
@@ -66,5 +75,10 @@ public partial class BasicFormPart : LayoutBase
                 };
             }
         }
+    }
+
+    public void Dispose()
+    {
+        UserScopes.Remove(ComponentSettings.Key);
     }
 }

@@ -22,10 +22,14 @@ public class CustomComponentBase : ComponentBase
 
     #region User Scope
     protected DataCoreUser? ScopedUser { get; set; }
+    [CascadingParameter(Name = "MultiActionScope")]
+    public DataCoreUser? MultiActionScopedUser { get; set; } = null;
 
     protected void LoadScopedUser(Guid? scope = null)
     {
-        if (scope is not null)
+        if (MultiActionScopedUser is not null)
+            ScopedUser = MultiActionScopedUser;
+        else if (scope is not null)
             ScopedUser = ScopedUserService.GetScopedUser(scope.Value);
         else
             ScopedUser = ActiveUser;

@@ -2,7 +2,7 @@
 
 <div class="part-edit-container">
     <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-1 grid-cols-1">
-        <div class="border border-black p-3 rounded-lg">
+        <div class="border border-black p-3 rounded-lg grid gap-3 grid-cols-1 grid-row-flow-dense">
             @if (FormCap is not null)
             {
                 <div id="form-capstone">
@@ -13,12 +13,33 @@
             <div id="form-content">
                 @if (ComponentType is not null)
                 {
-                   <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                    if(MultiAction)
+                    {
+                        if(Editing)
+                        {
+                            <CascadingValue Value="new DataCoreUser()" Name="MultiActionScope">
+                                <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                            </CascadingValue>
+                        }
+                        else
+                        {
+                            foreach(var user in MuiltActionScope)
+                            {
+                                <CascadingValue Value="user" Name="MultiActionScope">
+                                    <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                                </CascadingValue>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                    }
                 }
                 else if(Editing && ComponentSettings is not null)
                 {
                     <AddComponentDialog ParentComponent="ComponentSettings.Key"
-                        AllowedAttributes="AllowedAttributes" />
+                        AllowedAttributes="AllowedAttributes" AllowForms="!MultiAction" />
                 }
             </div>
         </div>

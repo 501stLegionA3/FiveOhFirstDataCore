@@ -64,6 +64,8 @@ namespace ProjectDataCore.Components.Parts
 
         private Func<Task>? RefreshRequest { get; set; }
 
+        public List<Guid> UserScopeParents { get; set; } = new();
+
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
@@ -103,6 +105,11 @@ namespace ProjectDataCore.Components.Parts
             {
                 if (first && PageSettings.Layout is not null)
                 {
+                    // ... clear data first ...
+                    ComponentParams["ComponentData"] = null;
+                    ComponentType = null;
+                    await InvokeAsync(StateHasChanged);
+
                     // ... if its the first load, set the layout parameter ...
                     ComponentParams["ComponentData"] = PageSettings.Layout;
                     // ... and the component type ...

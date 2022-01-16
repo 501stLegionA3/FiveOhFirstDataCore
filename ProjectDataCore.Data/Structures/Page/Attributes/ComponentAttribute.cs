@@ -10,6 +10,7 @@ namespace ProjectDataCore.Data.Structures.Page.Attributes;
 public class ComponentAttribute : Attribute
 {
     public string Name { get; set; } = "";
+    public bool Form { get; set; } = false;
 
     public ComponentAttribute()
         : base() { }
