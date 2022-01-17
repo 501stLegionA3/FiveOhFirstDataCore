@@ -29,6 +29,10 @@ public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
     /// The label to display alongside this property.
     /// </summary>
     public string? Label { get; set; }
+    /// <summary>
+    /// The format string for a static property.
+    /// </summary>
+    public string? FormatString { get; set; }
 
     /// <summary>
     /// The component to pull a <see cref="Account.DataCoreUser"/> from. Leave as null to pull

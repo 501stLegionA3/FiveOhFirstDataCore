@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Selector.User;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,4 +36,6 @@ public class LayoutComponentSettings : PageComponentSettingsBase
     /// The ID of the page in <see cref="ParentPage"/>
     /// </summary>
     public Guid? ParentPageId { get; set; }
+
+    public UserSelectComponentSettings? UserSelectSettings { get; set; }
 }

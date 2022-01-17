@@ -6,6 +6,7 @@ using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Selector.User;
 
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
+    #endregion
+
+    #region Forms
+    public DbSet<UserSelectComponentSettings> UserSelectComponentSettings { get; internal set; }
     #endregion
 
     #region Assignable Values
@@ -138,6 +143,14 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithMany(p => p.DisplayComponents);
         rosterComponentSettings.Navigation(e => e.AvalibleRosters)
             .AutoInclude(true);
+        #endregion
+
+        #region Forms
+        var userSelectComponentSettings = builder.Entity<UserSelectComponentSettings>();
+        userSelectComponentSettings.HasKey(e => e.Key);
+        userSelectComponentSettings.HasOne(e => e.LayoutComponent)
+            .WithOne(p => p.UserSelectSettings)
+            .HasForeignKey<UserSelectComponentSettings>(e => e.LayoutComponentId);
         #endregion
 
         #region Assignable Values

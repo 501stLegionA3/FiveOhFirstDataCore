@@ -8,5 +8,5 @@ namespace ProjectDataCore.Data.Structures.Page.Components;
 
 public class EditableComponentSettings : ParameterComponentSettingsBase
 {
-    public string? Placeholder { get; set; }
+
 }

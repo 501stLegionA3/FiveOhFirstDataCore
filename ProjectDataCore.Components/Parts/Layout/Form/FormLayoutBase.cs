@@ -8,6 +8,8 @@ namespace ProjectDataCore.Components.Parts.Layout.Form;
 
 public class FormLayoutBase : LayoutBase, IDisposable
 {
+    public List<DataCoreUser> SelectedUsers { get; set; } = new();
+
     private bool registeredScope = false;
 
     protected void RegisterScope(ref DataCoreUser user)

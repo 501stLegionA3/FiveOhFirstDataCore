@@ -11,9 +11,9 @@ namespace ProjectDataCore.Data.Services.Routing;
 
 public class ScopedUserService : IScopedUserService
 {
-    private ConcurrentDictionary<Guid, DataCoreUser> ScopedUsers { get; init; } = new();
+    private ConcurrentDictionary<Guid, List<DataCoreUser>> ScopedUsers { get; init; } = new();
 
-    public DataCoreUser? GetScopedUser(Guid host)
+    public List<DataCoreUser>? GetScopedUser(Guid host)
     {
         _ = ScopedUsers.TryGetValue(host, out var user);
 
@@ -23,7 +23,14 @@ public class ScopedUserService : IScopedUserService
 
     public void LoadUserScope(Guid host, ref DataCoreUser user)
     {
-        ScopedUsers[host] = user;
+        if(ScopedUsers.TryGetValue(host, out var set))
+        {
+            set.Add(user);
+        }
+        else
+        {
+            ScopedUsers[host] = new() { user };
+        }
     }
 
     public void UnloadUserScope(Guid host)

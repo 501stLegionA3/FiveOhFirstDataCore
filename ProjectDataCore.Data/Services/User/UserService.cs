@@ -19,7 +19,14 @@ public class UserService : IUserService
 	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<DataCoreUser> userManager)
 		=> (_dbContextFactory, _userManager) = (dbContextFactory, userManager);
 
-	public async Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims)
+    public async Task<List<DataCoreUser>> GetAllUsersAsync()
+    {
+		await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+		return await _dbContext.Users.ToListAsync();
+    }
+
+    public async Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims)
 	{
 		_ = Guid.TryParse(_userManager.GetUserId(claims), out Guid id);
 		return await GetUserFromIdAsync(id);

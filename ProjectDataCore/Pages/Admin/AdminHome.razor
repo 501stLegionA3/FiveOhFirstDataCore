@@ -30,12 +30,6 @@
 			<label for="password">Password</label>
 			<InputText id="password" @bind-Value="NewPassword" />
 
-			<label for="birth-number">Birth #</label>
-			<InputNumber id="birth-number" @bind-Value="NewUser.DisplayId" />
-
-			<label for="nickname">Nickname</label>
-			<InputText id="nickname" @bind-Value="NewUser.NickName" />
-
 			<button class="rounded-lg bg-white hover:bg-pink-200 p-2" @onclick="CreateAccountAsync">Create Account</button>
 		</EditForm>
 	</div>

@@ -30,8 +30,6 @@ namespace ProjectDataCore.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    DisplayId = table.Column<int>(type: "integer", nullable: false),
-                    NickName = table.Column<string>(type: "text", nullable: false),
                     DiscordId = table.Column<decimal>(type: "numeric(20,0)", nullable: true),
                     SteamLink = table.Column<string>(type: "text", nullable: true),
                     AccessCode = table.Column<string>(type: "text", nullable: true),
@@ -274,9 +272,8 @@ namespace ProjectDataCore.Data.Migrations
                     PropertyToEdit = table.Column<string>(type: "text", nullable: true),
                     StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
                     Label = table.Column<string>(type: "text", nullable: true),
-                    UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
                     FormatString = table.Column<string>(type: "text", nullable: true),
-                    Placeholder = table.Column<string>(type: "text", nullable: true),
+                    UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
                     Scoped = table.Column<bool>(type: "boolean", nullable: true),
                     AllowUserLisiting = table.Column<bool>(type: "boolean", nullable: true),
                     LevelFromTop = table.Column<int>(type: "integer", nullable: true),
@@ -407,6 +404,28 @@ namespace ProjectDataCore.Data.Migrations
                         column: x => x.RosterComponentDefaultDisplayId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserSelectComponentSettings",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Properties = table.Column<List<string>>(type: "text[]", nullable: false),
+                    IsStaticList = table.Column<List<bool>>(type: "boolean[]", nullable: false),
+                    Formats = table.Column<List<string>>(type: "text[]", nullable: false),
+                    LayoutComponentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSelectComponentSettings", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_UserSelectComponentSettings_PageComponentSettingsBase_Layou~",
+                        column: x => x.LayoutComponentId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -552,6 +571,12 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_RosterTreeRosterTree_ParentRostersKey",
                 table: "RosterTreeRosterTree",
                 column: "ParentRostersKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSelectComponentSettings_LayoutComponentId",
+                table: "UserSelectComponentSettings",
+                column: "LayoutComponentId",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -587,22 +612,25 @@ namespace ProjectDataCore.Data.Migrations
                 name: "RosterTreeRosterTree");
 
             migrationBuilder.DropTable(
+                name: "UserSelectComponentSettings");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AssignableConfigurations");
 
             migrationBuilder.DropTable(
-                name: "PageComponentSettingsBase");
-
-            migrationBuilder.DropTable(
                 name: "RosterDisplaySettings");
 
             migrationBuilder.DropTable(
-                name: "CustomPageSettings");
+                name: "PageComponentSettingsBase");
 
             migrationBuilder.DropTable(
                 name: "RosterObject");
+
+            migrationBuilder.DropTable(
+                name: "CustomPageSettings");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

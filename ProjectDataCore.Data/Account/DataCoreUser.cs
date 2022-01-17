@@ -13,18 +13,9 @@ namespace ProjectDataCore.Data.Account;
 
 public class DataCoreUser : IdentityUser<Guid>
 {
-    [Description("Display ID")]
-    public int DisplayId { get; set; }
-    [Description("Nickname")]
-    public string NickName { get; set; }
-
-    #region Assignable
     public List<BaseAssignableValue> AssignableValues { get; set; } = new();
-    #endregion
 
-    #region Roster
     public List<RosterSlot> RosterSlots { get; set; } = new();
-    #endregion
 
     [Description("Discord ID")]
     public ulong? DiscordId { get; set; }

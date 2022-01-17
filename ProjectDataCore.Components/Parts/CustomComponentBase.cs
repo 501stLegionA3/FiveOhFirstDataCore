@@ -19,20 +19,19 @@ public class CustomComponentBase : ComponentBase
     public DataCoreUser? ActiveUser { get; set; }
     [CascadingParameter(Name = "RefreshRequest")]
     public Func<Task>? CallRefreshRequest { get; set; }
-
+    [CascadingParameter(Name = "ScopeUserOverride")]
+    public DataCoreUser? ScopeUserOverride { get; set; }
     #region User Scope
-    protected DataCoreUser? ScopedUser { get; set; }
-    [CascadingParameter(Name = "MultiActionScope")]
-    public DataCoreUser? MultiActionScopedUser { get; set; } = null;
+    protected List<DataCoreUser>? ScopedUsers { get; set; }
 
     protected void LoadScopedUser(Guid? scope = null)
     {
-        if (MultiActionScopedUser is not null)
-            ScopedUser = MultiActionScopedUser;
+        if (ScopeUserOverride is not null)
+            ScopedUsers = new() { ScopeUserOverride };
         else if (scope is not null)
-            ScopedUser = ScopedUserService.GetScopedUser(scope.Value);
-        else
-            ScopedUser = ActiveUser;
+            ScopedUsers = ScopedUserService.GetScopedUser(scope.Value);
+        else if (ActiveUser is not null)
+            ScopedUsers = new() { ActiveUser };
     }
     #endregion
 }

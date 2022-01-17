@@ -13,4 +13,5 @@ public interface IUserService
 {
     public Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims);
     public Task<DataCoreUser?> GetUserFromIdAsync(Guid id);
+    public Task<List<DataCoreUser>> GetAllUsersAsync();
 }

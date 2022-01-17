@@ -26,7 +26,7 @@ else
 						<div class="p-3">
 							<UserPropertySelector SetPropertyName="x => EditModel.Property = x" 
 								SetPropertyType="x => EditModel.StaticProperty = x" 
-								User="ScopedUser" UseStaticProperties="EditModel.StaticProperty"
+								User="ScopedUsers?.FirstOrDefault()" UseStaticProperties="EditModel.StaticProperty"
 								PropertyName="@EditModel.Property" AllowedStaticTypes="AllowedStaticTypes" />
 						</div>
 						<hr />

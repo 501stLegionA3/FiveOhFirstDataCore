@@ -101,19 +101,23 @@ public class DisplayBase : ParameterBase
 
     protected override void LoadStaticProperty()
     {
-        if (ScopedUser is not null && ComponentData is not null
+        if (ScopedUsers is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
         {
-            DisplayValue = ScopedUser.GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
+            DisplayValue = ScopedUsers.FirstOrDefault()?
+                .GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                ?? "";
         }
     }
 
     protected override void LoadDynamicProperty()
     {
-        if (ScopedUser is not null && ComponentData is not null
+        if (ScopedUsers is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
         {
-            DisplayValue = ScopedUser.GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
+            DisplayValue = ScopedUsers.FirstOrDefault()?
+                .GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                ?? "";
         }
     }
     #endregion
