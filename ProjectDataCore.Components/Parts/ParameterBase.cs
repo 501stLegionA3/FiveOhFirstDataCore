@@ -8,6 +8,26 @@ namespace ProjectDataCore.Components.Parts;
 
 public abstract class ParameterBase : CustomComponentBase
 {
+    protected class ParameterEditModel
+    {
+        public Guid Key { get; init; }
+        public string? Label { get; set; }
+        public string Property { get; set; }
+        public bool StaticProperty { get; set; }
+        public string? FormatString { get; set; }
+
+        public ParameterEditModel(ParameterComponentSettingsBase settings)
+        {
+            Key = settings.Key;
+            Label = settings.Label;
+            Property = settings.PropertyToEdit;
+            StaticProperty = settings.StaticProperty;
+            FormatString = settings.FormatString;
+        }
+    }
+
+    protected ParameterEditModel? EditModel { get; set; }
+
     protected abstract Task RemoveCurrentDisplay();
 
     #region Edit Methods
@@ -18,10 +38,18 @@ public abstract class ParameterBase : CustomComponentBase
 
     #region Parameter Scope
     public string DisplayValue { get; set; }
-    protected abstract void LoadDisplayValue();
+    protected abstract void LoadParameterValue();
 
     protected abstract void LoadStaticProperty();
 
     protected abstract void LoadDynamicProperty();
+    #endregion
+
+    #region User Scope
+    public Guid? UserScopeSelection { get; set; }
+    public void OnUserScopeChanged(Guid? userScope)
+    {
+        UserScopeSelection = userScope;
+    }
     #endregion
 }

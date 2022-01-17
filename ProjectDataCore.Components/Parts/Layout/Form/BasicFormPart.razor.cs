@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Form;
 
-public partial class BasicFormPart : LayoutBase, IDisposable
+public partial class BasicFormPart : LayoutBase
 {
 #pragma warning disable CS8618 // Injections are non-nullable.
     [Inject]
     public IRoutingService RoutingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     
-    [CascadingParameter(Name = "UserScopes")]
-    public List<Guid> UserScopes { get; set; }
     [CascadingParameter(Name = "MultiAction")]
     public bool MultiAction { get; set; } = false;
 
@@ -26,7 +24,7 @@ public partial class BasicFormPart : LayoutBase, IDisposable
     [Parameter]
     public RenderFragment? FormCap { get; set; }
     [Parameter]
-    public List<DataCoreUser> MuiltActionScope { get; set; } = new();
+    public List<DataCoreUser> SelectedUsers { get; set; } = new();
 
     private Type[] AllowedAttributes { get; } = new Type[]
     {
@@ -45,7 +43,8 @@ public partial class BasicFormPart : LayoutBase, IDisposable
     /// </summary>
     private Dictionary<string, object> ComponentParams { get; set; } = new()
     {
-        { "ComponentData", null }
+        { "ComponentData", null },
+        { "ScopeIndex", 0 }
     };
 
     protected override async Task OnParametersSetAsync()
@@ -55,15 +54,14 @@ public partial class BasicFormPart : LayoutBase, IDisposable
         var cfg = ComponentSettings?.ChildComponents.FirstOrDefault();
         if (cfg is not null)
         {
-            UserScopes.Add(ComponentSettings!.Key);
-
             try
             {
                 // Save the items to the array.
                 ComponentType = RoutingService.GetComponentType(cfg.QualifiedTypeName);
                 ComponentParams = new()
                 {
-                    { "ComponentData", cfg }
+                    { "ComponentData", cfg },
+                    { "ScopeIndex", 0 }
                 };
             }
             catch (MissingComponentException)
@@ -71,14 +69,10 @@ public partial class BasicFormPart : LayoutBase, IDisposable
                 ComponentType = typeof(MissingComponentExceptionNotice);
                 ComponentParams = new()
                 {
-                    { "ComponentData", cfg }
+                    { "ComponentData", cfg },
+                    { "ScopeIndex", 0 }
                 };
             }
         }
-    }
-
-    public void Dispose()
-    {
-        UserScopes.Remove(ComponentSettings.Key);
     }
 }

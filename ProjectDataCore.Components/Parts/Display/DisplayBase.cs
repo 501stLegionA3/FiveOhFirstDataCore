@@ -4,28 +4,8 @@ namespace ProjectDataCore.Components.Parts.Display;
 
 public class DisplayBase : ParameterBase
 {
-    protected class DisplayEditModel
-	{
-        public Guid Key { get; init; }
-        public string? Label { get; set; }
-        public string Property { get; set; }
-        public bool StaticProperty { get; set; }
-        public string? FormatString { get; set; }
-
-        public DisplayEditModel(DisplayComponentSettings settings)
-		{
-            Key = settings.Key;
-            Label = settings.Label;
-            Property = settings.PropertyToEdit;
-            StaticProperty = settings.StaticProperty;
-            FormatString = settings.FormatString;
-        }
-	}
-
     [Parameter]
     public DisplayComponentSettings? ComponentData { get; set; }
-
-    protected DisplayEditModel? EditModel { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -34,7 +14,9 @@ public class DisplayBase : ParameterBase
         if (ComponentData is not null)
         {
             LoadScopedUser(ComponentData.UserScopeId);
-            LoadDisplayValue();
+            LoadParameterValue();
+
+            UserScopeSelection = ComponentData.UserScopeId;
         }
     }
 
@@ -74,6 +56,7 @@ public class DisplayBase : ParameterBase
                 x.PropertyToEdit = EditModel.Property;
                 x.StaticProperty = EditModel.StaticProperty;
                 x.FormatString = Optional.FromValue(EditModel.FormatString);
+                x.UserScope = Optional.FromValue(UserScopeSelection);
             });
 
             EditModel = null;
@@ -84,7 +67,7 @@ public class DisplayBase : ParameterBase
     }
 
     #region Parameter Scope
-    protected override void LoadDisplayValue()
+    protected override void LoadParameterValue()
     {
         if (ComponentData is not null)
         {
@@ -104,9 +87,12 @@ public class DisplayBase : ParameterBase
         if (ScopedUsers is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
         {
-            DisplayValue = ScopedUsers.FirstOrDefault()?
-                .GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
-                ?? "";
+            if (ScopedUsers.Count > 0)
+            {
+                DisplayValue = ScopedUsers[ScopeIndex]
+                    .GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                    ?? "";
+            }
         }
     }
 
@@ -115,9 +101,12 @@ public class DisplayBase : ParameterBase
         if (ScopedUsers is not null && ComponentData is not null
             && ComponentData.PropertyToEdit is not null)
         {
-            DisplayValue = ScopedUsers.FirstOrDefault()?
-                .GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
-                ?? "";
+            if(ScopedUsers.Count > 0)
+            {
+                DisplayValue = ScopedUsers[ScopeIndex]
+                    .GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                    ?? "";
+            }
         }
     }
     #endregion

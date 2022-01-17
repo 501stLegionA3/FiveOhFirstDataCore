@@ -1,7 +1,8 @@
 ﻿@inherits FormLayoutBase
 
-<BasicFormPart ComponentSettings="ComponentData">
+<BasicFormPart ComponentSettings="ComponentData" SelectedUsers="SelectedUsers">
 	<FormCap>
-		<SingleUserInput SelectedUsers="SelectedUsers" Settings="ComponentData?.UserSelectSettings" />
+		<SingleUserInput SelectedUsers="SelectedUsers" Settings="ComponentData?.UserSelectSettings"
+			OnValueChanged="OnFormValueChanged" />
 	</FormCap>
 </BasicFormPart>

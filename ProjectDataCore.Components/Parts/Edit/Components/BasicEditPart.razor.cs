@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Edit.Components;
 
-[EditableComponent(Name = "Single Value")]
+[EditableComponent(Name = "Basic Single Value")]
 public partial class BasicEditPart : EditBase
 {
-
+	protected Type[] AllowedStaticTypes { get; set; } = new Type[]
+	{
+		typeof(string)
+	};
 }

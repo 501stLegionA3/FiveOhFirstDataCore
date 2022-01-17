@@ -264,6 +264,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     QualifiedTypeName = table.Column<string>(type: "text", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
                     ParentLayoutId = table.Column<Guid>(type: "uuid", nullable: true),
                     Discriminator = table.Column<string>(type: "text", nullable: false),

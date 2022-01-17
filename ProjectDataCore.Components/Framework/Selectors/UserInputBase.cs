@@ -18,7 +18,10 @@ public class UserInputBase : ComponentBase
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [Parameter]
+    public Action? OnValueChanged { get; set; }
+    [Parameter]
     public List<DataCoreUser> SelectedUsers { get; set; } = new();
+
     public List<DataCoreUser> SuggestedUsers { get; set; } = new();
     public List<DataCoreUser> AllUsers { get; set; } = new();
 
@@ -64,6 +67,7 @@ public class UserInputBase : ComponentBase
         SelectedUsers.Add(user);
         SearchRaw = "";
 
+        OnValueChanged?.Invoke();
         StateHasChanged();
     }
 
@@ -93,6 +97,7 @@ public class UserInputBase : ComponentBase
     {
         SelectedUsers.Remove(user);
 
+        OnValueChanged?.Invoke();
         StateHasChanged();
     }
 

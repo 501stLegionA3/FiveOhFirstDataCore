@@ -1,0 +1,10 @@
+﻿<EditForm Model="this" class="grid gird-cols-1 grid-flow-row-dense gap-2">
+	<div class="input-group">
+		<InputText @bind-Value="ComponentName" class="input-control peer" id="cname-edit" placeholder="Component Name" />
+		<label class="input-label" for="cname-edit">Component Name</label>
+	</div>
+	<div class="grid grid-cols-2 grid-rows-1 gap-4 mt-5">
+		<button class="border border-op_success p-1 hover:bg-op_success hover:text-op_success_t" @onclick="SaveChangesAsync">Save</button>
+		<button class="border border-op_danger p-1 hover:bg-op_danger hover:text-op_danger_t" @onclick="AbortChangesAsync">Abort</button>
+	</div>
+</EditForm>

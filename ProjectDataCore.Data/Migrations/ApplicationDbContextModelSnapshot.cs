@@ -305,6 +305,10 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 

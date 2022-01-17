@@ -8,9 +8,6 @@ public partial class BasicLayoutGridGenerator : LayoutBase
     [Inject]
     public IRoutingService RoutingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-    [CascadingParameter(Name = "MultiAction")]
-    public bool MultiAction { get; set; } = false;
-
     [Parameter]
     public int Width { get; set; }
     [Parameter]
@@ -49,7 +46,8 @@ public partial class BasicLayoutGridGenerator : LayoutBase
                     ConfiguredTypes[item.Order] = RoutingService.GetComponentType(item.QualifiedTypeName);
                     ConfiguredParameters[item.Order] = new()
                     {
-                        { "ComponentData", item }
+                        { "ComponentData", item },
+                        { "ScopeIndex", ScopeIndex }
                     };
                 }
                 catch (IndexOutOfRangeException)
@@ -64,7 +62,8 @@ public partial class BasicLayoutGridGenerator : LayoutBase
                     ConfiguredTypes[item.Order] = typeof(MissingComponentExceptionNotice);
                     ConfiguredParameters[item.Order] = new()
                     {
-                        { "ComponentData", item }
+                        { "ComponentData", item },
+                        { "ScopeIndex", ScopeIndex }
                     };
                 }
             }

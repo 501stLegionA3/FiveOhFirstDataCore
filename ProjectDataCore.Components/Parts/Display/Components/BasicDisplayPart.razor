@@ -18,9 +18,9 @@ else
 				@if(EditModel is not null)
 				{
 					<EditForm Context="DisplayEditContext" Model="EditModel">
-						<div class="p-3">
-							<label class="form-label">Display Label</label>
-							<InputText id="edit-label" class="form-control" @bind-Value="EditModel.Label" />
+						<div class="p-3 input-group">
+							<InputText id="edit-label" class="input-control" @bind-Value="EditModel.Label" />
+							<label class="input-label" for="edit-label">Display Label</label>
 						</div>
 						<hr />
 						<div class="p-3">
@@ -28,6 +28,14 @@ else
 								SetPropertyType="x => EditModel.StaticProperty = x" 
 								User="ScopedUsers?.FirstOrDefault()" UseStaticProperties="EditModel.StaticProperty"
 								PropertyName="@EditModel.Property" AllowedStaticTypes="AllowedStaticTypes" />
+						</div>
+						<hr />
+						<div class="p-3 input-group">
+							<InputSelect id="edit-scope" class="input-control" TValue="Guid?"
+								Value="UserScopeSelection" ValueChanged="OnUserScopeChanged" ValueExpression="() => UserScopeSelection">
+								<ScopedComponentsSelectOptions />
+							</InputSelect>
+							<label class="input-label" for="edit-scope">User Scope Selector</label>
 						</div>
 						<hr />
 						<div class="p-3">

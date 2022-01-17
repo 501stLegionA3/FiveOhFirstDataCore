@@ -16,5 +16,9 @@ public interface IScopedUserService
 {
     public void LoadUserScope(Guid host, ref DataCoreUser user);
     public void UnloadUserScope(Guid host);
-    public List<DataCoreUser>? GetScopedUser(Guid host);
+    public void InitScope(Guid key);
+    public List<DataCoreUser>? GetScopedUsers(Guid host);
+    public void UnloadSingleUserFromScope(Guid host, ref DataCoreUser user);
+    public void SetUserScope(Guid host, List<DataCoreUser> users);
+    public List<Guid> GetAllActiveScopes();
 }

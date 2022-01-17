@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Components;
 
 using System;
 using System.Collections.Generic;
@@ -74,6 +75,22 @@ public interface IPageEditService
     public Task<List<CustomPageSettings>> GetAllPagesAsync();
     #endregion
 
+    #region Global Component Actions
+    /// <summary>
+    /// Updates the display name of a component.
+    /// </summary>
+    /// <param name="key">The key of the component to update.</param>
+    /// <param name="componentName">The new display name for the component.</param>
+    /// <returns>A task that returns an <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateDisplayNameAsync(Guid key, string componentName);
+    /// <summary>
+    /// Gets all avalible useres scopes for the currently loaded instance of the site.
+    /// </summary>
+    /// <returns>A task that returns an <see cref="ActionResult"/> with a <see cref="List{T}"/> of <see cref="PageComponentSettingsBase"/>
+    /// that represent the avalible scopes for the pages at time of the method being called.</returns>
+    public Task<ActionResult<List<PageComponentSettingsBase>>> GetAvalibleScopesAsync();
+    #endregion
+
     #region Layout Component Actions
     /// <summary>
     /// Set a child value for a layout component. Overwrites any component that has
@@ -105,7 +122,7 @@ public interface IPageEditService
     /// <param name="comp">The ID of the component to update.</param>
     /// <param name="action">The update action to take.</param>
     /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> UpdateEditableComponentAsync(Guid comp, Action<EditableComponentSettingsEditModel> action);
+    public Task<ActionResult> UpdateEditableComponentAsync(Guid comp, Action<ParameterComponentSettingsEditModel> action);
     #endregion
 
     #region Display Component Actions
@@ -121,7 +138,7 @@ public interface IPageEditService
     /// <param name="comp">The ID of the component to update.</param>
     /// <param name="action">The update action to take.</param>
     /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, Action<DisplayComponentSettingsEditModel> action);
+    public Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, Action<ParameterComponentSettingsEditModel> action);
     #endregion
 
     #region Roster Component Actions

@@ -64,8 +64,6 @@ namespace ProjectDataCore.Components.Parts
 
         private Func<Task>? RefreshRequest { get; set; }
 
-        public List<Guid> UserScopeParents { get; set; } = new();
-
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();

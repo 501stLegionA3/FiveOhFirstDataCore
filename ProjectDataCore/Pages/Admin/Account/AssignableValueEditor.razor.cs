@@ -33,26 +33,8 @@ namespace ProjectDataCore.Pages.Admin.Account
         public List<BaseAssignableConfiguration> CurrentAssignables { get; set; } = new();
 
         public BaseAssignableConfiguration? ToEdit { get; set; } = null;
-        public DateTime DateValue { get; set; }
-        public TimeSpan TimeValue { get; set; }
-        public string NewOptionTime 
-        { 
-            get 
-            {
-                return TimeValue.ToString();
-            } 
-            
-            set
-            {
-                if (TimeSpan.TryParse(value, out var t))
-                    TimeValue = t;
-                else
-                    TimeValue = TimeSpan.Zero;
-            }
-        }
-        public int IntValue { get; set; }
-        public double DoubleValue { get; set; }
-        public string StringValue { get; set; } = "";
+        public AssignableConfigurationValueEditModel ValueEditModel { get; set; } = new();
+
         public List<string> ItemList { get; set; } = new();
         public int MoveIndex { get; set; } = -1;
 
@@ -131,6 +113,7 @@ namespace ProjectDataCore.Pages.Admin.Account
         {
             ToEdit = config;
             ItemList.Clear();
+            ValueEditModel = new();
             switch (ToEdit)
             {
                 case IAssignableConfiguration<DateTime> c:
@@ -244,32 +227,32 @@ namespace ProjectDataCore.Pages.Admin.Account
             switch(ToEdit)
             {
                 case IAssignableConfiguration<DateTime> c:
-                    var dateTime = DateValue;
-                    dateTime += TimeValue;
+                    var dateTime = ValueEditModel.DateValue;
+                    dateTime += ValueEditModel.TimeValue;
                     c.AddElement(dateTime);
                     ItemList.Add(dateTime.ToShortDateString() + " " + dateTime.ToShortTimeString());
                     break;
                 case IAssignableConfiguration<DateOnly> c:
-                    c.AddElement(DateOnly.FromDateTime(DateValue));
-                    ItemList.Add(DateValue.ToShortDateString());
+                    c.AddElement(DateOnly.FromDateTime(ValueEditModel.DateValue));
+                    ItemList.Add(ValueEditModel.DateValue.ToShortDateString());
                     break;
                 case IAssignableConfiguration<TimeOnly> c:
-                    c.AddElement(TimeOnly.FromTimeSpan(TimeValue));
-                    ItemList.Add(TimeValue.ToString("hh:mm:ss"));
+                    c.AddElement(TimeOnly.FromTimeSpan(ValueEditModel.TimeValue));
+                    ItemList.Add(ValueEditModel.TimeValue.ToString("hh:mm:ss"));
                     break;
 
                 case IAssignableConfiguration<int> c:
-                    c.AddElement(IntValue);
-                    ItemList.Add(IntValue.ToString());
+                    c.AddElement(ValueEditModel.IntValue);
+                    ItemList.Add(ValueEditModel.IntValue.ToString());
                     break;
                 case IAssignableConfiguration<double> c:
-                    c.AddElement(DoubleValue);
-                    ItemList.Add(DoubleValue.ToString());
+                    c.AddElement(ValueEditModel.DoubleValue);
+                    ItemList.Add(ValueEditModel.DoubleValue.ToString());
                     break;
 
                 case IAssignableConfiguration<string> c:
-                    c.AddElement(StringValue);
-                    ItemList.Add(StringValue);
+                    c.AddElement(ValueEditModel.StringValue);
+                    ItemList.Add(ValueEditModel.StringValue);
                     break;
             }
 

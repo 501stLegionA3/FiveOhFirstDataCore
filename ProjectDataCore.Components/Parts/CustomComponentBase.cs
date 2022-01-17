@@ -10,6 +10,8 @@ public class CustomComponentBase : ComponentBase
     [Inject]
     public IPageEditService PageEditService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    [Parameter]
+    public int ScopeIndex { get; set; } = 0;
 
     [CascadingParameter(Name = "CoreRoute")]
     public string? Route { get; set; }
@@ -19,17 +21,13 @@ public class CustomComponentBase : ComponentBase
     public DataCoreUser? ActiveUser { get; set; }
     [CascadingParameter(Name = "RefreshRequest")]
     public Func<Task>? CallRefreshRequest { get; set; }
-    [CascadingParameter(Name = "ScopeUserOverride")]
-    public DataCoreUser? ScopeUserOverride { get; set; }
     #region User Scope
     protected List<DataCoreUser>? ScopedUsers { get; set; }
 
     protected void LoadScopedUser(Guid? scope = null)
     {
-        if (ScopeUserOverride is not null)
-            ScopedUsers = new() { ScopeUserOverride };
-        else if (scope is not null)
-            ScopedUsers = ScopedUserService.GetScopedUser(scope.Value);
+        if (scope is not null)
+            ScopedUsers = ScopedUserService.GetScopedUsers(scope.Value);
         else if (ActiveUser is not null)
             ScopedUsers = new() { ActiveUser };
     }

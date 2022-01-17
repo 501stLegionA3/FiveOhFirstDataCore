@@ -75,51 +75,7 @@
 									</label>
 								</div>
 
-								@switch(ToEdit)
-								{
-									case DateTimeValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputDate @bind-Value="DateValue" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										<div class="input-group">
-											<InputText type="time" @bind-Value="NewOptionTime" id="option-name-alt" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name-alt" class="input-label">Option Value</label>
-										</div>
-										break;
-									case DateOnlyValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputDate @bind-Value="DateValue" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										break;
-									case TimeOnlyValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputText type="time" @bind-Value="NewOptionTime" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										break;
-
-									case IntegerValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputNumber @bind-Value="IntValue" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										break;
-									case DoubleValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputNumber @bind-Value="DoubleValue" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										break;
-
-									case StringValueAssignableConfiguration c:
-										<div class="input-group">
-											<InputText @bind-Value="StringValue" id="option-name" class="input-control peer" placeholder="Option Name" />
-											<label for="option-name" class="input-label">Option Value</label>
-										</div>
-										break;
-								}
+								<AssignableValueInput EditModel="ValueEditModel" />
 								
 								<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="AddNewOption">Add Option</button>
 

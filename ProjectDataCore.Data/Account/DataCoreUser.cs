@@ -42,9 +42,7 @@ public class DataCoreUser : IdentityUser<Guid>
 
     public string GetAssignableProperty(string property, string? format = null)
     {
-        var data = AssignableValues
-            .Where(x => x.AssignableConfiguration.NormalizedPropertyName == property)
-            .FirstOrDefault();
+        var data = GetAssignablePropertyContainer(property);
 
         if (data is null)
             return string.Empty;
@@ -67,5 +65,14 @@ public class DataCoreUser : IdentityUser<Guid>
 
             return "";
         }
+    }
+
+    public BaseAssignableValue? GetAssignablePropertyContainer(string property)
+    {
+        var data = AssignableValues
+            .Where(x => x.AssignableConfiguration.NormalizedPropertyName == property)
+            .FirstOrDefault();
+
+        return data;
     }
 }

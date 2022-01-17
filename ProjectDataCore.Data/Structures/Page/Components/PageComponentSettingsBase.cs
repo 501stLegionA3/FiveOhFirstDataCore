@@ -20,6 +20,11 @@ public class PageComponentSettingsBase : DataObject<Guid>
     public string QualifiedTypeName { get; set; }
 
     /// <summary>
+    /// The display name for this component.
+    /// </summary>
+    public string DisplayName { get; set; } = "Default Component";
+
+    /// <summary>
     /// Used to determine a components position in a layout element.
     /// </summary>
     /// <remarks>

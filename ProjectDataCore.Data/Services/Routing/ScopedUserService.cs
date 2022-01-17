@@ -13,12 +13,27 @@ public class ScopedUserService : IScopedUserService
 {
     private ConcurrentDictionary<Guid, List<DataCoreUser>> ScopedUsers { get; init; } = new();
 
-    public List<DataCoreUser>? GetScopedUser(Guid host)
+    public List<Guid> GetAllActiveScopes()
+    {
+        List<Guid> activeScopes = new();
+        foreach (var s in ScopedUsers)
+            activeScopes.Add(s.Key);
+
+        return activeScopes;
+    }
+
+    public List<DataCoreUser>? GetScopedUsers(Guid host)
     {
         _ = ScopedUsers.TryGetValue(host, out var user);
 
         // We return null if it is not found, so no need for any if statements.
         return user;
+    }
+
+    public void InitScope(Guid key)
+    {
+        if (!ScopedUsers.TryGetValue(key, out _))
+            ScopedUsers[key] = new();
     }
 
     public void LoadUserScope(Guid host, ref DataCoreUser user)
@@ -30,6 +45,19 @@ public class ScopedUserService : IScopedUserService
         else
         {
             ScopedUsers[host] = new() { user };
+        }
+    }
+
+    public void SetUserScope(Guid host, List<DataCoreUser> users)
+    {
+        ScopedUsers[host] = users;
+    }
+
+    public void UnloadSingleUserFromScope(Guid host, ref DataCoreUser user)
+    {
+        if(ScopedUsers.TryGetValue(host, out var set))
+        {
+            set.Remove(user);
         }
     }
 

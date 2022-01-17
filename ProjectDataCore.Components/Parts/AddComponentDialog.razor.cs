@@ -45,11 +45,6 @@ public partial class AddComponentDialog
     /// </summary>
     [Parameter]
     public int Position { get; set; } = 0;
-    /// <summary>
-    /// Determines if the layout components should allow forms.
-    /// </summary>
-    [Parameter]
-    public bool AllowForms { get; set; } = true;
 
     private int LayoutComponentTypeIndex { get; set; }
     private int DisplayComponentTypeIndex { get; set; }
@@ -93,9 +88,8 @@ public partial class AddComponentDialog
                     {
                         switch(attr)
                         {
-                            case LayoutComponentAttribute comp:
-                                if(!(!AllowForms && comp.Form))
-                                    LayoutTypes.Add((t, attr.Name));
+                            case LayoutComponentAttribute:
+                                LayoutTypes.Add((t, attr.Name));
                                 break;
                             case DisplayComponentAttribute:
                             // A roster is a type of display.

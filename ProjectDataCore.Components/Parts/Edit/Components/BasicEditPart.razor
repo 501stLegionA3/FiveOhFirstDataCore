@@ -4,13 +4,78 @@
 {
 	<DisplayBox>
 		<Contnet>
-			<p class="font-bold p-2">@ComponentData!.Label</p>
-			<hr />
-			
+			<EditForm Model="this">
+				<div class="input-group">
+					@if(ComponentData.StaticProperty)
+					{
+						<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
+					}
+					else
+					{
+						<AssignableValueInput EditModel="ValueEditModel" ToEdit="BaseAssignable" />
+					}
+					<label for="option-name" class="input-label">@ComponentData.Label</label>
+				</div>
+			</EditForm>
 		</Contnet>
 	</DisplayBox>
 }
 else
 {
+	<div class="part-edit-container">
+		<DisplayBox>
+			<Contnet>
+				@if(EditModel is not null)
+				{
+					<EditForm Context="DisplayEditContext" Model="EditModel">
+						<div class="p-3 input-group">
+							<InputText id="edit-label" class="input-control" @bind-Value="EditModel.Label" />
+							<label class="input-label" for="edit-label">Display Label</label>
+						</div>
+						<hr />
+						<div class="p-3">
+							<UserPropertySelector SetPropertyName="x => EditModel.Property = x" 
+								SetPropertyType="x => EditModel.StaticProperty = x" 
+								User="ScopedUsers?.FirstOrDefault()" UseStaticProperties="EditModel.StaticProperty"
+								PropertyName="@EditModel.Property" AllowedStaticTypes="AllowedStaticTypes" />
+						</div>
+						<hr />
+						<div class="p-3 input-group">
+							<InputSelect id="edit-scope" class="input-control" TValue="Guid?"
+								Value="UserScopeSelection" ValueChanged="OnUserScopeChanged" ValueExpression="() => UserScopeSelection">
+								<ScopedComponentsSelectOptions />
+							</InputSelect>
+							<label class="input-label" for="edit-scope">User Scope Selector</label>
+						</div>
+						<hr />
+						<div class="p-3">
+							<button class="rounded-lg p-2 bg-green-400" @onclick="SaveEdit">Save</button>
+							<button class="rounded-lg p-2 bg-red-500" @onclick="CancelEdit">Cancel</button>
+						</div>
+					</EditForm>
+				}
+				else
+				{
+					<EditForm Model="this">
+						<div class="input-group">
+							@if(ComponentData.StaticProperty)
+							{
+								<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
+							}
+							else
+							{
+								<AssignableValueInput EditModel="ValueEditModel" ToEdit="BaseAssignable" />
+							}
+							<label for="option-name" class="input-label">@ComponentData.Label</label>
+						</div>
+					</EditForm>
 
+					<button class="absolute top-1 left-1" @onclick="StartEdit">
+						Edit
+					</button>
+				}
+			</Contnet>
+		</DisplayBox>
+		<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+	</div>
 }

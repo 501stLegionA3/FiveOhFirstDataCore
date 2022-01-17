@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220116233318_Dev")]
+    [Migration("20220117181347_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -304,6 +304,10 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("text");
 

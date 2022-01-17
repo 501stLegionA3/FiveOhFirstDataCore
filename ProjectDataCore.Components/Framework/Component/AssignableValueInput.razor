@@ -1,0 +1,26 @@
+﻿@switch (ToEdit)
+{
+	case DateTimeValueAssignableConfiguration c:
+		<div class="inline-flex gap-2 w-full">
+			<InputDate @bind-Value="EditModel.DateValue" id="option-name" class="input-control peer flex-grow" placeholder="Option Name" />
+			<InputText type="time" @bind-Value="EditModel.NewOptionTime" id="option-name-alt" class="input-control peer flex-grow" placeholder="Option Name" />
+		</div>
+		break;
+	case DateOnlyValueAssignableConfiguration c:
+		<InputDate @bind-Value="EditModel.DateValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		break;
+	case TimeOnlyValueAssignableConfiguration c:
+		<InputText type="time" @bind-Value="EditModel.NewOptionTime" id="option-name" class="input-control peer" placeholder="Option Name" />
+		break;
+
+	case IntegerValueAssignableConfiguration c:
+		<InputNumber @bind-Value="EditModel.IntValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		break;
+	case DoubleValueAssignableConfiguration c:
+		<InputNumber @bind-Value="EditModel.DoubleValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		break;
+
+	case StringValueAssignableConfiguration c:
+		<InputText @bind-Value="EditModel.StringValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		break;
+}

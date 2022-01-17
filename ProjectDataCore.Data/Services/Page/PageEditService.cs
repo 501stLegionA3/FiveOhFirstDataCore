@@ -17,9 +17,10 @@ public class PageEditService : IPageEditService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
     private readonly IRoutingService _routingService;
+    private readonly IScopedUserService _scopedUserService;
 
-    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRoutingService routingService)
-        => (_dbContextFactory, _routingService) = (dbContextFactory, routingService);
+    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRoutingService routingService, IScopedUserService scopedUserService)
+        => (_dbContextFactory, _routingService, _scopedUserService) = (dbContextFactory, routingService, scopedUserService);
 
     #region Page Actions
     public async Task<ActionResult> CreateNewPageAsync(string name, string route)
@@ -192,6 +193,43 @@ public class PageEditService : IPageEditService
     }
     #endregion
 
+    #region Global Component Actions
+    public async Task<ActionResult> UpdateDisplayNameAsync(Guid key, string componentName)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var comp = await _dbContext.FindAsync<PageComponentSettingsBase>(key);
+        if (comp is null)
+            return new(false, new List<string>() { "No component settings found for the provided key. " });
+
+        comp.DisplayName = componentName;
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
+    }
+
+    public async Task<ActionResult<List<PageComponentSettingsBase>>> GetAvalibleScopesAsync()
+    {
+        var scopes = _scopedUserService.GetAllActiveScopes();
+
+        if (scopes.Count <= 0)
+            return new(true, null, new());
+
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        List<PageComponentSettingsBase> scopeData = new();
+        foreach(var scope in scopes)
+        {
+            var data = await _dbContext.FindAsync<PageComponentSettingsBase>(scope);
+            if(data is not null)
+                scopeData.Add(data);
+        }
+
+        return new(true, null, scopeData);
+    }
+    #endregion
+
     #region Layout Component Actions
     public async Task<ActionResult> SetLayoutChildAsync(Guid layout, Type component, int position)
     {
@@ -341,7 +379,7 @@ public class PageEditService : IPageEditService
     }
 
     public async Task<ActionResult> UpdateEditableComponentAsync(Guid comp, 
-        Action<EditableComponentSettingsEditModel> action)
+        Action<ParameterComponentSettingsEditModel> action)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -352,7 +390,7 @@ public class PageEditService : IPageEditService
         if (compData is null)
             return new(false, new List<string>() { "No editable component was found for the provided ID." });
 
-        EditableComponentSettingsEditModel model = new();
+        ParameterComponentSettingsEditModel model = new();
         action.Invoke(model);
 
         ApplyParameterComponentEdits(compData, model);
@@ -390,7 +428,7 @@ public class PageEditService : IPageEditService
     }
 
     public async Task<ActionResult> UpdateDisplayComponentAsync(Guid comp, 
-        Action<DisplayComponentSettingsEditModel> action)
+        Action<ParameterComponentSettingsEditModel> action)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -401,7 +439,7 @@ public class PageEditService : IPageEditService
         if (compData is null)
             return new(false, new List<string>() { "No display component was found for the provided ID." });
 
-        DisplayComponentSettingsEditModel model = new();
+        ParameterComponentSettingsEditModel model = new();
         action.Invoke(model);
 
         ApplyParameterComponentEdits(compData, model);
@@ -530,5 +568,8 @@ public class PageEditService : IPageEditService
 
         if (model.Label.HasValue)
             compData.Label = model.Label.Value;
+
+        if(model.UserScope.HasValue)
+            compData.UserScopeId = model.UserScope.Value;
     }
 }
