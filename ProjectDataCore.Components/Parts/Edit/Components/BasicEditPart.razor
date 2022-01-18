@@ -9,12 +9,12 @@
 					@if(ComponentData.StaticProperty)
 					{
 						<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
+						<label for="option-name" class="input-label">@ComponentData.Label</label>
 					}
 					else
 					{
-						<AssignableValueInput EditModel="ValueEditModel" ToEdit="BaseAssignable" />
+						<AssignableValueEditor EditModel="this" />
 					}
-					<label for="option-name" class="input-label">@ComponentData.Label</label>
 				</div>
 			</EditForm>
 		</Contnet>
@@ -61,12 +61,12 @@ else
 							@if(ComponentData.StaticProperty)
 							{
 								<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
+								<label for="option-name" class="input-label">@ComponentData.Label</label>
 							}
 							else
 							{
-								<AssignableValueInput EditModel="ValueEditModel" ToEdit="BaseAssignable" />
+								<AssignableValueEditor EditModel="this" />
 							}
-							<label for="option-name" class="input-label">@ComponentData.Label</label>
 						</div>
 					</EditForm>
 

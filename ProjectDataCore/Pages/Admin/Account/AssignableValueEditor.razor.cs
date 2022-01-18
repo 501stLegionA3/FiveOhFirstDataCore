@@ -112,37 +112,8 @@ namespace ProjectDataCore.Pages.Admin.Account
         private void StartEdit(BaseAssignableConfiguration config)
         {
             ToEdit = config;
-            ItemList.Clear();
+            ItemList = ((IAssignableConfiguration)ToEdit).GetDisplayValues();
             ValueEditModel = new();
-            switch (ToEdit)
-            {
-                case IAssignableConfiguration<DateTime> c:
-                    foreach(var item in c.AllowedValues)
-                        ItemList.Add(item.ToShortDateString() + " " + item.ToShortTimeString());
-                    break;
-                case IAssignableConfiguration<DateOnly> c:
-                    foreach (var item in c.AllowedValues)
-                        ItemList.Add(item.ToShortDateString());
-                    break;
-                case IAssignableConfiguration<TimeOnly> c:
-                    foreach (var item in c.AllowedValues)
-                        ItemList.Add(item.ToString("hh:mm:ss"));
-                    break;
-
-                case IAssignableConfiguration<int> c:
-                    foreach (var item in c.AllowedValues)
-                        ItemList.Add(item.ToString());
-                    break;
-                case IAssignableConfiguration<double> c:
-                    foreach (var item in c.AllowedValues)
-                        ItemList.Add(item.ToString());
-                    break;
-
-                case IAssignableConfiguration<string> c:
-                    foreach (var item in c.AllowedValues)
-                        ItemList.Add(item);
-                    break;
-            }
 
             StateHasChanged();
         }

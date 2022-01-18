@@ -1,0 +1,153 @@
+﻿@using static ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration
+
+@if(EditModel?.AssignableConfiguration is not null)
+{
+	switch(EditModel.AssignableConfiguration.AllowedInput)
+	{
+		case InputType.FreehandOnly:
+			if(EditModel.AssignableConfiguration.AllowMultiple)
+			{
+				<div class="grid grid-cols-1 grid-flow-row-dense gap-2">
+					<div class="flex-grow input-group inine-flex gap-2">
+						<AssignableValueInput EditModel="MultipleValueInput" ToEdit="EditModel.AssignableConfiguration" />
+						<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+						<button class="flex-0 px-2 py-1 border border-op_success hover:bg-op_success hover:text-op_success_t"
+							@onclick="AddValue">Add</button>
+					</div>
+					<div class="inline-flex justify-start gap-2">
+						@foreach(var item in SelectedValues)
+						{
+							var i = item;
+							<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+								@onclick="() => RemoveValue(i)">
+									<span class="flex-grow px-2">@i.Item1</span>
+									<span class="material-icons-round flex-0">highlight_off</span>
+							</button>
+						}
+					</div>
+				</div>
+			}
+			else
+			{
+				<div class="input-group">
+					<AssignableValueInput EditModel="SingleValueInput" ToEdit="EditModel.AssignableConfiguration" />
+					<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+				</div>
+			}
+			break;
+
+		case InputType.StaticOnly:
+			if(EditModel.AssignableConfiguration.AllowMultiple)
+			{
+				<div class="grid gird-cols-1 grid-flow-row-dense gap-2">
+					<div class="flex-grow input-group inline-flex gap-2">
+						<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+							<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
+						</InputSelect>
+						<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+						<button class="flex-0 px-2 py-1 border border-op_success hover:bg-op_success hover:text-op_success_t"
+							@onclick="AddValue">Add</button>
+					</div>
+					<div class="inline-flex justify-start gap-2">
+						@foreach(var item in SelectedValues)
+						{
+							var i = item;
+							<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+								@onclick="() => RemoveValue(i)">
+									<span class="flex-grow px-2">@i.Item1</span>
+									<span class="material-icons-round flex-0">highlight_off</span>
+							</button>
+						}
+					</div>
+				</div>
+			}
+			else
+			{
+				<div class="input-group">
+					<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+						<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
+					</InputSelect>
+					<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+				</div>
+			}
+			break;
+
+		case InputType.Both:
+			if(EditModel.AssignableConfiguration.AllowMultiple)
+			{
+				<div class="inline-flex w-100">
+					<div class="flex-grow">
+						<div class="input-group">
+							<InputCheckbox type="checkbox" @bind-Value="BothOnStatic" class="peer inline-flex items-center">
+								<span class="ml-2">Show Options List</span>
+							</InputCheckbox>
+
+							<div class="grid gird-cols-1 grid-flow-row-dense gap-2">
+								@*Static Selector*@
+
+								<div class="flex-grow input-group inline-flex gap-2">
+									<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+										<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
+									</InputSelect>
+									<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+									<button class="flex-0 px-2 py-1 border border-op_success hover:bg-op_success hover:text-op_success_t"
+										@onclick="AddValue">Add</button>
+								</div>
+							</div>
+
+							<div class="block peer-checked:hidden inline-flex w-100">
+								@*Open Ended Input*@
+
+								<div class="flex-grow input-group inline-flex gap-2">
+									<AssignableValueInput EditModel="MultipleValueInput" ToEdit="EditModel.AssignableConfiguration" />
+									<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+									<button class="flex-0 px-2 py-1 border border-op_success hover:bg-op_success hover:text-op_success_t"
+										@onclick="AddValue">Add</button>
+								</div>
+							</div>
+							
+							<div class="inline-flex justify-start gap-2">
+								@foreach(var item in SelectedValues)
+								{
+									var i = item;
+									<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+										@onclick="() => RemoveValue(i)">
+											<span class="flex-grow px-2">@i.Item1</span>
+											<span class="material-icons-round flex-0">highlight_off</span>
+									</button>
+								}
+							</div>
+						</div>
+					</div>
+
+					<button class="flex-0 px-2 py-1 border-op_success hover:bg-op_success hover:text-op_success_t"
+						@onclick="AddValue">Add</button>
+				</div>
+			}
+			else
+			{
+				<div class="input-group">
+					<InputCheckbox type="checkbox" @bind-Value="BothOnStatic" class="peer inline-flex items-center">
+						<span class="ml-2">Show Options List</span>
+					</InputCheckbox>
+					<div class="hidden peer-checked:block">
+						@*Static Selector*@
+						<div class="input-group">
+							<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+								<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
+							</InputSelect>
+							<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+						</div>
+					</div>
+					<div class="block peer-checked:hidden">
+						@*Open Ended Input*@
+						<div class="input-group">
+							<AssignableValueInput EditModel="SingleValueInput" ToEdit="EditModel.AssignableConfiguration" />
+							<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
+						</div>
+					</div>
+				</div>
+			}
+			break;
+	}
+}

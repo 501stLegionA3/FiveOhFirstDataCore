@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
+using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Model.Assignable;
 
 using System;
@@ -13,8 +14,8 @@ public class EditBase : ParameterBase
 {
     [Parameter]
     public EditableComponentSettings? ComponentData { get; set; }
-    public AssignableConfigurationValueEditModel ValueEditModel { get; set; } = new();
-    public BaseAssignableConfiguration? BaseAssignable { get; set; }
+    public BaseAssignableConfiguration? AssignableConfiguration { get; set; }
+    public BaseAssignableValue? AssignableValue { get; set; }
     public string StaticValue { get; set; } = "";
 
     protected override async Task OnParametersSetAsync()
@@ -88,17 +89,12 @@ public class EditBase : ParameterBase
         {
             if(ScopedUsers.Count > 0)
             {
-                var container = ScopedUsers[ScopeIndex]
+                AssignableValue = ScopedUsers[ScopeIndex]
                     .GetAssignablePropertyContainer(ComponentData.PropertyToEdit);
 
-                if (container is not null)
+                if (AssignableValue is not null)
                 {
-                    ValueEditModel = new(container);
-                    BaseAssignable = container.AssignableConfiguration;
-                }
-                else
-                {
-                    ValueEditModel = new();
+                    AssignableConfiguration = AssignableValue.AssignableConfiguration;
                 }
 			}
 		}
