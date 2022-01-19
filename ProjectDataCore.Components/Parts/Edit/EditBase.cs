@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
+﻿using ProjectDataCore.Components.Parts.Layout.Form;
+using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Model.Assignable;
 
@@ -14,6 +15,10 @@ public class EditBase : ParameterBase
 {
     [Parameter]
     public EditableComponentSettings? ComponentData { get; set; }
+
+    [CascadingParameter(Name = "ParentForm")]
+    public FormLayoutBase? ParentForm { get; set; }
+
     public BaseAssignableConfiguration? AssignableConfiguration { get; set; }
     public BaseAssignableValue? AssignableValue { get; set; }
     public string StaticValue { get; set; } = "";

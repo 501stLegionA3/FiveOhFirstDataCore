@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Model.User;
+
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +9,11 @@ using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Layout.Form;
 
-public class FormLayoutBase : LayoutBase, IDisposable
+public abstract class FormLayoutBase : LayoutBase, IDisposable
 {
     public List<DataCoreUser> SelectedUsers { get; set; } = new();
+
+    protected ConcurrentDictionary<int, List<Func<DataCoreUserEditModel, Task>>> OnSubmitListeners { get; private set; } = new();
 
     private bool registeredScope = false;
 
@@ -64,6 +69,27 @@ public class FormLayoutBase : LayoutBase, IDisposable
     {
         SetUserScope(SelectedUsers);
     }
+
+    public void AddSubmitListener(int index, Func<DataCoreUserEditModel, Task> action)
+    {
+        if (!OnSubmitListeners.TryGetValue(index, out var actions))
+        {
+            actions = new();
+            OnSubmitListeners[index] = actions;
+        }
+
+        actions.Add(action);
+    }
+
+    public void RemoveSubmitListener(int index, Func<DataCoreUserEditModel, Task> action)
+    {
+        if (OnSubmitListeners.TryGetValue(index, out var actions))
+        {
+            actions.Remove(action);
+        }
+    }
+
+    protected abstract Task OnSubmitAsync();
 
     public void Dispose()
     {

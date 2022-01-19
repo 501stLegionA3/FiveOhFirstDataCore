@@ -9,5 +9,8 @@ namespace ProjectDataCore.Components.Parts.Layout.Form;
 [LayoutComponent(Name = "Single-select Form", Form = true)]
 public partial class SingleSelectFormPart : FormLayoutBase
 {
-
+    protected override Task OnSubmitAsync()
+    {
+        throw new NotImplementedException();
+    }
 }

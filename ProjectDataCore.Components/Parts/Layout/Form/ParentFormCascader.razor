@@ -1,0 +1,10 @@
+﻿@if(ParentForm is null)
+{
+	<CascadingValue Value="ComponentSettings" Name="ParentForm">
+		<BasicFormPart FormCap="FormCap" SelectedUsers="SelectedUsers" ComponentSettings="ComponentSettings" />
+	</CascadingValue>
+}
+else
+{
+	<BasicFormPart FormCap="FormCap" SelectedUsers="SelectedUsers" ComponentSettings="ComponentSettings" />
+}
