@@ -22,8 +22,18 @@ public class BaseAssignableValue : DataObject<Guid>
         return null;
     }
 
-    public virtual object?[] GetValues()
+    public virtual List<object?> GetValues()
     {
-        return Array.Empty<object>();
+        return Array.Empty<object?>().ToList();
+    }
+
+    public virtual void ReplaceValue(object value, int? index = null)
+    {
+        // Do nothing.
+    }
+
+    public virtual void AddValue(object value)
+    {
+        // Do nothing.
     }
 }

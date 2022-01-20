@@ -20,7 +20,8 @@ public partial class BasicLayoutGridGenerator : LayoutBase
         typeof(LayoutComponentAttribute),
         typeof(EditableComponentAttribute),
         typeof(DisplayComponentAttribute),
-        typeof(RosterComponentAttribute)
+        typeof(RosterComponentAttribute),
+        typeof(ButtonComponentAttribute)
     };
 
     private PageComponentSettingsBase[] ConfiguredSettings { get; set; }

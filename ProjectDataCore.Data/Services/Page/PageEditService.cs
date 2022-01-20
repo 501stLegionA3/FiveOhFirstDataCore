@@ -288,6 +288,13 @@ public class PageEditService : IPageEditService
             // add a roster component settings object.
             newComponent = new RosterComponentSettings();
         }
+        else if (component.GetCustomAttributes<ButtonComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is a button component,
+            // add a button component settings object.
+            newComponent = new ButtonComponentSettings();
+        }
         else
         {
             // Otherwise, return the error.

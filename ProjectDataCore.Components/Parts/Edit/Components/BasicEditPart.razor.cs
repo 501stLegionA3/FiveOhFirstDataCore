@@ -26,19 +26,21 @@ public partial class BasicEditPart : EditBase, IDisposable
         }
     }
 
-    public async Task OnSubmitAsync(DataCoreUserEditModel model)
+    public Task OnSubmitAsync(DataCoreUserEditModel model)
     {
         if (ComponentData is not null)
         {
             if (ComponentData.StaticProperty)
             {
-
+                model.StaticValues[ComponentData.PropertyToEdit] = StaticValue;
             }
             else
             {
-
+                model.AssignableValues[ComponentData.PropertyToEdit] = AssignableValue?.GetValues();
             }
         }
+
+        return Task.CompletedTask;
     }
 
     public void Dispose()

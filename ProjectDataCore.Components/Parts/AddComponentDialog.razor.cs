@@ -49,6 +49,7 @@ public partial class AddComponentDialog
     private int LayoutComponentTypeIndex { get; set; }
     private int DisplayComponentTypeIndex { get; set; }
     private int EditableComponentTypeIndex { get; set; }
+    private int ButtonComponentTypeIndex { get; set; }
     /// <summary>
     /// The types avalbile to select from when adding new layout components.
     /// </summary>
@@ -61,6 +62,10 @@ public partial class AddComponentDialog
     /// The types avalbile to select from when adding new editable components.
     /// </summary>
     private List<(Type, string)> EditableTypes { get; set; } = new();
+    /// <summary>
+    /// The types avalbile to select from when adding new button components.
+    /// </summary>
+    private List<(Type, string)> ButtonTypes { get; set; } = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -99,6 +104,9 @@ public partial class AddComponentDialog
                             case EditableComponentAttribute:
                                 EditableTypes.Add((t, attr.Name));
                                 break;
+                            case ButtonComponentAttribute:
+                                ButtonTypes.Add((t, attr.Name));
+                                break;
                         }
 
                         break;
@@ -128,6 +136,13 @@ public partial class AddComponentDialog
     {
         // On the add component action, get the item to add ...
         var typ = EditableTypes[EditableComponentTypeIndex].Item1;
+        await OnAddComponentAsync(typ);
+    }
+
+    private async Task OnAddButtonComponentAsync()
+    {
+        // On the add component action, get the item to add ...
+        var typ = ButtonTypes[ButtonComponentTypeIndex].Item1;
         await OnAddComponentAsync(typ);
     }
 

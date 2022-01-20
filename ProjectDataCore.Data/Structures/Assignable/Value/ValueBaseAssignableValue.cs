@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,8 +19,26 @@ public class ValueBaseAssignableValue<T> : BaseAssignableValue, IAssignableValue
         return SetValue.FirstOrDefault();
     }
 
-    public override object?[] GetValues()
+    public override List<object?> GetValues()
     {
-        return SetValue.ToArray(x => (object?)x);
+        return SetValue.ToList(x => (object?)x);
+    }
+
+    public override void ReplaceValue(object value, int? index = null)
+    {
+        if(index is null)
+        {
+            // equivalent of the set value return.
+            SetValue = ((List<object>)value).ToList(x => (T)x);
+        }
+        else
+        {
+            SetValue[index.Value] = (T)value;
+        }
+    }
+
+    public override void AddValue(object value)
+    {
+        SetValue.Add((T)value);
     }
 }

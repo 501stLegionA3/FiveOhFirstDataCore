@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Model.User;
 
 using System;
 using System.Collections.Generic;
@@ -14,4 +15,5 @@ public interface IUserService
     public Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims);
     public Task<DataCoreUser?> GetUserFromIdAsync(Guid id);
     public Task<List<DataCoreUser>> GetAllUsersAsync();
+    public Task<ActionResult> UpdateUserAsync(Guid user, Action<DataCoreUserEditModel> action);
 }

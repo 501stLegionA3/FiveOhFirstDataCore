@@ -31,7 +31,8 @@ public partial class BasicFormPart : LayoutBase
         typeof(LayoutComponentAttribute),
         typeof(EditableComponentAttribute),
         typeof(DisplayComponentAttribute),
-        typeof(RosterComponentAttribute)
+        typeof(RosterComponentAttribute),
+        typeof(ButtonComponentAttribute)
     };
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Model.User;
 
 using System;
 using System.Collections.Generic;
@@ -40,4 +41,39 @@ public class UserService : IUserService
 
 		return user;
 	}
+
+    public async Task<ActionResult> UpdateUserAsync(Guid user, Action<DataCoreUserEditModel> action)
+    {
+		await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+		var userData = await _dbContext.FindAsync<DataCoreUser>(user);
+
+		if (userData is null)
+			return new(false, new List<string>() { "No user was found for the provided ID." });
+
+		DataCoreUserEditModel model = new();
+		action.Invoke(model);
+
+		try
+		{
+			model.ApplyStaticValues(userData);
+		}
+		catch (Exception ex)
+        {
+			return new(false, new List<string>() { "Failed to apply static value updates.", ex.Message });
+        }
+
+		foreach (var item in model.AssignableValues)
+        {
+			var property = userData.AssignableValues
+				.Find(x => x.AssignableConfiguration.PropertyName == item.Key);
+
+			if(property is not null)
+				property.ReplaceValue(item.Key);
+        }
+
+		await _dbContext.SaveChangesAsync();
+
+		return new(true, null);
+    }
 }
