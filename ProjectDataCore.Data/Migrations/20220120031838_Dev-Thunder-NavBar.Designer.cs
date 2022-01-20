@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220120015232_Dev-Thunder-NavBar")]
+    [Migration("20220120031838_Dev-Thunder-NavBar")]
     partial class DevThunderNavBar
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
