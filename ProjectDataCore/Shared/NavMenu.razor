@@ -1,32 +1,8 @@
-﻿<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
+﻿@implements IDisposable
+<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
     <ul class="flex gap-4">
         <li class="top-link">
             <NavLink href="/" @onclick='() => Navigate("/")'>Your Roster</NavLink>
-        </li>
-
-        <li class="top-link group">
-            <button class="has-dropdown">Modules (Ignore)</button>
-            <ul class="bg-emerald-800 z-10 rounded-b-md transform scale-0 group-hover:scale-100 absolute left-0 top-full transition duration-150 ease-in-out origin-top w-max min-w-full">
-                <li class="link relative">
-                    <button class="has-dropdown">Admin</button>
-                    <ul class="bg-emerald-800 z-10 rounded-r-md absolute top-0 right-[2px] transition duration-150 ease-in-out origin-top-left w-max min-w-full">
-                        <li class="link rounded-r-md">
-                            <NavLink href="/admin/page/edit" @onclick='() => Navigate("/admin/page/edit")'>Page Editor</NavLink>
-                        </li>
-                    </ul>
-                </li>
-                <li class="link">Roster Clerks</li>
-                <li class="link">Quals</li>
-                <li class="link relative rounded-bl-md">
-                    <button class="has-dropdown">Utils</button>
-                    <ul class="bg-emerald-800 z-10 rounded-r-md rounded-bl-md absolute top-0 right-[2px] transition duration-150 ease-in-out origin-top-left w-max min-w-full">
-                        <li class="link rounded-tr-md">Report View</li>
-                        <li class="link">Change Request</li>
-                        <li class="link">Anonymous Report</li>
-                        <li class="link rounded-b-md">Upload Profile Picture</li>
-                    </ul>
-                </li>
-            </ul>
         </li>
 
         <li class="top-link group">
@@ -35,7 +11,7 @@
                 @foreach (var m in _modules) //Display all modules under modules tab
                 {
                     var module = m;
-                    @if (module.SubLinks is not null) //Check if module has sub links if so display them
+                    @if (module.SubModules.Any()) //Check if module has sub links if so display them
                     {
                         <li class="drLink relative">
                             @if (module.HasMainPage) //If module has a main page make the link clickable
@@ -49,7 +25,7 @@
                                 <button class="has-dropdown">@module.DisplayName</button>
                             }
                             <ul class="nested">
-                                @foreach (var l in module.SubLinks) //List all sub links
+                                @foreach (var l in module.SubModules) //List all sub links
                                 {
                                     var link = l;
                                     <li class="drLink">
@@ -72,13 +48,16 @@
         @foreach (var m in _modules) //List all modules if on corresponding pages only if it has sublinks
         {
             var module = m;
-            @if (_navManager.Uri.Contains(module.Href) && module.SubLinks is not  null) //Check url and that the module has sub modules
+            @if (URI.Contains(module.Href) && module.SubModules is not  null) //Check url and that the module has sub modules
             {
-                <ModuleDisplay Module="module"/>
+                <CascadingValue Value="@URI">
+                    <ModuleDisplay Module="module"/>
+                </CascadingValue>
             }
         }
 
-        <span class="grow"></span>
+        <li class="grow"></li>
         <li class="top-link">@_navManager.Uri</li>
+        <li class="top-link">@URI</li>
     </ul>
 </nav>

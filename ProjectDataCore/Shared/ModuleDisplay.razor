@@ -1,4 +1,5 @@
-﻿<li class="top-link group">
+﻿@using ProjectDataCore.Data.Structures.Nav
+<li class="top-link group">
     @if (Module.HasMainPage) //If the Module has a main page make the top button clickable
     {
         <button class="has-dropdown">
@@ -10,10 +11,10 @@
         <button class="has-dropdown">@Module.DisplayName</button>
     }
     <ul class="dropdown">
-        @foreach (var sM in Module.SubLinks) //List all sub Modules
+        @foreach (var sM in Module.SubModules) //List all sub Modules
         {
             var subModule = sM;
-            @if (subModule.SubLinks is not null) //If the sub Module has sub Modules list them 1 deep
+            @if (subModule.SubModules is not null) //If the sub Module has sub Modules list them 1 deep
             {
                 <li class="drLink relative">
                     @if (subModule.HasMainPage)
@@ -27,7 +28,7 @@
                         <button class="has-dropdown">@subModule.DisplayName</button>
                     }
                     <ul class="nested">
-                        @foreach (var l in subModule.SubLinks)
+                        @foreach (var l in subModule.SubModules)
                         {
                             var link = l;
                             <li class="drLink">
@@ -46,10 +47,10 @@
         }
     </ul>
 </li>
-@foreach (var sM in Module.SubLinks)
+@foreach (var sM in Module.SubModules)
 {
     var subModule = sM;
-    @if (_navManager.Uri.Contains(subModule.Href) && subModule.SubLinks is not null)
+    @if (URI.Contains(subModule.Href??"") && subModule.SubModules is not null)
     {
         <ModuleDisplay Module="subModule"/>
     }
@@ -59,7 +60,10 @@
 @code
 {
     [Parameter]
-    public Link Module { get; set; }
+    public NavModule Module { get; set; }
+
+    [CascadingParameter]
+    public string URI { get; set; }
 
     [Inject]
     public NavigationManager _navManager { get; set; }

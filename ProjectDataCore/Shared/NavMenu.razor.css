@@ -23,12 +23,16 @@
     @apply pl-1;
 }
 
+.drLink {
+    @apply px-3 py-1 hover:bg-emerald-700;
+}
+
 .drLink:first-child {
-    @apply rounded-tr-md hover:bg-emerald-700 px-3 py-1
+    @apply rounded-tr-md;
 }
 
 .drLink:last-child {
-    @apply rounded-b-md hover:bg-emerald-700 px-3 py-1
+    @apply rounded-b-md;
 }
 
 li > ul {
