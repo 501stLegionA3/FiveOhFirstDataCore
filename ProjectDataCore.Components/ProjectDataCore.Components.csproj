@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\bundle\$(ProjectName).styles.css -r" />
-    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\projectbundle\$(ProjectName).bundle.scp.css -r" />
+    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\bundle\$(ProjectName).styles.css -o wwwroot/css/scoped/project.min.css" />
+    <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\projectbundle\$(ProjectName).bundle.scp.css -o wwwroot/css/scoped/bundle.min.css" />
   </Target>
 
   <ItemGroup>
@@ -29,6 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectDataCore.Data\ProjectDataCore.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\css\scoped\" />
   </ItemGroup>
 
 </Project>
