@@ -1,0 +1,51 @@
+﻿@page "/admin/navbar/edit"
+@using ProjectDataCore.Data.Structures.Nav
+
+<h1 class="font-bold text-center text-2xl w-100 px-3">Nav Modules</h1>
+
+<div class="grid grid-cols-2">
+    <div class="select-none">
+        <ul class="pl-5 text-2xl tree">
+            @foreach (NavModule m in navModules)
+            {
+                <ProjectDataCore.Components.Nav.EditModuleDisplay Module="@m" />
+            }
+            <li class="last"><span @onclick="NewParentNavModule">Add +</span></li>
+        </ul>
+    </div>
+    @if(editing is not null)
+    {
+        <div>
+            <h1 class="text-bold text-center text-2xl">Editing @editing.DisplayName</h1>
+            <EditForm Model="editing">
+		        <label class="form-label" for="name-input">Display Name</label>
+		        <InputText id="name-input" class="form-control" @bind-Value="editing.DisplayName" />
+		        <hr />
+		        <label class="form-label" for="link-input">Link</label>
+		        <InputText id="link-input" class="form-control" @bind-Value="editing.Href" />
+		        <hr />
+                <label class="form-label">Parent</label>
+                <InputSelect id="parent-input" @bind-Value="editing.ParentId">
+                    <option value="">None</option>
+                    @foreach(NavModule m in allNavModules)
+                    {
+
+                        @if(m.Key != editing.Key && !editing.SubModules.Contains(m))
+                        {
+                        <option value="@m.Key">@m.DisplayName</option>
+                        }
+                    }
+                </InputSelect>
+                <hr />
+                <label class="form-label" for="mainPage-input">Has Main Page</label>
+                <InputCheckbox id="mainPage-input" @bind-Value="editing.HasMainPage" />
+                <hr />
+		        <button class="" @onclick="async ()=> await HandleForm()">Save</button>
+                <button class="" @onclick="async ()=> await DeleteModule()">Delete</button>
+                <button class="" @onclick="() => editing = null">Close</button>
+	        </EditForm>
+        </div>
+    }
+
+
+</div>
