@@ -31,6 +31,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
+    public DbSet<ButtonComponentSettings> ButtonComponentSettings { get; internal set; }
     #endregion
 
     #region Forms

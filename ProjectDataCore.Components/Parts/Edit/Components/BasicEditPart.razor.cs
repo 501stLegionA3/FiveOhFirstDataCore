@@ -36,7 +36,7 @@ public partial class BasicEditPart : EditBase, IDisposable
             }
             else
             {
-                model.AssignableValues[ComponentData.PropertyToEdit] = AssignableValue?.GetValues();
+                model.AssignableValues[ComponentData.PropertyToEdit] = SelectedValues.ToList(x => x.Item2);
             }
         }
 

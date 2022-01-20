@@ -22,6 +22,7 @@ public class EditBase : ParameterBase
     public BaseAssignableConfiguration? AssignableConfiguration { get; set; }
     public BaseAssignableValue? AssignableValue { get; set; }
     public string StaticValue { get; set; } = "";
+    public List<(string, dynamic)> SelectedValues { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {

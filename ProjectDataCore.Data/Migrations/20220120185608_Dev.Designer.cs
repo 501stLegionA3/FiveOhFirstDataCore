@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220120013020_Dev")]
+    [Migration("20220120185608_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -684,6 +684,22 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnName("TimeOnlyAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("TimeOnlyAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ButtonComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<bool>("InvokeSave")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ResetForm")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Style")
+                        .HasColumnType("integer");
+
+                    b.HasDiscriminator().HasValue("ButtonComponentSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>

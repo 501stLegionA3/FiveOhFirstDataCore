@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Page.Components;
+
+// TODO Update to include more options on what to do when submitting.
 
 /// <summary>
 /// Holds information about buttons.
@@ -13,7 +16,9 @@ public class ButtonComponentSettings : PageComponentSettingsBase
 {
     public enum ButtonStyle
     {
+        [Description("OP Danger")]
         OpDanger,
+        [Description("OP Success")]
         OpSuccess
     }
 
@@ -35,8 +40,8 @@ public class ButtonComponentSettings : PageComponentSettingsBase
     public string GetColorClasses()
         => Style switch
         {
-            ButtonStyle.OpDanger => "border border-op_danger hover:bg-op_danger hover:text-op_danger_t",
-            ButtonStyle.OpSuccess => "border border-op_success hover:bg-op_success hover:text-op_success_t",
+            ButtonStyle.OpDanger => "button-op-danger",
+            ButtonStyle.OpSuccess => "button-op-success",
             _ => "",
         };
 }

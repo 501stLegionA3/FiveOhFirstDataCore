@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Model.User;
+﻿using ProjectDataCore.Data.Services.User;
+using ProjectDataCore.Data.Structures.Model.User;
 
 using System;
 using System.Collections.Concurrent;
@@ -11,11 +12,18 @@ namespace ProjectDataCore.Components.Parts.Layout.Form;
 
 public abstract class FormLayoutBase : LayoutBase, IDisposable
 {
+#pragma warning disable CS8618 // Inject is never null.
+    [Inject]
+    public IUserService UserService { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
     public List<DataCoreUser> SelectedUsers { get; set; } = new();
 
-    protected ConcurrentDictionary<int, List<Func<DataCoreUserEditModel, Task>>> OnSubmitListeners { get; private set; } = new();
+    protected ConcurrentDictionary<int, HashSet<Func<DataCoreUserEditModel, Task>>> OnSubmitListeners { get; private set; } = new();
 
     private bool registeredScope = false;
+
+    public Func<Task> RefreshUserListAsync { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -89,7 +97,42 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
         }
     }
 
-    protected abstract Task OnSubmitAsync();
+    public virtual async Task OnSubmitAsync()
+    {
+        var model = new DataCoreUserEditModel();
+        if (OnSubmitListeners.TryGetValue(0, out var listener))
+        {
+            List<Task> runners = new();
+            foreach (var l in listener)
+                runners.Add(l.Invoke(model));
+
+            await Task.WhenAll(runners);
+        }
+
+        for (int i = 0; i < SelectedUsers.Count; i++)
+        {
+            var res = await UserService.UpdateUserAsync(SelectedUsers[i].Id, x =>
+            {
+                x.StaticValues = model.StaticValues;
+                x.AssignableValues = model.AssignableValues;
+            });
+
+            if (!res.GetResult(out var err))
+            {
+                // TODO display errors.
+                return;
+            }
+        }
+    }
+
+    public virtual async Task OnCancelAsync()
+    {
+        SelectedUsers.Clear();
+        SetUserScope(SelectedUsers);
+
+        if (RefreshUserListAsync is not null)
+            await RefreshUserListAsync.Invoke();
+    }
 
     public void Dispose()
     {

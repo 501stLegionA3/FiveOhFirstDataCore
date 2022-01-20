@@ -684,6 +684,22 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TimeOnlyAssignableValue");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ButtonComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<bool>("InvokeSave")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ResetForm")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("Style")
+                        .HasColumnType("integer");
+
+                    b.HasDiscriminator().HasValue("ButtonComponentSettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");

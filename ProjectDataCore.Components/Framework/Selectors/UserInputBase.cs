@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Services.User;
+﻿using ProjectDataCore.Components.Parts.Layout.Form;
+using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Structures.Selector.User;
 
 using System;
@@ -29,10 +30,22 @@ public class UserInputBase : ComponentBase
 
     [Parameter]
     public UserSelectComponentSettings? Settings { get; set; }
+    [CascadingParameter(Name = "ParentForm")]
+    public FormLayoutBase? LayoutToListen { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
+
+        if(LayoutToListen is not null)
+        {
+            LayoutToListen.RefreshUserListAsync = RefreshRequested;
+        }
+    }
+
+    private async Task RefreshRequested()
+    {
+        AllUsers = await UserService.GetAllUsersAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -41,7 +54,7 @@ public class UserInputBase : ComponentBase
 
         if (firstRender)
         {
-            AllUsers = await UserService.GetAllUsersAsync();
+            await RefreshRequested();
         }
     }
 

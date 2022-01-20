@@ -1,7 +1,7 @@
 ﻿@inherits FormLayoutBase
 
 <CascadingValue Value="true" Name="MultiAction">
-	<ParentFormCascader ComponentSettings="ComponentData" SelectedUsers="SelectedUsers">
+	<ParentFormCascader ComponentSettings="ComponentData" SelectedUsers="SelectedUsers" CascadeIfNull="this">
 		<FormCap>
 			<MultiUserInput SelectedUsers="SelectedUsers" Settings="ComponentData?.UserSelectSettings"
 				OnValueChanged="OnFormValueChanged" />

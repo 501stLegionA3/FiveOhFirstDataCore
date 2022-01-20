@@ -42,6 +42,15 @@
     @apply w-full placeholder-transparent p-1 px-2 border border-slate-600 rounded-lg;
 }
 
+/* Custom Color Buttons */
+.button-op-success {
+    @apply border border-op_success hover:bg-op_success hover:text-op_success_t;
+}
+
+.button-op-danger {
+    @apply border border-op_danger hover:bg-op_danger hover:text-op_danger_t;
+}
+
 /* Resize Tool */
 
 .gutter {

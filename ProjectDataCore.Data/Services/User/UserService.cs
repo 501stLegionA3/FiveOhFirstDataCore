@@ -68,8 +68,8 @@ public class UserService : IUserService
 			var property = userData.AssignableValues
 				.Find(x => x.AssignableConfiguration.PropertyName == item.Key);
 
-			if(property is not null)
-				property.ReplaceValue(item.Key);
+			if(property is not null && item.Value is not null)
+				property.ReplaceValue(item.Value);
         }
 
 		await _dbContext.SaveChangesAsync();

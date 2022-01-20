@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Edit.Buttons;
 
 [ButtonComponent(Name = "Single Button")]
-public partial class SingleButtonPart : CustomComponentBase
+public partial class SingleButtonPart : ButtonBase
 {
 
 }

@@ -19,15 +19,38 @@ public partial class AssignableValueEditor
     public int StaticSelectorIndex { get; set; } = 0;
     public bool BothOnStatic { get; set; } = true;
 
-    List<(string, dynamic)> SelectedValues { get; set; } = new();
+    [Parameter]
+    public List<(string, dynamic)> SelectedValues { get; set; } = new();
 
 	protected override async Task OnParametersSetAsync()
 	{
 		await base.OnParametersSetAsync();
 
-        if(EditModel.AssignableValue is not null)
+        if (EditModel.AssignableValue is not null)
+        {
             SingleValueInput = new(EditModel.AssignableValue);
+        }
 	}
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            if (EditModel.AssignableValue is not null 
+                && EditModel.AssignableConfiguration is IAssignableConfiguration config)
+            {
+                for (int i = 0; i < EditModel.AssignableValue.GetValues().Count; i++)
+                {
+                    var val = config.GetSingleValuePair(new AssignableConfigurationValueEditModel(EditModel.AssignableValue, i));
+                    SelectedValues.Add(val.Value);
+                }
+            }
+
+            StateHasChanged();
+        }
+    }
 
     protected void AddValue()
 	{

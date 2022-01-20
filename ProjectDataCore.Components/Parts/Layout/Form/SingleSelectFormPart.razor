@@ -1,6 +1,6 @@
 ﻿@inherits FormLayoutBase
 
-<ParentFormCascader ComponentSettings="ComponentData" SelectedUsers="SelectedUsers">
+<ParentFormCascader ComponentSettings="ComponentData" SelectedUsers="SelectedUsers" CascadeIfNull="this">
 	<FormCap>
 		<SingleUserInput SelectedUsers="SelectedUsers" Settings="ComponentData?.UserSelectSettings"
 			OnValueChanged="OnFormValueChanged" />

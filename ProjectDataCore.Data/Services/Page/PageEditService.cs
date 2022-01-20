@@ -564,6 +564,65 @@ public class PageEditService : IPageEditService
     }
     #endregion
 
+    #region Button Component Actions
+    public async Task<ActionResult> DeleteButtonComponentAsync(Guid comp)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the button.
+        var compData = await _dbContext.ButtonComponentSettings
+            .Where(x => x.Key == comp)
+            .Include(x => x.ParentLayout)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No button component was found for the provided ID." });
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(compData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The button component was unable to be deleted.", ex.Message });
+        }
+    }
+
+    public async Task<ActionResult> UpdateButtonComponentAsync(Guid comp, Action<ButtonComponentSettingsEditModel> action)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.ButtonComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No button component was found for the provided ID." });
+
+        ButtonComponentSettingsEditModel model = new();
+        action.Invoke(model);
+
+        if(model.InvokeSave is not null)
+            compData.InvokeSave = model.InvokeSave.Value;
+
+        if(model.ResetForm is not null)
+            compData.ResetForm = model.ResetForm.Value;
+
+        if(model.Style is not null)
+            compData.Style = model.Style.Value;
+
+        if (model.DisplayName is not null)
+            compData.DisplayName = model.DisplayName;
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
+    }
+    #endregion
+
     private static void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
         ParameterComponentSettingsEditModel model)
     {

@@ -14,6 +14,8 @@ public partial class ParentFormCascader
     [Parameter]
     public List<DataCoreUser> SelectedUsers { get; set; } = new();
 
+    [Parameter]
+    public FormLayoutBase CascadeIfNull { get; set; }
     [CascadingParameter(Name = "ParentForm")]
     public FormLayoutBase? ParentForm { get; set; }
 }
