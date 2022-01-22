@@ -5,10 +5,17 @@
 /// </summary>
 public class NavModule : DataObject<Guid>
 {
+
+    public string DisplayName { get; set; }
+    public string? Href { get; set; }
+    public List<NavModule>? SubModules { get; set; }
+    public bool HasMainPage { get; set; } = false;
+    public NavModule? Parent { get; set; }
+    public Guid? ParentId { get; set; }
+
     public NavModule()
     {
         DisplayName = "";
-        Href = "";
     }
 
     public NavModule(Guid id)
@@ -32,11 +39,5 @@ public class NavModule : DataObject<Guid>
         SubModules = subModules;
         HasMainPage = hasMainPage;
     }
-    public string DisplayName { get; set; }
-    public string? Href { get; set; }
-    public List<NavModule>? SubModules { get; set; }
-    public bool HasMainPage { get; set; } = false;
-    public NavModule? Parent { get; set; }
-    public Guid? ParentId { get; set; }
 
 }
