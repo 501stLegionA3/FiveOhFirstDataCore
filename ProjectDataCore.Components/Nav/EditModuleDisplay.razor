@@ -1,28 +1,10 @@
-﻿@using ProjectDataCore.Data.Structures.Nav
-@using ProjectDataCore.Data.Services.Nav
-@inject INavModuleService _navModuleService
-<li>
+﻿<li>
     <span @ondblclick="()=>OnDblClick(Module)">@Module.DisplayName | <a class="underline text-sky-500" href="@Module.Href">@Module.Href</a></span>
         <ul class="">
             @foreach (NavModule m in Module.SubModules)
             {
-                   <EditModuleDisplay Module="@m"/>
+                   <EditModuleDisplay Module="@m" OnDblClick="OnDblClick" OnLeftClick="OnLeftClick" />
             }
             <li class="last"><span @onclick="()=>OnLeftClick(Module)">Add +</span></li>
         </ul>
 </li>
-
-@code {
-    [Parameter] public NavModule Module { get; set; }
-
-    void OnDblClick(NavModule m)
-    {
-        _navModuleService.OnDblClickTrigger(this, m);
-    }
-
-    void OnLeftClick(NavModule m)
-    {
-        _navModuleService.OnLeftClickTrigger(this, m);
-    }
-
-}

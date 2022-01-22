@@ -6,9 +6,6 @@ public class NavModuleService : INavModuleService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 
-    public event EventHandler<NavModule> OnDblClick;
-    public event EventHandler<NavModule> OnLeftClick;
-
     public NavModuleService(IDbContextFactory<ApplicationDbContext> dbContextFactory) => _dbContextFactory = dbContextFactory;
     
     public async Task<List<NavModule>> GetAllModules()
@@ -119,29 +116,5 @@ public class NavModuleService : INavModuleService
             module.DisplayName = navModule.DisplayName;
         await _dbContext.SaveChangesAsync();
         return new(true);
-    }
-
-    public void OnLeftClickTrigger(object? sender, NavModule module)
-    {
-        try
-        {
-            OnLeftClick.Invoke(sender, module);
-        }
-        catch (Exception)
-        {
-
-        }
-    }
-
-    public void OnDblClickTrigger(object? sender, NavModule module)
-    {
-        try
-        {
-            OnDblClick.Invoke(sender, module);
-        }
-        catch (Exception)
-        {
-
-        }
     }
 }

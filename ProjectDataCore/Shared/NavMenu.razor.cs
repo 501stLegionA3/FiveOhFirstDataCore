@@ -6,23 +6,18 @@ namespace ProjectDataCore.Shared;
 
 public partial class NavMenu : ComponentBase, IDisposable
 {
-    private List<NavModule> _modules = new List<NavModule>();
+    private List<NavModule> _modules = new();
 
     public string URI { get; set; } = "";
 
-    [Inject] public NavigationManager _navManager { get; set; }
-    [Inject] public INavModuleService _navModuleService { get; set; }
-
-    public void Dispose()
-    {
-        _navManager.LocationChanged -= LocationChanged;
-    }
+    [Inject] public NavigationManager NavManager { get; set; }
+    [Inject] public INavModuleService NavModuleService { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
-        URI = _navManager.Uri;
-        _navManager.LocationChanged += LocationChanged;
-        _modules = await _navModuleService.GetAllModulesWithChildren();
+        URI = NavManager.Uri;
+        NavManager.LocationChanged += LocationChanged;
+        _modules = await NavModuleService.GetAllModulesWithChildren();
         
     }
 
@@ -34,6 +29,11 @@ public partial class NavMenu : ComponentBase, IDisposable
 
     private void Navigate(string href)
     {
-        _navManager.NavigateTo(href, true);
+        NavManager.NavigateTo(href, true);
+    }
+
+    public void Dispose()
+    {
+        NavManager.LocationChanged -= LocationChanged;
     }
 }

@@ -3,65 +3,60 @@ using ProjectDataCore.Data.Structures.Nav;
 
 namespace ProjectDataCore.Pages.Admin.NavBar
 {
-    public partial class ModifyNavBar : ComponentBase, IDisposable
+    public partial class ModifyNavBar : ComponentBase
     {
-        [Inject] private INavModuleService _navModuleService { get; set; }
+        [Inject] public INavModuleService NavModuleService { get; set; }
 
-        List<NavModule> navModules = new List<NavModule>();
-        List<NavModule> allNavModules = new List<NavModule>();
+        List<NavModule> navModules = new();
+        List<NavModule> allNavModules = new();
 
-        NavModule? editing { get; set; }
+        private NavModule? Editing { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
 
-            _navModuleService.OnDblClick += EditNavModule;
-            _navModuleService.OnLeftClick += NewNavModule;
 
-            if (true)
-            {
-                navModules = await _navModuleService.GetAllModulesWithChildren();
-                allNavModules = await _navModuleService.GetAllModules();
-            }
+            navModules = await NavModuleService.GetAllModulesWithChildren();
+            allNavModules = await NavModuleService.GetAllModules();
         }
 
-        private void EditNavModule(object? sender, NavModule navModule)
+        private void EditNavModule(NavModule navModule)
         {
-            editing = navModule;
+            Editing = navModule;
             InvokeAsync(StateHasChanged);
         }
 
-        private void NewNavModule(object? sender, NavModule navModule)
+        private void NewNavModule(NavModule navModule)
         {
-            editing = new(navModule.Key);
+            Editing = new(navModule.Key);
             InvokeAsync(StateHasChanged);
         }
 
         private void NewParentNavModule()
         {
-            editing = new();
+            Editing = new();
             InvokeAsync(StateHasChanged);
         }
 
         private async Task SaveNavModule()
         {
-            await _navModuleService.CreateNavModuleAsync(editing);
-            navModules = await _navModuleService.GetAllModulesWithChildren();
-            allNavModules = await _navModuleService.GetAllModules();
-            editing = null;
+            await NavModuleService.CreateNavModuleAsync(Editing);
+            navModules = await NavModuleService.GetAllModulesWithChildren();
+            allNavModules = await NavModuleService.GetAllModules();
+            Editing = null;
             await InvokeAsync(StateHasChanged);
         }
 
         private async Task UpdateModule()
         {
-            await _navModuleService.UpdateNavModuleAsync(editing);
+            await NavModuleService.UpdateNavModuleAsync(Editing);
             await InvokeAsync(StateHasChanged);
         }
 
         private async Task HandleForm()
         {
-            if (editing.Key != Guid.Empty)
+            if (Editing.Key != Guid.Empty)
             {
                 await UpdateModule();
             }
@@ -72,16 +67,10 @@ namespace ProjectDataCore.Pages.Admin.NavBar
 
         private async Task DeleteModule()
         {
-            await _navModuleService.DeleteNavModule(editing.Key);
-            editing = null;
-            navModules = await _navModuleService.GetAllModulesWithChildren();
+            await NavModuleService.DeleteNavModule(Editing.Key);
+            Editing = null;
+            navModules = await NavModuleService.GetAllModulesWithChildren();
             await InvokeAsync(StateHasChanged);
-        }
-
-        public void Dispose()
-        {
-            _navModuleService.OnDblClick -= EditNavModule;
-            _navModuleService.OnLeftClick += NewNavModule;
         }
     }
 }

@@ -55,21 +55,3 @@
         <ModuleDisplay Module="subModule"/>
     }
 }
-
-
-@code
-{
-    [Parameter]
-    public NavModule Module { get; set; }
-
-    [CascadingParameter]
-    public string URI { get; set; }
-
-    [Inject]
-    public NavigationManager _navManager { get; set; }
-
-    private void Navigate(string href)
-    {
-        _navManager.NavigateTo(href, true);
-    }
-}
