@@ -18,6 +18,8 @@ public partial class NavMenu : ComponentBase, IDisposable
         URI = NavManager.Uri;
         NavManager.LocationChanged += LocationChanged;
         _modules = await NavModuleService.GetAllModulesWithChildren();
+        if (_modules.Count == 0)
+            _modules.Add(new("Edit NavBar", "admin/navbar/edit", new(), true));
         
     }
 
