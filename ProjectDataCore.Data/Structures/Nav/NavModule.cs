@@ -7,7 +7,7 @@ public class NavModule : DataObject<Guid>
 {
 
     public string DisplayName { get; set; }
-    public string? Href { get; set; }
+    public string Href { get; set; } = "";
     public List<NavModule>? SubModules { get; set; }
     public bool HasMainPage { get; set; } = false;
     public NavModule? Parent { get; set; }
