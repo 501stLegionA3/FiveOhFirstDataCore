@@ -10,8 +10,10 @@ public partial class NavMenu : ComponentBase, IDisposable
 
     public string URI { get; set; } = "";
 
-    [Inject] public NavigationManager NavManager { get; set; }
-    [Inject] public INavModuleService NavModuleService { get; set; }
+    [Inject]
+    public NavigationManager NavManager { get; set; }
+    [Inject]
+    public INavModuleService NavModuleService { get; set; }
 
     protected async override Task OnInitializedAsync()
     {

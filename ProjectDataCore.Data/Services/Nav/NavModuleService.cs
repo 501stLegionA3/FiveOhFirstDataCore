@@ -43,7 +43,6 @@ public class NavModuleService : INavModuleService
                 foreach (var t in module.SubModules)
                     navModules.Enqueue(t);
             }
-        return;
     }
 
     public async Task<ActionResult> CreateNavModuleAsync(string displayName, string href, bool hasMainPage, Guid? parent = null)
@@ -98,7 +97,7 @@ public class NavModuleService : INavModuleService
     {
         if (navModule == null)
         {
-            return new(false, new() {"paramater is null"});
+            return new(false, new() {"Paramater is null"});
         }
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
         NavModule module = await _dbContext.FindAsync<NavModule>(navModule.Key);
