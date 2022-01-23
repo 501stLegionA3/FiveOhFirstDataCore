@@ -1,0 +1,43 @@
+﻿.Success {
+    @apply bg-green-500;
+}
+
+.Warn {
+    @apply bg-yellow-500;
+}
+
+.Info {
+    @apply bg-blue-500;
+}
+
+.Error {
+    @apply bg-red-500;
+}
+
+.Alert{
+    animation: fadein 500ms;
+}
+
+@keyframes fadein {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0%);
+    }
+}
+
+.slide {
+    animation: slider 3500ms ease-in-out;
+    background-color: rgba(255, 255, 255, 0.493);
+}
+
+@keyframes slider {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0%);
+    }
+}
