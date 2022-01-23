@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ProjectDataCore.Data.Database;
+using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.User;
 
@@ -64,7 +65,8 @@ builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IScopedUserService, ScopedUserService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<INavModuleService, NavModuleService>()
-    .AddScoped<IAssignableDataService, AssignableDataService>();
+    .AddScoped<IAssignableDataService, AssignableDataService>()
+    .AddScoped<IAlertService, AlertService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>
