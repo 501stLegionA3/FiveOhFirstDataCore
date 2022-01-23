@@ -10,14 +10,18 @@ public partial class NavMenu : ComponentBase, IDisposable
 
     public string URI { get; set; } = "";
 
-    [Inject] public NavigationManager NavManager { get; set; }
-    [Inject] public INavModuleService NavModuleService { get; set; }
+    [Inject]
+    public NavigationManager NavManager { get; set; }
+    [Inject]
+    public INavModuleService NavModuleService { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
         URI = NavManager.Uri;
         NavManager.LocationChanged += LocationChanged;
         _modules = await NavModuleService.GetAllModulesWithChildren();
+        if (_modules.Count == 0)
+            _modules.Add(new("Edit NavBar", "admin/navbar/edit", new(), true));
         
     }
 

@@ -47,6 +47,7 @@
         @foreach (var m in _modules) //List all modules if on corresponding pages only if it has sublinks
         {
             var module = m;
+            //TODO: Make this work with null null HREF -Thunder
             @if (URI.Contains(module.Href) && module.SubModules is not  null) //Check url and that the module has sub modules
             {
                 <CascadingValue Value="@URI">
