@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ProjectDataCore.Data.Database;
+using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -62,6 +63,7 @@ builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IPageEditService, PageEditService>()
     .AddScoped<IScopedUserService, ScopedUserService>()
     .AddScoped<IUserService, UserService>()
+    .AddScoped<INavModuleService, NavModuleService>()
     .AddScoped<IAssignableDataService, AssignableDataService>();
 
 builder.Services.AddSingleton<IRoutingService, RoutingService>()

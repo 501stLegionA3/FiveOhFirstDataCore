@@ -1,0 +1,10 @@
+﻿<li>
+    <span @ondblclick="()=>OnDblClick(Module)">@Module.DisplayName | <a class="underline text-sky-500" href="@Module.Href">@Module.Href</a></span>
+        <ul class="">
+            @foreach (NavModule m in Module.SubModules)
+            {
+                   <EditModuleDisplay Module="@m" OnDblClick="OnDblClick" OnLeftClick="OnLeftClick" />
+            }
+            <li class="last"><span @onclick="()=>OnLeftClick(Module)">Add +</span></li>
+        </ul>
+</li>

@@ -1,0 +1,62 @@
+﻿<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
+    <ul class="flex gap-4">
+        <li class="top-link">
+            <NavLink href="/" @onclick='() => Navigate("/")'>Your Roster</NavLink>
+        </li>
+
+        <li class="top-link group">
+            <button class="has-dropdown">Modules</button>
+            <ul class="dropdown">
+                @foreach (var m in _modules) //Display all modules under modules tab
+                {
+                    var module = m;
+                    @if (module.SubModules.Any()) //Check if module has sub links if so display them
+                    {
+                        <li class="drLink relative">
+                            @if (module.HasMainPage) //If module has a main page make the link clickable
+                            {
+                                <button class="has-dropdown">
+                                    <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="has-dropdown">@module.DisplayName</button>
+                            }
+                            <ul class="nested">
+                                @foreach (var l in module.SubModules) //List all sub links
+                                {
+                                    var link = l;
+                                    <li class="drLink">
+                                        <NavLink href="@link.Href" @onclick='() => Navigate(link.Href)'>@link.DisplayName</NavLink>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="drLink">
+                            <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
+                        </li>
+                    }
+                }
+            </ul>
+        </li>
+
+        @foreach (var m in _modules) //List all modules if on corresponding pages only if it has sublinks
+        {
+            var module = m;
+            @if (URI.Contains(module.Href) && module.SubModules is not  null) //Check url and that the module has sub modules
+            {
+                <CascadingValue Value="@URI">
+                    <ModuleDisplay Module="module"/>
+                </CascadingValue>
+            }
+        }
+
+        <li class="grow"></li>
+        <li class="top-link">@NavManager.Uri</li>
+        <li class="top-link">@URI</li>
+    </ul>
+</nav>

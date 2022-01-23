@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ProjectDataCore.Data.Database;
@@ -12,9 +13,10 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220120031838_Dev-Thunder-NavBar")]
+    partial class DevThunderNavBar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -23,7 +25,7 @@ namespace ProjectDataCore.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,8 +39,8 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -47,7 +49,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetRoleClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,8 +63,8 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<string>("ClaimValue")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -71,7 +73,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUserClaims", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -82,8 +84,8 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -92,13 +94,13 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -107,10 +109,10 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnType("text");
@@ -128,9 +130,11 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreRole", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -155,9 +159,11 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccessCode")
                         .HasColumnType("text");
@@ -172,6 +178,9 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<decimal?>("DiscordId")
                         .HasColumnType("numeric(20,0)");
 
+                    b.Property<int>("DisplayId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
@@ -184,6 +193,10 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -246,15 +259,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("NormalizedPropertyName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("PropertyName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TypeName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -265,34 +270,33 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableConfiguration");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("AssignableConfigurationId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Discriminator")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("ForUserId")
-                        .HasColumnType("uuid");
+                    b.Property<bool>("HasMainPage")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Href")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("uuid");
+
                     b.HasKey("Key");
 
-                    b.HasIndex("AssignableConfigurationId");
+                    b.HasIndex("ParentId");
 
-                    b.HasIndex("ForUserId");
-
-                    b.ToTable("AssignableValues");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableValue");
+                    b.ToTable("NavModules");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
@@ -302,10 +306,6 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -439,38 +439,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("RosterOrders");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Selector.User.UserSelectComponentSettings", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<List<string>>("Formats")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.Property<List<bool>>("IsStaticList")
-                        .IsRequired()
-                        .HasColumnType("boolean[]");
-
-                    b.Property<DateTime>("LastEdit")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("LayoutComponentId")
-                        .HasColumnType("uuid");
-
-                    b.Property<List<string>>("Properties")
-                        .IsRequired()
-                        .HasColumnType("text[]");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("LayoutComponentId")
-                        .IsUnique();
-
-                    b.ToTable("UserSelectComponentSettings");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
                 {
                     b.Property<Guid>("Key")
@@ -546,7 +514,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<DateOnly>>("AllowedValues")
+                    b.Property<List<DateOnly>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("date[]");
 
@@ -557,10 +525,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<DateTime>>("AllowedValues")
+                    b.Property<List<DateTime>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("timestamp with time zone[]")
-                        .HasColumnName("DateTimeValueAssignableConfiguration_AllowedValues");
+                        .HasColumnName("DateTimeValueAssignableConfiguration_AvalibleValues");
 
                     b.HasDiscriminator().HasValue("DateTimeValueAssignableConfiguration");
                 });
@@ -569,10 +537,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<double>>("AllowedValues")
+                    b.Property<List<double>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("double precision[]")
-                        .HasColumnName("DoubleValueAssignableConfiguration_AllowedValues");
+                        .HasColumnName("DoubleValueAssignableConfiguration_AvalibleValues");
 
                     b.HasDiscriminator().HasValue("DoubleValueAssignableConfiguration");
                 });
@@ -581,10 +549,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<int>>("AllowedValues")
+                    b.Property<List<int>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("integer[]")
-                        .HasColumnName("IntegerValueAssignableConfiguration_AllowedValues");
+                        .HasColumnName("IntegerValueAssignableConfiguration_AvalibleValues");
 
                     b.HasDiscriminator().HasValue("IntegerValueAssignableConfiguration");
                 });
@@ -593,10 +561,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<string>>("AllowedValues")
+                    b.Property<List<string>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("text[]")
-                        .HasColumnName("StringValueAssignableConfiguration_AllowedValues");
+                        .HasColumnName("StringValueAssignableConfiguration_AvalibleValues");
 
                     b.HasDiscriminator().HasValue("StringValueAssignableConfiguration");
                 });
@@ -605,99 +573,12 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
-                    b.Property<List<TimeOnly>>("AllowedValues")
+                    b.Property<List<TimeOnly>>("AvalibleValues")
                         .IsRequired()
                         .HasColumnType("time without time zone[]")
-                        .HasColumnName("TimeOnlyValueAssignableConfiguration_AllowedValues");
+                        .HasColumnName("TimeOnlyValueAssignableConfiguration_AvalibleValues");
 
                     b.HasDiscriminator().HasValue("TimeOnlyValueAssignableConfiguration");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DateOnlyAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<DateOnly>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("date[]");
-
-                    b.HasDiscriminator().HasValue("DateOnlyAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DateTimeAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<DateTime>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("timestamp with time zone[]")
-                        .HasColumnName("DateTimeAssignableValue_SetValue");
-
-                    b.HasDiscriminator().HasValue("DateTimeAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DoubleAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<double>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("double precision[]")
-                        .HasColumnName("DoubleAssignableValue_SetValue");
-
-                    b.HasDiscriminator().HasValue("DoubleAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.IntegerAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<int>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("integer[]")
-                        .HasColumnName("IntegerAssignableValue_SetValue");
-
-                    b.HasDiscriminator().HasValue("IntegerAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.StringAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<string>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("text[]")
-                        .HasColumnName("StringAssignableValue_SetValue");
-
-                    b.HasDiscriminator().HasValue("StringAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.TimeOnlyAssignableValue", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
-
-                    b.Property<List<TimeOnly>>("SetValue")
-                        .IsRequired()
-                        .HasColumnType("time without time zone[]")
-                        .HasColumnName("TimeOnlyAssignableValue_SetValue");
-
-                    b.HasDiscriminator().HasValue("TimeOnlyAssignableValue");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ButtonComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<bool>("InvokeSave")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("ResetForm")
-                        .HasColumnType("boolean");
-
-                    b.Property<int>("Style")
-                        .HasColumnType("integer");
-
-                    b.HasDiscriminator().HasValue("ButtonComponentSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
@@ -719,9 +600,6 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("FormatString")
-                        .HasColumnType("text");
 
                     b.Property<string>("Label")
                         .HasColumnType("text");
@@ -767,8 +645,8 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
 
-                    b.Property<Guid?>("OccupiedById")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("OccupiedById")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("ParentRosterId")
                         .HasColumnType("uuid");
@@ -791,6 +669,9 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
+                    b.Property<string>("FormatString")
+                        .HasColumnType("text");
+
                     b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 
@@ -798,10 +679,13 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
+                    b.Property<string>("Placeholder")
+                        .HasColumnType("text");
+
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreRole", null)
                         .WithMany()
@@ -810,7 +694,7 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", null)
                         .WithMany()
@@ -819,7 +703,7 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", null)
                         .WithMany()
@@ -828,7 +712,7 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreRole", null)
                         .WithMany()
@@ -843,32 +727,13 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", "AssignableConfiguration")
-                        .WithMany("AssignableValues")
-                        .HasForeignKey("AssignableConfigurationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "ForUser")
-                        .WithMany("AssignableValues")
-                        .HasForeignKey("ForUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssignableConfiguration");
-
-                    b.Navigation("ForUser");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
@@ -921,17 +786,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("SlotToOrder");
 
                     b.Navigation("TreeToOrder");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Selector.User.UserSelectComponentSettings", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "LayoutComponent")
-                        .WithOne("UserSelectSettings")
-                        .HasForeignKey("ProjectDataCore.Data.Structures.Selector.User.UserSelectComponentSettings", "LayoutComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LayoutComponent");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
@@ -1013,14 +867,12 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
-                    b.Navigation("AssignableValues");
-
                     b.Navigation("RosterSlots");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
                 {
-                    b.Navigation("AssignableValues");
+                    b.Navigation("SubModules");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
@@ -1036,8 +888,6 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
                 {
                     b.Navigation("ChildComponents");
-
-                    b.Navigation("UserSelectSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>

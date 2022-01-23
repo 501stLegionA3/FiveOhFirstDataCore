@@ -1,0 +1,49 @@
+﻿.top-link {
+    @apply hover:bg-emerald-700 relative p-1 min-h-full rounded-sm;
+}
+
+.link {
+    @apply hover:bg-emerald-700 px-3 py-1;
+}
+
+.dropdown {
+    @apply bg-emerald-800 z-10 rounded-b-md transform scale-0 group-hover:scale-100 absolute left-0 top-full transition duration-150 ease-in-out origin-top w-max min-w-full;
+}
+
+.nested{
+    @apply bg-emerald-800 z-10 rounded-r-md absolute top-0 right-[2px] transition duration-150 ease-in-out origin-top-left w-max min-w-full;
+}
+
+.dropdown > li:last-child {
+    @apply rounded-b-md;
+}
+
+.has-dropdown::after {
+    content: "+";
+    @apply pl-1;
+}
+
+.drLink {
+    @apply px-3 py-1 hover:bg-emerald-700;
+}
+
+.drLink:first-child {
+    @apply rounded-tr-md;
+}
+
+.drLink:last-child {
+    @apply rounded-b-md;
+}
+
+li > ul {
+    transform: translatex(100%) scale(0);
+}
+li:hover > ul {
+    transform: translatex(101%) scale(1);
+}
+li > button svg {
+    transform: rotate(-90deg);
+}
+li:hover > button svg {
+    transform: rotate(-270deg);
+}

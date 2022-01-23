@@ -1,0 +1,30 @@
+﻿::deep ul.tree, ul.tree ul {
+}
+
+::deep ul.tree ul {
+    margin-left: .7em;
+}
+
+::deep ul.tree li {
+    padding: 0 7px;
+    border-left: 1px solid rgb(100,100,100);
+}
+
+::deep ul.tree li:last-child {
+    border-left: none;
+}
+
+::deep ul.tree li:before {
+    position: relative;
+    top: -0.3em;
+    height: 1em;
+    width: 12px;
+    border-bottom: 1px solid rgb(100,100,100);
+    content: "";
+    display: inline-block;
+    left: -7px;
+}
+
+::deep ul.tree li:last-child:before {
+    border-left: 1px solid rgb(100,100,100);
+}
