@@ -263,38 +263,9 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("AssignableConfigurations");
+                    b.ToTable("AssignableConfigurations", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableConfiguration");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
-                {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("HasMainPage")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("Href")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LastEdit")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Key");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("NavModules");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
@@ -324,7 +295,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("ParentLayoutId");
 
-                    b.ToTable("PageComponentSettingsBase");
+                    b.ToTable("PageComponentSettingsBase", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("PageComponentSettingsBase");
                 });
@@ -354,7 +325,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("Route")
                         .IsUnique();
 
-                    b.ToTable("CustomPageSettings");
+                    b.ToTable("CustomPageSettings", (string)null);
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
@@ -377,7 +348,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("HostRosterId");
 
-                    b.ToTable("RosterDisplaySettings");
+                    b.ToTable("RosterDisplaySettings", (string)null);
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterObject", b =>
@@ -399,7 +370,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasKey("Key");
 
-                    b.ToTable("RosterObject");
+                    b.ToTable("RosterObject", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("RosterObject");
                 });
@@ -434,7 +405,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("TreeToOrderId");
 
-                    b.ToTable("RosterOrders");
+                    b.ToTable("RosterOrders", (string)null);
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
@@ -475,7 +446,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("RosterComponentUserListingDisplayId");
 
-                    b.ToTable("DataCoreUserProperty");
+                    b.ToTable("DataCoreUserProperty", (string)null);
                 });
 
             modelBuilder.Entity("RosterComponentSettingsRosterDisplaySettings", b =>
@@ -490,7 +461,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("DisplayComponentsKey");
 
-                    b.ToTable("RosterComponentSettingsRosterDisplaySettings");
+                    b.ToTable("RosterComponentSettingsRosterDisplaySettings", (string)null);
                 });
 
             modelBuilder.Entity("RosterTreeRosterTree", b =>
@@ -505,7 +476,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("ParentRostersKey");
 
-                    b.ToTable("RosterTreeRosterTree");
+                    b.ToTable("RosterTreeRosterTree", (string)null);
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.DateOnlyValueAssignableConfiguration", b =>
@@ -734,15 +705,6 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Nav.NavModule", "Parent")
-                        .WithMany("SubModules")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Parent");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
@@ -866,11 +828,6 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
                     b.Navigation("RosterSlots");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
-                {
-                    b.Navigation("SubModules");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
