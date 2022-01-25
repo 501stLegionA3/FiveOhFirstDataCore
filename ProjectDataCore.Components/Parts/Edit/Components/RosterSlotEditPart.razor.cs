@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Parts.Edit.Components;
-public partial class FormEditPart : EditBase
+
+[EditableComponent(Name = "Roster Slot Editor")]
+public partial class RosterSlotEditPart : EditBase
 {
 
 }
