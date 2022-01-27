@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Page.Components;
 using ProjectDataCore.Data.Structures.Result;
 using ProjectDataCore.Data.Structures.Roster;
 
@@ -31,6 +32,7 @@ public interface IModularRosterService
 
     #region Roster Display Settings
     public Task<ActionResult> AddRosterDisplaySettingsAsync(string name, Guid host);
+    public Task<ActionResult> LoadEditableDisplaysAsync(EditableComponentSettings componentData);
     public Task<ActionResult> UpdateRosterDisplaySettingsAsync(Guid settings, Action<RosterDisplaySettingsEditModel> action);
     public Task<ActionResult> RemoveRosterDisplaySettingsAsync(Guid settings);
     #endregion

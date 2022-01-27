@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Page.Components;
 
 using System.Runtime.Serialization;
 
@@ -339,6 +340,17 @@ public class ModularRosterService : IModularRosterService
 
         await _dbContext.AddAsync(settings);
         await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
+    }
+
+    public async Task<ActionResult> LoadEditableDisplaysAsync(EditableComponentSettings componentData)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get rid of any old data.
+        componentData.EditableDisplays.Clear();
+        await _dbContext.Attach(componentData).Collection(x => x.EditableDisplays).LoadAsync();
 
         return new(true, null);
     }
