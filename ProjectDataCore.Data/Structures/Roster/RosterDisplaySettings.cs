@@ -18,4 +18,5 @@ public class RosterDisplaySettings : DataObject<Guid>
     public Guid HostRosterId { get; set; }
 
     public List<RosterComponentSettings> DisplayComponents { get; set; } = new();
+    public List<EditableComponentSettings> EditableComponentsAllowedEditors { get; set; } = new();
 }

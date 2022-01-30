@@ -15,6 +15,7 @@ public abstract class ParameterBase : CustomComponentBase
         public string Property { get; set; }
         public bool StaticProperty { get; set; }
         public string? FormatString { get; set; }
+        public List<RosterDisplaySettings>? AllowedDisplays { get; set; }
 
         public ParameterEditModel(ParameterComponentSettingsBase settings)
         {

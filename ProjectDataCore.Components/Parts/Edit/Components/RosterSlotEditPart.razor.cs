@@ -1,29 +1,114 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ProjectDataCore.Data.Structures.Model.User;
+using ProjectDataCore.Data.Structures.Page;
 
 namespace ProjectDataCore.Components.Parts.Edit.Components;
 
 [EditableComponent(Name = "Roster Slot Editor")]
-public partial class RosterSlotEditPart : EditBase
+public partial class RosterSlotEditPart : EditBase, ISubmittable
 {
 #pragma warning disable CS8618 // Inject is never null.
     [Inject]
     public IModularRosterService RosterService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+    #region Editing
+    public List<RosterDisplaySettings> AllDisplaySettings { get; set; } = new();
+    public int AllDisplaySettingsSelector { get; set; }
+    #endregion
+
     public List<RosterSlot> RegisteredSlots { get; set; } = new();
 
     public List<RosterDisplaySettings> DisplaySettings { get; set; } = new();
-    public int SelectedDisplay { get; set; }
+    public int SelectedDisplay { get; set; } = -1;
 
     public List<RosterTree> DisplayTrees { get; set; } = new();
-    public int SelectedTree { get; set; }
+    public int SelectedTree { get; set; } = -1;
 
     public List<RosterSlot> RosterSlots { get; set; } = new();
-    public int SelectedSlot { get; set; }
+    public int SelectedSlot { get; set; } = -1;
+
+    #region Editing
+    protected async Task OnStartComponentEditAsync()
+	{
+        if (ComponentData is not null)
+        {
+            base.StartEdit();
+
+            EditModel!.AllowedDisplays = new();
+            var res = await RosterService.LoadEditableDisplaysAsync(ComponentData);
+
+            if(res.GetResult(out var err))
+			{
+                EditModel.AllowedDisplays.AddRange(ComponentData.EditableDisplays); 
+                
+                var allRes = await RosterService.GetAvalibleRosterDisplaysAsync();
+
+                if (allRes.GetResult(out var displays, out var errTwo))
+                {
+                    AllDisplaySettings = displays;
+                }
+                else
+                {
+                    // TODO handle errors
+                    CancelEdit();
+                }
+            }
+			else
+			{
+                // TODO handle errors
+                CancelEdit();
+			}
+
+            StateHasChanged();
+        }
+	}
+
+    protected void OnAddAllowedRosterDisplay()
+	{
+        if(EditModel?.AllowedDisplays is not null)
+            EditModel.AllowedDisplays.Add(AllDisplaySettings[AllDisplaySettingsSelector]);
+
+        StateHasChanged();
+	}
+
+    protected void OnRemoveAllowedRosterDisplay(RosterDisplaySettings settings)
+	{
+        if (EditModel?.AllowedDisplays is not null)
+            EditModel.AllowedDisplays.Remove(settings);
+
+        StateHasChanged();
+    }
+	#endregion
+
+	#region Submission
+	protected override async Task OnParametersSetAsync()
+	{
+		await base.OnParametersSetAsync();
+
+        if (ParentForm is not null)
+        {
+            ParentForm.AddSubmitListener(ScopeIndex, OnSubmitAsync);
+        }
+    }
+
+	public Task OnSubmitAsync(DataCoreUserEditModel model)
+    {
+        if (ComponentData is not null)
+        {
+            model.Slots = RegisteredSlots;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        if(ParentForm is not null)
+		{
+            ParentForm.RemoveSubmitListener(ScopeIndex, OnSubmitAsync);
+		}
+    }
+    #endregion
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -37,7 +122,19 @@ public partial class RosterSlotEditPart : EditBase
     
     protected async Task LoadSlotsAsync()
     {
+        if (ScopedUsers is not null && ScopedUsers[ScopeIndex] is not null)
+        {
+            var res = await RosterService.LoadExistingSlotsAsync(ScopedUsers[ScopeIndex]);
 
+            if(!res.GetResult(out var err))
+            {
+                // TOOD handle errors
+            }
+            else
+            {
+                RegisteredSlots.AddRange(ScopedUsers[ScopeIndex].RosterSlots);
+            }
+        }
     }
 
     protected async Task ReloadRosterDisplaysAsync()
@@ -46,7 +143,7 @@ public partial class RosterSlotEditPart : EditBase
         {
             await RosterService.LoadEditableDisplaysAsync(ComponentData);
 
-            if(ComponentData.EditableDisplays.Count <= 0)
+            if(ComponentData.EditableDisplays.Count > 0)
             {
                 DisplaySettings = ComponentData.EditableDisplays;
             }
@@ -63,6 +160,8 @@ public partial class RosterSlotEditPart : EditBase
                     // TODO handle errors
                 }
             }
+
+            await LoadSlotsAsync();
 
             StateHasChanged();
         }
@@ -127,5 +226,32 @@ public partial class RosterSlotEditPart : EditBase
         SelectedSlot = newIndex;
 
         StateHasChanged();
+    }
+
+    protected void OnAddRosterSlot()
+    {
+        RegisteredSlots.Add(RosterSlots[SelectedSlot]);
+
+        ClearSelection();
+
+        StateHasChanged();
+    }
+
+    protected void OnRemoveRosterSlot(RosterSlot slot)
+    {
+        RegisteredSlots.Remove(slot);
+
+        StateHasChanged();
+    }
+
+    protected void ClearSelection()
+    {
+        SelectedDisplay = -1;
+
+        DisplayTrees.Clear();
+        SelectedTree = -1;
+
+        RosterSlots.Clear();
+        SelectedSlot = -1;
     }
 }

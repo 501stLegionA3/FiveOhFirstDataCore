@@ -23,6 +23,21 @@ namespace ProjectDataCore.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.Property<Guid>("EditableComponentsAllowedEditorsKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EditableDisplaysKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EditableComponentsAllowedEditorsKey", "EditableDisplaysKey");
+
+                    b.HasIndex("EditableDisplaysKey");
+
+                    b.ToTable("EditableComponentSettingsRosterDisplaySettings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.Property<int>("Id")
@@ -829,6 +844,21 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableComponentsAllowedEditorsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableDisplaysKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

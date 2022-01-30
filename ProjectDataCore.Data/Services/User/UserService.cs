@@ -72,6 +72,16 @@ public class UserService : IUserService
 				property.ReplaceValue(item.Value);
         }
 
+		if(model.Slots is not null)
+		{
+			foreach(var slot in model.Slots)
+			{
+				_dbContext.Attach(slot);
+
+				slot.OccupiedById = userData.Id;
+			}
+		}
+
 		await _dbContext.SaveChangesAsync();
 
 		return new(true, null);

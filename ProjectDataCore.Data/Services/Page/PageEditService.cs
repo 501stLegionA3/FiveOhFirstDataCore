@@ -386,7 +386,7 @@ public class PageEditService : IPageEditService
     }
 
     public async Task<ActionResult> UpdateEditableComponentAsync(Guid comp, 
-        Action<ParameterComponentSettingsEditModel> action)
+        Action<EditableComponentSettingsEditModel> action)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -397,10 +397,20 @@ public class PageEditService : IPageEditService
         if (compData is null)
             return new(false, new List<string>() { "No editable component was found for the provided ID." });
 
-        ParameterComponentSettingsEditModel model = new();
+        EditableComponentSettingsEditModel model = new();
         action.Invoke(model);
 
         ApplyParameterComponentEdits(compData, model);
+
+        if(model.EditableDisplays is not null)
+		{
+            foreach(var editableDisplay in model.EditableDisplays)
+			{
+                _dbContext.Attach(editableDisplay);
+			}
+
+            compData.EditableDisplays = model.EditableDisplays;
+		}
 
         await _dbContext.SaveChangesAsync();
         return new(true, null);

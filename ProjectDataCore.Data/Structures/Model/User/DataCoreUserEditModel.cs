@@ -11,6 +11,7 @@ public class DataCoreUserEditModel
 {
     public ConcurrentDictionary<string, object?> StaticValues { get; set; } = new();
     public ConcurrentDictionary<string, object?> AssignableValues { get; set; } = new();
+    public List<RosterSlot>? Slots { get; set; } = null;
 
     public void ApplyStaticValues<T>(T obj) where T : class
     {

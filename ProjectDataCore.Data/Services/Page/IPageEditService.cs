@@ -122,7 +122,7 @@ public interface IPageEditService
     /// <param name="comp">The ID of the component to update.</param>
     /// <param name="action">The update action to take.</param>
     /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> UpdateEditableComponentAsync(Guid comp, Action<ParameterComponentSettingsEditModel> action);
+    public Task<ActionResult> UpdateEditableComponentAsync(Guid comp, Action<EditableComponentSettingsEditModel> action);
     #endregion
 
     #region Display Component Actions

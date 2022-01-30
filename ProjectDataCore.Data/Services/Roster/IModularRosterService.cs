@@ -28,6 +28,7 @@ public interface IModularRosterService
     public Task<ActionResult> AddRosterSlotAsync(string name, Guid parentTree, int position);
     public Task<ActionResult> UpdateRosterSlotAsync(Guid slot, Action<RosterSlotEditModel> action);
     public Task<ActionResult> RemoveRosterSlotAsync(Guid slot);
+    public Task<ActionResult> LoadExistingSlotsAsync(DataCoreUser activeUser);
     #endregion
 
     #region Roster Display Settings

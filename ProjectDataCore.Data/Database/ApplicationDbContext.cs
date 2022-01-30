@@ -105,6 +105,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey<RosterOrder>(p => p.SlotToOrderId);
         rosterSlot.Navigation(e => e.Order)
             .AutoInclude(true);
+        rosterSlot.Navigation(e => e.OccupiedBy)
+            .AutoInclude(true);
         #endregion
 
         #region Page
@@ -131,6 +133,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         parameterComponentSettings.HasOne(e => e.UserScope)
             .WithMany(p => p.AttachedScopes)
             .HasForeignKey(e => e.UserScopeId);
+
+        var editableComponentSettings = builder.Entity<EditableComponentSettings>();
+        editableComponentSettings.HasMany(e => e.EditableDisplays)
+            .WithMany(e => e.EditableComponentsAllowedEditors);
 
         var rosterComponentSettings = builder.Entity<RosterComponentSettings>();
         rosterComponentSettings.HasMany(e => e.DefaultDisplayedProperties)

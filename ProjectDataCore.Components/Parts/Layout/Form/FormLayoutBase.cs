@@ -115,6 +115,7 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
             {
                 x.StaticValues = model.StaticValues;
                 x.AssignableValues = model.AssignableValues;
+                x.Slots = model.Slots;
             });
 
             if (!res.GetResult(out var err))

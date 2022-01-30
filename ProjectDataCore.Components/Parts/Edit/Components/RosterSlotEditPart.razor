@@ -2,33 +2,80 @@
 
 <DisplayBox>
 	<Contnet>
-		@if(Editing)
+		@if(EditModel is not null)
 		{
-
-		}
-		else if (ComponentData is not null)
-		{
-			<EditForm Model="this">
-				<div class="grid grid-cols-1 grid-flow-row-dense gap-2">
-
-					<div class="flex-grow inline-flex gap-2 p-2 w-full text-center">
-						<button class="flex border border-op_danger hover:bg-op_danger hover:text-op_danger_t">
-							<span class="material-icons-round">person_remove</span>
+			<EditForm Context="DisplayEditContext" Model="EditModel">
+				<div class="p-3 input-group">
+					<InputText id="edit-label" class="input-control" @bind-Value="EditModel.Label" />
+					<label class="input-label" for="edit-label">Display Label</label>
+				</div>
+				<hr />
+				<div class="p-3 input-group">
+					<InputSelect id="edit-scope" class="input-control" TValue="Guid?"
+						Value="UserScopeSelection" ValueChanged="OnUserScopeChanged" ValueExpression="() => UserScopeSelection">
+						<ScopedComponentsSelectOptions />
+					</InputSelect>
+					<label class="input-label" for="edit-scope">User Scope Selector</label>
+				</div>
+				<hr />
+				<div class="p-2 grid grid-cols-1 grid-flow-row-dense gap-2">
+					@if (EditModel.AllowedDisplays is not null)
+					{
+						<div class="input-group">
+							<InputSelect id="settings-select" class="input-control" @bind-Value="AllDisplaySettingsSelector">
+								@foreach(var i in AllDisplaySettings)
+								{
+									if (!EditModel.AllowedDisplays.Contains(i))
+									{
+										<option value="@i">@i.Name</option>
+									}
+								}
+							</InputSelect>
+							<label class="input-label" for="settings-select">Allowed Rosters to Edit</label>
+						</div>
+						<button class="border border-op_success hover:bg-op_success hover:text-op_success_t inline-flex align-middle"
+							@onclick="OnAddAllowedRosterDisplay">
+							<span class="flex-grow px-2">Add</span>
+							<span class="material-icons-round flex-0">add</span>
 						</button>
-
+						<div class="inline-flex justify-start gap-2">
+							@foreach (var display in EditModel.AllowedDisplays)
+							{
+								var u = display;
+								<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+								@onclick="() => OnRemoveAllowedRosterDisplay(u)">
+									<span class="flex-grow px-2">@u.Name</span>
+									<span class="material-icons-round flex-0">highlight_off</span>
+								</button>
+							}
+						</div>
+					}
+				</div>
+				<hr />
+				<div class="p-3">
+					<button class="rounded-lg p-2 bg-green-400" @onclick="SaveEdit">Save</button>
+					<button class="rounded-lg p-2 bg-red-500" @onclick="CancelEdit">Cancel</button>
+				</div>
+			</EditForm>
+		}
+		else
+		{
+			<EditForm Model="this" class="relative">
+				<div class="grid grid-cols-1 grid-flow-row-dense gap-2">
+					<div class="flex-grow inline-flex gap-2 p-2 w-full text-center">
 						<div class="flex-grow grid grid-cols-1 grid-flow-row-dense gap-2 input-group">
 							<InputSelect Value="SelectedDisplay" ValueExpression="() => SelectedDisplay"
 								TValue="int" ValueChanged="OnSelectedDisplayChangedAsync">
 								<option value="-1">n/a</option>
-								@for(int i = 0; i < ComponentData.EditableDisplays.Count; i++)
+								@for(int i = 0; i < DisplaySettings.Count; i++)
 								{
-									<option value="@i">@ComponentData.EditableDisplays[i].Name</option>
+									<option value="@i">@DisplaySettings[i].Name</option>
 								}
 							</InputSelect>
 							<label class="input-label" for="">Roster Display Selector</label>
 						</div>
 
-						<div class="flex-grow grid grid-cols-1 grid-flow-row-dense gap-2 input-group transition-all invisible">
+						<div class="flex-grow grid grid-cols-1 grid-flow-row-dense gap-2 input-group transition-all @(SelectedDisplay == -1 ? "invisible" : "visible")">
 							<InputSelect Value="SelectedTree" ValueExpression="() => SelectedTree"
 								TValue="int" ValueChanged="OnSelectedTreeChanged">
 								<option value="-1">n/a</option>
@@ -37,10 +84,10 @@
 									<option value="@i">@DisplayTrees[i].Name</option>
 								}
 							</InputSelect>
-							<label class="input-label" for="">>Roster Tree Selector</label>
+							<label class="input-label" for="">Roster Tree Selector</label>
 						</div>
 
-						<div class="flex-grow grid grid-cols-1 grid-flow-row-dense gap-2 input-group transition-all invisible ">
+						<div class="flex-grow grid grid-cols-1 grid-flow-row-dense gap-2 input-group transition-all @(SelectedTree == -1 ? "invisible" : "visible")">
 							<InputSelect Value="SelectedSlot" ValueExpression="() => SelectedSlot"
 								TValue="int" ValueChanged="OnSelectedSlotChanged">
 								<option value="-1">n/a</option>
@@ -49,10 +96,45 @@
 									<option value="@i">@RosterSlots[i].Name</option>
 								}
 							</InputSelect>
-							<label class="input-label" for="">>Roster Slot Selector</label>
+							<label class="input-label" for="">Roster Slot Selector</label>
 						</div>
+						
+						<button class="flex border border-op_success hover:bg-op_success hover:text-op_success_t"
+								@onclick="OnAddRosterSlot">
+							<span class="material-icons-round">person_add</span>
+						</button>
 					</div>
+					
+					@foreach (var slot in RegisteredSlots)
+					{
+						var s = slot;
 
+						<div class="flex-grow inline-flex gap-2 p-2 w-full text-center">
+							<button class="flex border border-op_danger hover:bg-op_danger hover:text-op_danger_t"
+								@onclick="() => OnRemoveRosterSlot(s)">
+								<span class="material-icons-round">person_remove</span>
+							</button>
+
+							<div class="flex-grow">
+								@(slot.ParentRoster?.Name ?? "")
+							</div>
+
+							<div class="flex-grow">
+								@slot.Name
+							</div>
+						</div>
+					}
+
+					@if(Editing)
+					{
+						<button class="border border-util_action hover:bg-util_action hover:text-util_action_t inline-flex text-center"
+							@onclick="OnStartComponentEditAsync">
+							<span class="flex-grow px-2">Edit</span>
+							<span class="material-icons-round flex-0">edit</span>
+						</button>
+												
+						<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+					}
 				</div>
 			</EditForm>
 		}

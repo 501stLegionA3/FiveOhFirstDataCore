@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220123023302_Dev")]
+    [Migration("20220130160058_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ProjectDataCore.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.Property<Guid>("EditableComponentsAllowedEditorsKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EditableDisplaysKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EditableComponentsAllowedEditorsKey", "EditableDisplaysKey");
+
+                    b.HasIndex("EditableDisplaysKey");
+
+                    b.ToTable("EditableComponentSettingsRosterDisplaySettings");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -831,6 +846,21 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableComponentsAllowedEditorsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableDisplaysKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

@@ -325,6 +325,19 @@ public class ModularRosterService : IModularRosterService
 
         return new(true, null);
     }
+
+    public async Task<ActionResult> LoadExistingSlotsAsync(DataCoreUser activeUser)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await _dbContext.Attach(activeUser)
+            .Collection(e => e.RosterSlots)
+            .Query()
+            .Include(e => e.ParentRoster)
+            .LoadAsync();
+
+        return new(true, null);
+    }
     #endregion
 
     #region Roster Display Settings
