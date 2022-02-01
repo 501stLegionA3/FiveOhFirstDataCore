@@ -104,6 +104,14 @@
 							<span class="material-icons-round">person_add</span>
 						</button>
 					</div>
+
+					@if(RosterSlots.ElementAtOrDefault(SelectedSlot)?.OccupiedById.HasValue ?? false)
+					{
+						<div class="inline-flex justify-center text-left text-op_danger">
+							<span class="material-icons-round flex-0">warning</span>
+							<em class="flex-grow">This slot is currenlty occupied. Savings this form will replace the curant occupant with your selected user.</em>
+						</div>
+					}
 					
 					@foreach (var slot in RegisteredSlots)
 					{

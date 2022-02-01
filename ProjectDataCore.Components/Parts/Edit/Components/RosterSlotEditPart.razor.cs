@@ -122,7 +122,7 @@ public partial class RosterSlotEditPart : EditBase, ISubmittable
     
     protected async Task LoadSlotsAsync()
     {
-        if (ScopedUsers is not null && ScopedUsers[ScopeIndex] is not null)
+        if (ScopedUsers is not null && ScopedUsers.ElementAtOrDefault(ScopeIndex) is not null)
         {
             var res = await RosterService.LoadExistingSlotsAsync(ScopedUsers[ScopeIndex]);
 

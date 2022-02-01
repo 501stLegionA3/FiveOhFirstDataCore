@@ -1,9 +1,10 @@
 ﻿@inherits LayoutBase
 
-<div class="part-edit-container">
+<div class="@(Editing ? "part-edit-container" : "")">
     @if (!DisplayLayoutSettings)
     {
-        <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-@Height grid-cols-@Width">
+        <div class="p-1 grid grid-flow-row-dense gap-3 lg:grid-cols-@Width
+            md:grid-cols-@((Width - 1) < 0 ? 0 : Width - 1) grid-cols-@((Width - 2) < 0 ? 0 : Width - 2)">
             @for (var x = 0; x < Width; x++)
             {
                 var xa = x * Height;
@@ -17,8 +18,8 @@
                     else if (Editing && ComponentSettings is not null)
                     {
                         <AddComponentDialog ParentComponent="ComponentSettings.Key" 
-                        Position="pos" 
-                        AllowedAttributes="AllowedAttributes" />
+                            Position="pos" 
+                            AllowedAttributes="AllowedAttributes" />
                     }
                 }
             }
@@ -26,10 +27,10 @@
         @if (Editing && ComponentSettings is not null)
         {
             <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
-            @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
+                @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
 
             <button class="absolute bottom-0 right-0 p-2 rounded-lg bg-slate-500"
-            @onclick="ToggleSettingsPanelAsync">
+                @onclick="ToggleSettingsPanelAsync">
                 <span class="material-icons-round">settings</span>
             </button>
         }
@@ -39,3 +40,5 @@
         <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
     }
 </div>
+
+<div class="hidden grid-cols-1 grid-cols-2 grid-cols-3 lg:grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 md:grid-cols-1 md:grid-cols-2 md:grid-cols-3 sm:grid-cols-1 sm:grid-cols-2 sm:grid-cols-3"></div>
