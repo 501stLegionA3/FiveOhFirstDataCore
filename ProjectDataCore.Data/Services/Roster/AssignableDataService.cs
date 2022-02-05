@@ -251,6 +251,7 @@ public class AssignableDataService : IAssignableDataService
         // Validate that there are no values missing ...
         var missing = await _dbContext.AssignableConfigurations
             .Where(x => !keyMap.Contains(x.Key))
+            .Where(x => x.AssignableType == BaseAssignableConfiguration.InternalAssignableType.UserProperty)
             .ToListAsync();
 
         // ... then for each value that is missing ...
@@ -284,5 +285,42 @@ public class AssignableDataService : IAssignableDataService
         await _dbContext.Entry(user).ReloadAsync();
 
         return new(true, null);
+    }
+
+    public async Task<ActionResult<DataCoreUser>> GetMockUserWithAssignablesAsync()
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Validate that there are no values missing ...
+        var missing = await _dbContext.AssignableConfigurations
+            .Where(x => x.AssignableType == BaseAssignableConfiguration.InternalAssignableType.UserProperty)
+            .ToListAsync();
+
+        DataCoreUser mock = new();
+        // ... then for each value that is missing ...
+        foreach (var val in missing)
+        {
+            // ... get the attribute information ...
+            var attr = val.GetType().GetCustomAttributes<AssignableConfigurationAttribute>()
+                .FirstOrDefault();
+
+            if (attr is null)
+                continue;
+
+            // ... create the assignable value ...
+            if (Activator.CreateInstance(attr.Configures) is BaseAssignableValue assignable)
+            {
+                assignable.AssignableConfiguration = val;
+                // ... set the links ...
+                mock.AssignableValues.Add(assignable);
+            }
+            else
+            {
+                // ... if an error occours, immedietly exit ...
+                return new(false, new List<string>() { "Unable to create an assignable value from the provided configuration." });
+            }
+        }
+
+        return new(true, null, mock);
     }
 }

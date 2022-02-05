@@ -105,6 +105,26 @@ var dbFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<Applicati
 using var db = dbFac.CreateDbContext();
 ApplyDatabaseMigrations(db);
 
+// START VALIDATE ADMIN ACCOUNT
+
+var usrMngr = scope.ServiceProvider.GetRequiredService<UserManager<DataCoreUser>>();
+var usr = await usrMngr.FindByNameAsync("Administrator");
+if(usr is null)
+{
+    usr = new()
+    {
+        UserName = "Administrator"
+    };
+
+    await usrMngr.CreateAsync(usr, app.Configuration["Startup:Password"]);
+    var usrServ = scope.ServiceProvider.GetRequiredService<IAssignableDataService>();
+
+    usr = await usrMngr.FindByNameAsync("Administrator");
+    await usrServ.EnsureAssignableValuesAsync(usr);
+}
+
+// END VALIDATE ADMIN ACCOUNT
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto

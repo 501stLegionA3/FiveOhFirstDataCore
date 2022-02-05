@@ -14,4 +14,14 @@ public partial class AssignableValueInput
     public BaseAssignableConfiguration? ToEdit { get; set; } = null;
     [Parameter]
     public AssignableConfigurationValueEditModel EditModel { get; set; }
+    [Parameter]
+    public Action? SingleValueUpdate { get; set; }
+
+    private void ValueChanged(Action updateValue)
+    {
+        updateValue.Invoke();
+
+        if (SingleValueUpdate is not null)
+            SingleValueUpdate.Invoke();
+    }
 }

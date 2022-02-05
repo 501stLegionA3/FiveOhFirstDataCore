@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220130160058_Dev")]
+    [Migration("20220205011546_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -254,6 +254,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("AllowedInput")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AssignableType")
                         .HasColumnType("integer");
 
                     b.Property<string>("Discriminator")

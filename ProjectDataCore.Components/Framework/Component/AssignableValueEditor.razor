@@ -30,7 +30,7 @@
 			else
 			{
 				<div class="input-group">
-					<AssignableValueInput EditModel="SingleValueInput" ToEdit="EditModel.AssignableConfiguration" />
+					<AssignableValueInput EditModel="SingleValueInput" ToEdit="EditModel.AssignableConfiguration" SingleValueUpdate="AddValue" />
 					<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
 				</div>
 			}

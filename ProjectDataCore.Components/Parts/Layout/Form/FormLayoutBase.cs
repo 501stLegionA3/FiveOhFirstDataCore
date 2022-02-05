@@ -32,6 +32,16 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
         InitScope();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            await OnFormInitAsync();
+        }
+    }
+
     public void InitScope()
     {
         if(ComponentData is not null)
@@ -95,6 +105,11 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
         {
             actions.Remove(action);
         }
+    }
+
+    public virtual Task OnFormInitAsync()
+    {
+        return Task.CompletedTask;
     }
 
     public virtual async Task OnSubmitAsync()

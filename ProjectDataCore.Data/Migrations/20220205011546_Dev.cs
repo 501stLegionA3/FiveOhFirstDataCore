@@ -58,6 +58,7 @@ namespace ProjectDataCore.Data.Migrations
                 columns: table => new
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignableType = table.Column<int>(type: "integer", nullable: false),
                     PropertyName = table.Column<string>(type: "text", nullable: false),
                     NormalizedPropertyName = table.Column<string>(type: "text", nullable: false),
                     TypeName = table.Column<string>(type: "text", nullable: false),

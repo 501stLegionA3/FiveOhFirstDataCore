@@ -254,6 +254,9 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<int>("AllowedInput")
                         .HasColumnType("integer");
 
+                    b.Property<int>("AssignableType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("text");
