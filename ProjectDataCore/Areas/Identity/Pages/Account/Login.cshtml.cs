@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Account;
+using ProjectDataCore.Data.Services.Account;
 
 namespace ProjectDataCore.Areas.Identity.Pages.Account
 {
@@ -23,12 +25,15 @@ namespace ProjectDataCore.Areas.Identity.Pages.Account
         private readonly DataCoreSignInManager _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IAssignableDataService _assignableDataService;
+        private readonly IAccountLinkService _linkService;
 
-        public LoginModel(DataCoreSignInManager signInManager, IAssignableDataService assignableDataService, ILogger<LoginModel> logger)
+        public LoginModel(DataCoreSignInManager signInManager, IAssignableDataService assignableDataService, ILogger<LoginModel> logger,
+            IAccountLinkService linkService)
         {
             _signInManager = signInManager;
             _assignableDataService = assignableDataService;
             _logger = logger;
+            _linkService = linkService;
         }
 
         /// <summary>
@@ -111,17 +116,27 @@ namespace ProjectDataCore.Areas.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                if (result is UserSignInResult res)
+                {
+                    if(res.RequiresAccountLinking)
+                    {
+                        var token = await _linkService.StartAsync(res.UserId, Input.Username, Input.Password, Input.RememberMe);
+                        return Redirect($"/api/link/token/{token}");
+                    }
+                }
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
                     return LocalRedirect(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
+                } 
+                else if (result.RequiresTwoFactor)
                 {
                     return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
                 }
-                if (result.IsLockedOut)
+                else if (result.IsLockedOut)
                 {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");

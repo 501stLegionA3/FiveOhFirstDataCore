@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220205011546_Dev")]
+    [Migration("20220205183202_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,6 +242,26 @@ namespace ProjectDataCore.Data.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.LinkSettings", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RequireDiscordLink")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequireSteamLink")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("LinkSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>

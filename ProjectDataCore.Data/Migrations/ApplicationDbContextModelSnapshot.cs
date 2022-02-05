@@ -242,6 +242,26 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.LinkSettings", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RequireDiscordLink")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequireSteamLink")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("LinkSettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>
                 {
                     b.Property<Guid>("Key")

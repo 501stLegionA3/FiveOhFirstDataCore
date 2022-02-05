@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectDataCore.Data.Structures.Nav;
+using ProjectDataCore.Data.Structures.Account;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -59,7 +60,13 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<TimeOnlyAssignableValue> TimeOnlyAssignableValues { get; internal set; }
     #endregion
 
+    #region Account Link
+    public DbSet<LinkSettings> LinkSettings { get; internal set; }
+    #endregion
+
+    #region Nav Modules
     public DbSet<NavModule> NavModules { get; internal set; }
+    #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -189,6 +196,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             
         var dataCoreUserProperty = builder.Entity<DataCoreUserProperty>();
         dataCoreUserProperty.HasKey(e => e.Key);
+        #endregion
+
+        #region Account Link
+        var accountLinkSettings = builder.Entity<LinkSettings>();
+        accountLinkSettings.HasKey(e => e.Key);
         #endregion
 
         #region Nav Modules

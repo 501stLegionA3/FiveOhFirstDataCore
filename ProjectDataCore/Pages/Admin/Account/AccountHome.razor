@@ -1,0 +1,35 @@
+﻿@page "/admin/account/"
+
+<div class="p-4 grid grid-cols-1 gap-2">
+	<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
+		<div class="text-lg">Current Link Settings</div>
+		<div class="justify-self-center">
+			<label class="inline-flex items-center">
+				<InputCheckbox @bind-Value="Settings.RequireSteamLink" disabled="true" />
+				<span class="ml-2">Require Steam Account Link</span>
+			</label>
+		</div>
+		<div class="justify-self-center">
+			<label class="inline-flex items-center">
+				<InputCheckbox @bind-Value="Settings.RequireDiscordLink" disabled="true" />
+				<span class="ml-2">Require Discord Account Link</span>
+			</label>
+		</div>
+	</EditForm>
+	<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
+		<div class="text-lg">Change Link Settings</div>
+		<div class="justify-self-center">
+			<label class="inline-flex items-center">
+				<InputCheckbox @bind-Value="RequireSteamLink" />
+				<span class="ml-2">Require Steam Account Link</span>
+			</label>
+		</div>
+		<div class="justify-self-center">
+			<label class="inline-flex items-center">
+				<InputCheckbox @bind-Value="RequireDiscordLink" />
+				<span class="ml-2">Require Discord Account Link</span>
+			</label>
+		</div>
+		<button class="button-op-success" @onclick="OnSaveSettingsAsync">Save Changes</button>
+	</EditForm>
+</div>

@@ -1,8 +1,14 @@
+using AspNet.Security.OpenId;
+
+using DSharpPlus;
+
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ProjectDataCore.Data.Database;
+using ProjectDataCore.Data.Services.Account;
 using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.User;
 
@@ -22,8 +28,8 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     // We want this behaviour for accurate data loading (and our lists are not
     // of any large size for the roster) so we are ignoring these.
     .ConfigureWarnings(w =>
-        w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning))
-    , ServiceLifetime.Singleton);
+        w.Ignore(RelationalEventId.MultipleCollectionIncludeWarning)
+    ), ServiceLifetime.Singleton);
 
 builder.Services.AddScoped(p
     => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
@@ -59,6 +65,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 // END PASSWORD SETUP
 
+// Scoped Services
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IPageEditService, PageEditService>()
     .AddScoped<IScopedUserService, ScopedUserService>()
@@ -66,6 +73,7 @@ builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<INavModuleService, NavModuleService>()
     .AddScoped<IAssignableDataService, AssignableDataService>();
 
+// Singleton Services
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<RoutingService.RoutingServiceSettings>(x =>
     {
@@ -75,11 +83,128 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
             throw new Exception("Missing components assembly.");
 
         return new(asm);
-    });
+    })
+    .AddSingleton<IAccountLinkService, AccountLinkService>();
 
 // END SERVICE SETUP
 
 // END DISCORD SETUP
+
+builder.Services.AddAuthentication()
+    .AddSteam("Steam", "Steam", options =>
+    {
+        options.CorrelationCookie = new()
+        {
+            IsEssential = true,
+            SameSite = SameSiteMode.None,
+            SecurePolicy = CookieSecurePolicy.Always
+        };
+
+        options.Events = new OpenIdAuthenticationEvents
+        {
+            OnTicketReceived = async context =>
+            {
+                if (context.Request.Cookies.TryGetValue("token", out var token))
+                {
+                    if (context.Request.QueryString.HasValue)
+                    {
+                        var query = context.Request.Query["openid.identity"];
+
+                        var link = context.HttpContext.RequestServices.GetRequiredService<IAccountLinkService>();
+
+                        string id = query;
+                        id = id[(id.LastIndexOf("/") + 1)..(id.Length)];
+
+                        try
+                        {
+                            var redir = await link.BindSteamUserAsync(token!, id);
+
+                            context.Response.Cookies.Append("redir", redir);
+                        }
+                        catch (Exception ex)
+                        {
+                            context.Response.Cookies.Append("error", ex.Message);
+                        }
+
+                        context.Success();
+                    }
+                }
+                else
+                {
+                    context.Response.Cookies.Append("error", "No token was found.");
+                }
+            }
+        };
+    })
+    .AddOAuth("Discord", "Discord", options =>
+    {
+        options.AuthorizationEndpoint = $"{builder.Configuration["Config:Discord:Api"]}/oauth2/authorize";
+
+        options.CallbackPath = new PathString("/authorization-code/discord-callback"); // local auth endpoint
+        options.AccessDeniedPath = new PathString("/api/link/denied");
+
+        options.ClientId = builder.Configuration["Discord:ClientId"];
+        options.ClientSecret = builder.Configuration["Discord:ClientSecret"];
+        options.TokenEndpoint = $"{builder.Configuration["Config:Discord:TokenEndpoint"]}";
+
+        options.Scope.Add("identify");
+        options.Scope.Add("email");
+
+        options.CorrelationCookie = new()
+        {
+            IsEssential = true,
+            SameSite = SameSiteMode.None,
+            SecurePolicy = CookieSecurePolicy.Always
+        };
+
+        options.Events = new OAuthEvents
+        {
+            OnCreatingTicket = async context =>
+            {
+                // get user data
+                var client = new DiscordRestClient(new()
+                {
+                    Token = context.AccessToken,
+                    TokenType = TokenType.Bearer
+                });
+
+                var user = await client.GetCurrentUserAsync();
+
+                if (context.Request.Cookies.TryGetValue("token", out var token))
+                {
+                    var link = context.HttpContext.RequestServices.GetRequiredService<IAccountLinkService>();
+
+                    try
+                    {
+                        // verify the user information grabbed matches the user info
+                        // saved from the Initial command
+                        var redir = await link.BindDiscordAsync(token, user.Id, user.Email);
+
+                        context.Response.Cookies.Append("redir", redir);
+                    }
+                    catch (Exception ex)
+                    {
+                        context.Response.Cookies.Append("error", ex.Message);
+                    }
+
+                    context.Success();
+                }
+                else
+                {
+                    context.Response.Cookies.Append("error", "No token found.");
+                }
+            },
+            OnRemoteFailure = async context =>
+            {
+                // TODO remove token from cookies and delete server token cache.
+                if (context.Request.Cookies.TryGetValue("token", out var token))
+                {
+                    var link = context.HttpContext.RequestServices.GetRequiredService<IAccountLinkService>();
+                    await link.AbortLinkAsync(token!);
+                }
+            }
+        };
+    });
 
 // END ACCOUNT LINK SETUP
 
@@ -113,7 +238,9 @@ if(usr is null)
 {
     usr = new()
     {
-        UserName = "Administrator"
+        UserName = "Administrator",
+        DiscordId = 0,
+        SteamLink = "I like your funny words, magic man"
     };
 
     await usrMngr.CreateAsync(usr, app.Configuration["Startup:Password"]);

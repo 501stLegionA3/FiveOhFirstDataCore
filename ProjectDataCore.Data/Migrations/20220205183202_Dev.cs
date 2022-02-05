@@ -94,6 +94,20 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LinkSettings",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequireDiscordLink = table.Column<bool>(type: "boolean", nullable: false),
+                    RequireSteamLink = table.Column<bool>(type: "boolean", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LinkSettings", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "NavModules",
                 columns: table => new
                 {
@@ -664,6 +678,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "EditableComponentSettingsRosterDisplaySettings");
+
+            migrationBuilder.DropTable(
+                name: "LinkSettings");
 
             migrationBuilder.DropTable(
                 name: "NavModules");
