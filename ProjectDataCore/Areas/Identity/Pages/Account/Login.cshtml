@@ -5,33 +5,49 @@
 
 }
 
-<div class="p-3 inset-0 bg-slat-300 p-3 rounded-lg">
-    <form id="account" method="post" class="grid gap-2">
-        <div asp-validation-summary="ModelOnly" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></div>
+<div class="grid grid-flow-row">
+    <div asp-validation-summary="ModelOnly" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></div>
+
+    <div class="flex flex-wrap">
+        <div class="p-3 flex-grow">
+            <form id="account" method="post" class="grid gap-2 grid-flow-row">
+                <p class="text-lg">Login</p>
         
-        <br />
+                <br />
 
-        <input asp-for="Input.Username" type="text" autocomplete="username" aria-required="true" />
-        <label asp-for="Input.Username"></label>
-        <span asp-validation-for="Input.Username" class="text-white bg-red-800/90 p-2"></span>
+                <div class="input-group">
+                    <input asp-for="Input.Username" type="text" autocomplete="username" aria-required="true" class="input-control" placeholder="username" />
+                    <label asp-for="Input.Username" class="input-label"></label>
+                    <span asp-validation-for="Input.Username" class="text-white bg-red-800/90 p-2"></span>
+                </div>
         
-        <br />
+                <br />
 
-        <input asp-for="Input.Password" type="text" autocomplete="current-password" aria-required="true" />
-        <label asp-for="Input.Password"></label>
-        <span asp-validation-for="Input.Password" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></span>
+                <div class="input-group">
+                    <input asp-for="Input.Password" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
+                    <label asp-for="Input.Password" class="input-label"></label>
+                    <span asp-validation-for="Input.Password" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></span>
+                </div>
 
-        <br />
+                <br />
 
-        <label asp-for="Input.RememberMe" class="inline-flex items-center">
-            <input type="checkbox" asp-for="Input.RememberMe" />
-            <span class="ml-2">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
-        </label>
+                <label asp-for="Input.RememberMe" class="inline-flex items-center">
+                    <input type="checkbox" asp-for="Input.RememberMe" />
+                    <span class="ml-2">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+                </label>
         
-        <br />
+                <br />
 
-        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-    </form>
+                <button id="login-submit" type="submit" class="w-100 button-op-success">Log in</button>
+            </form>
+        </div>
+        <div class="p-3 flex-grow">
+            <form class="grid gap-2 grid-flow-row">
+                <p class="text-lg">Register</p>
+
+            </form>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
