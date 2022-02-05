@@ -12,8 +12,8 @@ using static ProjectDataCore.Data.Services.Account.AccountLinkService;
 namespace ProjectDataCore.Data.Services.Account;
 public interface IAccountLinkService
 {
-    public Task<LinkSettings> GetLinkSettingsAsync();
-    public Task UpdateLinkSettingsAsync(Action<LinkSettingsEditModel> action);
+    public Task<AccountSettings> GetLinkSettingsAsync();
+    public Task UpdateLinkSettingsAsync(Action<AccountSettingsEditModel> action);
 
     public Task<string> StartAsync(Guid userId, string username, string password, bool rememberMe);
     public Task<string> BindDiscordAsync(string token, ulong accountId, string email);

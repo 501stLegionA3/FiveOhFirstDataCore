@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Account;
 public class LinkState
 {
-    public LinkSettings LinkSettings { get; set; }
+    public AccountSettings LinkSettings { get; set; }
 
     public string Token { get; init; }
     public Guid UserId { get; set; }
@@ -21,7 +21,7 @@ public class LinkState
     public bool RememberMe { get; set; }
 
     public LinkState(string token, Guid userId, Timer timer, string u, string p, bool r, 
-        LinkSettings settings, ulong? discordId, string? steamLink, string? discordEmail = null)
+        AccountSettings settings, ulong? discordId, string? steamLink, string? discordEmail = null)
     {
         Token = token;
         UserId = userId;

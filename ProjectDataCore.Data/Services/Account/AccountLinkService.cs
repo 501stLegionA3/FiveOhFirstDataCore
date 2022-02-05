@@ -31,7 +31,7 @@ public class AccountLinkService : IAccountLinkService
         LinkingController = new();
     }
 
-    public async Task<LinkSettings> GetLinkSettingsAsync()
+    public async Task<AccountSettings> GetLinkSettingsAsync()
     {
         await using var _database = await _dbContextFactory.CreateDbContextAsync();
 
@@ -49,7 +49,7 @@ public class AccountLinkService : IAccountLinkService
         return settings;
     }
 
-    public async Task UpdateLinkSettingsAsync(Action<LinkSettingsEditModel> action)
+    public async Task UpdateLinkSettingsAsync(Action<AccountSettingsEditModel> action)
     {
         var settings = await GetLinkSettingsAsync();
 
@@ -57,7 +57,7 @@ public class AccountLinkService : IAccountLinkService
 
         _database.Attach(settings);
 
-        LinkSettingsEditModel model = new();
+        AccountSettingsEditModel model = new();
         action.Invoke(model);
 
         if (model.RequireSteamLink is not null)
@@ -65,6 +65,9 @@ public class AccountLinkService : IAccountLinkService
 
         if(model.RequireDiscordLink is not null)
             settings.RequireDiscordLink = model.RequireDiscordLink.Value;
+
+        if (model.RequireAccessCodeForRegister is not null)
+            settings.RequireAccessCodeForRegister = model.RequireAccessCodeForRegister.Value;
 
         await _database.SaveChangesAsync();
     }

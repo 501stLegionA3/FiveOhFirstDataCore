@@ -23,6 +23,59 @@ public class UserService : IUserService
 	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IAssignableDataService assignableDataService, UserManager<DataCoreUser> userManager)
 		=> (_dbContextFactory, _assignableDataService, _userManager) = (dbContextFactory, assignableDataService, userManager);
 
+	public async Task<ActionResult> CreateOrUpdateAccountAsync(string? accessCode, string username, string password)
+	{
+		DataCoreUser user;
+		if (accessCode is null)
+		{
+			user = new()
+			{
+				UserName = username,
+			};
+
+			var res = await _userManager.CreateAsync(user, password);
+
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+			user = await _userManager.FindByNameAsync(user.UserName);
+
+			await _assignableDataService.EnsureAssignableValuesAsync(user);
+
+			return new(true, null);
+		}
+		else
+        {
+			user = await _userManager.FindByNameAsync(username);
+
+			if (user is null || user.AccessCode != accessCode)
+				return new(false, new List<string>() { "Access codes did not match." });
+
+			var res = await _userManager.RemovePasswordAsync(user);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			res = await _userManager.AddPasswordAsync(user, password);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			res = await _userManager.SetUserNameAsync(user, username);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			user.AccessCode = null;
+			res = await _userManager.UpdateAsync(user);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			return new(true, null);
+		}
+    }
+
     public async Task<ActionResult> CreateUserAsync(DataCoreUser user, Action<DataCoreUserEditModel> model)
     {
 		var token = Guid.NewGuid().ToString();

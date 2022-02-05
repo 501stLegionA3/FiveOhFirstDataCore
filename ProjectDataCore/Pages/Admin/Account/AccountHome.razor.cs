@@ -15,10 +15,11 @@ public partial class AccountHome
     public IAccountLinkService AccountLinkService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    public LinkSettings Settings { get; set; } = new();
+    public AccountSettings Settings { get; set; } = new();
 
     public bool RequireSteamLink { get; set; }
     public bool RequireDiscordLink { get; set; }
+    public bool RequireAccessCodeForRegister { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -35,6 +36,7 @@ public partial class AccountHome
         Settings = await AccountLinkService.GetLinkSettingsAsync();
         RequireSteamLink = Settings.RequireSteamLink;
         RequireDiscordLink = Settings.RequireDiscordLink;
+        RequireAccessCodeForRegister = Settings.RequireAccessCodeForRegister;
 
         StateHasChanged();
     }
@@ -45,6 +47,7 @@ public partial class AccountHome
         {
             x.RequireSteamLink = RequireSteamLink;
             x.RequireDiscordLink = RequireDiscordLink;
+            x.RequireAccessCodeForRegister = RequireAccessCodeForRegister;
         });
 
         await ReloadCurrentSettngs();

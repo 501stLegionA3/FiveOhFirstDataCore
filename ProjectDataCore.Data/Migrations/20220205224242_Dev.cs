@@ -100,6 +100,7 @@ namespace ProjectDataCore.Data.Migrations
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     RequireDiscordLink = table.Column<bool>(type: "boolean", nullable: false),
                     RequireSteamLink = table.Column<bool>(type: "boolean", nullable: false),
+                    RequireAccessCodeForRegister = table.Column<bool>(type: "boolean", nullable: false),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

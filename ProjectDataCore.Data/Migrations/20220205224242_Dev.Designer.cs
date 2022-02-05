@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220205183202_Dev")]
+    [Migration("20220205224242_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -244,7 +244,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.LinkSettings", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.AccountSettings", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
@@ -252,6 +252,9 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RequireAccessCodeForRegister")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("RequireDiscordLink")
                         .HasColumnType("boolean");

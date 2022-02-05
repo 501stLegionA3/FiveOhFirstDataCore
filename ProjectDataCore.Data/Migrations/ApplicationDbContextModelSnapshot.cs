@@ -242,7 +242,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.LinkSettings", b =>
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.AccountSettings", b =>
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
@@ -250,6 +250,9 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RequireAccessCodeForRegister")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("RequireDiscordLink")
                         .HasColumnType("boolean");

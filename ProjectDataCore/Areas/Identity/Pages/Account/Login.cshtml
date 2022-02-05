@@ -6,45 +6,85 @@
 }
 
 <div class="grid grid-flow-row">
-    <div asp-validation-summary="ModelOnly" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></div>
+    @if(Model.Notice is not null)
+    {
+        <div class="text-op_success_t bg-op_success p-2 m-1 rounded-lg">@Model.Notice</div>
+    }
 
-    <div class="flex flex-wrap">
+    <div asp-validation-summary="ModelOnly" class="text-op_danger_t bg-op_danger p-2 m-1 rounded-lg"></div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 p-3 gap-3 grid-flow-row">
+        @*Login Aspects*@
         <div class="p-3 flex-grow">
-            <form id="account" method="post" class="grid gap-2 grid-flow-row">
+            <form asp-page-handler="Login" id="account" method="post" class="grid gap-2 grid-flow-row">
                 <p class="text-lg">Login</p>
         
                 <br />
 
                 <div class="input-group">
-                    <input asp-for="Input.Username" type="text" autocomplete="username" aria-required="true" class="input-control" placeholder="username" />
-                    <label asp-for="Input.Username" class="input-label"></label>
-                    <span asp-validation-for="Input.Username" class="text-white bg-red-800/90 p-2"></span>
+                    <input asp-for="Login.LoginUserName" type="text" autocomplete="username" aria-required="true" class="input-control" placeholder="username" />
+                    <label asp-for="Login.LoginUserName" class="input-label"></label>
+                    <span asp-validation-for="Login.LoginUserName" class="text-op_danger_t bg-op_danger p-2"></span>
                 </div>
         
                 <br />
 
                 <div class="input-group">
-                    <input asp-for="Input.Password" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
-                    <label asp-for="Input.Password" class="input-label"></label>
-                    <span asp-validation-for="Input.Password" class="text-white bg-red-800/90 p-2 m-1 rounded-lg"></span>
+                    <input asp-for="Login.LoginPassword" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
+                    <label asp-for="Login.LoginPassword" class="input-label"></label>
+                    <span asp-validation-for="Login.LoginPassword" class="text-op_danger_t bg-op_danger p-2 m-1 rounded-lg"></span>
                 </div>
 
                 <br />
 
-                <label asp-for="Input.RememberMe" class="inline-flex items-center">
-                    <input type="checkbox" asp-for="Input.RememberMe" />
-                    <span class="ml-2">@Html.DisplayNameFor(m => m.Input.RememberMe)</span>
+                <label asp-for="Login.LoginRememberMe" class="inline-flex items-center">
+                    <input type="checkbox" asp-for="Login.LoginRememberMe" />
+                    <span class="ml-2">@Html.DisplayNameFor(m => m.Login.LoginRememberMe)</span>
                 </label>
         
                 <br />
 
-                <button id="login-submit" type="submit" class="w-100 button-op-success">Log in</button>
+                <button id="login-submit" type="submit" value="Login" class="w-100 button-op-success">Log in</button>
             </form>
         </div>
-        <div class="p-3 flex-grow">
-            <form class="grid gap-2 grid-flow-row">
+
+        @*Register Aspects*@
+        <div class="p-3 flex-grow bg-slate-300 rounded-lg">
+            <form asp-page-handler="Register" method="post" class="grid gap-2 grid-flow-row">
                 <p class="text-lg">Register</p>
 
+                <br />
+
+                <div class="input-group">
+                    <input asp-for="Register.RegisterUserName" type="text" autocomplete="username" aria-required="true" class="input-control" placeholder="username" />
+                    <label asp-for="Register.RegisterUserName" class="input-label"></label>
+                    <span asp-validation-for="Register.RegisterUserName" class="text-op_danger_t bg-op_danger p-2"></span>
+                </div>
+
+                <div class="input-group">
+                    <input asp-for="Register.RegisterPassword" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
+                    <label asp-for="Register.RegisterPassword" class="input-label"></label>
+                    <span asp-validation-for="Register.RegisterPassword" class="text-op_danger_t bg-op_danger p-2 m-1 rounded-lg"></span>
+                </div>
+
+                <div class="input-group">
+                    <input asp-for="Register.RegisterConfirmPassword" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
+                    <label asp-for="Register.RegisterConfirmPassword" class="input-label"></label>
+                    <span asp-validation-for="Register.RegisterConfirmPassword" class="text-op_danger_t bg-op_danger p-2 m-1 rounded-lg"></span>
+                </div>
+
+                @if(Model.RequireAccessCode)
+                {
+                    <div class="input-group">
+                        <input asp-for="Register.RegisterAccessCode" type="password" autocomplete="current-password" aria-required="true" class="input-control" placeholder="password" />
+                        <label asp-for="Register.RegisterAccessCode" class="input-label"></label>
+                        <span asp-validation-for="Register.RegisterAccessCode" class="text-op_danger_t bg-op_danger p-2 m-1 rounded-lg"></span>
+                    </div>
+                }
+        
+                <br />
+
+                <button id="login-submit" type="submit" value="Register" class="w-100 button-op-success">Register</button>
             </form>
         </div>
     </div>

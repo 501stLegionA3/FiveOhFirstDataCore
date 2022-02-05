@@ -61,7 +61,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     #endregion
 
     #region Account Link
-    public DbSet<LinkSettings> LinkSettings { get; internal set; }
+    public DbSet<AccountSettings> LinkSettings { get; internal set; }
     #endregion
 
     #region Nav Modules
@@ -199,7 +199,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         #endregion
 
         #region Account Link
-        var accountLinkSettings = builder.Entity<LinkSettings>();
+        var accountLinkSettings = builder.Entity<AccountSettings>();
         accountLinkSettings.HasKey(e => e.Key);
         #endregion
 
