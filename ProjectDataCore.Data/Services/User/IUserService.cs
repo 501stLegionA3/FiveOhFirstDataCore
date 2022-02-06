@@ -12,8 +12,11 @@ namespace ProjectDataCore.Data.Services.User;
 
 public interface IUserService
 {
+    public Task<ActionResult> CreateOrUpdateAccountAsync(string? accessCode, string username, string password);
     public Task<DataCoreUser?> GetUserFromClaimsPrinciaplAsync(ClaimsPrincipal claims);
     public Task<DataCoreUser?> GetUserFromIdAsync(Guid id);
     public Task<List<DataCoreUser>> GetAllUsersAsync();
+    public Task<List<DataCoreUser>> GetAllUnregisteredUsersAsync();
     public Task<ActionResult> UpdateUserAsync(Guid user, Action<DataCoreUserEditModel> action);
+    public Task<ActionResult> CreateUserAsync(DataCoreUser user, Action<DataCoreUserEditModel> model);
 }

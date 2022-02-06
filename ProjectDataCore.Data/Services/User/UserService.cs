@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Services.Roster;
 using ProjectDataCore.Data.Structures.Model.User;
+using ProjectDataCore.Data.Structures.Util;
 
 using System;
 using System.Collections.Generic;
@@ -15,10 +17,109 @@ namespace ProjectDataCore.Data.Services.User;
 public class UserService : IUserService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+	private readonly IAssignableDataService _assignableDataService;
     private readonly UserManager<DataCoreUser> _userManager;
 
-	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, UserManager<DataCoreUser> userManager)
-		=> (_dbContextFactory, _userManager) = (dbContextFactory, userManager);
+	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IAssignableDataService assignableDataService, UserManager<DataCoreUser> userManager)
+		=> (_dbContextFactory, _assignableDataService, _userManager) = (dbContextFactory, assignableDataService, userManager);
+
+	public async Task<ActionResult> CreateOrUpdateAccountAsync(string? accessCode, string username, string password)
+	{
+		DataCoreUser user;
+		if (accessCode is null)
+		{
+			user = new()
+			{
+				UserName = username,
+			};
+
+			var res = await _userManager.CreateAsync(user, password);
+
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+			user = await _userManager.FindByNameAsync(user.UserName);
+
+			await _assignableDataService.EnsureAssignableValuesAsync(user);
+
+			return new(true, null);
+		}
+		else
+        {
+			user = await _userManager.FindByNameAsync(username);
+
+			if (user is null || user.AccessCode != accessCode)
+				return new(false, new List<string>() { "Access codes did not match." });
+
+			var res = await _userManager.RemovePasswordAsync(user);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			res = await _userManager.AddPasswordAsync(user, password);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			res = await _userManager.SetUserNameAsync(user, username);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			user.AccessCode = null;
+			res = await _userManager.UpdateAsync(user);
+			if (!res.Succeeded)
+				return new(false, res.Errors.ToList().ToList(x => x.Description));
+
+
+			return new(true, null);
+		}
+    }
+
+    public async Task<ActionResult> CreateUserAsync(DataCoreUser user, Action<DataCoreUserEditModel> model)
+    {
+		var token = Guid.NewGuid().ToString();
+
+		if(string.IsNullOrWhiteSpace(user.AccessCode))
+			user.AccessCode = token;
+		if(string.IsNullOrWhiteSpace(user.UserName))
+			user.UserName = token;
+
+		user.AssignableValues.Clear();
+
+		var res = await _userManager.CreateAsync(user, user.AccessCode);
+
+		if(res.Succeeded)
+        {
+			user = await _userManager.FindByNameAsync(user.UserName);
+
+			var updateRes = await _assignableDataService.EnsureAssignableValuesAsync(user);
+
+			if (updateRes.GetResult(out _))
+			{
+				updateRes = await UpdateUserAsync(user.Id, model);
+			}
+
+			return updateRes;
+        }
+		else
+        {
+			var err = new List<string>() { "Failed to create a new user account." };
+			err.AddRange(res.Errors.ToList().ToList(x => x.Description));
+			return new(false, err);
+        }
+    }
+
+    public async Task<List<DataCoreUser>> GetAllUnregisteredUsersAsync()
+    {
+		await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+		return await _dbContext.Users
+			.Where(x => x.AccessCode != null)
+			.Include(x => x.AssignableValues)
+			.ThenInclude(x => x.AssignableConfiguration)
+			.ToListAsync();
+	}
 
     public async Task<List<DataCoreUser>> GetAllUsersAsync()
     {
@@ -71,6 +172,16 @@ public class UserService : IUserService
 			if(property is not null && item.Value is not null)
 				property.ReplaceValue(item.Value);
         }
+
+		if(model.Slots is not null)
+		{
+			foreach(var slot in model.Slots)
+			{
+				_dbContext.Attach(slot);
+
+				slot.OccupiedById = userData.Id;
+			}
+		}
 
 		await _dbContext.SaveChangesAsync();
 

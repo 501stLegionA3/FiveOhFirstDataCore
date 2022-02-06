@@ -32,6 +32,16 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
         InitScope();
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if(firstRender)
+        {
+            await OnFormInitAsync();
+        }
+    }
+
     public void InitScope()
     {
         if(ComponentData is not null)
@@ -97,6 +107,11 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
         }
     }
 
+    public virtual Task OnFormInitAsync()
+    {
+        return Task.CompletedTask;
+    }
+
     public virtual async Task OnSubmitAsync()
     {
         var model = new DataCoreUserEditModel();
@@ -115,6 +130,7 @@ public abstract class FormLayoutBase : LayoutBase, IDisposable
             {
                 x.StaticValues = model.StaticValues;
                 x.AssignableValues = model.AssignableValues;
+                x.Slots = model.Slots;
             });
 
             if (!res.GetResult(out var err))

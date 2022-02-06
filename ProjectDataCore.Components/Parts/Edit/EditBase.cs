@@ -57,6 +57,11 @@ public class EditBase : ParameterBase
                 x.StaticProperty = EditModel.StaticProperty;
                 x.FormatString = Optional.FromValue(EditModel.FormatString);
                 x.UserScope = Optional.FromValue(UserScopeSelection);
+
+                if(EditModel.AllowedDisplays is not null)
+				{
+                    x.EditableDisplays = EditModel.AllowedDisplays;
+				}
             });
 
             EditModel = null;

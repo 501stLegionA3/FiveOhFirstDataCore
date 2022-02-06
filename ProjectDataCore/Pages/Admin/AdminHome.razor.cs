@@ -44,23 +44,6 @@ public partial class AdminHome : ComponentBase
         StateHasChanged();
     }
 
-    protected async Task LoginAsync()
-	{
-        var res = await SignInManager.PasswordSignInAsync(Username, Password, false, false);
-        Errors.Clear();
-        if (!res.Succeeded)
-        {
-            Errors.Add($"Lockout: {res.IsLockedOut}, Not Allowed: {res.IsNotAllowed}, TFA: {res.RequiresTwoFactor}");
-        }
-        else
-        {
-            Username = "";
-            Password = "";
-        }
-
-        StateHasChanged();
-    }
-
     protected async Task LogoutAsync() 
 	{
         await SignInManager.SignOutAsync();

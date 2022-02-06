@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Model.User;
+using ProjectDataCore.Data.Structures.Page;
 
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Edit.Components;
 
 [EditableComponent(Name = "Basic Single Value")]
-public partial class BasicEditPart : EditBase, IDisposable
+public partial class BasicEditPart : EditBase, ISubmittable
 {
 	protected Type[] AllowedStaticTypes { get; set; } = new Type[]
 	{

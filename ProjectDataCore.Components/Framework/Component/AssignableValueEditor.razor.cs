@@ -61,7 +61,14 @@ public partial class AssignableValueEditor
                 || (EditModel.AssignableConfiguration.AllowedInput == BaseAssignableConfiguration.InputType.Both 
                     && !BothOnStatic))
             {
-                val = config.GetSingleValuePair(MultipleValueInput);
+                if (EditModel.AssignableConfiguration.AllowMultiple)
+                {
+                    val = config.GetSingleValuePair(MultipleValueInput);
+                }
+                else
+                {
+                    val = config.GetSingleValuePair(SingleValueInput);
+                }
             }
             else
 			{
@@ -70,8 +77,18 @@ public partial class AssignableValueEditor
 
             if(val is not null)
             {
-                SelectedValues.Add(val.Value);
-                MultipleValueInput = new();
+                if (EditModel.AssignableConfiguration.AllowMultiple)
+                {
+                    SelectedValues.Add(val.Value);
+                    MultipleValueInput = new();
+                }
+                else
+                {
+                    if (SelectedValues.Count <= 0)
+                        SelectedValues.Add(val.Value);
+                    else
+                        SelectedValues[0] = val.Value;
+                }
 			}
         }
 	}

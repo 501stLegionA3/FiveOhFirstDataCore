@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Components.Parts.Edit.Components;
-public partial class FormEditPart : EditBase
+namespace ProjectDataCore.Data.Structures.Policy;
+public class DynamicPolicy
 {
 
 }

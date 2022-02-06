@@ -58,6 +58,7 @@ namespace ProjectDataCore.Data.Migrations
                 columns: table => new
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    AssignableType = table.Column<int>(type: "integer", nullable: false),
                     PropertyName = table.Column<string>(type: "text", nullable: false),
                     NormalizedPropertyName = table.Column<string>(type: "text", nullable: false),
                     TypeName = table.Column<string>(type: "text", nullable: false),
@@ -90,6 +91,21 @@ namespace ProjectDataCore.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CustomPageSettings", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LinkSettings",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    RequireDiscordLink = table.Column<bool>(type: "boolean", nullable: false),
+                    RequireSteamLink = table.Column<bool>(type: "boolean", nullable: false),
+                    RequireAccessCodeForRegister = table.Column<bool>(type: "boolean", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LinkSettings", x => x.Key);
                 });
 
             migrationBuilder.CreateTable(
@@ -454,6 +470,30 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EditableComponentSettingsRosterDisplaySettings",
+                columns: table => new
+                {
+                    EditableComponentsAllowedEditorsKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    EditableDisplaysKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EditableComponentSettingsRosterDisplaySettings", x => new { x.EditableComponentsAllowedEditorsKey, x.EditableDisplaysKey });
+                    table.ForeignKey(
+                        name: "FK_EditableComponentSettingsRosterDisplaySettings_PageComponen~",
+                        column: x => x.EditableComponentsAllowedEditorsKey,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EditableComponentSettingsRosterDisplaySettings_RosterDispla~",
+                        column: x => x.EditableDisplaysKey,
+                        principalTable: "RosterDisplaySettings",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RosterComponentSettingsRosterDisplaySettings",
                 columns: table => new
                 {
@@ -539,6 +579,11 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_DataCoreUserProperty_RosterComponentUserListingDisplayId",
                 table: "DataCoreUserProperty",
                 column: "RosterComponentUserListingDisplayId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EditableComponentSettingsRosterDisplaySettings_EditableDisp~",
+                table: "EditableComponentSettingsRosterDisplaySettings",
+                column: "EditableDisplaysKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NavModules_ParentId",
@@ -631,6 +676,12 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "DataCoreUserProperty");
+
+            migrationBuilder.DropTable(
+                name: "EditableComponentSettingsRosterDisplaySettings");
+
+            migrationBuilder.DropTable(
+                name: "LinkSettings");
 
             migrationBuilder.DropTable(
                 name: "NavModules");

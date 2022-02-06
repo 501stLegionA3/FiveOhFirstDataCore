@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ProjectDataCore.Data.Structures.Nav;
+using ProjectDataCore.Data.Structures.Account;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -59,7 +60,13 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<TimeOnlyAssignableValue> TimeOnlyAssignableValues { get; internal set; }
     #endregion
 
+    #region Account Link
+    public DbSet<AccountSettings> LinkSettings { get; internal set; }
+    #endregion
+
+    #region Nav Modules
     public DbSet<NavModule> NavModules { get; internal set; }
+    #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -105,6 +112,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey<RosterOrder>(p => p.SlotToOrderId);
         rosterSlot.Navigation(e => e.Order)
             .AutoInclude(true);
+        rosterSlot.Navigation(e => e.OccupiedBy)
+            .AutoInclude(true);
         #endregion
 
         #region Page
@@ -131,6 +140,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         parameterComponentSettings.HasOne(e => e.UserScope)
             .WithMany(p => p.AttachedScopes)
             .HasForeignKey(e => e.UserScopeId);
+
+        var editableComponentSettings = builder.Entity<EditableComponentSettings>();
+        editableComponentSettings.HasMany(e => e.EditableDisplays)
+            .WithMany(e => e.EditableComponentsAllowedEditors);
 
         var rosterComponentSettings = builder.Entity<RosterComponentSettings>();
         rosterComponentSettings.HasMany(e => e.DefaultDisplayedProperties)
@@ -183,6 +196,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             
         var dataCoreUserProperty = builder.Entity<DataCoreUserProperty>();
         dataCoreUserProperty.HasKey(e => e.Key);
+        #endregion
+
+        #region Account Link
+        var accountLinkSettings = builder.Entity<AccountSettings>();
+        accountLinkSettings.HasKey(e => e.Key);
         #endregion
 
         #region Nav Modules

@@ -2,25 +2,43 @@
 {
 	case DateTimeValueAssignableConfiguration c:
 		<div class="inline-flex gap-2 w-full">
-			<InputDate @bind-Value="EditModel.DateValue" id="option-name" class="input-control peer flex-grow" placeholder="Option Name" />
-			<InputText type="time" @bind-Value="EditModel.NewOptionTime" id="option-name-alt" class="input-control peer flex-grow" placeholder="Option Name" />
+			<InputDate id="option-name" class="input-control peer flex-grow" placeholder="Option Name"
+				Value="EditModel.DateValue" ValueExpression="() => EditModel.DateValue"
+				ValueChanged="(x) => ValueChanged(() => EditModel.DateValue = x)"
+				TValue="DateTime" />
+			<InputText type="time" id="option-name-alt" class="input-control peer flex-grow" placeholder="Option Name"
+				Value="@EditModel.NewOptionTime" ValueExpression="() => EditModel.NewOptionTime"
+				ValueChanged="(x) => ValueChanged(() => EditModel.NewOptionTime = x)" />
 		</div>
 		break;
 	case DateOnlyValueAssignableConfiguration c:
-		<InputDate @bind-Value="EditModel.DateValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		<InputDate id="option-name" class="input-control peer" placeholder="Option Name"
+			Value="EditModel.DateValue" ValueExpression="() => EditModel.DateValue"
+			ValueChanged="(x) => ValueChanged(() => EditModel.DateValue = x)"
+			TValue="DateTime" />
 		break;
 	case TimeOnlyValueAssignableConfiguration c:
-		<InputText type="time" @bind-Value="EditModel.NewOptionTime" id="option-name" class="input-control peer" placeholder="Option Name" />
+		<InputText type="time" id="option-name" class="input-control peer" placeholder="Option Name"
+			Value="@EditModel.NewOptionTime" ValueExpression="() => EditModel.NewOptionTime"
+			ValueChanged="(x) => ValueChanged(() => EditModel.NewOptionTime = x)" />
 		break;
 
 	case IntegerValueAssignableConfiguration c:
-		<InputNumber @bind-Value="EditModel.IntValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		<InputNumber id="option-name" class="input-control peer" placeholder="Option Name"
+			Value="@EditModel.IntValue" ValueExpression="() => EditModel.IntValue"
+			ValueChanged="(x) => ValueChanged(() => EditModel.IntValue = x)"
+			TValue="int" />
 		break;
 	case DoubleValueAssignableConfiguration c:
-		<InputNumber @bind-Value="EditModel.DoubleValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		<InputNumber id="option-name" class="input-control peer" placeholder="Option Name"
+			Value="@EditModel.DoubleValue" ValueExpression="() => EditModel.DoubleValue"
+			ValueChanged="(x) => ValueChanged(() => EditModel.DoubleValue = x)"
+			TValue="double" />
 		break;
 
 	case StringValueAssignableConfiguration c:
-		<InputText @bind-Value="EditModel.StringValue" id="option-name" class="input-control peer" placeholder="Option Name" />
+		<InputText id="option-name" class="input-control peer" placeholder="Option Name"
+			Value="@EditModel.StringValue" ValueExpression="() => EditModel.StringValue"
+			ValueChanged="(x) => ValueChanged(() => EditModel.StringValue = x)" />
 		break;
 }

@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220123023302_Dev")]
+    [Migration("20220205224242_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace ProjectDataCore.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.Property<Guid>("EditableComponentsAllowedEditorsKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("EditableDisplaysKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("EditableComponentsAllowedEditorsKey", "EditableDisplaysKey");
+
+                    b.HasIndex("EditableDisplaysKey");
+
+                    b.ToTable("EditableComponentSettingsRosterDisplaySettings");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
@@ -229,6 +244,29 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Account.AccountSettings", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("RequireAccessCodeForRegister")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequireDiscordLink")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("RequireSteamLink")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("LinkSettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>
                 {
                     b.Property<Guid>("Key")
@@ -239,6 +277,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<int>("AllowedInput")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("AssignableType")
                         .HasColumnType("integer");
 
                     b.Property<string>("Discriminator")
@@ -831,6 +872,21 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableComponentsAllowedEditorsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
+                        .WithMany()
+                        .HasForeignKey("EditableDisplaysKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>

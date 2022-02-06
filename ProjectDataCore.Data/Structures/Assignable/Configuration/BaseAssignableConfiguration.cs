@@ -30,6 +30,18 @@ public class BaseAssignableConfiguration : DataObject<Guid>
         FreehandOnly = 1,
     }
 
+    public enum InternalAssignableType
+    {
+        /// <summary>
+        /// Designates a property for an <see cref="Account.DataCoreUser"/>
+        /// </summary>
+        UserProperty
+    }
+
+    /// <summary>
+    /// The internal type for database operations based on pulling bulk assignable values of a specific type.
+    /// </summary>
+    public InternalAssignableType AssignableType { get; set; } = InternalAssignableType.UserProperty;
     /// <summary>
     /// The name of the property to be selected. Must be unique.
     /// </summary>
