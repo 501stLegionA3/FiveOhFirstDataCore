@@ -1,5 +1,7 @@
 ﻿using ProjectDataCore.Data.Structures.Model.Alert;
 using ProjectDataCore.Data.Services.Alert;
+using Timer = System.Timers.Timer;
+using System.Diagnostics;
 
 namespace ProjectDataCore.Components.Alert
 {
@@ -10,6 +12,7 @@ namespace ProjectDataCore.Components.Alert
 
         [Inject]
         public IAlertService AlertService { get; set; }
+
 
         private string _alertColor { get {
                 switch (AlertItem.AlertType)
@@ -22,10 +25,40 @@ namespace ProjectDataCore.Components.Alert
                 }
             } }
 
-
-    private void CloseAlert()
+        protected async override Task OnParametersSetAsync()
         {
-            AlertService.DeleteAlert(AlertItem.Id);
+            await base.OnParametersSetAsync();
+            if (AlertItem.IsRunning)
+            {
+                AlertItem.Timer.Start();
+                AlertItem.Stopwatch.Start();
+            }
+        }
+
+        private void CloseAlert()
+        {
+            AlertService.DeleteAlert(AlertItem);
+        }
+
+        private void OnMouseEnter()
+        {
+            //Console.WriteLine("Mouse Enter");
+            if (AlertItem.IsRunning)
+            {
+                AlertItem.Stopwatch.Stop();
+                AlertItem.Timer.Stop();
+            }
+        }
+
+        private void OnMouseLeave()
+        {
+            //Console.WriteLine("Mouse Leave");
+            if (AlertItem.IsRunning)
+            {
+                AlertItem.Timer.Interval = AlertItem.Stopwatch.ElapsedMilliseconds;
+                AlertItem.Timer.Start();
+                AlertItem.Stopwatch.Start();
+            }
         }
     }
 }
