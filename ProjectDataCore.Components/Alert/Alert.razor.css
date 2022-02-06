@@ -1,17 +1,17 @@
 ﻿.Success {
-    @apply bg-green-500;
+    @apply bg-green-500 hover:bg-green-400;
 }
 
 .Warn {
-    @apply bg-yellow-500;
+    @apply bg-yellow-500 hover:bg-yellow-400;
 }
 
 .Info {
-    @apply bg-blue-500;
+    @apply bg-blue-500 hover:bg-blue-400;
 }
 
 .Error {
-    @apply bg-red-500;
+    @apply bg-red-500 hover:bg-red-400;
 }
 
 .Alert{
@@ -20,24 +20,9 @@
 
 @keyframes fadein {
     from {
-        transform: translateX(-100%);
+        transform: scale(0);
     }
     to {
-        transform: translateX(0%);
-    }
-}
-
-.slide {
-    animation: slider 3500ms ease-in-out;
-    background-color: rgba(255, 255, 255, 0.493);
-}
-
-@keyframes slider {
-    from {
-        transform: translateX(-100%);
-    }
-
-    to {
-        transform: translateX(0%);
+        transform: scale(1);
     }
 }
