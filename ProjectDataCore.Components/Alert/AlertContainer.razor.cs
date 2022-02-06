@@ -17,7 +17,7 @@ namespace ProjectDataCore.Components.Alert
             AlertService.AlertsChanged += AlertsChanged;
         }
 
-        public void AlertsChanged(object sender, EventArgs e)
+        public void AlertsChanged(object? sender, EventArgs e)
         {
             _alerts = AlertService.Alerts;
             InvokeAsync(StateHasChanged);
