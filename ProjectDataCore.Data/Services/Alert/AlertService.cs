@@ -8,39 +8,37 @@ namespace ProjectDataCore.Data.Services.Alert
         public List<AlertModel> Alerts { get; set; } = new();
         public event EventHandler AlertsChanged;
 
-        public ActionResult CreateAlert(string message, AlertType alertType, int duration)
+        public ActionResult CreateAlert(string message, AlertType alertType, bool enableTimer, int duration)
         {
-            AlertModel alertModel = new(alertType, message);
+            AlertModel alertModel = new(alertType, message, this, enableTimer, duration);
             Alerts.Add(alertModel);
-            System.Timers.Timer timer = new(duration);
-            timer.Elapsed += (sender, e)=>DeleteAlert(alertModel.Id);
-            //timer.Start(); TODO: Renable
             return TriggerEvent();
         }
 
-        public ActionResult CreateErrorAlert(string message, int duration = 3200)
+        public ActionResult CreateErrorAlert(string message, bool enableTimer = false, int duration = 5000)
         {
-            return CreateAlert(message, AlertType.Error, duration);
+            return CreateAlert(message, AlertType.Error, enableTimer, duration);
         }
 
-        public ActionResult CreateInfoAlert(string message, int duration = 3200)
+        public ActionResult CreateInfoAlert(string message, bool enableTimer = false, int duration = 3200)
         {
-            return CreateAlert(message, AlertType.Info, duration);
+            return CreateAlert(message, AlertType.Info, enableTimer, duration);
         }
 
-        public ActionResult CreateSuccessAlert(string message, int duration = 3200)
+        public ActionResult CreateSuccessAlert(string message, bool enableTimer = false, int duration = 3200)
         {
-            return CreateAlert(message, AlertType.Success, duration);
+            return CreateAlert(message, AlertType.Success, enableTimer, duration);
         }
 
-        public ActionResult CreateWarnAlert(string message, int duration = 3200)
+        public ActionResult CreateWarnAlert(string message, bool enableTimer = false, int duration = 3200)
         {
-            return CreateAlert(message, AlertType.Warn, duration);
+            return CreateAlert(message, AlertType.Warn, enableTimer, duration);
         }
 
-        public ActionResult DeleteAlert(Guid alertId)
+        public ActionResult DeleteAlert(AlertModel alert)
         {
-            Alerts.RemoveAll(e => e.Id.Equals(alertId));
+            alert.Dispose();
+            Alerts.Remove(alert);
             return TriggerEvent();
         }
 
@@ -48,7 +46,7 @@ namespace ProjectDataCore.Data.Services.Alert
         {
             try
             {
-                AlertsChanged.Invoke(this, new EventArgs());
+                AlertsChanged?.Invoke(this, new EventArgs());
             }
             catch (Exception ex)
             {
