@@ -18,4 +18,7 @@ public interface IPolicyService
     public Task<ActionResult> UpdatePolicyAsync(Guid key, Action<DynamicAuthorizationPolicyEditModel> action);
     public Task<ActionResult> DeletePolicyAsync(Guid key);
     #endregion
+
+    public Task<ActionResult<List<DynamicAuthorizationPolicy>>> GetAllPoliciesAsync();
+    public Task LoadParentsAsync(DynamicAuthorizationPolicy policy);
 }

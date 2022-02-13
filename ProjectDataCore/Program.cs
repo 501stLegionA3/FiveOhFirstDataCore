@@ -81,13 +81,9 @@ builder.Services.Configure<IdentityOptions>(options =>
 #region Services
 
 // Scoped Services
-builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
-    .AddScoped<IPageEditService, PageEditService>()
-    .AddScoped<IScopedUserService, ScopedUserService>()
-    .AddScoped<IUserService, UserService>()
-    .AddScoped<INavModuleService, NavModuleService>()
-    .AddScoped<IAssignableDataService, AssignableDataService>()
-    .AddScoped<ILocalUserService, LocalUserService>();
+builder.Services
+    .AddScoped<ILocalUserService, LocalUserService>()
+    .AddScoped<IUserService, UserService>();
 
 // Singleton Services
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
@@ -103,7 +99,12 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<IAccountLinkService, AccountLinkService>()
     .AddSingleton<IPolicyService, PolicyService>()
     .AddSingleton<IAuthorizationPolicyProvider, DataCoreAuthorizationPolicyProvider>()
-    .AddSingleton<IDataBus, DataBus>();
+    .AddSingleton<IDataBus, DataBus>()
+    .AddSingleton<IModularRosterService, ModularRosterService>()
+    .AddSingleton<IPageEditService, PageEditService>()
+    .AddSingleton<IScopedUserService, ScopedUserService>()
+    .AddSingleton<INavModuleService, NavModuleService>()
+    .AddSingleton<IAssignableDataService, AssignableDataService>();
 
 #endregion
 

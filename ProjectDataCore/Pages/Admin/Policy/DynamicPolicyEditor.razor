@@ -1,0 +1,57 @@
+﻿@page "/admin/policy/dpedit"
+
+<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
+	<div>
+		<div class="grid grid-cols-1 grid-flow-row gap-2">
+			<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Policy List</div>
+			@foreach(var item in CurrentPolicies)
+			{
+				var i = item;
+				<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+					<p class="flex-1">@i.PolicyName</p>
+					@if(ButtonActive)
+					{
+						<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
+							<span class="material-icons-round">arrow_forward</span>
+						</button>
+					}
+				</div>
+			}
+		</div>
+	</div>
+	<div class="col-span-2">
+		<div class="border-l-2 border-slate-400 pl-4">
+			<div class="grid grid-cols-1 grid-flow-row gap-2">
+				@if (ToEdit is null)
+				{
+					<div class="shadow-lg border-2 border-slate-400 rounded-lg">
+						<EditForm Model="this" Context="AddNewPolicyFormContext">
+							<div class="grid grid-cols-1 gap-2 p-4">
+								<div class="text-lg font-bold text-center">Policy Creator</div>
+
+								<div class="input-group">
+									<InputText @bind-Value="NewPolicyName" id="name" type="text" class="input-control peer" placeholder="Policy Name" />
+									<label for="name" class="input-label">Policy Name</label>
+								</div>
+
+								<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="OnNewPolicyAsync">Create</button>
+							</div>
+						</EditForm>
+					</div>
+				}
+				else
+				{
+					<div class="shadow-lg border-2 border-slate-400 rounded-lg">
+						<EditForm Model="this" Context="AddNewPolicyFormContext">
+							<div class="grid grid-cols-1 gap-2 p-4">
+								<div class="text-lg font-bold text-center">Policy Editor: @ToEdit.PolicyName</div>
+								
+
+							</div>
+						</EditForm>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>

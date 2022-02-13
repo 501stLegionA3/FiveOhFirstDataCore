@@ -123,4 +123,21 @@ public class PolicyService : IPolicyService
 
         return new(true, null);
     }
+
+    public async Task<ActionResult<List<DynamicAuthorizationPolicy>>> GetAllPoliciesAsync()
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var policy = await _dbContext.DynamicAuthorizationPolicies
+            .ToListAsync();
+
+        return new(true, null, policy);
+    }
+
+    public async Task LoadParentsAsync(DynamicAuthorizationPolicy policy)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        await _dbContext.Attach(policy).Collection(e => e.Parents).LoadAsync();
+    }
 }
