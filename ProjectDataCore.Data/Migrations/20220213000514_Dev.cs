@@ -94,6 +94,18 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DynamicAuthorizationPolicies",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DynamicAuthorizationPolicies", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LinkSettings",
                 columns: table => new
                 {
@@ -343,6 +355,78 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DataCoreUserDynamicAuthorizationPolicy",
+                columns: table => new
+                {
+                    AuthorizedUsersId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DynamicPoliciesKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataCoreUserDynamicAuthorizationPolicy", x => new { x.AuthorizedUsersId, x.DynamicPoliciesKey });
+                    table.ForeignKey(
+                        name: "FK_DataCoreUserDynamicAuthorizationPolicy_AspNetUsers_Authoriz~",
+                        column: x => x.AuthorizedUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DataCoreUserDynamicAuthorizationPolicy_DynamicAuthorization~",
+                        column: x => x.DynamicPoliciesKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DynamicAuthorizationPolicyRosterSlot",
+                columns: table => new
+                {
+                    AuthorizedSlotsKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    DynamicPoliciesKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DynamicAuthorizationPolicyRosterSlot", x => new { x.AuthorizedSlotsKey, x.DynamicPoliciesKey });
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterSlot_DynamicAuthorizationPo~",
+                        column: x => x.DynamicPoliciesKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterSlot_RosterObject_Authorize~",
+                        column: x => x.AuthorizedSlotsKey,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DynamicAuthorizationPolicyRosterTree",
+                columns: table => new
+                {
+                    AuthorizedTreesKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    DynamicPoliciesKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DynamicAuthorizationPolicyRosterTree", x => new { x.AuthorizedTreesKey, x.DynamicPoliciesKey });
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterTree_DynamicAuthorizationPo~",
+                        column: x => x.DynamicPoliciesKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterTree_RosterObject_Authorize~",
+                        column: x => x.AuthorizedTreesKey,
+                        principalTable: "RosterObject",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RosterDisplaySettings",
                 columns: table => new
                 {
@@ -470,6 +554,30 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DynamicAuthorizationPolicyRosterDisplaySettings",
+                columns: table => new
+                {
+                    AuthorizedDisplaysKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    DynamicPoliciesKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DynamicAuthorizationPolicyRosterDisplaySettings", x => new { x.AuthorizedDisplaysKey, x.DynamicPoliciesKey });
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterDisplaySettings_DynamicAuth~",
+                        column: x => x.DynamicPoliciesKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DynamicAuthorizationPolicyRosterDisplaySettings_RosterDispl~",
+                        column: x => x.AuthorizedDisplaysKey,
+                        principalTable: "RosterDisplaySettings",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "EditableComponentSettingsRosterDisplaySettings",
                 columns: table => new
                 {
@@ -571,6 +679,11 @@ namespace ProjectDataCore.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_DataCoreUserDynamicAuthorizationPolicy_DynamicPoliciesKey",
+                table: "DataCoreUserDynamicAuthorizationPolicy",
+                column: "DynamicPoliciesKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DataCoreUserProperty_RosterComponentDefaultDisplayId",
                 table: "DataCoreUserProperty",
                 column: "RosterComponentDefaultDisplayId");
@@ -579,6 +692,21 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_DataCoreUserProperty_RosterComponentUserListingDisplayId",
                 table: "DataCoreUserProperty",
                 column: "RosterComponentUserListingDisplayId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DynamicAuthorizationPolicyRosterDisplaySettings_DynamicPoli~",
+                table: "DynamicAuthorizationPolicyRosterDisplaySettings",
+                column: "DynamicPoliciesKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DynamicAuthorizationPolicyRosterSlot_DynamicPoliciesKey",
+                table: "DynamicAuthorizationPolicyRosterSlot",
+                column: "DynamicPoliciesKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DynamicAuthorizationPolicyRosterTree_DynamicPoliciesKey",
+                table: "DynamicAuthorizationPolicyRosterTree",
+                column: "DynamicPoliciesKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_EditableComponentSettingsRosterDisplaySettings_EditableDisp~",
@@ -675,7 +803,19 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AssignableValues");
 
             migrationBuilder.DropTable(
+                name: "DataCoreUserDynamicAuthorizationPolicy");
+
+            migrationBuilder.DropTable(
                 name: "DataCoreUserProperty");
+
+            migrationBuilder.DropTable(
+                name: "DynamicAuthorizationPolicyRosterDisplaySettings");
+
+            migrationBuilder.DropTable(
+                name: "DynamicAuthorizationPolicyRosterSlot");
+
+            migrationBuilder.DropTable(
+                name: "DynamicAuthorizationPolicyRosterTree");
 
             migrationBuilder.DropTable(
                 name: "EditableComponentSettingsRosterDisplaySettings");
@@ -703,6 +843,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AssignableConfigurations");
+
+            migrationBuilder.DropTable(
+                name: "DynamicAuthorizationPolicies");
 
             migrationBuilder.DropTable(
                 name: "RosterDisplaySettings");

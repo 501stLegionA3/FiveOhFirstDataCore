@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 using ProjectDataCore.Data.Structures.Assignable.Value;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ public class DataCoreUser : IdentityUser<Guid>
     public List<BaseAssignableValue> AssignableValues { get; set; } = new();
 
     public List<RosterSlot> RosterSlots { get; set; } = new();
+
+    public List<DynamicAuthorizationPolicy> DynamicPolicies { get; set; } = new();
 
     [Description("Discord ID")]
     public ulong? DiscordId { get; set; }

@@ -1,4 +1,6 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Policy;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,4 +19,6 @@ public class RosterSlot : RosterObject
     public RosterOrder Order { get; set; }
     public RosterTree ParentRoster { get; set; }
     public Guid ParentRosterId { get; set; }
+
+    public List<DynamicAuthorizationPolicy> DynamicPolicies { get; set; } = new();
 }

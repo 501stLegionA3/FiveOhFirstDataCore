@@ -3,13 +3,17 @@ using AspNet.Security.OpenId;
 using DSharpPlus;
 
 using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ProjectDataCore.Data.Database;
+using ProjectDataCore.Data.Policy;
 using ProjectDataCore.Data.Services.Account;
+using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Nav;
+using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +36,8 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     ), ServiceLifetime.Singleton);
 
 builder.Services.AddScoped(p
-    => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
+    => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext())
+    .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<DataCoreUser>>();
 
 // END DATABASE SETUP
 
@@ -71,7 +76,8 @@ builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IScopedUserService, ScopedUserService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<INavModuleService, NavModuleService>()
-    .AddScoped<IAssignableDataService, AssignableDataService>();
+    .AddScoped<IAssignableDataService, AssignableDataService>()
+    .AddScoped<ILocalUserService, LocalUserService>();
 
 // Singleton Services
 builder.Services.AddSingleton<IRoutingService, RoutingService>()
@@ -84,7 +90,10 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
 
         return new(asm);
     })
-    .AddSingleton<IAccountLinkService, AccountLinkService>();
+    .AddSingleton<IAccountLinkService, AccountLinkService>()
+    .AddSingleton<IPolicyService, PolicyService>()
+    .AddSingleton<IAuthorizationPolicyProvider, DataCoreAuthorizationPolicyProvider>()
+    .AddSingleton<IDataBus, DataBus>();
 
 // END SERVICE SETUP
 

@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ProjectDataCore.Data.Structures.Nav;
 using ProjectDataCore.Data.Structures.Account;
+using ProjectDataCore.Data.Structures.Policy;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -66,6 +67,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
 
     #region Nav Modules
     public DbSet<NavModule> NavModules { get; internal set; }
+    #endregion
+
+    #region Policy
+    public DbSet<DynamicAuthorizationPolicy> DynamicAuthorizationPolicies { get; internal set; }
     #endregion
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -211,6 +216,19 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithOne(e => e.Parent)
             .HasForeignKey(e => e.ParentId);
 
+        #endregion
+
+        #region Policy
+        var dynamicAuthorizationPolicy = builder.Entity<DynamicAuthorizationPolicy>();
+        dynamicAuthorizationPolicy.HasKey(e => e.Key);
+        dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedSlots)
+            .WithMany(e => e.DynamicPolicies);
+        dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedTrees)
+            .WithMany(e => e.DynamicPolicies);
+        dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedDisplays)
+            .WithMany(e => e.DynamicPolicies);
+        dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedUsers)
+            .WithMany(e => e.DynamicPolicies);
         #endregion
 
     }

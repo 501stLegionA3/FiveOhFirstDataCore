@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -19,4 +20,6 @@ public class RosterDisplaySettings : DataObject<Guid>
 
     public List<RosterComponentSettings> DisplayComponents { get; set; } = new();
     public List<EditableComponentSettings> EditableComponentsAllowedEditors { get; set; } = new();
+
+    public List<DynamicAuthorizationPolicy> DynamicPolicies { get; set; } = new();
 }

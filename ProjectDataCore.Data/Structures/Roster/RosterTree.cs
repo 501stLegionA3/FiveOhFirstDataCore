@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Policy;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,4 +21,6 @@ public class RosterTree : RosterObject
     public List<RosterOrder> OrderChildren { get; set; } = new();
 
     public List<RosterDisplaySettings> DisplaySettings { get;set; } = new();
+
+    public List<DynamicAuthorizationPolicy> DynamicPolicies { get; set; } = new();
 }

@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220205224242_Dev")]
+    [Migration("20220213000514_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,66 @@ namespace ProjectDataCore.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("DataCoreUserDynamicAuthorizationPolicy", b =>
+                {
+                    b.Property<Guid>("AuthorizedUsersId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DynamicPoliciesKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AuthorizedUsersId", "DynamicPoliciesKey");
+
+                    b.HasIndex("DynamicPoliciesKey");
+
+                    b.ToTable("DataCoreUserDynamicAuthorizationPolicy");
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterDisplaySettings", b =>
+                {
+                    b.Property<Guid>("AuthorizedDisplaysKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DynamicPoliciesKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AuthorizedDisplaysKey", "DynamicPoliciesKey");
+
+                    b.HasIndex("DynamicPoliciesKey");
+
+                    b.ToTable("DynamicAuthorizationPolicyRosterDisplaySettings");
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterSlot", b =>
+                {
+                    b.Property<Guid>("AuthorizedSlotsKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DynamicPoliciesKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AuthorizedSlotsKey", "DynamicPoliciesKey");
+
+                    b.HasIndex("DynamicPoliciesKey");
+
+                    b.ToTable("DynamicAuthorizationPolicyRosterSlot");
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterTree", b =>
+                {
+                    b.Property<Guid>("AuthorizedTreesKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DynamicPoliciesKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("AuthorizedTreesKey", "DynamicPoliciesKey");
+
+                    b.HasIndex("DynamicPoliciesKey");
+
+                    b.ToTable("DynamicAuthorizationPolicyRosterTree");
+                });
 
             modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
                 {
@@ -430,6 +490,20 @@ namespace ProjectDataCore.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("CustomPageSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("DynamicAuthorizationPolicies");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
@@ -872,6 +946,66 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
 
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("DataCoreUserDynamicAuthorizationPolicy", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorizedUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("DynamicPoliciesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterDisplaySettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorizedDisplaysKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("DynamicPoliciesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterSlot", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterSlot", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorizedSlotsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("DynamicPoliciesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyRosterTree", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterTree", null)
+                        .WithMany()
+                        .HasForeignKey("AuthorizedTreesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("DynamicPoliciesKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("EditableComponentSettingsRosterDisplaySettings", b =>
