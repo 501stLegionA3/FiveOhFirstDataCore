@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220213000514_Dev")]
+    [Migration("20220213163133_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,6 +38,21 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("DynamicPoliciesKey");
 
                     b.ToTable("DataCoreUserDynamicAuthorizationPolicy");
+                });
+
+            modelBuilder.Entity("DynamicAuthorizationPolicyDynamicAuthorizationPolicy", b =>
+                {
+                    b.Property<Guid>("ChildrenKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ParentsKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ChildrenKey", "ParentsKey");
+
+                    b.HasIndex("ParentsKey");
+
+                    b.ToTable("DynamicAuthorizationPolicyDynamicAuthorizationPolicy");
                 });
 
             modelBuilder.Entity("DynamicAuthorizationPolicyRosterDisplaySettings", b =>
@@ -498,10 +513,22 @@ namespace ProjectDataCore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<bool>("AdminPolicy")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("AdministratorPolicyKey")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("PolicyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Key");
+
+                    b.HasIndex("AdministratorPolicyKey");
 
                     b.ToTable("DynamicAuthorizationPolicies");
                 });
@@ -963,6 +990,22 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DynamicAuthorizationPolicyDynamicAuthorizationPolicy", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("ChildrenKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("ParentsKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_DynamicAuthorizationPolicyDynamicAuthorizationPolicy_Dynam~1");
+                });
+
             modelBuilder.Entity("DynamicAuthorizationPolicyRosterDisplaySettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", null)
@@ -1109,6 +1152,17 @@ namespace ProjectDataCore.Data.Migrations
                         .HasForeignKey("ParentLayoutId");
 
                     b.Navigation("ParentLayout");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AdministratorPolicy")
+                        .WithMany("WebsitePolciies")
+                        .HasForeignKey("AdministratorPolicyKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AdministratorPolicy");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterDisplaySettings", b =>
@@ -1258,6 +1312,11 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>
                 {
                     b.Navigation("Layout");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
+                {
+                    b.Navigation("WebsitePolciies");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>

@@ -20,7 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile(Path.Join("Config", "website_config.json"));
 
-// Add services to the container.
+#region Database Setup
+
 builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("database"))
@@ -36,10 +37,11 @@ builder.Services.AddDbContextFactory<ApplicationDbContext>(options =>
     ), ServiceLifetime.Singleton);
 
 builder.Services.AddScoped(p
-    => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext())
-    .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<DataCoreUser>>();
+    => p.GetRequiredService<IDbContextFactory<ApplicationDbContext>>().CreateDbContext());
 
-// END DATABASE SETUP
+#endregion
+
+#region Accounts
 
 builder.Services.AddIdentity<DataCoreUser, DataCoreRole>()
     .AddDefaultTokenProviders()
@@ -47,16 +49,22 @@ builder.Services.AddIdentity<DataCoreUser, DataCoreRole>()
     .AddSignInManager<DataCoreSignInManager>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// END ACCOUNT SETUP
+#endregion
+
+#region Blazor
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services
+    .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<DataCoreUser>>();
 
 #if DEBUG
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 #endif
 
-// END BLAZOR SETUP
+#endregion
+
+#region Password
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -68,7 +76,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 0;
 });
 
-// END PASSWORD SETUP
+#endregion
+
+#region Services
 
 // Scoped Services
 builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
@@ -95,9 +105,13 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<IAuthorizationPolicyProvider, DataCoreAuthorizationPolicyProvider>()
     .AddSingleton<IDataBus, DataBus>();
 
-// END SERVICE SETUP
+#endregion
 
-// END DISCORD SETUP
+#region Discord Setup
+
+#endregion
+
+#region Authentication
 
 builder.Services.AddAuthentication()
     .AddSteam("Steam", "Steam", options =>
@@ -215,9 +229,11 @@ builder.Services.AddAuthentication()
         };
     });
 
-// END ACCOUNT LINK SETUP
+#endregion
 
-// END PERMISSION SETUP
+#region Permissions
+
+#endregion
 
 var app = builder.Build();
 
@@ -236,13 +252,14 @@ else
 
 using var scope = app.Services.CreateScope();
 var dbFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
-using var db = dbFac.CreateDbContext();
+await using var db = await dbFac.CreateDbContextAsync();
 ApplyDatabaseMigrations(db);
 
-// START VALIDATE ADMIN ACCOUNT
+#region Admin Validation
 
 var usrMngr = scope.ServiceProvider.GetRequiredService<UserManager<DataCoreUser>>();
 var usr = await usrMngr.FindByNameAsync("Administrator");
+bool userGenerated = false;
 if(usr is null)
 {
     usr = new()
@@ -257,9 +274,37 @@ if(usr is null)
 
     usr = await usrMngr.FindByNameAsync("Administrator");
     await usrServ.EnsureAssignableValuesAsync(usr);
+
+    userGenerated = true;
 }
 
-// END VALIDATE ADMIN ACCOUNT
+var adminPolicy = await db.DynamicAuthorizationPolicies
+    .Where(x => x.AdminPolicy)
+    .FirstOrDefaultAsync();
+
+if(adminPolicy is null)
+{
+    adminPolicy = new()
+    {
+        AdminPolicy = true,
+        PolicyName = "Administrator Policy"
+    };
+
+    adminPolicy.AdministratorPolicy = adminPolicy;
+
+    await db.AddAsync(adminPolicy);
+    await db.SaveChangesAsync();
+}
+
+if (userGenerated)
+{
+    await db.Entry(usr).ReloadAsync();
+
+    adminPolicy.AuthorizedUsers.Add(usr);
+    await db.SaveChangesAsync();
+}
+
+#endregion
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions()
 {

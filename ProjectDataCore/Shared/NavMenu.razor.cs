@@ -33,7 +33,7 @@ public partial class NavMenu : ComponentBase, IDisposable
 
     private void Navigate(string href)
     {
-        NavManager.NavigateTo(href, true);
+        NavManager.NavigateTo(href, false);
     }
 
     public void Dispose()

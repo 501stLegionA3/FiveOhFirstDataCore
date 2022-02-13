@@ -221,6 +221,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         #region Policy
         var dynamicAuthorizationPolicy = builder.Entity<DynamicAuthorizationPolicy>();
         dynamicAuthorizationPolicy.HasKey(e => e.Key);
+
+        // Authorization
         dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedSlots)
             .WithMany(e => e.DynamicPolicies);
         dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedTrees)
@@ -229,6 +231,29 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithMany(e => e.DynamicPolicies);
         dynamicAuthorizationPolicy.HasMany(p => p.AuthorizedUsers)
             .WithMany(e => e.DynamicPolicies);
+
+        // Admin
+        dynamicAuthorizationPolicy.HasOne(e => e.AdministratorPolicy)
+            .WithMany(p => p.WebsitePolciies)
+            .HasForeignKey(e => e.AdministratorPolicyKey);
+
+        // Parents
+        dynamicAuthorizationPolicy.HasMany(e => e.Parents)
+            .WithMany(e => e.Children);
+
+        // Auto include
+        dynamicAuthorizationPolicy.Navigation(e => e.AuthorizedSlots)
+            .AutoInclude(true);
+        dynamicAuthorizationPolicy.Navigation(e => e.AuthorizedTrees)
+            .AutoInclude(true);
+        dynamicAuthorizationPolicy.Navigation(e => e.AuthorizedDisplays)
+            .AutoInclude(true);
+        dynamicAuthorizationPolicy.Navigation(e => e.AuthorizedUsers)
+            .AutoInclude(true);
+
+        // Ignore
+        dynamicAuthorizationPolicy.Ignore(e => e.ValidRosterSlots)
+            .Ignore(e => e.ValidUsers);
         #endregion
 
     }

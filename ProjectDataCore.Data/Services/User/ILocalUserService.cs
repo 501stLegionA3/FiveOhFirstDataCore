@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,8 @@ namespace ProjectDataCore.Data.Services.User;
 public interface ILocalUserService : IDisposable
 {
     public Task InitalizeAsync(Guid userId, ClaimsPrincipal principal);
-    public void DeInitalize();
+    public Task InitalizeIfDeinitalizedAsync(Guid userId, ClaimsPrincipal principal);
+    public void Deinitalize();
+    public void DeinitalizeIfInitalized();
+    public bool ValidateWithPolicy(DynamicAuthorizationPolicy policy);
 }

@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public class LocalUserService : ILocalUserService
     private readonly IDataBus _dataBus;
     
     private bool disposedValue;
+    private bool initalizeValue;
     protected DataCoreUser? LocalUser { get; set; }
 
     public LocalUserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IDataBus dataBus)
@@ -26,7 +28,7 @@ public class LocalUserService : ILocalUserService
     public async Task InitalizeAsync(Guid userId, ClaimsPrincipal principal)
     {
         // Reset the data.
-        DeInitalize();
+        Deinitalize();
 
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
         var user = await _dbContext.Users
@@ -35,14 +37,48 @@ public class LocalUserService : ILocalUserService
 
         LocalUser = user;
 
-        // Do any other setup and event registration here.
-        _dataBus.RegisterLocalUserService(this, principal);
+        if (LocalUser is not null)
+        {
+            // Do any other setup and event registration here.
+            _dataBus.RegisterLocalUserService(this, principal);
+        }
+        else
+        {
+            initalizeValue = false;
+        }
     }
 
-    public void DeInitalize()
+    public void Deinitalize()
     {
         _dataBus.UnregisterLocalUserService(this);
         LocalUser = null;
+    }
+
+    public async Task InitalizeIfDeinitalizedAsync(Guid userId, ClaimsPrincipal principal)
+    {
+
+        if (!initalizeValue)
+        {
+            initalizeValue = true;
+            await InitalizeAsync(userId, principal);
+        }
+    }
+
+    public void DeinitalizeIfInitalized()
+    {
+        if (initalizeValue)
+        {
+            initalizeValue = false;
+            Deinitalize();
+        }
+    }
+    
+    public bool ValidateWithPolicy(DynamicAuthorizationPolicy policy)
+    {
+        if (LocalUser is null)
+            return false;
+
+        return policy.Validate(LocalUser);
     }
 
     protected virtual void Dispose(bool disposing)
@@ -57,9 +93,8 @@ public class LocalUserService : ILocalUserService
             // free unmanaged resources (unmanaged objects) and override finalizer
             // set large fields to null
             disposedValue = true;
-            LocalUser = null;
 
-            _dataBus.UnregisterLocalUserService(this);
+            Deinitalize();
         }
     }
 
