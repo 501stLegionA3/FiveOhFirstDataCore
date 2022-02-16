@@ -17,10 +17,10 @@ namespace ProjectDataCore.Components.Alert
         private string _alertColor { get {
                 switch (AlertItem.AlertType)
                 {
-                    case AlertType.Success: return "Success";
-                    case AlertType.Warn: return "Warn";
-                    case AlertType.Error: return "Error";
-                    case AlertType.Info: return "Info";
+                    case AlertType.Success: return "success";
+                    case AlertType.Warn: return "warn";
+                    case AlertType.Error: return "error";
+                    case AlertType.Info: return "info";
                     default: return "";
                 }
             } }
