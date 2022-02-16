@@ -17,6 +17,12 @@ namespace ProjectDataCore.Data.Services.Alert
             return new(true);
         }
 
+        public ActionResult AddAlert(AlertModel alert)
+        {
+            Alerts.Add(alert);
+            return TriggerEvent();
+        }
+
         public ActionResult CreateErrorAlert(string message, bool enableTimer = false, int duration = 5000)
         {
             return CreateAlert(message, AlertType.Error, enableTimer, duration);

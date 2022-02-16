@@ -37,6 +37,20 @@ namespace ProjectDataCore.Data.Structures.Model.Alert
             }
         }
 
+        public AlertModel(IAlertService aS)
+        {
+            alertService = aS;
+        }
+
+        public void SetTimer()
+        {
+            if (IsRunning)
+            {
+                Timer = new System.Timers.Timer(Duration);
+                Timer.Elapsed += TimerElapsed;
+            }
+        }
+
         private void TimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
         {
             alertService.DeleteAlert(this);
@@ -45,6 +59,79 @@ namespace ProjectDataCore.Data.Structures.Model.Alert
         public void Dispose()
         {
             Timer?.Dispose();
+        }
+    }
+
+    public interface IAlertBuilder
+    {
+        /// <summary>
+        /// Set Timer Duration.
+        /// </summary>
+        /// <param name="duration"></param>
+        /// <returns></returns>
+        IAlertBuilder SetDuration(int duration);
+        /// <summary>
+        /// Set message
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        IAlertBuilder SetMessage(string message);
+        /// <summary>
+        /// Set Alert Type
+        /// </summary>
+        /// <param name="alertType"></param>
+        /// <returns></returns>
+        IAlertBuilder SetType(AlertType alertType);
+        /// <summary>
+        /// Enable the Timer
+        /// </summary>
+        /// <param name="enableTimer"></param>
+        /// <returns></returns>
+        IAlertBuilder EnableTimer(bool enableTimer);
+        /// <summary>
+        /// Build Alert
+        /// </summary>
+        /// <returns></returns>
+        AlertModel Build();
+    }
+
+    public class AlertBuilder : IAlertBuilder
+    {
+        private AlertModel Alert;
+
+        public AlertBuilder(AlertService alertService)
+        {
+            this.Alert = new(alertService);
+        }
+
+        public AlertModel Build()
+        {
+            Alert.SetTimer();
+            return Alert;
+        }
+
+        public IAlertBuilder EnableTimer(bool enableTimer)
+        {
+            Alert.IsRunning = enableTimer;
+            return this;
+        }
+
+        public IAlertBuilder SetDuration(int duration)
+        {
+            Alert.Duration = duration;
+            return this;
+        }
+
+        public IAlertBuilder SetMessage(string message)
+        {
+            Alert.Message = message;
+            return this;
+        }
+
+        public IAlertBuilder SetType(AlertType alertType)
+        {
+            Alert.AlertType = alertType;
+            return this;
         }
     }
 }

@@ -11,6 +11,13 @@ namespace ProjectDataCore.Data.Services.Alert
         public event EventHandler AlertsChanged;
 
         /// <summary>
+        /// Add an alert made with <see cref="IAlertBuilder"/>/
+        /// </summary>
+        /// <param name="alert">The alert to add.</param>
+        /// <returns>True/False depending on errors</returns>
+        public ActionResult AddAlert(AlertModel alert);
+
+        /// <summary>
         /// Generic method used to create a new alert of any type
         /// </summary>
         /// <param name="message">Message to be displayed</param>
