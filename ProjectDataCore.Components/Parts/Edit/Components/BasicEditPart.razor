@@ -2,23 +2,27 @@
 
 @if(!Editing)
 {
-	<DisplayBox>
-		<Contnet>
-			<EditForm Model="this">
-				<div class="input-group">
-					@if(ComponentData.StaticProperty)
-					{
-						<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
-						<label for="option-name" class="input-label">@ComponentData.Label</label>
-					}
-					else
-					{
-						<AssignableValueEditor EditModel="this" SelectedValues="SelectedValues" />
-					}
-				</div>
-			</EditForm>
-		</Contnet>
-	</DisplayBox>
+	<AuthorizationHandler Settings="ComponentData">
+		<Authorized>
+			<DisplayBox>
+				<Contnet>
+					<EditForm Model="this">
+						<div class="input-group">
+							@if(ComponentData.StaticProperty)
+							{
+								<InputText @bind-Value="StaticValue" class="input-control peer" placeholder="@ComponentData.Label" />
+								<label for="option-name" class="input-label">@ComponentData.Label</label>
+							}
+							else
+							{
+								<AssignableValueEditor EditModel="this" SelectedValues="SelectedValues" />
+							}
+						</div>
+					</EditForm>
+				</Contnet>
+			</DisplayBox>
+		</Authorized>
+	</AuthorizationHandler>
 }
 else
 {

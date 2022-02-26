@@ -1,63 +1,66 @@
 ﻿@inherits LayoutBase
-
-<div class="part-edit-container">
-    @if (!DisplayLayoutSettings)
-    {
-        <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-1 grid-cols-1">
-            <div class="border border-black p-3 rounded-lg grid gap-3 grid-cols-1 grid-row-flow-dense">
-                @if (FormCap is not null)
-                {
-                    <div id="form-capstone">
-                        @FormCap
-                    </div>
-                }
-
-                <div id="form-content">
-                    @if (ComponentType is not null)
-                    {
-                        if (MultiAction)
+<AuthorizationHandler Settings="ComponentData">
+	<Authorized>
+        <div class="part-edit-container">
+            @if (!DisplayLayoutSettings)
+            {
+                <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-1 grid-cols-1">
+                    <div class="border border-black p-3 rounded-lg grid gap-3 grid-cols-1 grid-row-flow-dense">
+                        @if (FormCap is not null)
                         {
-                            if (Editing)
+                            <div id="form-capstone">
+                                @FormCap
+                            </div>
+                        }
+
+                        <div id="form-content">
+                            @if (ComponentType is not null)
                             {
-                                <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
-                            }
-                            else
-                            {
-                                for (int i = 0; i < SelectedUsers.Count; i++)
+                                if (MultiAction)
                                 {
-                                    ComponentParams["ScopeIndex"] = i;
-                                    var cprams = ComponentParams.ShallowCopy();
-                                    <DynamicComponent Type="ComponentType" Parameters="cprams" />
+                                    if (Editing)
+                                    {
+                                        <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+                                    }
+                                    else
+                                    {
+                                        for (int i = 0; i < SelectedUsers.Count; i++)
+                                        {
+                                            ComponentParams["ScopeIndex"] = i;
+                                            var cprams = ComponentParams.ShallowCopy();
+                                            <DynamicComponent Type="ComponentType" Parameters="cprams" />
+                                        }
+                                    }
+                                }
+                                else if (Editing || SelectedUsers.Count > 0)
+                                {
+                                    <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
                                 }
                             }
-                        }
-                        else if (Editing || SelectedUsers.Count > 0)
-                        {
-                            <DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
-                        }
-                    }
-                    else if (Editing && ComponentSettings is not null)
-                    {
-                        <AddComponentDialog ParentComponent="ComponentSettings.Key"
-                            AllowedAttributes="AllowedAttributes" />
-                    }
+                            else if (Editing && ComponentSettings is not null)
+                            {
+                                <AddComponentDialog ParentComponent="ComponentSettings.Key"
+                                    AllowedAttributes="AllowedAttributes" />
+                            }
+                        </div>
+                    </div>
                 </div>
-            </div>
+
+                @if (Editing && ComponentSettings is not null)
+                {
+                    <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
+                    @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
+
+                    <button class="absolute bottom-0 right-0 p-2 rounded-lg bg-slate-500"
+                    @onclick="ToggleSettingsPanelAsync">
+                        <span class="material-icons-round">settings</span>
+                    </button>
+                }
+            }
+            else
+            {
+                <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
+            }
         </div>
-
-        @if (Editing && ComponentSettings is not null)
-        {
-            <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
-            @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
-
-            <button class="absolute bottom-0 right-0 p-2 rounded-lg bg-slate-500"
-            @onclick="ToggleSettingsPanelAsync">
-                <span class="material-icons-round">settings</span>
-            </button>
-        }
-    }
-    else
-    {
-        <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
-    }
-</div>
+    </Authorized>
+</AuthorizationHandler>

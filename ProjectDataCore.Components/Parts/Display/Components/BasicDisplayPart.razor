@@ -2,13 +2,17 @@
 
 @if(!Editing)
 {
-	<DisplayBox>
-		<Contnet>
-			<p class="font-bold p-2">@ComponentData!.Label</p>
-			<hr />
-			<p class="stroke-gray-500 p-3">@DisplayValue</p>
-		</Contnet>
-	</DisplayBox>
+	<AuthorizationHandler Settings="ComponentData">
+		<Authorized>
+			<DisplayBox>
+				<Contnet>
+					<p class="font-bold p-2">@ComponentData!.Label</p>
+					<hr />
+					<p class="stroke-gray-500 p-3">@DisplayValue</p>
+				</Contnet>
+			</DisplayBox>
+		</Authorized>
+	</AuthorizationHandler>
 }
 else
 {

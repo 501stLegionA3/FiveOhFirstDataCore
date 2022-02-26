@@ -1,51 +1,54 @@
 ﻿@page "/admin/page/edit"
+<AuthorizationHandler ForceAdmin="true">
+	<Authorized>
+		<h4>Page Editor</h4>
 
-<h4>Page Editor</h4>
+		@*New Page Form*@
 
-@*New Page Form*@
-
-<div class="p-3">
-	@if (Error is not null)
-	{
-		<div class="rounded-lg shadow-lg bg-red-500 text-center w-100 h-24">
-			<p>@Error</p>
+		<div class="p-3">
+			@if (Error is not null)
+			{
+				<div class="rounded-lg shadow-lg bg-red-500 text-center w-100 h-24">
+					<p>@Error</p>
+				</div>
+			}
+			<EditForm Context="NewPageContext" Model="NewPageData">
+				<label class="form-label" for="name-input">New Page Name</label>
+				<InputText id="name-input" class="form-control" @bind-Value="NewPageData.Name" />
+				<hr />
+				<label class="form-label" for="route-input">New Page Route</label>
+				<InputText id="route-input" class="form-control" @bind-Value="NewPageData.Route" />
+				<hr />
+				<button class="" @onclick="OnNewPageSubmitAsync">Create New Page</button>
+			</EditForm>
 		</div>
-	}
-	<EditForm Context="NewPageContext" Model="NewPageData">
-		<label class="form-label" for="name-input">New Page Name</label>
-		<InputText id="name-input" class="form-control" @bind-Value="NewPageData.Name" />
-		<hr />
-		<label class="form-label" for="route-input">New Page Route</label>
-		<InputText id="route-input" class="form-control" @bind-Value="NewPageData.Route" />
-		<hr />
-		<button class="" @onclick="OnNewPageSubmitAsync">Create New Page</button>
-	</EditForm>
-</div>
 
-@*Edit Display*@
+		@*Edit Display*@
 
-<div class="p-3 grid auto-cols-max auto-rows-max gird-flow-row-dense grid-flow-col-dense">
-	@foreach(var p in Pages)
-	{
-		var page = p;
-		<div class="p-4 rounded-lg shadow-lg bg-sky-400 text-center">
-			@p.Name
-			<br />
-			@p.Route
-			<br />
-			<button class="p-2 text-center rounded-lg bg-blue-700 text-white" @onclick="() => StartEdit(page)">Edit</button>
-			<button class="p-2 text-center rounded-lg bg-red-500" @onclick="() => DeletePage(page)">Delete</button>
+		<div class="p-3 grid auto-cols-max auto-rows-max gird-flow-row-dense grid-flow-col-dense">
+			@foreach(var p in Pages)
+			{
+				var page = p;
+				<div class="p-4 rounded-lg shadow-lg bg-sky-400 text-center">
+					@p.Name
+					<br />
+					@p.Route
+					<br />
+					<button class="p-2 text-center rounded-lg bg-blue-700 text-white" @onclick="() => StartEdit(page)">Edit</button>
+					<button class="p-2 text-center rounded-lg bg-red-500" @onclick="() => DeletePage(page)">Delete</button>
+				</div>
+			}
 		</div>
-	}
-</div>
 
-@*Acutal Editing Portion*@
+		@*Acutal Editing Portion*@
 
-<div class="border-black border p-3">
-	@if (EditRoute is not null)
-	{
-		<CascadingValue Name="PageEdit" Value="true">
-			<CoreRouter Route="@EditRoute" />
-		</CascadingValue>
-	}
-</div>
+		<div class="border-black border p-3">
+			@if (EditRoute is not null)
+			{
+				<CascadingValue Name="PageEdit" Value="true">
+					<CoreRouter Route="@EditRoute" />
+				</CascadingValue>
+			}
+		</div>
+	</Authorized>
+</AuthorizationHandler>

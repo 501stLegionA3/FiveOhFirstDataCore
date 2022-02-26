@@ -1,50 +1,53 @@
 ﻿@page "/admin/navbar/edit"
+<AuthorizationHandler ForceAdmin="true">
+	<Authorized>
+        <h1 class="font-bold text-center text-2xl w-100 px-3">Nav Modules</h1>
 
-<h1 class="font-bold text-center text-2xl w-100 px-3">Nav Modules</h1>
-
-<div class="grid grid-cols-2">
-    <div class="select-none">
-        <ul class="pl-5 text-2xl tree">
-            @foreach (NavModule m in navModules)
-            {
-                <EditModuleDisplay Module="@m" OnDblClick="EditNavModule" OnLeftClick="NewNavModule" />
-            }
-            <li class="last"><span @onclick="NewParentNavModule">Add +</span></li>
-        </ul>
-    </div>
-    @if(Editing is not null)
-    {
-        <div>
-            <h1 class="text-bold text-center text-2xl">Editing @Editing.DisplayName</h1>
-            <EditForm Model="Editing">
-		        <label class="form-label" for="name-input">Display Name</label>
-		        <InputText id="name-input" class="form-control" @bind-Value="Editing.DisplayName" />
-		        <hr />
-		        <label class="form-label" for="link-input">Link</label>
-		        <InputText id="link-input" class="form-control" @bind-Value="Editing.Href" />
-		        <hr />
-                <label class="form-label">Parent</label>
-                <InputSelect id="parent-input" @bind-Value="Editing.ParentId">
-                    <option value="">None</option>
-                    @foreach(NavModule m in allNavModules)
+        <div class="grid grid-cols-2">
+            <div class="select-none">
+                <ul class="pl-5 text-2xl tree">
+                    @foreach (NavModule m in navModules)
                     {
-
-                        @if(m.Key != Editing.Key && !Editing.SubModules.Contains(m))
-                        {
-                        <option value="@m.Key">@m.DisplayName</option>
-                        }
+                        <EditModuleDisplay Module="@m" OnDblClick="EditNavModule" OnLeftClick="NewNavModule" />
                     }
-                </InputSelect>
-                <hr />
-                <label class="form-label" for="mainPage-input">Has Main Page</label>
-                <InputCheckbox id="mainPage-input" @bind-Value="Editing.HasMainPage" />
-                <hr />
-		        <button class="" @onclick="async ()=> await HandleForm()">Save</button>
-                <button class="" @onclick="async ()=> await DeleteModule()">Delete</button>
-                <button class="" @onclick="() => Editing = null">Close</button>
-	        </EditForm>
+                    <li class="last"><span @onclick="NewParentNavModule">Add +</span></li>
+                </ul>
+            </div>
+            @if(Editing is not null)
+            {
+                <div>
+                    <h1 class="text-bold text-center text-2xl">Editing @Editing.DisplayName</h1>
+                    <EditForm Model="Editing">
+		                <label class="form-label" for="name-input">Display Name</label>
+		                <InputText id="name-input" class="form-control" @bind-Value="Editing.DisplayName" />
+		                <hr />
+		                <label class="form-label" for="link-input">Link</label>
+		                <InputText id="link-input" class="form-control" @bind-Value="Editing.Href" />
+		                <hr />
+                        <label class="form-label">Parent</label>
+                        <InputSelect id="parent-input" @bind-Value="Editing.ParentId">
+                            <option value="">None</option>
+                            @foreach(NavModule m in allNavModules)
+                            {
+
+                                @if(m.Key != Editing.Key && !Editing.SubModules.Contains(m))
+                                {
+                                <option value="@m.Key">@m.DisplayName</option>
+                                }
+                            }
+                        </InputSelect>
+                        <hr />
+                        <label class="form-label" for="mainPage-input">Has Main Page</label>
+                        <InputCheckbox id="mainPage-input" @bind-Value="Editing.HasMainPage" />
+                        <hr />
+		                <button class="" @onclick="async ()=> await HandleForm()">Save</button>
+                        <button class="" @onclick="async ()=> await DeleteModule()">Delete</button>
+                        <button class="" @onclick="() => Editing = null">Close</button>
+	                </EditForm>
+                </div>
+            }
+
+
         </div>
-    }
-
-
-</div>
+    </Authorized>
+</AuthorizationHandler>

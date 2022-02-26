@@ -2,29 +2,33 @@
 
 @if(!Editing)
 {
-	<DisplayBox>
-		<Contnet>
-			<div class="grid grid-cols-1">
-				<table>
-					<thead>
-						<tr>
-							<th>@(ComponentData?.PropertyToEdit ?? "Display")</th>
-							<th>Access Code</th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach(var item in DisplayValues)
-						{
-							<tr>
-								<td>@item.Item1</td>
-								<td>@item.Item2</td>
-							</tr>
-						}
-					</tbody>
-				</table>
-			</div>
-		</Contnet>
-	</DisplayBox>
+	<AuthorizationHandler Settings="ComponentData">
+		<Authorized>
+			<DisplayBox>
+				<Contnet>
+					<div class="grid grid-cols-1">
+						<table>
+							<thead>
+								<tr>
+									<th>@(ComponentData?.PropertyToEdit ?? "Display")</th>
+									<th>Access Code</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach(var item in DisplayValues)
+								{
+									<tr>
+										<td>@item.Item1</td>
+										<td>@item.Item2</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					</div>
+				</Contnet>
+			</DisplayBox>
+		</Authorized>
+	</AuthorizationHandler>
 }
 else
 {

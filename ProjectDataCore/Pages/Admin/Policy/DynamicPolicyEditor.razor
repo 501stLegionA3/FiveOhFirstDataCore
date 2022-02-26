@@ -1,131 +1,135 @@
 ﻿@page "/admin/policy/dpedit"
 
-<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
-	<div>
-		<div class="grid grid-cols-1 grid-flow-row gap-2">
-			<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Policy List</div>
-			@foreach(var item in CurrentPolicies)
-			{
-				var i = item;
-				<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
-					<p class="flex-1">@i.PolicyName</p>
-					@if(ButtonActive 
-						&& (ButtonUse != 0 || (ButtonUse == 0 && !i.AdminPolicy)))
+<AuthorizationHandler ForceAdmin="true">
+	<Authorized>
+		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
+			<div>
+				<div class="grid grid-cols-1 grid-flow-row gap-2">
+					<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Policy List</div>
+					@foreach(var item in CurrentPolicies)
 					{
-						<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
-							<span class="material-icons-round">arrow_forward</span>
-						</button>
+						var i = item;
+						<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+							<p class="flex-1">@i.PolicyName</p>
+							@if(ButtonActive 
+								&& (ButtonUse != 0 || (ButtonUse == 0 && !i.AdminPolicy)))
+							{
+								<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
+									<span class="material-icons-round">arrow_forward</span>
+								</button>
+							}
+						</div>
 					}
 				</div>
-			}
-		</div>
-	</div>
-	<div class="col-span-2">
-		<div class="border-l-2 border-slate-400 pl-4">
-			<div class="grid grid-cols-1 grid-flow-row gap-2">
-				@if (ToEdit is null)
-				{
-					<div class="shadow-lg border-2 border-slate-400 rounded-lg">
-						<EditForm Model="this" Context="AddNewPolicyFormContext">
-							<div class="grid grid-cols-1 gap-2 p-4">
-								<div class="text-lg font-bold text-center">Policy Creator</div>
+			</div>
+			<div class="col-span-2">
+				<div class="border-l-2 border-slate-400 pl-4">
+					<div class="grid grid-cols-1 grid-flow-row gap-2">
+						@if (ToEdit is null)
+						{
+							<div class="shadow-lg border-2 border-slate-400 rounded-lg">
+								<EditForm Model="this" Context="AddNewPolicyFormContext">
+									<div class="grid grid-cols-1 gap-2 p-4">
+										<div class="text-lg font-bold text-center">Policy Creator</div>
 
-								<div class="input-group">
-									<InputText @bind-Value="NewPolicyName" id="name" type="text" class="input-control peer" placeholder="Policy Name" />
-									<label for="name" class="input-label">Policy Name</label>
-								</div>
+										<div class="input-group">
+											<InputText @bind-Value="NewPolicyName" id="name" type="text" class="input-control peer" placeholder="Policy Name" />
+											<label for="name" class="input-label">Policy Name</label>
+										</div>
 
-								<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="OnNewPolicyAsync">Create</button>
-							</div>
-						</EditForm>
-					</div>
-				}
-				else
-				{
-					<div class="shadow-lg border-2 border-slate-400 rounded-lg">
-						<EditForm Model="this" Context="EditExistingPolicyFormContext">
-							<div class="grid grid-cols-1 gap-2 p-4">
-								<div class="text-lg font-bold text-center">Policy Editor: @ToEdit.PolicyName</div>
-
-								@*Submit and Clear*@
-
-								<div class="grid grid-cols-2 gap-4">
-									<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
-									<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
-								</div>
-
-								@*Generic Settings Section*@
-
-								<div class="input-group">
-									<InputText @bind-Value="ToEdit.PolicyName" id="edit-name" type="text" class="input-control peer" placeholder="Policy Name" />
-									<label for="edit-name" class="input-label">Policy Name</label>
-								</div>
-
-								<hr />
-
-								@*Authorized Users Section*@
-
-								<MultiListSelectSelector TValue="RosterSlot" SelectedItems="SelectedSlots" 
-									DisplayValues="SlotsDisplayValues" Values="AllSlots" OnValueChanged="SlotsSelectionChanged"
-									DisplayName="Roster Slot Selector" />
-
-								<MultiListSelectSelector TValue="RosterTree" SelectedItems="SelectedTrees" 
-									DisplayValues="TreeDisplayValues" Values="AllTrees" OnValueChanged="TreeSelectionChanged"
-									DisplayName="Roster Tree Selector" />
-
-								<MultiListSelectSelector TValue="RosterDisplaySettings" SelectedItems="SelectedDisplays" 
-									DisplayValues="DisplayDisplayValues" Values="AllDisplays" OnValueChanged="DisplaySelectionChanged"
-									DisplayName="Roster Display Selector" />
-
-								<MultiListSelectSelector TValue="DataCoreUser" SelectedItems="SelectedUsers" 
-									DisplayValues="UserDisplayValues" Values="AllUsers" OnValueChanged="UserSelectionChanged"
-									DisplayName="User Selector" />
-
-								<hr />
-
-								@*Admin Page Policy*@
-
-								<div class="justify-self-center">
-									<label class="inline-flex items-center">
-										<InputCheckbox @bind-Value="ToEdit.AdminPagePolicy" />
-										<span class="ml-2">Admin Page Policy</span>
-									</label>
-								</div>
-
-								<hr />
-
-								@*Parents and Inheritence*@
-
-								@if (!ButtonActive)
-								{
-									<button class="border border-blue-400 hover:bg-blue-400 rounded-lg px-2 p-1" @onclick="OpenParentSelectorAsync">Add Parent</button>
-
-									<div class="inline-flex justify-start gap-2">
-										@foreach(var parent in SelectedParents)
-										{
-											var p = parent;
-											<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
-												@onclick="async () => await RemoveParentAsync(p)">
-													<span class="flex-grow px-2">@p.PolicyName</span>
-													<span class="material-icons-round flex-0">highlight_off</span>
-											</button>
-										}
+										<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="OnNewPolicyAsync">Create</button>
 									</div>
-								}
-
-								<hr />
-
-								@*Submit and Clear*@
-
-								<div class="grid grid-cols-2 gap-4">
-									<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
-									<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
-								</div>
+								</EditForm>
 							</div>
-						</EditForm>
+						}
+						else
+						{
+							<div class="shadow-lg border-2 border-slate-400 rounded-lg">
+								<EditForm Model="this" Context="EditExistingPolicyFormContext">
+									<div class="grid grid-cols-1 gap-2 p-4">
+										<div class="text-lg font-bold text-center">Policy Editor: @ToEdit.PolicyName</div>
+
+										@*Submit and Clear*@
+
+										<div class="grid grid-cols-2 gap-4">
+											<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
+											<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
+										</div>
+
+										@*Generic Settings Section*@
+
+										<div class="input-group">
+											<InputText @bind-Value="ToEdit.PolicyName" id="edit-name" type="text" class="input-control peer" placeholder="Policy Name" />
+											<label for="edit-name" class="input-label">Policy Name</label>
+										</div>
+
+										<hr />
+
+										@*Authorized Users Section*@
+
+										<MultiListSelectSelector TValue="RosterSlot" SelectedItems="SelectedSlots" 
+											DisplayValues="SlotsDisplayValues" Values="AllSlots" OnValueChanged="SlotsSelectionChanged"
+											DisplayName="Roster Slot Selector" />
+
+										<MultiListSelectSelector TValue="RosterTree" SelectedItems="SelectedTrees" 
+											DisplayValues="TreeDisplayValues" Values="AllTrees" OnValueChanged="TreeSelectionChanged"
+											DisplayName="Roster Tree Selector" />
+
+										<MultiListSelectSelector TValue="RosterDisplaySettings" SelectedItems="SelectedDisplays" 
+											DisplayValues="DisplayDisplayValues" Values="AllDisplays" OnValueChanged="DisplaySelectionChanged"
+											DisplayName="Roster Display Selector" />
+
+										<MultiListSelectSelector TValue="DataCoreUser" SelectedItems="SelectedUsers" 
+											DisplayValues="UserDisplayValues" Values="AllUsers" OnValueChanged="UserSelectionChanged"
+											DisplayName="User Selector" />
+
+										<hr />
+
+										@*Admin Page Policy*@
+
+										<div class="justify-self-center">
+											<label class="inline-flex items-center">
+												<InputCheckbox @bind-Value="ToEdit.AdminPagePolicy" />
+												<span class="ml-2">Admin Page Policy</span>
+											</label>
+										</div>
+
+										<hr />
+
+										@*Parents and Inheritence*@
+
+										@if (!ButtonActive)
+										{
+											<button class="border border-blue-400 hover:bg-blue-400 rounded-lg px-2 p-1" @onclick="OpenParentSelectorAsync">Add Parent</button>
+
+											<div class="inline-flex justify-start gap-2">
+												@foreach(var parent in SelectedParents)
+												{
+													var p = parent;
+													<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+														@onclick="async () => await RemoveParentAsync(p)">
+															<span class="flex-grow px-2">@p.PolicyName</span>
+															<span class="material-icons-round flex-0">highlight_off</span>
+													</button>
+												}
+											</div>
+										}
+
+										<hr />
+
+										@*Submit and Clear*@
+
+										<div class="grid grid-cols-2 gap-4">
+											<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
+											<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
+										</div>
+									</div>
+								</EditForm>
+							</div>
+						}
 					</div>
-				}
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
+	</Authorized>
+</AuthorizationHandler>

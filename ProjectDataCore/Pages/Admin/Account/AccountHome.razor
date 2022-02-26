@@ -1,58 +1,62 @@
 ﻿@page "/admin/account/"
 
-<div class="p-4 grid grid-cols-1 gap-2">
-	<div class="grid grid-cols-2 gap-2">
-		<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2 bg-slate-200">
-			<div class="text-lg">Current Link Settings</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="Settings.RequireSteamLink" disabled="true" />
-					<span class="ml-2">Require Steam Account Link</span>
-				</label>
+<AuthorizationHandler ForceAdmin="true">
+	<Authorized>
+		<div class="p-4 grid grid-cols-1 gap-2">
+			<div class="grid grid-cols-2 gap-2">
+				<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2 bg-slate-200">
+					<div class="text-lg">Current Link Settings</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="Settings.RequireSteamLink" disabled="true" />
+							<span class="ml-2">Require Steam Account Link</span>
+						</label>
+					</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="Settings.RequireDiscordLink" disabled="true" />
+							<span class="ml-2">Require Discord Account Link</span>
+						</label>
+					</div>
+				</EditForm>
+				<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
+					<div class="text-lg">Change Link Settings</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="RequireSteamLink" />
+							<span class="ml-2">Require Steam Account Link</span>
+						</label>
+					</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="RequireDiscordLink" />
+							<span class="ml-2">Require Discord Account Link</span>
+						</label>
+					</div>
+				</EditForm>
 			</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="Settings.RequireDiscordLink" disabled="true" />
-					<span class="ml-2">Require Discord Account Link</span>
-				</label>
+			<div class="grid grid-cols-2 gap-2">
+				<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2 bg-slate-200">
+					<div class="text-lg">Current Account Creation Settings</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="Settings.RequireAccessCodeForRegister" disabled="true" />
+							<span class="ml-2">Require Access Code for Account Registration</span>
+						</label>
+					</div>
+				</EditForm>
+				<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
+					<div class="text-lg">Change  Account Creation Settings</div>
+					<div class="justify-self-center">
+						<label class="inline-flex items-center">
+							<InputCheckbox @bind-Value="RequireAccessCodeForRegister" />
+							<span class="ml-2">Require Access Code for Account Registration</span>
+						</label>
+					</div>
+				</EditForm>
 			</div>
-		</EditForm>
-		<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
-			<div class="text-lg">Change Link Settings</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="RequireSteamLink" />
-					<span class="ml-2">Require Steam Account Link</span>
-				</label>
-			</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="RequireDiscordLink" />
-					<span class="ml-2">Require Discord Account Link</span>
-				</label>
-			</div>
-		</EditForm>
-	</div>
-	<div class="grid grid-cols-2 gap-2">
-		<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2 bg-slate-200">
-			<div class="text-lg">Current Account Creation Settings</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="Settings.RequireAccessCodeForRegister" disabled="true" />
-					<span class="ml-2">Require Access Code for Account Registration</span>
-				</label>
-			</div>
-		</EditForm>
-		<EditForm Model="this" class="grid grid-cols-1 border border-black rounded-lg p-3 gap-2">
-			<div class="text-lg">Change  Account Creation Settings</div>
-			<div class="justify-self-center">
-				<label class="inline-flex items-center">
-					<InputCheckbox @bind-Value="RequireAccessCodeForRegister" />
-					<span class="ml-2">Require Access Code for Account Registration</span>
-				</label>
-			</div>
-		</EditForm>
-	</div>
 	
-	<button class="button-op-success" @onclick="OnSaveSettingsAsync">Save Changes</button>
-</div>
+			<button class="button-op-success" @onclick="OnSaveSettingsAsync">Save Changes</button>
+		</div>
+	</Authorized>
+</AuthorizationHandler>
