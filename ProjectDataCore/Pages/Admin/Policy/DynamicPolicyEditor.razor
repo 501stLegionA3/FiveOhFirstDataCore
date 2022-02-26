@@ -9,7 +9,8 @@
 				var i = item;
 				<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
 					<p class="flex-1">@i.PolicyName</p>
-					@if(ButtonActive)
+					@if(ButtonActive 
+						&& (ButtonUse == 0 && !i.AdminPolicy))
 					{
 						<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
 							<span class="material-icons-round">arrow_forward</span>
@@ -45,7 +46,14 @@
 						<EditForm Model="this" Context="EditExistingPolicyFormContext">
 							<div class="grid grid-cols-1 gap-2 p-4">
 								<div class="text-lg font-bold text-center">Policy Editor: @ToEdit.PolicyName</div>
-								
+
+								@*Submit and Clear*@
+
+								<div class="grid grid-cols-2 gap-4">
+									<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
+									<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
+								</div>
+
 								@*Generic Settings Section*@
 
 								<div class="input-group">
@@ -78,6 +86,15 @@
 								@*Parents and Inheritence*@
 
 
+
+								<hr />
+
+								@*Submit and Clear*@
+
+								<div class="grid grid-cols-2 gap-4">
+									<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
+									<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
+								</div>
 							</div>
 						</EditForm>
 					</div>

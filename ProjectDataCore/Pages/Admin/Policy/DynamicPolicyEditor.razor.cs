@@ -29,6 +29,14 @@ public partial class DynamicPolicyEditor
 
     public List<DynamicAuthorizationPolicy> CurrentPolicies { get; set; } = new();
     public bool ButtonActive { get; set; } = true;
+    /// <summary>
+    /// Use of the buttons.
+    /// </summary>
+    /// <remarks>
+    /// 0 - Start Edit
+    /// <br />
+    /// 1 - Select Parent
+    /// </remarks>
     public int ButtonUse { get; set; } = 0;
 
     public string NewPolicyName { get; set; } = "";
@@ -77,7 +85,6 @@ public partial class DynamicPolicyEditor
         ToEdit = policy;
 
         ButtonActive = false;
-
 
         // Load the selection values.
         var treeRes = await ModularRosterService.GetAllRosterTreesAsync();
@@ -151,11 +158,27 @@ public partial class DynamicPolicyEditor
         StateHasChanged();
     }
 
+    protected void StartAddParent()
+    {
+        ButtonActive = true;
+
+
+    }
+
+    protected void EndAddParent(DynamicAuthorizationPolicy? policy)
+    {
+        ButtonActive = false;
+
+
+    }
+
     protected async Task StopEditAsync()
     {
         ButtonActive = true;
         ButtonUse = 0;
+        ToEdit = null;
         await ReloadPolicyListAsync();
+        StateHasChanged();
     }
 
     protected async Task OpenParentSelectorAsync()
@@ -198,7 +221,44 @@ public partial class DynamicPolicyEditor
 
     protected async Task OnNewPolicyAsync()
     {
-        
+        if (!string.IsNullOrWhiteSpace(NewPolicyName))
+        {
+            var res = await PolicyService.CreatePolicyAsync(new()
+            {
+                PolicyName = NewPolicyName
+            });
+
+            if (!res.GetResult(out var err))
+                AlertService.CreateErrorAlert(err);
+        }
+        else
+        {
+            AlertService.CreateErrorAlert("The new policy must have a name.");
+        }
+
+        await StopEditAsync();
+    }
+
+    protected async Task SaveChangesAsync()
+    {
+        if (ToEdit is not null)
+        {
+            var res = await PolicyService.UpdatePolicyAsync(ToEdit.Key, (x) =>
+            {
+                x.PolicyName = ToEdit.PolicyName;
+                x.AuthorizedSlots = SelectedSlots;
+                x.AuthorizedTrees = SelectedTrees;
+                x.AuthorizedDisplays = SelectedDisplays;
+                x.AuthorizedUsers = SelectedUsers;
+
+                x.Parents = SelectedParents;
+            });
+
+            if(!res.GetResult(out var err))
+                AlertService.CreateErrorAlert(err);
+        }
+
+        await StopEditAsync();
     }
 
     #region Slots Selection

@@ -88,16 +88,48 @@ public class PolicyService : IPolicyService
             policy.PolicyName = model.PolicyName;
 
         if (model.AuthorizedSlots is not null)
-            policy.AuthorizedSlots = model.AuthorizedSlots;
+        {
+            foreach(var m in model.AuthorizedSlots)
+                if(!policy.AuthorizedSlots.Any(x => x.Key == m.Key))
+                    policy.AuthorizedSlots.Add(m);
+
+            foreach (var p in policy.AuthorizedSlots)
+                if (!model.AuthorizedSlots.Any(x => x.Key == p.Key))
+                    policy.AuthorizedSlots.Remove(p);
+        }
 
         if (model.AuthorizedTrees is not null)
-            policy.AuthorizedTrees = model.AuthorizedTrees;
+        {
+            foreach (var m in model.AuthorizedTrees)
+                if (!policy.AuthorizedTrees.Any(x => x.Key == m.Key))
+                    policy.AuthorizedTrees.Add(m);
+
+            foreach (var p in policy.AuthorizedTrees)
+                if (!model.AuthorizedTrees.Any(x => x.Key == p.Key))
+                    policy.AuthorizedTrees.Remove(p);
+        }
 
         if (model.AuthorizedDisplays is not null)
-            policy.AuthorizedDisplays = model.AuthorizedDisplays;
+        {
+            foreach (var m in model.AuthorizedDisplays)
+                if (!policy.AuthorizedDisplays.Any(x => x.Key == m.Key))
+                    policy.AuthorizedDisplays.Add(m);
+
+            foreach (var p in policy.AuthorizedDisplays)
+                if (!model.AuthorizedDisplays.Any(x => x.Key == p.Key))
+                    policy.AuthorizedDisplays.Remove(p);
+        }
 
         if (model.AuthorizedUsers is not null)
-            policy.AuthorizedUsers = model.AuthorizedUsers;
+        {
+            foreach (var m in model.AuthorizedUsers)
+                if (!policy.AuthorizedUsers.Any(x => x.Id == m.Id))
+                    policy.AuthorizedUsers.Add(m);
+
+            foreach (var p in policy.AuthorizedUsers)
+                if (!model.AuthorizedUsers.Any(x => x.Id == p.Id))
+                    policy.AuthorizedUsers.Remove(p);
+        }
 
         if (model.Parents is not null)
             policy.Parents = model.Parents;
