@@ -1,0 +1,28 @@
+﻿.success {
+    @apply bg-green-500 hover:bg-green-400;
+}
+
+.warn {
+    @apply bg-amber-500 hover:bg-amber-500;
+}
+
+.info {
+    @apply bg-blue-500 hover:bg-blue-400;
+}
+
+.error {
+    @apply bg-red-500 hover:bg-red-400;
+}
+
+.alert{
+    animation: fadein 500ms;
+}
+
+@keyframes fadein {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}

@@ -1,0 +1,40 @@
+﻿<div class="transition-all ease-in-out duration-300 alert p-0.5" id="alertbox" @onmouseover="OnMouseEnter" @onmouseout="OnMouseLeave">
+    <div class="flex items-center text-white text-base font-semibold px-4 py-3 rounded-md relative @_alertColor"
+         role="alert">
+        
+        @switch (AlertItem.AlertType)
+        {
+            case Data.Structures.Model.Alert.AlertType.Error:
+                <span class="material-icons-outlined mr-2">
+                    error_outline
+                </span>
+                break;
+
+            case Data.Structures.Model.Alert.AlertType.Warn:
+                <span class="material-icons-round mr-2">
+                    warning_amber
+                </span>
+                break;
+
+            case Data.Structures.Model.Alert.AlertType.Success:
+                <span class="material-icons-round mr-2">
+                    check
+                </span>
+                break;
+
+            default:
+                    <span class="material-icons-outlined mr-2">
+                        info
+                    </span>
+                break;
+        }
+
+        <p>@AlertItem.Message</p>
+
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3 closealertbutton" @onclick="@CloseAlert">
+            <span class="material-icons-round">
+                close
+            </span>
+        </span>
+    </div>
+</div>

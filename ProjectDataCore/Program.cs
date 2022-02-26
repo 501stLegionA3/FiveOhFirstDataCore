@@ -10,8 +10,10 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 using ProjectDataCore.Data.Database;
 using ProjectDataCore.Data.Policy;
+using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Account;
 using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
@@ -79,6 +81,13 @@ builder.Services.Configure<IdentityOptions>(options =>
 #endregion
 
 #region Services
+builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
+    .AddScoped<IPageEditService, PageEditService>()
+    .AddScoped<IScopedUserService, ScopedUserService>()
+    .AddScoped<IUserService, UserService>()
+    .AddScoped<INavModuleService, NavModuleService>()
+    .AddScoped<IAssignableDataService, AssignableDataService>()
+    .AddScoped<IAlertService, AlertService>();
 
 // Scoped Services
 builder.Services
