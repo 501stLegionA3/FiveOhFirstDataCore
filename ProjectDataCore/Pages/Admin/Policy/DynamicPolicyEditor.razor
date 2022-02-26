@@ -1,4 +1,5 @@
 ﻿@page "/admin/policy/dpedit"
+@using ProjectDataCore.Data.Structures.Roster
 
 <div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
 	<div>
@@ -42,11 +43,26 @@
 				else
 				{
 					<div class="shadow-lg border-2 border-slate-400 rounded-lg">
-						<EditForm Model="this" Context="AddNewPolicyFormContext">
+						<EditForm Model="this" Context="EditExistingPolicyFormContext">
 							<div class="grid grid-cols-1 gap-2 p-4">
 								<div class="text-lg font-bold text-center">Policy Editor: @ToEdit.PolicyName</div>
 								
+								<div class="input-group">
+									<InputText @bind-Value="ToEdit.PolicyName" id="edit-name" type="text" class="input-control peer" placeholder="Policy Name" />
+									<label for="edit-name" class="input-label">Policy Name</label>
+								</div>
 
+								<MultiListSelectSelector TValue="RosterSlot" SelectedItems="ToEdit.AuthorizedSlots" 
+									DisplayValues="SlotsDisplayValues" Values="AllSlots" OnValueChanged="SlotsSelectionChanged" />
+
+								<MultiListSelectSelector TValue="RosterTree" SelectedItems="ToEdit.AuthorizedTrees" 
+									DisplayValues="TreeDisplayValues" Values="AllTrees" OnValueChanged="TreeSelectionChanged" />
+
+								<MultiListSelectSelector TValue="RosterDisplaySettings" SelectedItems="ToEdit.AuthorizedDisplays" 
+									DisplayValues="DisplayDisplayValues" Values="AllDisplays" OnValueChanged="DisplaySelectionChanged" />
+
+								<MultiListSelectSelector TValue="DataCoreUser" SelectedItems="ToEdit.AuthorizedUsers" 
+									DisplayValues="UserDisplayValues" Values="AllUsers" OnValueChanged="UserSelectionChanged" />
 							</div>
 						</EditForm>
 					</div>

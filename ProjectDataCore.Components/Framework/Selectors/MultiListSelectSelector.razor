@@ -1,0 +1,34 @@
+﻿@typeparam TValue
+
+<EditForm Model="this" class="p-2 grid grid-cols-1 grid-flow-row-dense gap-2">
+	<div class="input-group grid grid-cols-1 grid-flow-row-dense gap-2">
+		<InputText class="input-control peer" id="user-search" placeholder="User Search"
+			Value="@SearchRaw" ValueChanged="(x) => OnSearchUpdated(x)" ValueExpression="() => SearchRaw"
+			@oninput="(x) => OnSearchUpdated((string?)x.Value)" autocomplete="off" />
+		<label class="input-label" for="user-search">Value Search</label>
+
+		@if (SuggestedItems.Count > 0)
+		{
+			var cSel = -1;
+			<div class="peer-placeholder-shown:hidden grid grid-cols-1 grid-flow-row-dense gap-1 absolute left-0 bottom-[-45px] bg-slate-500 text-white border-black border-2 w-full">
+				@foreach(var close in SuggestedItems)
+				{
+					var c = close;
+					<button class="p-1 px-2 border-b border-black last:border-0 hover:bg-slate-300 hover:text-black"
+						@onclick="() => OnAddSelection(c)" >@GetDisplayValue(c)</button>
+				}
+			</div>
+		}
+	</div>
+	<div class="inline-flex justify-start gap-2">
+		@foreach(var user in Values)
+		{
+			var u = user;
+			<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+				@onclick="() => OnRemoveSelection(u)">
+					<span class="flex-grow px-2">@GetDisplayValue(u)</span>
+					<span class="material-icons-round flex-0">highlight_off</span>
+			</button>
+		}
+	</div>
+</EditForm>

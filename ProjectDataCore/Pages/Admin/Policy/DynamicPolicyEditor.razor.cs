@@ -1,5 +1,7 @@
 ﻿using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Structures.Policy;
+using ProjectDataCore.Data.Structures.Roster;
+using ProjectDataCore.Data.Structures.Selector.User;
 
 using System;
 using System.Collections.Generic;
@@ -64,14 +66,26 @@ public partial class DynamicPolicyEditor
         }
     }
 
-    protected Task StartEditAsync(DynamicAuthorizationPolicy policy)
+    protected async Task StartEditAsync(DynamicAuthorizationPolicy policy)
     {
         ToEdit = policy;
 
         ButtonActive = false;
-        StateHasChanged();
 
-        return Task.CompletedTask;
+
+        // Load the selection values.
+        var treeRes = await ModularRosterService.GetAllRosterTreesAsync();
+        if(treeRes.GetResult(out var rosterTrees, out var err))
+        {
+
+        }
+        else
+        {
+
+        }
+
+
+        StateHasChanged();
     }
 
     protected async Task StopEditAsync()
@@ -121,6 +135,46 @@ public partial class DynamicPolicyEditor
 
     protected async Task OnNewPolicyAsync()
     {
-
+        
     }
+
+    #region Slots Selection
+    public List<RosterSlot> AllSlots { get; set; } = new();
+    public List<string> SlotsDisplayValues { get; set; } = new();
+
+    protected void SlotsSelectionChanged()
+    {
+        StateHasChanged();
+    }
+    #endregion
+
+    #region Tree Selection
+    public List<RosterTree> AllTrees { get; set; } = new();
+    public List<string> TreeDisplayValues { get; set; } = new();
+
+    protected void TreeSelectionChanged()
+    {
+        StateHasChanged();
+    }
+    #endregion
+
+    #region Display Selection
+    public List<RosterDisplaySettings> AllDisplays { get; set; } = new();
+    public List<string> DisplayDisplayValues { get; set; } = new();
+
+    protected void DisplaySelectionChanged()
+    {
+        StateHasChanged();
+    }
+    #endregion
+
+    #region User Selection
+    public List<DataCoreUser> AllUsers { get; set; } = new();
+    public List<string> UserDisplayValues { get; set; } = new();
+
+    protected void UserSelectionChanged()
+    {
+        StateHasChanged();
+    }
+    #endregion
 }
