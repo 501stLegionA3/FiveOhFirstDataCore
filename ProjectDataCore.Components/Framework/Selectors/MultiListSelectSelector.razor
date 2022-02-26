@@ -5,7 +5,7 @@
 		<InputText class="input-control peer" id="user-search" placeholder="User Search"
 			Value="@SearchRaw" ValueChanged="(x) => OnSearchUpdated(x)" ValueExpression="() => SearchRaw"
 			@oninput="(x) => OnSearchUpdated((string?)x.Value)" autocomplete="off" />
-		<label class="input-label" for="user-search">Value Search</label>
+		<label class="input-label" for="user-search">@DisplayName</label>
 
 		@if (SuggestedItems.Count > 0)
 		{
@@ -21,7 +21,7 @@
 		}
 	</div>
 	<div class="inline-flex justify-start gap-2">
-		@foreach(var user in Values)
+		@foreach(var user in SelectedItems)
 		{
 			var u = user;
 			<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"

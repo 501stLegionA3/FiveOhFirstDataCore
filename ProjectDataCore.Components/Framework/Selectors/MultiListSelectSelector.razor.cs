@@ -30,9 +30,13 @@ public partial class MultiListSelectSelector<TValue> : ComponentBase
     /// </summary>
     [Parameter]
     public List<string> DisplayValues { get; set; } = new();
+    [Parameter]
+    public string DisplayName { get; set; } = "Value Selector";
 
     public string SearchRaw { get; set; } = "";
     public List<TValue> SuggestedItems { get; set; } = new();
+
+    public List<int> SelectedDisplays { get; set; } = new();
 
     protected void OnSearchUpdated(string? value)
     {

@@ -1,4 +1,6 @@
-﻿using ProjectDataCore.Data.Services.Policy;
+﻿using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Services.Policy;
+using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Structures.Policy;
 using ProjectDataCore.Data.Structures.Roster;
 using ProjectDataCore.Data.Structures.Selector.User;
@@ -19,6 +21,10 @@ public partial class DynamicPolicyEditor
     public IModularRosterService ModularRosterService { get; set; }
     [Inject]
     public IDbContextFactory<ApplicationDbContext> DbContextFactory { get; set; }
+    [Inject]
+    public IAlertService AlertService { get; set; }
+    [Inject]
+    public IUserService UserService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public List<DynamicAuthorizationPolicy> CurrentPolicies { get; set; } = new();
@@ -75,15 +81,72 @@ public partial class DynamicPolicyEditor
 
         // Load the selection values.
         var treeRes = await ModularRosterService.GetAllRosterTreesAsync();
+
+        AllSlots.Clear();
         if(treeRes.GetResult(out var rosterTrees, out var err))
         {
-
+            AllTrees = rosterTrees;
+            foreach(var t in AllTrees)
+            {
+                TreeDisplayValues.Add(t.Name);
+                foreach(var s in t.RosterPositions)
+                {
+                    AllSlots.Add(s);
+                    SlotsDisplayValues.Add($"{t.Name} - {s.Name}");
+                }
+            }
         }
         else
         {
-
+            AlertService.CreateErrorAlert(err);
+            await StopEditAsync();
+            return;
         }
 
+        var displayRes = await ModularRosterService.GetAvalibleRosterDisplaysAsync();
+        if(displayRes.GetResult(out var rosterDisplaySettings, out err))
+        {
+            AllDisplays = rosterDisplaySettings;
+            foreach(var d in AllDisplays)
+            {
+                DisplayDisplayValues.Add(d.Name);
+            }
+        }
+        else
+        {
+            AlertService.CreateErrorAlert(err);
+            await StopEditAsync();
+            return;
+        }
+
+        AllUsers = await UserService.GetAllUsersAsync();
+        foreach (var u in AllUsers)
+            UserDisplayValues.Add(u.UserName);
+
+        // Ensure we are using the previously loaded objects for our selections.
+        SelectedSlots.Clear();
+        RosterSlot? slot;
+        foreach (var s in ToEdit.AuthorizedSlots)
+            if ((slot = AllSlots.FirstOrDefault(x => x.Key == s.Key) ?? null) is not null)
+                SelectedSlots.Add(slot);
+
+        SelectedTrees.Clear();
+        RosterTree? tree;
+        foreach (var s in ToEdit.AuthorizedTrees)
+            if ((tree = AllTrees.FirstOrDefault(x => x.Key == s.Key) ?? null) is not null)
+                SelectedTrees.Add(tree);
+
+        SelectedDisplays.Clear();
+        RosterDisplaySettings? disp;
+        foreach (var s in ToEdit.AuthorizedDisplays)
+            if ((disp = AllDisplays.FirstOrDefault(x => x.Key == s.Key) ?? null) is not null)
+                SelectedDisplays.Add(disp);
+
+        SelectedUsers.Clear();
+        DataCoreUser? user;
+        foreach (var s in ToEdit.AuthorizedUsers)
+            if ((user = AllUsers.FirstOrDefault(x => x.Id == s.Id) ?? null) is not null)
+                SelectedUsers.Add(user);
 
         StateHasChanged();
     }
@@ -139,6 +202,7 @@ public partial class DynamicPolicyEditor
     }
 
     #region Slots Selection
+    public List<RosterSlot> SelectedSlots { get; set; } = new();
     public List<RosterSlot> AllSlots { get; set; } = new();
     public List<string> SlotsDisplayValues { get; set; } = new();
 
@@ -149,6 +213,7 @@ public partial class DynamicPolicyEditor
     #endregion
 
     #region Tree Selection
+    public List<RosterTree> SelectedTrees { get; set; } = new();
     public List<RosterTree> AllTrees { get; set; } = new();
     public List<string> TreeDisplayValues { get; set; } = new();
 
@@ -159,6 +224,7 @@ public partial class DynamicPolicyEditor
     #endregion
 
     #region Display Selection
+    public List<RosterDisplaySettings> SelectedDisplays { get; set; } = new();
     public List<RosterDisplaySettings> AllDisplays { get; set; } = new();
     public List<string> DisplayDisplayValues { get; set; } = new();
 
@@ -169,6 +235,7 @@ public partial class DynamicPolicyEditor
     #endregion
 
     #region User Selection
+    public List<DataCoreUser> SelectedUsers { get; set; } = new();
     public List<DataCoreUser> AllUsers { get; set; } = new();
     public List<string> UserDisplayValues { get; set; } = new();
 
