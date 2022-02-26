@@ -264,6 +264,8 @@ public partial class DynamicPolicyEditor
             var res = await PolicyService.UpdatePolicyAsync(ToEdit.Key, (x) =>
             {
                 x.PolicyName = ToEdit.PolicyName;
+                x.AdminPagePolicy = ToEdit.AdminPagePolicy;
+
                 x.AuthorizedSlots = SelectedSlots;
                 x.AuthorizedTrees = SelectedTrees;
                 x.AuthorizedDisplays = SelectedDisplays;

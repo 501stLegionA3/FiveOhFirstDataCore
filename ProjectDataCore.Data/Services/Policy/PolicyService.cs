@@ -171,6 +171,18 @@ public class PolicyService : IPolicyService
                     policy.Parents.Remove(p);
         }
 
+        if(model.AdminPagePolicy is not null)
+        {
+            var oldAdminPage = await _dbContext.DynamicAuthorizationPolicies
+                .Where(x => x.AdminPagePolicy)
+                .FirstOrDefaultAsync();
+
+            if (oldAdminPage is not null)
+                oldAdminPage.AdminPagePolicy = false;
+
+            model.AdminPagePolicy = true;
+        }
+
         await _dbContext.SaveChangesAsync();
 
         return new(true, null);
@@ -208,5 +220,23 @@ public class PolicyService : IPolicyService
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         await _dbContext.Attach(policy).Collection(e => e.Parents).LoadAsync();
+    }
+
+    public async Task<ActionResult<DynamicAuthorizationPolicy>> GetAdminPagePolicy()
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var item = await _dbContext.DynamicAuthorizationPolicies
+            .Where(x => x.AdminPagePolicy)
+            .FirstOrDefaultAsync();
+
+        if(item is null)
+        {
+            item = await _dbContext.DynamicAuthorizationPolicies
+                .Where(x => x.AdminPolicy)
+                .FirstOrDefaultAsync();
+        }
+
+        return new(true, null, item);
     }
 }

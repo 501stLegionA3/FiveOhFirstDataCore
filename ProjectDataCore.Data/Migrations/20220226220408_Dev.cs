@@ -99,6 +99,7 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     AdminPolicy = table.Column<bool>(type: "boolean", nullable: false),
+                    AdminPagePolicy = table.Column<bool>(type: "boolean", nullable: false),
                     PolicyName = table.Column<string>(type: "text", nullable: false),
                     AdministratorPolicyKey = table.Column<Guid>(type: "uuid", nullable: false),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -317,53 +318,6 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PageComponentSettingsBase",
-                columns: table => new
-                {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
-                    QualifiedTypeName = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "text", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    ParentLayoutId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
-                    ResetForm = table.Column<bool>(type: "boolean", nullable: true),
-                    InvokeSave = table.Column<bool>(type: "boolean", nullable: true),
-                    Style = table.Column<int>(type: "integer", nullable: true),
-                    MaxChildComponents = table.Column<int>(type: "integer", nullable: true),
-                    ParentPageId = table.Column<Guid>(type: "uuid", nullable: true),
-                    PropertyToEdit = table.Column<string>(type: "text", nullable: true),
-                    StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
-                    Label = table.Column<string>(type: "text", nullable: true),
-                    FormatString = table.Column<string>(type: "text", nullable: true),
-                    UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Scoped = table.Column<bool>(type: "boolean", nullable: true),
-                    AllowUserLisiting = table.Column<bool>(type: "boolean", nullable: true),
-                    LevelFromTop = table.Column<int>(type: "integer", nullable: true),
-                    Depth = table.Column<int>(type: "integer", nullable: true),
-                    DefaultRoster = table.Column<Guid>(type: "uuid", nullable: true),
-                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PageComponentSettingsBase", x => x.Key);
-                    table.ForeignKey(
-                        name: "FK_PageComponentSettingsBase_CustomPageSettings_ParentPageId",
-                        column: x => x.ParentPageId,
-                        principalTable: "CustomPageSettings",
-                        principalColumn: "Key");
-                    table.ForeignKey(
-                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
-                        column: x => x.ParentLayoutId,
-                        principalTable: "PageComponentSettingsBase",
-                        principalColumn: "Key");
-                    table.ForeignKey(
-                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_UserSco~",
-                        column: x => x.UserScopeId,
-                        principalTable: "PageComponentSettingsBase",
-                        principalColumn: "Key");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DataCoreUserDynamicAuthorizationPolicy",
                 columns: table => new
                 {
@@ -409,6 +363,60 @@ namespace ProjectDataCore.Data.Migrations
                         principalTable: "DynamicAuthorizationPolicies",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageComponentSettingsBase",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    QualifiedTypeName = table.Column<string>(type: "text", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
+                    RequireAuth = table.Column<bool>(type: "boolean", nullable: false),
+                    AuthorizationPolicyKey = table.Column<Guid>(type: "uuid", nullable: true),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    ParentLayoutId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Discriminator = table.Column<string>(type: "text", nullable: false),
+                    ResetForm = table.Column<bool>(type: "boolean", nullable: true),
+                    InvokeSave = table.Column<bool>(type: "boolean", nullable: true),
+                    Style = table.Column<int>(type: "integer", nullable: true),
+                    MaxChildComponents = table.Column<int>(type: "integer", nullable: true),
+                    ParentPageId = table.Column<Guid>(type: "uuid", nullable: true),
+                    PropertyToEdit = table.Column<string>(type: "text", nullable: true),
+                    StaticProperty = table.Column<bool>(type: "boolean", nullable: true),
+                    Label = table.Column<string>(type: "text", nullable: true),
+                    FormatString = table.Column<string>(type: "text", nullable: true),
+                    UserScopeId = table.Column<Guid>(type: "uuid", nullable: true),
+                    Scoped = table.Column<bool>(type: "boolean", nullable: true),
+                    AllowUserLisiting = table.Column<bool>(type: "boolean", nullable: true),
+                    LevelFromTop = table.Column<int>(type: "integer", nullable: true),
+                    Depth = table.Column<int>(type: "integer", nullable: true),
+                    DefaultRoster = table.Column<Guid>(type: "uuid", nullable: true),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageComponentSettingsBase", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_CustomPageSettings_ParentPageId",
+                        column: x => x.ParentPageId,
+                        principalTable: "CustomPageSettings",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_DynamicAuthorizationPolicies_Auth~",
+                        column: x => x.AuthorizationPolicyKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
+                        column: x => x.ParentLayoutId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_UserSco~",
+                        column: x => x.UserScopeId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key");
                 });
 
             migrationBuilder.CreateTable(
@@ -762,6 +770,11 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_AuthorizationPolicyKey",
+                table: "PageComponentSettingsBase",
+                column: "AuthorizationPolicyKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
                 table: "PageComponentSettingsBase",
                 column: "ParentLayoutId");
@@ -891,9 +904,6 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AssignableConfigurations");
 
             migrationBuilder.DropTable(
-                name: "DynamicAuthorizationPolicies");
-
-            migrationBuilder.DropTable(
                 name: "RosterDisplaySettings");
 
             migrationBuilder.DropTable(
@@ -904,6 +914,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "CustomPageSettings");
+
+            migrationBuilder.DropTable(
+                name: "DynamicAuthorizationPolicies");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

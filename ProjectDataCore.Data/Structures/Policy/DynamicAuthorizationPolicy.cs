@@ -12,6 +12,7 @@ namespace ProjectDataCore.Data.Structures.Policy;
 public class DynamicAuthorizationPolicy : DataObject<Guid>
 {
     public bool AdminPolicy { get; set; } = false;
+    public bool AdminPagePolicy { get; set; } = false;
     public string PolicyName { get; set; }
 
     public List<RosterSlot> AuthorizedSlots { get; set; } = new();

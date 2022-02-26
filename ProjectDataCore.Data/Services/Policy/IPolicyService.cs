@@ -19,6 +19,10 @@ public interface IPolicyService
     public Task<ActionResult> DeletePolicyAsync(Guid key);
     #endregion
 
+    #region Admin Page Policy
+    public Task<ActionResult<DynamicAuthorizationPolicy>> GetAdminPagePolicy();
+    #endregion
+
     public Task<ActionResult<List<DynamicAuthorizationPolicy>>> GetAllPoliciesAsync();
     public Task LoadParentsAsync(DynamicAuthorizationPolicy policy);
 }

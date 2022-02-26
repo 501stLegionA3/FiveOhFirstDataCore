@@ -11,6 +11,7 @@ namespace ProjectDataCore.Data.Structures.Model.Policy;
 public class DynamicAuthorizationPolicyEditModel
 {
     public string? PolicyName { get; set; } = null;
+    public bool? AdminPagePolicy { get; set; } = null;
 
     public List<RosterSlot>? AuthorizedSlots { get; set; } = null;
     public List<RosterTree>? AuthorizedTrees { get; set; } = null;

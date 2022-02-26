@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220213163133_Dev")]
+    [Migration("20220226220408_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -449,6 +449,9 @@ namespace ProjectDataCore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AuthorizationPolicyKey")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Discriminator")
                         .IsRequired()
                         .HasColumnType("text");
@@ -470,7 +473,12 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("RequireAuth")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Key");
+
+                    b.HasIndex("AuthorizationPolicyKey");
 
                     b.HasIndex("ParentLayoutId");
 
@@ -512,6 +520,9 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<bool>("AdminPagePolicy")
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("AdminPolicy")
                         .HasColumnType("boolean");
@@ -1147,9 +1158,15 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
+                        .WithMany()
+                        .HasForeignKey("AuthorizationPolicyKey");
+
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
                         .WithMany("ChildComponents")
                         .HasForeignKey("ParentLayoutId");
+
+                    b.Navigation("AuthorizationPolicy");
 
                     b.Navigation("ParentLayout");
                 });
