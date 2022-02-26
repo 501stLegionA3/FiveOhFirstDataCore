@@ -73,7 +73,8 @@ public partial class MainLayout
 
             if(ActiveUser is not null)
             {
-                await LocalUserService.InitalizeIfDeinitalizedAsync(ActiveUser.Id, user);
+                if (await LocalUserService.InitalizeIfDeinitalizedAsync(ActiveUser.Id))
+                    LocalUserService.RegisterClaimsPrincipal(ref user);
             }
             else
             {

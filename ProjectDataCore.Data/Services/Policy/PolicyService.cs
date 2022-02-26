@@ -15,12 +15,16 @@ public class PolicyService : IPolicyService
     private readonly IModularRosterService _modularRosterService;
 
     private ConcurrentDictionary<string, DynamicAuthorizationPolicy> PolicyCache { get; init; } = new();
+    private bool Initalized { get; set; } = false;
+    private bool Initalizing { get; set; } = false;
 
     public PolicyService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IModularRosterService modularRosterService)
         => (_dbContextFactory, _modularRosterService) = (dbContextFactory, modularRosterService);
 
     public async Task InitalizeAsync()
     {
+        Initalizing = true;
+
         PolicyCache.Clear();
 
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
@@ -33,15 +37,29 @@ public class PolicyService : IPolicyService
             await policy.InitalizePolicyAsync(_modularRosterService, _dbContextFactory);
 
             _ = PolicyCache.TryAdd(policy.Key.ToString(), policy);
+
+            // Add the admin policy for use on internal admin pages.
+            if (policy.AdminPolicy)
+                _ = PolicyCache.TryAdd("internal-admin-policy", policy);
         }
+
+        Initalizing = false;
+        Initalized = true;
     }
 
     public async Task<DynamicAuthroizationPolicyBuilder?> GetPolicyBuilderAsync(string component, bool forceReload)
     {
-        if (forceReload)
+        if (forceReload || (!Initalized && !Initalizing))
             await InitalizeAsync();
 
-        if(PolicyCache.TryGetValue(component, out var policy))
+        if (Initalizing)
+        {
+            var builder = new DynamicAuthroizationPolicyBuilder();
+            builder.RequireAssertion((ctx, p, bus) => false);
+            return builder;
+        }
+
+        if (PolicyCache.TryGetValue(component, out var policy))
         {
             var policyBuilder = new DynamicAuthroizationPolicyBuilder();
 

@@ -59,7 +59,7 @@ public partial class DynamicPolicyEditor
         }
         else
         {
-            // TODO handle errors.
+            AlertService.CreateErrorAlert(err);
         }
     }
 

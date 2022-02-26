@@ -21,7 +21,7 @@ public partial class DataBus : IDataBus
         return user;
     }
 
-    public void RegisterLocalUserService(ILocalUserService localUser, ClaimsPrincipal principal)
+    public void RegisterLocalUserService(ILocalUserService localUser, ref ClaimsPrincipal principal)
     {
         LocalUsers.TryAdd(principal, localUser);
         LocalUsersInverse.TryAdd(localUser, principal);

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Services.Bus;
 public partial interface IDataBus
 {
-    public void RegisterLocalUserService(ILocalUserService localUser, ClaimsPrincipal principal);
+    public void RegisterLocalUserService(ILocalUserService localUser, ref ClaimsPrincipal principal);
     public void UnregisterLocalUserService(ILocalUserService localUser);
     public ILocalUserService? GetLoaclUserServiceFromClaimsPrincipal(ClaimsPrincipal principal);
 }

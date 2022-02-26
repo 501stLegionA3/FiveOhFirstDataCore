@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Policy;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,21 @@ public class PageComponentSettingsBase : DataObject<Guid>
     /// The display name for this component.
     /// </summary>
     public string DisplayName { get; set; } = "Default Component";
+
+    /// <summary>
+    /// If a user is required to be authroized to view this page. Setting this to <i><b>false</b></i> will
+    /// make it a public page.
+    /// </summary>
+    public bool RequireAuth { get; set; } = true;
+
+    /// <summary>
+    /// The Authorization Policy for when <see cref="RequireAuth"/> is <i><b>true</b></i>.
+    /// </summary>
+    public DynamicAuthorizationPolicy? AuthorizationPolicy { get; set; }
+    /// <summary>
+    /// The key for the <see cref="AuthorizationPolicy"/>
+    /// </summary>
+    public Guid? AuthorizationPolicyKey { get; set; }
 
     /// <summary>
     /// Used to determine a components position in a layout element.

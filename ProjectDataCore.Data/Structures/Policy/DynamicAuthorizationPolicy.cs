@@ -113,7 +113,7 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
 
     public bool Validate(DataCoreUser user)
     {
-        if (ValidRosterSlots.Contains(user.Id))
+        if (ValidUsers.Contains(user.Id))
             return true;
 
         foreach(var slot in user.RosterSlots)
