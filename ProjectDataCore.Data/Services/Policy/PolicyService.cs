@@ -64,6 +64,17 @@ public class PolicyService : IPolicyService
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
+        if(!policy.AdminPolicy)
+        {
+            var admin = await _dbContext.DynamicAuthorizationPolicies.Where(x => x.AdminPolicy)
+                .FirstOrDefaultAsync();
+
+            if (admin is null)
+                return new(false, new List<string>() { "Admin policy not found." });
+
+            policy.AdministratorPolicyKey = admin.Key;
+        }
+
         await _dbContext.AddAsync(policy);
         await _dbContext.SaveChangesAsync();
 
@@ -132,7 +143,15 @@ public class PolicyService : IPolicyService
         }
 
         if (model.Parents is not null)
-            policy.Parents = model.Parents;
+        {
+            foreach (var m in model.Parents)
+                if (!policy.Parents.Any(x => x.Key == m.Key))
+                    policy.Parents.Add(m);
+
+            foreach (var p in policy.Parents)
+                if (!model.Parents.Any(x => x.Key == p.Key))
+                    policy.Parents.Remove(p);
+        }
 
         await _dbContext.SaveChangesAsync();
 

@@ -10,7 +10,7 @@
 				<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
 					<p class="flex-1">@i.PolicyName</p>
 					@if(ButtonActive 
-						&& (ButtonUse == 0 && !i.AdminPolicy))
+						&& (ButtonUse != 0 || (ButtonUse == 0 && !i.AdminPolicy)))
 					{
 						<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
 							<span class="material-icons-round">arrow_forward</span>
@@ -85,7 +85,22 @@
 
 								@*Parents and Inheritence*@
 
+								@if (!ButtonActive)
+								{
+									<button class="border border-blue-400 hover:bg-blue-400 rounded-lg px-2 p-1" @onclick="OpenParentSelectorAsync">Add Parent</button>
 
+									<div class="inline-flex justify-start gap-2">
+										@foreach(var parent in SelectedParents)
+										{
+											var p = parent;
+											<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
+												@onclick="async () => await RemoveParentAsync(p)">
+													<span class="flex-grow px-2">@p.PolicyName</span>
+													<span class="material-icons-round flex-0">highlight_off</span>
+											</button>
+										}
+									</div>
+								}
 
 								<hr />
 

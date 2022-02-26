@@ -3,13 +3,6 @@ using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Structures.Policy;
 using ProjectDataCore.Data.Structures.Roster;
-using ProjectDataCore.Data.Structures.Selector.User;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProjectDataCore.Pages.Admin.Policy;
 public partial class DynamicPolicyEditor
@@ -76,6 +69,9 @@ public partial class DynamicPolicyEditor
         {
             case 0:
                 await StartEditAsync(policy);
+                break;
+            case 1:
+                await AddParentAsync(policy);
                 break;
         }
     }
@@ -155,21 +151,13 @@ public partial class DynamicPolicyEditor
             if ((user = AllUsers.FirstOrDefault(x => x.Id == s.Id) ?? null) is not null)
                 SelectedUsers.Add(user);
 
+        // Load the parent values.
+        ToEdit.Parents.Clear();
+
+        await PolicyService.LoadParentsAsync(ToEdit);
+        SelectedParents = ToEdit.Parents.ToList();
+
         StateHasChanged();
-    }
-
-    protected void StartAddParent()
-    {
-        ButtonActive = true;
-
-
-    }
-
-    protected void EndAddParent(DynamicAuthorizationPolicy? policy)
-    {
-        ButtonActive = false;
-
-
     }
 
     protected async Task StopEditAsync()
@@ -181,23 +169,53 @@ public partial class DynamicPolicyEditor
         StateHasChanged();
     }
 
-    protected async Task OpenParentSelectorAsync()
+    protected Task OpenParentSelectorAsync()
     {
         if(ToEdit is not null)
         {
-            await PolicyService.LoadParentsAsync(ToEdit);
-
-            SelectedParents = ToEdit.Parents;
+            ToEdit.Parents.Clear();
+            ToEdit.Parents = SelectedParents.ToList();
 
             ButtonUse = 1;
             ButtonActive = true;
+            StateHasChanged();
         }
+
+        return Task.CompletedTask;
     }
 
-    protected Task AddParentAsync(DynamicAuthorizationPolicy policy)
+    protected async Task AddParentAsync(DynamicAuthorizationPolicy policy)
     {
-        if(ToEdit is not null)
+        if (ToEdit is not null)
+        {
             ToEdit.Parents.Add(policy);
+
+            // TODO Check to make sure the parent can actually be added by initializing the policy.
+
+            try
+            {
+                await ToEdit.InitalizePolicyAsync(ModularRosterService, DbContextFactory, test: true);
+
+                SelectedParents.Add(policy);
+            }
+            catch (CircularPolicyException)
+            {
+                AlertService.CreateErrorAlert("A circular inheritance was detected and this parent was unable to be added.");
+                ToEdit.Parents.Remove(policy);
+            }
+        }
+
+        ButtonUse = 0;
+        ButtonActive = false;
+        StateHasChanged();
+    }
+
+    protected Task RemoveParentAsync(DynamicAuthorizationPolicy parent)
+    {
+        ToEdit?.Parents.Remove(parent);
+        SelectedParents.Remove(parent);
+
+        StateHasChanged();
 
         return Task.CompletedTask;
     }

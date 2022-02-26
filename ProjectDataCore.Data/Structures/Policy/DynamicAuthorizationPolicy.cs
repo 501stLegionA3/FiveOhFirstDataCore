@@ -37,52 +37,58 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
     #endregion
 
     public async Task InitalizePolicyAsync(IModularRosterService rosterService, 
-        IDbContextFactory<ApplicationDbContext> dbContextFactory, bool inital = true, HashSet<Guid> parents = null)
+        IDbContextFactory<ApplicationDbContext> dbContextFactory, bool inital = true, HashSet<Guid> parents = null, bool test = false)
     {
-        foreach (var slot in AuthorizedSlots)
-            ValidRosterSlots.Add(slot.Key);
-
-        foreach (var tree in AuthorizedTrees)
-            foreach (var slot in tree.RosterPositions)
+        if (!test)
+        {
+            foreach (var slot in AuthorizedSlots)
                 ValidRosterSlots.Add(slot.Key);
 
-        foreach(var display in AuthorizedDisplays)
-        {
-            var res = rosterService.LoadFullRosterTreeAsync(display.HostRoster);
-            await foreach (bool _ in res)
-                continue;
-
-            Stack<RosterTree> stack = new();
-            stack.Push(display.HostRoster);
-
-            while(stack.TryPop(out var tree))
-            {
+            foreach (var tree in AuthorizedTrees)
                 foreach (var slot in tree.RosterPositions)
                     ValidRosterSlots.Add(slot.Key);
 
-                foreach (var t in tree.ChildRosters)
-                    stack.Push(t);
-            }
-        }
+            foreach (var display in AuthorizedDisplays)
+            {
+                var res = rosterService.LoadFullRosterTreeAsync(display.HostRoster);
+                await foreach (bool _ in res)
+                    continue;
 
-        foreach (var user in AuthorizedUsers)
-            ValidUsers.Add(user.Id);
+                Stack<RosterTree> stack = new();
+                stack.Push(display.HostRoster);
+
+                while (stack.TryPop(out var tree))
+                {
+                    foreach (var slot in tree.RosterPositions)
+                        ValidRosterSlots.Add(slot.Key);
+
+                    foreach (var t in tree.ChildRosters)
+                        stack.Push(t);
+                }
+            }
+
+            foreach (var user in AuthorizedUsers)
+                ValidUsers.Add(user.Id);
+        }
 
         // The admin policy does not have any parents.
         if (!AdminPolicy)
         {
-            if (AdministratorPolicy is not null && inital)
+            if (!test)
             {
-                await AdministratorPolicy.InitalizePolicyAsync(rosterService, dbContextFactory, false);
+                if (AdministratorPolicy is not null && inital)
+                {
+                    await AdministratorPolicy.InitalizePolicyAsync(rosterService, dbContextFactory, false);
 
-                ValidRosterSlots.UnionWith(AdministratorPolicy.ValidRosterSlots);
-                ValidUsers.UnionWith(AdministratorPolicy.ValidUsers);
-            }
+                    ValidRosterSlots.UnionWith(AdministratorPolicy.ValidRosterSlots);
+                    ValidUsers.UnionWith(AdministratorPolicy.ValidUsers);
+                }
 
-            // We want to dispose of this scope as soon as we are done using it.
-            await using (var _dbContext = await dbContextFactory.CreateDbContextAsync())
-            {
-                await _dbContext.Attach(this).Collection(e => e.Parents).LoadAsync();
+                // We want to dispose of this scope as soon as we are done using it.
+                await using (var _dbContext = await dbContextFactory.CreateDbContextAsync())
+                {
+                    await _dbContext.Attach(this).Collection(e => e.Parents).LoadAsync();
+                }
             }
 
             if (inital)
@@ -97,7 +103,7 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
 
                 parents.Add(parent.Key);
 
-                await parent.InitalizePolicyAsync(rosterService, dbContextFactory, false, parents);
+                await parent.InitalizePolicyAsync(rosterService, dbContextFactory, false, parents, test);
 
                 ValidRosterSlots.UnionWith(parent.ValidRosterSlots);
                 ValidUsers.UnionWith(parent.ValidUsers);
