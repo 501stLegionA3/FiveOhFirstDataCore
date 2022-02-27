@@ -33,7 +33,7 @@ public partial class RichTextDisplayPart : CustomComponentBase
     {
         if (ComponentData is not null)
         {
-            var res = await PageEditService.DeleteDisplayComponentAsync(ComponentData.Key);
+            var res = await PageEditService.DeleteTextDisplayComponentAsync(ComponentData.Key);
 
             if (CallRefreshRequest is not null)
                 await CallRefreshRequest.Invoke();
