@@ -946,6 +946,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("RosterComponentSettings");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.TextDisplayComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<Guid?>("EditPolicyKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("PrivateEdit")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("RawContents")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasIndex("EditPolicyKey");
+
+                    b.HasDiscriminator().HasValue("TextDisplayComponentSettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
@@ -1285,6 +1304,15 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("UserScope");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.TextDisplayComponentSettings", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "EditPolicy")
+                        .WithMany("TextDisplayComponentSettings")
+                        .HasForeignKey("EditPolicyKey");
+
+                    b.Navigation("EditPolicy");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "OccupiedBy")
@@ -1332,6 +1360,8 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
                 {
                     b.Navigation("PageComponenetSettings");
+
+                    b.Navigation("TextDisplayComponentSettings");
 
                     b.Navigation("WebsitePolciies");
                 });

@@ -21,3 +21,4 @@ public class EditableComponentAttribute : ComponentAttribute { }
 public class DisplayComponentAttribute : ComponentAttribute { }
 public class RosterComponentAttribute : ComponentAttribute { }
 public class ButtonComponentAttribute : ComponentAttribute { }
+public class TextDisplayComponentAttribute : ComponentAttribute { }

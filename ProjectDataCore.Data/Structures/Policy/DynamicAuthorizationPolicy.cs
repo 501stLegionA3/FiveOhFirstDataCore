@@ -33,7 +33,10 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
     public List<DynamicAuthorizationPolicy> Children { get; set; } = new();
     #endregion
 
+    #region Authentication Mapping
     public List<PageComponentSettingsBase> PageComponenetSettings { get; set; }
+    public List<TextDisplayComponentSettings> TextDisplayComponentSettings { get; set; }
+    #endregion
 
     #region Non-Database Fields
     public HashSet<Guid> ValidRosterSlots { get; set; } = new();

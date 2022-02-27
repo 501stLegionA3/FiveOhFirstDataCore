@@ -313,6 +313,13 @@ public class PageEditService : IPageEditService
             // add a button component settings object.
             newComponent = new ButtonComponentSettings();
         }
+        else if (component.GetCustomAttributes<TextDisplayComponentAttribute>()
+            .FirstOrDefault() is not null)
+        {
+            // If the value is a text display component,
+            // add a text display component settings object.
+            newComponent = new TextDisplayComponentSettings();
+        }
         else
         {
             // Otherwise, return the error.
@@ -647,6 +654,79 @@ public class PageEditService : IPageEditService
 
         await _dbContext.SaveChangesAsync();
 
+        return new(true, null);
+    }
+    #endregion
+
+    #region Text Display Component Actions
+    public async Task<ActionResult> DeleteTextDisplayComponentAsync(Guid comp)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // Get the layout.
+        var compData = await _dbContext.TextDisplayComponentSettings
+            .Where(x => x.Key == comp)
+            .Include(x => x.ParentLayout)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No text display component was found for the provided ID." });
+
+        // ... then attempt to remove it.
+        _dbContext.Remove(compData);
+        try
+        {
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            return new(false, new List<string>() { "The text display component was unable to be deleted.", ex.Message });
+        }
+    }
+
+    public async Task<ActionResult> UpdateTextDisplayComponentAsync(Guid comp, Action<TextDisplayComponentSettingsEditModel> action)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.TextDisplayComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No display component was found for the provided ID." });
+
+        TextDisplayComponentSettingsEditModel model = new();
+        action.Invoke(model);
+
+        if(model.RawContents is not null)
+            compData.RawContents = model.RawContents;
+
+        if (model.PrivateEdit is not null)
+            compData.PrivateEdit = model.PrivateEdit.Value;
+
+        if(model.EditPolicyKey.HasValue)
+            compData.EditPolicyKey = model.EditPolicyKey.Value;
+
+        await _dbContext.SaveChangesAsync();
+        return new(true, null);
+    }
+
+    public async Task<ActionResult> UpdateTextDisplayContentsAsync(Guid comp, string rawContents)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var compData = await _dbContext.TextDisplayComponentSettings
+            .Where(x => x.Key == comp)
+            .FirstOrDefaultAsync();
+
+        if (compData is null)
+            return new(false, new List<string>() { "No display component was found for the provided ID." });
+
+        if (rawContents is not null)
+            compData.RawContents = rawContents;
+
+        await _dbContext.SaveChangesAsync();
         return new(true, null);
     }
     #endregion

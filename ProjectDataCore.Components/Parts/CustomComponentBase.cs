@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Services.Routing;
+﻿using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Services.Routing;
 
 namespace ProjectDataCore.Components.Parts;
 
@@ -9,6 +10,8 @@ public class CustomComponentBase : ComponentBase
     public IScopedUserService ScopedUserService { get; set; }
     [Inject]
     public IPageEditService PageEditService { get; set; }
+    [Inject]
+    public IAlertService AlertService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     [Parameter]
     public int ScopeIndex { get; set; } = 0;

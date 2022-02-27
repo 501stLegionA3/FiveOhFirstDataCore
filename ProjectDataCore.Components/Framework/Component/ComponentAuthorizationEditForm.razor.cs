@@ -17,6 +17,8 @@ public partial class ComponentAuthorizationEditForm
     public PageComponentSettingsBase? ComponentData { get; set; }
     [Parameter]
     public Func<Task> OnSettingsClose { get; set; }
+    [Parameter]
+    public bool ShowSaveOperations { get; set; } = true;
 
     public bool RequireAuth { get; set; } = false;
     public DynamicAuthorizationPolicy? NewAuthorzationItem { get; set; }

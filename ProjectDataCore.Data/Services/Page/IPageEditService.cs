@@ -181,4 +181,27 @@ public interface IPageEditService
     /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> UpdateButtonComponentAsync(Guid comp, Action<ButtonComponentSettingsEditModel> action);
     #endregion
+
+    #region Text Display Component Actions
+    /// <summary>
+    /// Deletes a text display component.
+    /// </summary>
+    /// <param name="comp">The component to delete.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> DeleteTextDisplayComponentAsync(Guid comp);
+    /// <summary>
+    /// Update a text display component.
+    /// </summary>
+    /// <param name="comp">The ID of the component to update.</param>
+    /// <param name="action">The update action to take.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateTextDisplayComponentAsync(Guid comp, Action<TextDisplayComponentSettingsEditModel> action);
+    /// <summary>
+    /// Updates the raw display contents of a text display.
+    /// </summary>
+    /// <param name="comp">The ID of the component to update.</param>
+    /// <param name="rawContents">The raw contnets to update.</param>
+    /// <returns>A task that returns a <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdateTextDisplayContentsAsync(Guid comp, string rawContents);
+    #endregion
 }

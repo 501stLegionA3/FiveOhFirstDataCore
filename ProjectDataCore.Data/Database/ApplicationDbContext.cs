@@ -35,6 +35,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
     public DbSet<ButtonComponentSettings> ButtonComponentSettings { get; internal set; }
+    public DbSet<TextDisplayComponentSettings> TextDisplayComponentSettings { get; internal set; }
     #endregion
 
     #region Forms
@@ -170,6 +171,14 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithMany(p => p.DisplayComponents);
         rosterComponentSettings.Navigation(e => e.AvalibleRosters)
             .AutoInclude(true);
+
+        var textDisplayComponentSettings = builder.Entity<TextDisplayComponentSettings>();
+        textDisplayComponentSettings.HasOne(e => e.EditPolicy)
+            .WithMany(p => p.TextDisplayComponentSettings)
+            .HasForeignKey(e => e.EditPolicyKey);
+        textDisplayComponentSettings.Navigation(e => e.EditPolicy)
+            .AutoInclude(true);
+        textDisplayComponentSettings.Ignore(e => e.Display);
         #endregion
 
         #region Forms

@@ -99,6 +99,8 @@ public partial class AddComponentDialog
                             case DisplayComponentAttribute:
                             // A roster is a type of display.
                             case RosterComponentAttribute:
+                            // A text display is a type of display
+                            case TextDisplayComponentAttribute:
                                 DisplayTypes.Add((t, attr.Name));
                                 break;
                             case EditableComponentAttribute:

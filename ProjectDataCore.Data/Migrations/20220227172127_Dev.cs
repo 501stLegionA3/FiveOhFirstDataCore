@@ -392,6 +392,9 @@ namespace ProjectDataCore.Data.Migrations
                     LevelFromTop = table.Column<int>(type: "integer", nullable: true),
                     Depth = table.Column<int>(type: "integer", nullable: true),
                     DefaultRoster = table.Column<Guid>(type: "uuid", nullable: true),
+                    RawContents = table.Column<string>(type: "text", nullable: true),
+                    PrivateEdit = table.Column<bool>(type: "boolean", nullable: true),
+                    EditPolicyKey = table.Column<Guid>(type: "uuid", nullable: true),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -405,6 +408,11 @@ namespace ProjectDataCore.Data.Migrations
                     table.ForeignKey(
                         name: "FK_PageComponentSettingsBase_DynamicAuthorizationPolicies_Auth~",
                         column: x => x.AuthorizationPolicyKey,
+                        principalTable: "DynamicAuthorizationPolicies",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBase_DynamicAuthorizationPolicies_Edit~",
+                        column: x => x.EditPolicyKey,
                         principalTable: "DynamicAuthorizationPolicies",
                         principalColumn: "Key");
                     table.ForeignKey(
@@ -773,6 +781,11 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_PageComponentSettingsBase_AuthorizationPolicyKey",
                 table: "PageComponentSettingsBase",
                 column: "AuthorizationPolicyKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_EditPolicyKey",
+                table: "PageComponentSettingsBase",
+                column: "EditPolicyKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",

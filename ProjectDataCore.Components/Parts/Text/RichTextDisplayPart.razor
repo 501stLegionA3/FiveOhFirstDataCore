@@ -1,0 +1,106 @@
+﻿@inherits CustomComponentBase
+
+@if(!Editing)
+{
+	<AuthorizationHandler Settings="ComponentData">
+		<Authorized>
+			<DisplayBox>
+				<Contnet>
+					@if (!LiveEdit)
+					{
+						@ComponentData?.Display
+												
+						@*Edit Buttons and Display*@
+						<AuthorizationHandler Settings="MockHandler">
+							<Authorized>
+								<button class="absolute top-0 left-0 p-2 rounded-lg bg-blue-500"
+									@onclick="ToggleLiveEditAsync">
+									<span class="material-icons-round">edit</span>
+								</button>
+							</Authorized>
+						</AuthorizationHandler>
+					}
+					else if (ComponentData is not null)
+					{
+						<div class="grid grid-cols-2 gap-4">
+							<button class="button-op-success" @onclick="SaveLiveEditAsync">Save</button>
+							<button class="button-op-danger" @onclick="DiscardLiveEditAsync">Discard</button>
+						</div>
+
+						<hr />
+
+						<EditForm Model="ComponentData" class="grid grid-cols-1 grid-rows-1">
+							<RichTextEditor @bind-Value="ComponentData.RawContents" />
+						</EditForm>
+
+						<hr />
+
+						<div class="grid grid-cols-2 gap-4">
+							<button class="button-op-success" @onclick="SaveLiveEditAsync">Save</button>
+							<button class="button-op-danger" @onclick="DiscardLiveEditAsync">Discard</button>
+						</div>
+					}
+					else
+					{
+						@*We should never hit this point.*@
+						LiveEdit = false;
+					}
+				</Contnet>
+			</DisplayBox>
+		</Authorized>
+	</AuthorizationHandler>
+}
+else if (ComponentData is not null)
+{
+	<div class="part-edit-container">
+		<DisplayBox>
+			<Contnet>
+				<div class="grid grid-cols-1 grid-flow-row gap-2">
+
+					@if (AuthSettings)
+					{
+						<ComponentAuthorizationEditForm ComponentData="ComponentData" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+					}
+					else
+					{
+						<p class="text-md">Allowed Editors Configuration</p>
+						<p>Set the policy for who is allowed to edit the content of this page.</p>
+
+						<ComponentAuthorizationEditForm ComponentData="MockHandler" ShowSaveOperations="false" />
+
+						<hr />
+
+						<div class="grid grid-cols-2 gap-4">
+							<button class="button-op-success" @onclick="SaveEditAsync">Save</button>
+							<button class="button-op-danger" @onclick="DiscardEditAsync">Discard</button>
+						</div>
+
+						<hr />
+
+						<EditForm Model="ComponentData" class="grid grid-cols-1 grid-rows-1">
+							<RichTextEditor @bind-Value="ComponentData.RawContents" />
+						</EditForm>
+
+						<hr />
+
+						<div class="grid grid-cols-2 gap-4">
+							<button class="button-op-success" @onclick="SaveEditAsync">Save</button>
+							<button class="button-op-danger" @onclick="DiscardEditAsync">Discard</button>
+						</div>
+					}
+				</div>
+			</Contnet>
+		</DisplayBox>
+
+		<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+
+		<button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
+			@onclick="ToggleAuthSettingsPanelAsync">
+			<span class="material-icons-round">settings</span>
+		</button>
+	</div>
+}
+else
+{
+	<p>No Component data found.</p>
+}
