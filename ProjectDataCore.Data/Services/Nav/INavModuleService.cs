@@ -4,7 +4,7 @@ namespace ProjectDataCore.Data.Services.Nav;
 
 public interface INavModuleService
 {
-    public Task<ActionResult> CreateNavModuleAsync(string displayName, string href, bool hasMainPage, Guid? parent = null);
+    public Task<ActionResult<Guid>> CreateNavModuleAsync(string displayName, string href, bool hasMainPage, Guid? parent = null);
     public Task<ActionResult> CreateNavModuleAsync(NavModule module);
     public Task<List<NavModule>> GetAllModules();
     public Task<List<NavModule>> GetAllModulesWithChildren();

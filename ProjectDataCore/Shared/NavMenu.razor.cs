@@ -10,10 +10,17 @@ public partial class NavMenu : ComponentBase, IDisposable
 
     public string URI { get; set; } = "";
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     [Inject]
     public NavigationManager NavManager { get; set; }
     [Inject]
     public INavModuleService NavModuleService { get; set; }
+    [Inject]
+    public DataCoreSignInManager SignInManager { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    [CascadingParameter(Name = "ActiveUser")]
+    public DataCoreUser? ActiveUser { get; set; }
 
     protected async override Task OnInitializedAsync()
     {
@@ -34,6 +41,13 @@ public partial class NavMenu : ComponentBase, IDisposable
     private void Navigate(string href)
     {
         NavManager.NavigateTo(href, false);
+    }
+
+    private async void LogOut()
+    {
+        return;
+        await SignInManager.SignOutAsync();
+        await InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()

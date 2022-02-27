@@ -14,7 +14,7 @@
         @foreach (var sM in Module.SubModules) //List all sub Modules
         {
             var subModule = sM;
-            @if (subModule.SubModules is not null) //If the sub Module has sub Modules list them 1 deep
+            @if (subModule.SubModules.Count > 0) //If the sub Module has sub Modules list them 1 deep
             {
                 <li class="drLink relative">
                     @if (subModule.HasMainPage)
@@ -50,7 +50,7 @@
 @foreach (var sM in Module.SubModules)
 {
     var subModule = sM;
-    @if (URI.Contains(subModule.Href??"") && subModule.SubModules is not null)
+    @if (URI.Contains(subModule.Href??"") && subModule.SubModules.Count > 0)
     {
         <ModuleDisplay Module="subModule"/>
     }

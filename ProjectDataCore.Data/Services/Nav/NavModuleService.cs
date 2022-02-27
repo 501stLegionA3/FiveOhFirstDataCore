@@ -45,15 +45,16 @@ public class NavModuleService : INavModuleService
             }
     }
 
-    public async Task<ActionResult> CreateNavModuleAsync(string displayName, string href, bool hasMainPage, Guid? parent = null)
+    public async Task<ActionResult<Guid>> CreateNavModuleAsync(string displayName, string href, bool hasMainPage, Guid? parent = null)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
         try
         {
-            _dbContext.Add(new NavModule(displayName, href, hasMainPage) { ParentId = parent });
+            var module = new NavModule(displayName, href, hasMainPage) { ParentId = parent };
+            _dbContext.Add(module);
             await _dbContext.SaveChangesAsync();
-            return new(true);
+            return new(true, result: module.Key);
         }
         catch (Exception ex)
         {
@@ -68,6 +69,8 @@ public class NavModuleService : INavModuleService
 
         try
         {
+            if (module.PageId != null)
+                module.Href = (await _dbContext.CustomPageSettings.FindAsync(module.PageId)).Route;
             _dbContext.Add(module);
             await _dbContext.SaveChangesAsync();
             return new(true);
@@ -113,6 +116,14 @@ public class NavModuleService : INavModuleService
             module.ParentId = navModule.ParentId;
         if (module.DisplayName != navModule.DisplayName)
             module.DisplayName = navModule.DisplayName;
+        if (module.PageId != navModule.PageId)
+        {
+            module.PageId = navModule.PageId;
+            if (module.PageId is not null)
+            {
+                module.Href = (await _dbContext.CustomPageSettings.FindAsync(module.PageId)).Route;
+            }
+        }
         await _dbContext.SaveChangesAsync();
         return new(true);
     }

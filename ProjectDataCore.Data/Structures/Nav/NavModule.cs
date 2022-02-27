@@ -11,10 +11,12 @@ public class NavModule : DataObject<Guid>
     public bool HasMainPage { get; set; } = false;
     public NavModule? Parent { get; set; }
     public Guid? ParentId { get; set; }
+    public Guid? PageId { get; set; }
 
     public NavModule()
     {
         DisplayName = "";
+        SubModules = new List<NavModule>();
     }
 
     public NavModule(Guid id)

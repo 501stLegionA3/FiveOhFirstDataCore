@@ -7,8 +7,13 @@ namespace ProjectDataCore.Pages.Admin.NavBar
     {
         [Inject] public INavModuleService NavModuleService { get; set; }
 
+        [Inject] public IPageEditService PageEditService { get; set; }
+
         List<NavModule> navModules = new();
         List<NavModule> allNavModules = new();
+        List<CustomPageSettings> allPages = new();
+
+        bool LinkToPage = false;
 
         private NavModule? Editing { get; set; }
 
@@ -19,23 +24,27 @@ namespace ProjectDataCore.Pages.Admin.NavBar
 
             navModules = await NavModuleService.GetAllModulesWithChildren();
             allNavModules = await NavModuleService.GetAllModules();
+            allPages = await PageEditService.GetAllPagesAsync();
         }
 
         private void EditNavModule(NavModule navModule)
         {
             Editing = navModule;
+            LinkToPage = navModule.PageId is not null;
             InvokeAsync(StateHasChanged);
         }
 
         private void NewNavModule(NavModule navModule)
         {
             Editing = new(navModule.Key);
+            LinkToPage = false;
             InvokeAsync(StateHasChanged);
         }
 
         private void NewParentNavModule()
         {
             Editing = new();
+            LinkToPage = false;
             InvokeAsync(StateHasChanged);
         }
 
