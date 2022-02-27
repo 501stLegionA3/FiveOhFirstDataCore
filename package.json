@@ -6,6 +6,7 @@
   "author": "501st Holosite Support Team",
   "license": "MIT",
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.5",
     "postcss-cli": "^9.1.0",

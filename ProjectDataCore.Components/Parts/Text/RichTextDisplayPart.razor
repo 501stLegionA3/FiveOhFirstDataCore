@@ -8,8 +8,12 @@
 				<Contnet>
 					@if (!LiveEdit)
 					{
-						@ComponentData?.Display
-												
+						<div class="grid">
+							<div class="ck ck-content prose max-w-none text-left">
+								@ComponentData!.Display
+							</div>
+						</div>
+
 						@*Edit Buttons and Display*@
 						<AuthorizationHandler Settings="MockHandler">
 							<Authorized>

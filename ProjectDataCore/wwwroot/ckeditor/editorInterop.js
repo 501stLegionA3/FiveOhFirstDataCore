@@ -3,74 +3,26 @@
 
 	return {
 		init(id, dotNetRef) {
-			ClassicEditor
+			const watchdog = new CKSource.EditorWatchdog();
+			window.watchdog = watchdog;
+			watchdog.setCreator((element, config) => {
+				return CKSource.Editor
+					.create(element, config)
+					.then(editor => {
+
+						return editor;
+					})
+			});
+
+			watchdog.setDestructor(editor => {
+				return editor.destroy();
+			});
+
+			watchdog.on('error', handleError);
+
+			watchdog
 				.create(document.querySelector('.ckeditor'), {
-					plugins: [
-						SimpleUploadAdapter
-					],
-					toolbar: {
-						items: [
-							'heading',
-							'|',
-							'bold',
-							'italic',
-							'underline',
-							'strikethrough',
-							'subscript',
-							'|',
-							'superscript',
-							'link',
-							'bulletedList',
-							'numberedList',
-							'|',
-							'fontColor',
-							'fontBackgroundColor',
-							'highlight',
-							'fontSize',
-							'fontFamily',
-							'removeFormat',
-							'|',
-							'undo',
-							'redo',
-							'-',
-							'outdent',
-							'indent',
-							'alignment',
-							'|',
-							'imageInsert',
-							'blockQuote',
-							'insertTable',
-							'mediaEmbed',
-							'specialCharacters',
-							'|',
-							'code',
-							'codeBlock',
-							'htmlEmbed',
-							'sourceEditing',
-							'pageBreak',
-							'|',
-							'findAndReplace'
-						],
-						shouldNotGroupWhenFull: true
-					},
 					language: 'en',
-					image: {
-						toolbar: [
-							'imageTextAlternative',
-							'imageStyle:inline',
-							'imageStyle:block',
-							'imageStyle:side'
-						]
-					},
-					table: {
-						contentToolbar: [
-							'tableColumn',
-							'tableRow',
-							'mergeTableCells',
-							'tableCellProperties',
-							'tableProperties'
-						]
-					},
 					link: {
 						decorators: {
 							openInNewTab: {
@@ -85,7 +37,7 @@
 					},
 					simpleUpload: {
 						uploadUrl: 'https://s4.501stlegion-a3.com/api/image/upload',
-                    },
+					},
 					licenseKey: '',
 				})
 				.then(editor => {
@@ -102,12 +54,14 @@
 						dotNetRef.invokeMethodAsync('EditorDataChanged', data);
 					});
 				})
-				.catch(error => {
-					console.error('Oops, something went wrong!');
-					console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
-					console.warn('Build id: orklzebmd98k-mu98nylwq3e2');
-					console.error(error);
-				});
+				.catch(handleError);
+
+			function handleError(error) {
+				console.error('Oops, something went wrong!');
+				console.error('Please, report the following error on https://github.com/ckeditor/ckeditor5/issues with the build id and the error stack trace:');
+				console.warn('Build id: a2j0vf9bve5a-w58ttbsi94lt');
+				console.error(error);
+			}
 		},
 		destory(id) {
 			editors[id].destory()
