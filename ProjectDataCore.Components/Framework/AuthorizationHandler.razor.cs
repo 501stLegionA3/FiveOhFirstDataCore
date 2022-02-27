@@ -27,6 +27,9 @@ public partial class AuthorizationHandler
     [Parameter]
     public bool ForceAdmin { get; set; } = false;
 
+    [CascadingParameter(Name = "PageEdit")]
+    public bool Editing { get; set; } = false;
+
     private string AuthPolicy { get; set; } = "";
     private DynamicAuthorizationPolicy? AdminPagePolicy { get; set; }
 
@@ -34,29 +37,32 @@ public partial class AuthorizationHandler
     {
         await base.OnParametersSetAsync();
 
-        if(ForceAdmin)
+        if (!Editing)
         {
-            if(AdminPagePolicy is null)
+            if (ForceAdmin)
             {
-                var res = await PolicyService.GetAdminPagePolicy();
-                if(res.GetResult(out var dynamPolicy, out var err))
+                if (AdminPagePolicy is null)
                 {
-                    AdminPagePolicy = dynamPolicy;
-                    AuthPolicy = AdminPagePolicy.Key.ToString();
+                    var res = await PolicyService.GetAdminPagePolicy();
+                    if (res.GetResult(out var dynamPolicy, out var err))
+                    {
+                        AdminPagePolicy = dynamPolicy;
+                        AuthPolicy = AdminPagePolicy.Key.ToString();
+                    }
+                    else
+                    {
+                        AlertService.CreateErrorAlert(err);
+                    }
                 }
                 else
                 {
-                    AlertService.CreateErrorAlert(err);
+                    AuthPolicy = AdminPagePolicy.Key.ToString();
                 }
             }
-            else
+            else if (Settings?.AuthorizationPolicyKey is not null)
             {
-                AuthPolicy = AdminPagePolicy.Key.ToString();
+                AuthPolicy = Settings.AuthorizationPolicyKey.Value.ToString();
             }
-        }
-        else if (Settings?.AuthorizationPolicyKey is not null)
-        {
-            AuthPolicy = Settings.AuthorizationPolicyKey.Value.ToString();
         }
     }
 }

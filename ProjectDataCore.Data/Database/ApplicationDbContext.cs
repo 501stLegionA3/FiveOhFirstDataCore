@@ -140,6 +140,11 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         pageComponentSettingsBase.HasOne(e => e.ParentLayout)
             .WithMany(p => p.ChildComponents)
             .HasForeignKey(e => e.ParentLayoutId);
+        pageComponentSettingsBase.HasOne(e => e.AuthorizationPolicy)
+            .WithMany(p => p.PageComponenetSettings)
+            .HasForeignKey(e => e.AuthorizationPolicyKey);
+        pageComponentSettingsBase.Navigation(e => e.AuthorizationPolicy)
+            .AutoInclude(true);
 
         var parameterComponentSettings = builder.Entity<ParameterComponentSettingsBase>();
         parameterComponentSettings.HasOne(e => e.UserScope)

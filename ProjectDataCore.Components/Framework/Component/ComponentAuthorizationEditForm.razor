@@ -1,0 +1,30 @@
+﻿<EditForm Model="this" class="grid gird-cols-1 grid-flow-row-dense gap-2">
+	<div class="justify-self-center">
+		<label class="inline-flex items-center">
+			<InputCheckbox @bind-Value="RequireAuth" />
+			<span class="ml-2">Require Authorization</span>
+		</label>
+	</div>
+	
+	@if (RequireAuth)
+	{
+		<div class="input-group">
+			<InputSelect TValue="int?" ValueChanged="OnAuthIndexChanged"
+				ValueExpression="() => AuthIndex" 
+				Value="AuthIndex" >
+					<option value="null">N/A</option>
+					@for (int i = 0; i < AllAuthPolicies.Count; i++)
+					{
+						var ia = i;
+						<option value="@ia">@AllAuthPolicies[ia].PolicyName</option>
+					}
+				</InputSelect>
+			<label class="input-label" for="">Policy Selector</label>
+		</div>
+	}
+
+	<div class="grid grid-cols-2 grid-rows-1 gap-4 mt-5">
+		<button class="border border-op_success p-1 hover:bg-op_success hover:text-op_success_t" @onclick="SaveChangesAsync">Save</button>
+		<button class="border border-op_danger p-1 hover:bg-op_danger hover:text-op_danger_t" @onclick="AbortChangesAsync">Abort</button>
+	</div>
+</EditForm>

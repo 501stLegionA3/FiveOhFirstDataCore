@@ -1,6 +1,7 @@
 ﻿using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,14 @@ public interface IPageEditService
     /// <param name="action">The action to perform on the page.</param>
     /// <returns>A task with an <see cref="ActionResult"/> for this action.</returns>
     public Task<ActionResult> UpdatePageAsync(Guid page, Action<CustomPageSettingsEditModel> action);
+
+    /// <summary>
+    /// Updates the page with a new authoriaztion scheme.
+    /// </summary>
+    /// <param name="key">The page to update.</param>
+    /// <param name="newAuthorzationItem">The new authoriaztion policy to use.</param>
+    /// <returns>A task with an <see cref="ActionResult"/> for this action.</returns>
+    public Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy newAuthorzationItem);
 
     /// <summary>
     /// Sets a page's primary layout.

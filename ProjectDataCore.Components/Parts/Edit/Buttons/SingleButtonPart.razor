@@ -2,27 +2,35 @@
 
 @if(!Editing)
 {
-	<DisplayBox>
-		<Contnet>
-			<div class="grid gird-cols-1 gap-2">
-				@if (ComponentData is not null)
-				{
-					<button class="@ComponentData.GetColorClasses()" @onclick="OnClickAsync">@ComponentData.DisplayName</button>
-				}
-				else
-				{
-					<span>No button data found.</span>
-				}
-			</div>
-		</Contnet>
-	</DisplayBox>
+	<AuthorizationHandler Settings="ComponentData">
+		<Authorized>
+			<DisplayBox>
+				<Contnet>
+					<div class="grid gird-cols-1 gap-2">
+						@if (ComponentData is not null)
+						{
+							<button class="@ComponentData.GetColorClasses()" @onclick="OnClickAsync">@ComponentData.DisplayName</button>
+						}
+						else
+						{
+							<span>No button data found.</span>
+						}
+					</div>
+				</Contnet>
+			</DisplayBox>
+		</Authorized>
+	</AuthorizationHandler>
 }
 else
 {
 	<div class="part-edit-container">
 		<DisplayBox>
 			<Contnet>
-				@if(EditingSettings)
+				@if (AuthSettings)
+				{
+					<ComponentAuthorizationEditForm ComponentData="ComponentData" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+				}
+				else if (EditingSettings)
 				{
 					<EditForm Model="this" class="grid grid-cols-1 grid-flow-row-dense gap-2">
 						<div class="input-group">
@@ -63,5 +71,10 @@ else
 			</Contnet>
 		</DisplayBox>
 		<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+
+		<button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
+			@onclick="ToggleAuthSettingsPanelAsync">
+			<span class="material-icons-round">settings</span>
+		</button>
 	</div>
 }

@@ -32,4 +32,18 @@ public class CustomComponentBase : ComponentBase
             ScopedUsers = new() { ActiveUser };
     }
     #endregion
+
+    #region Auth Settings
+    public bool AuthSettings { get; set; } = false;
+
+    protected async Task ToggleAuthSettingsPanelAsync()
+    {
+        AuthSettings = !AuthSettings;
+        StateHasChanged();
+
+        if (!AuthSettings)
+            if (CallRefreshRequest is not null)
+                await CallRefreshRequest.Invoke();
+    }
+    #endregion
 }

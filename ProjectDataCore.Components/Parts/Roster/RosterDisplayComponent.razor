@@ -7,8 +7,22 @@
 				<CascadingValue Name="RosterComponent" Value="ComponentData">
 					@if(Editing)
 					{
-						@*Roster Manager Edit Form*@
-						<RosterDisplayManagerEdit CurrentSettings="ComponentData" />
+						@if (AuthSettings)
+						{
+							<ComponentAuthorizationEditForm ComponentData="ComponentData" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+						}
+						else
+						{
+							@*Roster Manager Edit Form*@
+							<RosterDisplayManagerEdit CurrentSettings="ComponentData" />
+
+							<hr />
+
+							<button class="p-2 rounded-lg bg-blue-500"
+								@onclick="ToggleAuthSettingsPanelAsync">
+								<span class="material-icons-round">settings</span>
+							</button>
+						}
 					}
 					else if (ComponentData is not null)
 					{

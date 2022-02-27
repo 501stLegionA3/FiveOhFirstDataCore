@@ -1,4 +1,8 @@
-﻿@if(Settings is not null || !string.IsNullOrWhiteSpace(AuthPolicy))
+﻿@if(Editing)
+{
+	@Authorized
+}
+else if(Settings is not null || !string.IsNullOrWhiteSpace(AuthPolicy))
 {
 	if(Settings is null || Settings.RequireAuth)
 	{
@@ -25,6 +29,5 @@
 }
 else
 {
-	@*We set this to authorized so we can inherit from parent authenitcation scopes for pages.*@
-	@Authorized
+	<p>No authorization settings are configured for this page. Go <a href="/">home</a>.</p>
 }

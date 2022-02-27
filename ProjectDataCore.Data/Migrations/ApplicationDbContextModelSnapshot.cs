@@ -1157,7 +1157,7 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
-                        .WithMany()
+                        .WithMany("PageComponenetSettings")
                         .HasForeignKey("AuthorizationPolicyKey");
 
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
@@ -1331,6 +1331,8 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
                 {
+                    b.Navigation("PageComponenetSettings");
+
                     b.Navigation("WebsitePolciies");
                 });
 

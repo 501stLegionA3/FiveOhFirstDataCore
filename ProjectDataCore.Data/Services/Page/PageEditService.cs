@@ -3,6 +3,7 @@ using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Attributes;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Policy;
 
 using System;
 using System.Collections.Generic;
@@ -203,6 +204,23 @@ public class PageEditService : IPageEditService
             return new(false, new List<string>() { "No component settings found for the provided key. " });
 
         comp.DisplayName = componentName;
+
+        await _dbContext.SaveChangesAsync();
+
+        return new(true, null);
+    }
+
+    public async Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy newAuthorzationItem)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var comp = await _dbContext.FindAsync<PageComponentSettingsBase>(key);
+        if (comp is null)
+            return new(false, new List<string>() { "No component settings found for the provided key. " });
+
+        if(newAuthorzationItem is not null)
+            comp.AuthorizationPolicyKey = newAuthorzationItem.Key;
+        comp.RequireAuth = requireAuth;
 
         await _dbContext.SaveChangesAsync();
 

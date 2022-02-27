@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220226220408_Dev")]
+    [Migration("20220227003736_Dev")]
     partial class Dev
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1159,7 +1159,7 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
-                        .WithMany()
+                        .WithMany("PageComponenetSettings")
                         .HasForeignKey("AuthorizationPolicyKey");
 
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
@@ -1333,6 +1333,8 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
                 {
+                    b.Navigation("PageComponenetSettings");
+
                     b.Navigation("WebsitePolciies");
                 });
 

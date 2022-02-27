@@ -1,9 +1,17 @@
 ﻿@inherits LayoutBase
 
-<AuthorizationHandler Settings="ComponentData">
+<AuthorizationHandler Settings="ComponentSettings">
 	<Authorized>
         <div class="@(Editing ? "part-edit-container" : "")">
-            @if (!DisplayLayoutSettings)
+            @if (AuthSettings)
+            {
+                <ComponentAuthorizationEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+            }
+            else if (DisplayLayoutSettings)
+            {
+                <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
+            }            
+            else
             {
                 <div class="p-1 grid grid-flow-row-dense gap-3 lg:grid-cols-@Width
                     md:grid-cols-@((Width - 1) < 0 ? 0 : Width - 1) grid-cols-@((Width - 2) < 0 ? 0 : Width - 2)">
@@ -35,11 +43,12 @@
                         @onclick="ToggleSettingsPanelAsync">
                         <span class="material-icons-round">settings</span>
                     </button>
+
+                    <button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
+                        @onclick="ToggleAuthSettingsPanelAsync">
+                        <span class="material-icons-round">settings</span>
+                    </button>
                 }
-            }
-            else
-            {
-                <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
             }
         </div>
     </Authorized>

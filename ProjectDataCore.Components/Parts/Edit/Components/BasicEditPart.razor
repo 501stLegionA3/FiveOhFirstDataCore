@@ -29,7 +29,11 @@ else
 	<div class="part-edit-container">
 		<DisplayBox>
 			<Contnet>
-				@if(EditModel is not null)
+				@if (AuthSettings)
+				{
+					<ComponentAuthorizationEditForm ComponentData="ComponentData" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+				}
+				else if (EditModel is not null)
 				{
 					<EditForm Context="DisplayEditContext" Model="EditModel">
 						<div class="p-3 input-group">
@@ -81,5 +85,10 @@ else
 			</Contnet>
 		</DisplayBox>
 		<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
+
+        <button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
+            @onclick="ToggleAuthSettingsPanelAsync">
+            <span class="material-icons-round">settings</span>
+        </button>
 	</div>
 }

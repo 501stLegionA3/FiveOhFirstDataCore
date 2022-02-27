@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Services;
+using ProjectDataCore.Data.Structures.Page.Components;
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,8 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
     public List<DynamicAuthorizationPolicy> Parents { get; set; } = new();
     public List<DynamicAuthorizationPolicy> Children { get; set; } = new();
     #endregion
+
+    public List<PageComponentSettingsBase> PageComponenetSettings { get; set; }
 
     #region Non-Database Fields
     public HashSet<Guid> ValidRosterSlots { get; set; } = new();

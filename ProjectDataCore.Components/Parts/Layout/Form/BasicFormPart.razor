@@ -1,8 +1,16 @@
 ﻿@inherits LayoutBase
-<AuthorizationHandler Settings="ComponentData">
+<AuthorizationHandler Settings="ComponentSettings">
 	<Authorized>
         <div class="part-edit-container">
-            @if (!DisplayLayoutSettings)
+            @if (AuthSettings)
+            {
+                <ComponentAuthorizationEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleAuthSettingsPanelAsync" />
+            }
+            else if (DisplayLayoutSettings)
+            {
+                <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
+            }
+            else
             {
                 <div class="px-4 py-6 sm:px-0 grid gap-3 grid-rows-1 grid-cols-1">
                     <div class="border border-black p-3 rounded-lg grid gap-3 grid-cols-1 grid-row-flow-dense">
@@ -49,17 +57,18 @@
                 @if (Editing && ComponentSettings is not null)
                 {
                     <button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" 
-                    @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
+                        @onclick="async () => await RemoveCurrentLayoutAsync(ComponentSettings)">Remove Layout</button>
 
                     <button class="absolute bottom-0 right-0 p-2 rounded-lg bg-slate-500"
-                    @onclick="ToggleSettingsPanelAsync">
+                        @onclick="ToggleSettingsPanelAsync">
+                        <span class="material-icons-round">settings</span>
+                    </button>
+
+                    <button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
+                        @onclick="ToggleAuthSettingsPanelAsync">
                         <span class="material-icons-round">settings</span>
                     </button>
                 }
-            }
-            else
-            {
-                <LayoutComponentSettingsEditForm ComponentData="ComponentSettings" OnSettingsClose="ToggleSettingsPanelAsync" />
             }
         </div>
     </Authorized>
