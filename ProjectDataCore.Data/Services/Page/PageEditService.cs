@@ -725,6 +725,7 @@ public class PageEditService : IPageEditService
 
         if (rawContents is not null)
             compData.RawContents = rawContents;
+        else compData.RawContents = "";
 
         await _dbContext.SaveChangesAsync();
         return new(true, null);
