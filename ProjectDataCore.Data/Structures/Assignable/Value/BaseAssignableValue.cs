@@ -36,4 +36,14 @@ public class BaseAssignableValue : DataObject<Guid>
     {
         // Do nothing.
     }
+
+    public virtual void ConvertAndReplaceValue(object value, int? index = null)
+    {
+        // Do nothing.
+    }
+
+    public virtual void ConvertAndAddValue(object value)
+    {
+        // Do nothing.
+    }
 }

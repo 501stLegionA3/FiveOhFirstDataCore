@@ -41,4 +41,16 @@ public class ValueBaseAssignableValue<T> : BaseAssignableValue, IAssignableValue
     {
         SetValue.Add((T)value);
     }
+
+    public override void ConvertAndReplaceValue(object value, int? index = null)
+    {
+        var newVal = Convert.ChangeType(value, typeof(T));
+        ReplaceValue(newVal, index);
+    }
+
+    public override void ConvertAndAddValue(object value)
+    {
+        var newVal = Convert.ChangeType(value, typeof(T));
+        AddValue(newVal);
+    }
 }
