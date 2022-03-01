@@ -2,13 +2,14 @@
 	const editors = {};
 
 	return {
-		init(id, dotNetRef) {
+		init(id, url, dotNetRef) {
 			const watchdog = new CKSource.EditorWatchdog();
 			window.watchdog = watchdog;
 			watchdog.setCreator((element, config) => {
 				return CKSource.Editor
 					.create(element, config)
 					.then(editor => {
+						editors[id] = editor;
 
 						return editor;
 					})
@@ -36,25 +37,25 @@
 						}
 					},
 					simpleUpload: {
-						uploadUrl: 'https://s4.501stlegion-a3.com/api/image/upload',
+						uploadUrl: url,
+						headers: {
+							InternalAuth: id
+						},
+					},
+					autosave: {
+						save(editor) {
+							return saveData(editor.getData());
+						}
 					},
 					licenseKey: '',
 				})
-				.then(editor => {
-					window.editor = editor;
-					editors[id] = editor;
-					editor.model.document.on('change:data', () => {
-						let data = editor.getData();
-
-						const el = document.createElement('div');
-						el.innerHTML = data;
-						if (el.innerText.trim() == '')
-							data = null;
-
-						dotNetRef.invokeMethodAsync('EditorDataChanged', data);
-					});
-				})
 				.catch(handleError);
+
+			function saveData(data) {
+				dotNetRef.invokeMethodAsync('EditorDataChanged', data);
+
+				return true;
+			}
 
 			function handleError(error) {
 				console.error('Oops, something went wrong!');
@@ -64,7 +65,7 @@
 			}
 		},
 		destory(id) {
-			editors[id].destory()
+			editors[id].destroy()
 				.then(() => delete editors[id])
 				.catch(error => console.log(error));
 		}

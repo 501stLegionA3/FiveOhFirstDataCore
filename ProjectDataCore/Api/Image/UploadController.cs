@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 
+using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.InternalAuth;
 using ProjectDataCore.Data.Structures.Util;
 
 using System.Net;
@@ -16,9 +18,10 @@ public class UploadController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IWebHostEnvironment _env;
+    private readonly IInternalAuthorizationService _internalAuth;
 
-    public UploadController(IConfiguration configuration, IWebHostEnvironment env)
-        => (_configuration, _env) = (configuration, env);
+    public UploadController(IConfiguration configuration, IWebHostEnvironment env, IInternalAuthorizationService internalAuth)
+        => (_configuration, _env, _internalAuth) = (configuration, env, internalAuth);
 
     [Route("upload")]
     [HttpPost]
@@ -37,6 +40,17 @@ public class UploadController : ControllerBase
 
         try
         {
+            if(Request.Headers.TryGetValue("InternalAuth", out var tokenVal))
+            {
+                var token = tokenVal[0];
+                if (!_internalAuth.CheckToken(token, InternalAuthorizationType.ImageUpload))
+                    return Error("Invalid token provided with upload request.");
+            }
+            else
+            {
+                return Error("No authentication was provided for this request.");
+            }
+
             var boundary = MultipartRequestHelper.GetBoundary(MediaTypeHeaderValue.Parse(Request.ContentType), Request.ContentLength ?? 10000);
             var reader = new MultipartReader(boundary, HttpContext.Request.Body);
 
