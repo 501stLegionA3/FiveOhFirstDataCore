@@ -15,6 +15,7 @@ public class DataImportConfiguration
     public bool UpdateExistingAccounts { get; set; } = true;
 
     public ConcurrentDictionary<int, DataImportBinding> ValueBindings { get; init; } = new();
+    public int IdentifierColumn { get; set; } = 0;
 
     // Imported Data Configuration
 

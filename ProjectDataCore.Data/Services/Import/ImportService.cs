@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Util.Import;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Util.Import;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,31 @@ namespace ProjectDataCore.Data.Services.Import;
 
 public class ImportService : IImportService
 {
-    public Task<ActionResult> BulkUpdateAsync(DataImportConfiguration config)
+    private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
+
+    public ImportService(IDbContextFactory<ApplicationDbContext> dbContextFactory)
+        => _dbContextFactory = dbContextFactory;
+
+    public async Task<ActionResult> BulkUpdateUsersAsync(DataImportConfiguration config, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        if (cancellationToken.IsCancellationRequested)
+            return new(false, new List<string>() { "Cancellation was requested." });
+
+        try
+        {
+            await using var _dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
+            List<DataCoreUser> users = new();
+
+            foreach(var row in config.DataRows)
+            {
+
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            return new(false, new List<string>() { "Cancellation was requested." });
+        }
     }
 
     public async Task<ActionResult> GetCSVUniqueValuesAsync(Stream dataStream, DataImportConfiguration config)
