@@ -2,55 +2,6 @@
 <AuthorizationHandler ForceAdmin="true">
 	<Authorized>
 		<h4 class="p-3">Admin Home</h4>
-
-		<hr class="m-3" />
-
-		@if (Errors.Count > 0)
-		{
-			<div class="p-3 grid grid-flow-col gap-3 rounded-lg bg-red-800/90 text-white m-4">
-				@foreach(var e in Errors)
-				{
-					<span class="border-1 border-white border rounded-lg p-2">@e</span>
-				}
-			</div>
-
-			<hr class="m-3" />
-		}
-
-		<div class="p-3 grid grid-cols-2 grid-rows-2 gap-4">
-			<div class="inset-0 bg-slate-300 p-3 rounded-lg row-span-2">
-				<p class="text-lg">Create Account</p>
-				<EditForm class="grid gap-2" Model="NewUser">
-
-					<label for="username">Username</label>
-					<InputText id="username" @bind-Value="NewUser.UserName" />
-
-					<label for="email">Email</label>
-					<InputText id="email" @bind-Value="NewUser.Email" />
-
-					<label for="password">Password</label>
-					<InputText id="password" @bind-Value="NewPassword" />
-
-					<button class="rounded-lg bg-white hover:bg-pink-200 p-2" @onclick="CreateAccountAsync">Create Account</button>
-				</EditForm>
-			</div>
-			<div class="inset-0 bg-pink-200 p-3 rounded-lg">
-				<p class="text-lg">Login</p>
-				<a href="/login" class="rounded-lg bg-white hover:bg-slate-200 p-2 w-full">Login</a>
-			</div>
-			<div class="inset-0 bg-blue-700 text-white p-3 rounded-lg">
-				<p class="text-lg">Current Account</p>
-				<AuthorizeView>
-					<Authorized>
-						Logged in.
-						<hr class="m-3" />
-						<button class="rouneded-lg bg-white hover:bg-slate-200 p-2 w-full" @onclick="LogoutAsync">Logout</button>
-					</Authorized>
-					<NotAuthorized>
-						Not Logged In.
-					</NotAuthorized>
-				</AuthorizeView>
-			</div>
-		</div>
+		
 	</Authorized>
 </AuthorizationHandler>
