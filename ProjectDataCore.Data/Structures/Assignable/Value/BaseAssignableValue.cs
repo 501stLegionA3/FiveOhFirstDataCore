@@ -46,4 +46,9 @@ public class BaseAssignableValue : DataObject<Guid>
     {
         // Do nothing.
     }
+
+    public virtual void ClearValue()
+    {
+        // Do nothing.
+    }
 }

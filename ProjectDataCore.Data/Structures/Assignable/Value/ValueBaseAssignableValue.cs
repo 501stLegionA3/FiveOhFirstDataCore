@@ -53,4 +53,7 @@ public class ValueBaseAssignableValue<T> : BaseAssignableValue, IAssignableValue
         var newVal = Convert.ChangeType(value, typeof(T));
         AddValue(newVal);
     }
+
+    public override void ClearValue()
+        => SetValue.Clear();
 }

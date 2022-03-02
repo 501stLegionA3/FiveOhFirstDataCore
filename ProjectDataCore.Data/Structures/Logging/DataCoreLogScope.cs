@@ -1,4 +1,6 @@
-﻿using ProjectDataCore.Data.Services.Logging;
+﻿using Microsoft.Extensions.Logging;
+
+using ProjectDataCore.Data.Services.Logging;
 
 using System;
 using System.Collections.Generic;
@@ -9,20 +11,38 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Logging;
 public class DataCoreLogScope : IDisposable, IDataCoreLogger
 {
-    private readonly IDataCoreLogger _logger;
-    private readonly DataCoreLog _scope;
+    private IDataCoreLogger Logger { get; set; }
+    private DataCoreLog Scope { get; set; }
 
     internal DataCoreLogScope(IDataCoreLogger logger, DataCoreLog scope)
-        => (_logger, _scope) = (logger, scope);
+        => (Logger, Scope) = (logger, scope);
 
     public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null)
-        => _logger.CreateScope(log, parentLog ?? _scope);
+        => Logger.CreateScope(log, parentLog ?? Scope);
 
     public void Log(DataCoreLog log, DataCoreLog? parentLog = null)
-        => _logger.Log(log, parentLog ?? _scope);
+        => Logger.Log(log, parentLog ?? Scope);
+
+    public void Log(string message, LogLevel logLevel, Guid scope)
+        => Log(new()
+        {
+            Message = message,
+            LogLevel = logLevel,
+            Scope = scope
+        });
+
+    public DataCoreLogScope CreateScope(string message, LogLevel logLevel, Guid scope)
+        => CreateScope(new()
+        {
+            Message = message,
+            LogLevel = logLevel,
+            Scope = scope
+        });
 
     public void Dispose()
     {
         // Do nothing (mmm using statements)
+        Logger = null;
+        Scope = null;
     }
 }

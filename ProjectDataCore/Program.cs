@@ -18,6 +18,8 @@ using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Services.InternalAuth;
+using ProjectDataCore.Data.Services.Logging;
+using ProjectDataCore.Data.Services.Import;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -115,7 +117,9 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<IScopedUserService, ScopedUserService>()
     .AddSingleton<INavModuleService, NavModuleService>()
     .AddSingleton<IAssignableDataService, AssignableDataService>()
-    .AddSingleton<IInternalAuthorizationService, InternalAuthorizationService>();
+    .AddSingleton<IInternalAuthorizationService, InternalAuthorizationService>()
+    .AddSingleton<IInstanceLogger, InstanceLogger>()
+    .AddSingleton<IImportService, ImportService>();
 
 #endregion
 

@@ -12,6 +12,6 @@ namespace ProjectDataCore.Data.Services.Logging;
 public interface IInstanceLogger : IDataCoreLogger
 {
     public Guid Register(Action<DataCoreLog> receiver, LogLevel minLogLevel);
-    public void Register(Action<DataCoreLog> receiver, LogLevel minLogLevel, Guid scope);
+    public bool Register(Action<DataCoreLog> receiver, LogLevel minLogLevel, Guid scope);
     public void Unregister(Action<DataCoreLog> reciver);
 }

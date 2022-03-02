@@ -10,7 +10,7 @@ namespace ProjectDataCore.Data.Structures.Logging;
 public class DataCoreLog : DataObject<Guid>
 {
     public string Message { get; set; }
-    public LogLevel Level { get; set; }
+    public LogLevel LogLevel { get; set; }
     public Guid? Scope { get; set; }
     public List<DataCoreLog> ChildLogs { get; set; } = new();
 }
