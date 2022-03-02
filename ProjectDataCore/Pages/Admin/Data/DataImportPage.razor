@@ -3,142 +3,169 @@
 	<Authorized>
 		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
 			<div>
-				<div class="grid grid-cols-1 grid-flow-row gap-2">
-					<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import</div>
-					<EditForm Model="this">
+				<EditForm Model="this" class="grid grid-cols-1 grid-flow-row gap-2">
+					@switch(Stage)
+					{
+						case ImportStage.FileSelect:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - File Select</div>
 
-					</EditForm>
-					<hr />
-					
-				</div>
+							<InputFile OnChange="LoadFile" accept=".csv" />
+
+							<button class="button-op-success" @onclick="StartImportAsync">Start</button>
+							break;
+						case ImportStage.FileOptions:
+							@if (ImportConfiguration is not null)
+							{
+								<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - File Options</div>
+
+								<button class="button-op-danger" @onclick="GoBack">Go Back</button>
+
+								<div class="input-group">
+									<InputText @bind-Value="ImportConfiguration.StandardDelimiter" id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+									<label for="name" class="input-label">File Delimiter</label>
+								</div>
+
+								<div class="input-group">
+									<InputText @bind-Value="ImportConfiguration.MultipleValueDelimiter" id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+									<label for="name" class="input-label">Multiple Value (Internal) Delimiter</label>
+								</div>
+
+								<div class="grid gird-cols-3 gap-2">
+									<div class="justify-self-center">
+										<label class="inline-flex items-center">
+											<InputCheckbox @bind-Value="ImportConfiguration.CreateNewAccounts" />
+											<span class="ml-2">Create New Accounts</span>
+										</label>
+									</div>
+
+									<div class="justify-self-center">
+										<label class="inline-flex items-center">
+											<InputCheckbox @bind-Value="ImportConfiguration.UpdateExistingAccounts" />
+											<span class="ml-2">Update Existing Accounts</span>
+										</label>
+									</div>
+								</div>
+								
+								<div class="justify-self-center">
+									<label class="inline-flex items-center">
+										<InputCheckbox @bind-Value="ImportConfiguration.HasHeaderRow" />
+										<span class="ml-2">Data Has Header Row</span>
+									</label>
+								</div>
+
+								<button class="button-op-success" @onclick="RegisterFileOptions">Configure</button>
+							}
+							else
+							{
+								<em>An error occoured. Pelase refresh the page.</em>
+							}
+							break;
+						case ImportStage.ColumnConfiguration:
+							@if(ImportConfiguration is not null)
+							{
+								<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - Column Configuration</div>
+
+								<button class="button-op-danger" @onclick="GoBack">Go Back</button>
+
+								@for(int i = 0; i < ImportConfiguration.HeaderValues.Count; i++)
+								{
+									var col = i;
+
+									<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+										<p class="flex-1">@ImportConfiguration.HeaderValues[col]</p>
+
+										@if (ImportConfiguration.ValueBindings.ContainsKey(col))
+										{
+											<button class="flex-auto button-op-success rounded-lg" @onclick="() => EditValueBinding(col)">Edit</button>
+										}
+										else
+										{
+											<button class="flex-auto button-util-action rounded-lg" @onclick="() => AddValueBinding(col)">Add</button>
+										}
+									</div>
+								}
+							}
+							else
+							{
+								<em>An error occoured. Pelase refresh the page.</em>
+							}
+							break;
+						case ImportStage.Import:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - Import In Progress</div>
+							break;
+					}
+				</EditForm>
 			</div>
 			<div class="col-span-2">
-				<div class="border-l-2 border-slate-400 pl-4">
-					<div class="grid grid-cols-1 grid-flow-row gap-2">
-						<div class="shadow-lg border-2 border-slate-400 rounded-lg">
-							<EditForm Context="AddAssignableContext" Model="this">
-								<div class="grid grid-cols-1 gap-2 p-4">
-
-									<div class="text-lg font-bold text-center">Assignable Value Creator</div>
-
-									<div class="input-group">
-										<InputText @bind-Value="NewAssignable" id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
-										<label for="name" class="input-label">Assignable Value Name</label>
-									</div>
-
-									<div class="input-group">
-										<InputSelect id="add-name" type="" class="input-control peer" placeholder="Assignable Value Type"
-											TValue="int" Value="NewConfigurationType" ValueChanged="(x) => NewConfigurationType = x"
-											ValueExpression="() => NewConfigurationType">
-											@for (int i = 0; i < ConfigurationTypes.Count; i++)
-											{
-												var x = i;
-												<option value="@x">@ConfigurationTypes[x].Item2</option>
-											}
-										</InputSelect>
-										<label for="add-name" class="input-label">Assignable Value Type</label>
-									</div>
-
-									<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="OnCreateAssignableAsync">Create</button>
-								</div>
-							</EditForm>
-						</div>
-						@if (ToEdit is not null)
-						{
+				<div class="border-l-2 border-slate-400 pl-4 h-full">
+					@if (ToEdit is not null)
+					{
+						<div class="grid grid-cols-1 grid-flow-row gap-2">
 							<div class="border-2 border-slate-400 pt-4 p-2 rounded-lg shadow-lg">
 								<EditForm Context="EditingConfigurationContext" Model="ToEdit">
 									<div class="grid grid-cols-1 grid-flow-row gap-2">
 
-										<div class="grid grid-cols-2 gap-4">
-											<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveEditAsync">Save</button>
-											<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="DiscardEditAsync">Discard</button>
+										<div class="flex gap-2">
+											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
+											<button class="button-op-danger material-icons-round flex-none" @onclick="DelteValueBinding">delete</button>
 										</div>
+										
+										<hr />
 
-										<div class="grid grid-cols-2 gap-3">
-											<div class="input-group">
-												<InputText @bind-Value="ToEdit.PropertyName" id="edit-name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
-												<label for="edit-name" class="input-label">Assignable Value Name</label>
+										<div class="p-2 shadow-md border-slate-400 border-2 text-center">Column: @ColumnTitle</div>
+
+										<div class="grid gird-cols-2 md:grid-cols-4 gap-2">
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.IsUserIdIdentifier" class="input-radio" type="radio" 
+														name="special_states" />
+													<span class="ml-2">Column Is User IDs</span>
+												</label>
 											</div>
-											<div class="input-group">
-												<InputEnumSelect @bind-Value="ToEdit.AllowedInput" id="allowed-inputs" type="" class="input-control peer" placeholder="Allowed Inputs" />
-												<label for="allowed-inputs" class="input-label">Allowed Inputs</label>
+
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.IsUsernameIdentifier" class="input-radio" type="radio"
+														name="special_states" />
+													<span class="ml-2">Column Is Emails</span>
+												</label>
 											</div>
-										</div>
-
-										<div class="justify-self-center">
-											<label class="inline-flex items-center">
-												<InputCheckbox @bind-Value="ToEdit.AllowMultiple" />
-												<span class="ml-2">Allow Multiple Values</span>
-											</label>
-										</div>
-
-										<AssignableValueInput EditModel="ValueEditModel" ToEdit="ToEdit" />
-								
-										<button class="bg-pink-400 p-1 px-2 rounded-lg" @onclick="AddNewOption">Add Option</button>
-
-										<div>
-											<div class="grid grid-cols-1 grid-flow-row gap-2">
-												<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Assignable Value List</div>
 											
-												@for(int i = 0; i < ItemList.Count; i++)
-												{
-													var x = i;
-													<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
-														@if (MoveIndex >= 0)
-														{
-															if (MoveIndex == x)
-															{
-																<button class="flex-0 px-2 border-red-600 hover:bg-red-600 border p-1 rounded-lg" @onclick="() => MoveIndex = -1">Cancel</button>
-															}
-															else
-															{
-																<button class="px-2 rounded-lg p-1 border border-green-400 hover:bg-green-400" @onclick="() => OnMoveItem(x)">
-																	<span class="material-icons-outlined">expand_less</span> Place Above <span class="material-icons-outlined">expand_less</span>
-																</button>
-															}
-														}
-														else
-														{
-															<button class="flex-0 px-2 border-green-400 hover:bg-green-400 border p-1 rounded-lg" @onclick="() => MoveIndex = x">Move</button>
-														}
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.Email" class="input-radio" type="radio"
+														name="special_states" />
+													<span class="ml-2">Column Is Emails</span>
+												</label>
+											</div>
 
-														<p class="flex-grow text-center p-1">@ItemList[x]</p>
-
-														@if(MoveIndex >= 0 && MoveIndex != x)
-														{
-															<button class="px-2 rounded-lg p-1 border border-green-400 hover:bg-green-400" @onclick="() => OnMoveItem(x + 1)">
-																<span class="material-icons-outlined">expand_more</span> Place Below <span class="material-icons-outlined">expand_more</span>
-															</button>
-														}
-														else
-														{
-															<button class="flex-0 px-2 border-red-600 hover:bg-red-600 border p-1 rounded-lg" @onclick="() => OnDeleteItem(x)">Delete</button>
-														}
-													</div>
-												}
-
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.Password" class="input-radio" type="radio" 
+														name="special_states" />
+													<span class="ml-2">Column Is User Password Hashes</span>
+												</label>
 											</div>
 										</div>
 
-										<div class="grid grid-cols-2 gap-4">
-											<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveEditAsync">Save</button>
-											<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="DiscardEditAsync">Discard</button>
+										@if(!ToEdit.Email && !ToEdit.IsUserIdIdentifier
+											&& !ToEdit.Password && !ToEdit.IsUsernameIdentifier)
+										{
+											
+										}
+
+										<hr />
+
+										<div class="flex gap-2">
+											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
+											<button class="button-op-danger material-icons-round flex-none" @onclick="DelteValueBinding">delete</button>
 										</div>
-										<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="DeleteAsync">
-											@if (ConfirmDelete)
-											{
-												<span>Delete</span>
-											}
-											else
-											{
-												<span>Confirm Delete</span>
-											}
-										</button>
+
 									</div>
 								</EditForm>
 							</div>
-						}
-					</div>
+						</div>
+					}
 				</div>
 			</div>
 		</div>		

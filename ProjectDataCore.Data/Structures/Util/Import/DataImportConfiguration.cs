@@ -13,6 +13,7 @@ public class DataImportConfiguration
 
     public bool CreateNewAccounts { get; set; } = true;
     public bool UpdateExistingAccounts { get; set; } = true;
+    public bool HasHeaderRow { get; set; } = true;
 
     public ConcurrentDictionary<int, DataImportBinding> ValueBindings { get; init; } = new();
     public int IdentifierColumn { get; set; } = -1;
@@ -25,7 +26,7 @@ public class DataImportConfiguration
     public string StandardDelimiter { get; set; } = ",";
 
     // Imported Data
-
+    public List<string> HeaderValues { get; set; } = new();
     public List<string[]> DataRows { get; set; } = new();
     public ConcurrentDictionary<int, HashSet<string>> UniqueValues { get; set; } = new();
 }

@@ -90,7 +90,8 @@ builder.Services.AddScoped<IModularRosterService, ModularRosterService>()
     .AddScoped<IUserService, UserService>()
     .AddScoped<INavModuleService, NavModuleService>()
     .AddScoped<IAssignableDataService, AssignableDataService>()
-    .AddScoped<IAlertService, AlertService>();
+    .AddScoped<IAlertService, AlertService>()
+    .AddScoped<IImportService, ImportService>();
 
 // Scoped Services
 builder.Services
@@ -118,8 +119,7 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<INavModuleService, NavModuleService>()
     .AddSingleton<IAssignableDataService, AssignableDataService>()
     .AddSingleton<IInternalAuthorizationService, InternalAuthorizationService>()
-    .AddSingleton<IInstanceLogger, InstanceLogger>()
-    .AddSingleton<IImportService, ImportService>();
+    .AddSingleton<IInstanceLogger, InstanceLogger>();
 
 #endregion
 
@@ -266,10 +266,20 @@ else
     app.UseHsts();
 }
 
+#region Database Validation
 using var scope = app.Services.CreateScope();
 var dbFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
 await using var db = await dbFac.CreateDbContextAsync();
 ApplyDatabaseMigrations(db);
+#endregion
+
+#region File Validation
+var webHostEnvironment = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+var unsafeUploadsPath = Path.Combine(webHostEnvironment.ContentRootPath,
+    webHostEnvironment.EnvironmentName, "unsafe_uploads");
+
+Directory.CreateDirectory(unsafeUploadsPath);
+#endregion
 
 #region Admin Validation
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 
 namespace ProjectDataCore.Data.Structures.Util.Import;
 
@@ -10,7 +6,7 @@ public class DataImportBinding
 {
     public bool IsStatic { get; set; } = false;
     public string PropertyName { get; set; } = "";
-    public object? DataValue { get; set; }
+    public ConcurrentDictionary<string, object> DataValues { get; set; } = new();
     public bool AutoConvert { get; set; } = false;
 
     public bool IsUsernameIdentifier { get; set; } = false;

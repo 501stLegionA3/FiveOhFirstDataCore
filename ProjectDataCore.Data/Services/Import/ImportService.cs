@@ -126,6 +126,16 @@ public class ImportService : IImportService
                     log.Log($"Skipping row {rowCount} - no user found that matches id/username {row[config.IdentifierColumn]}.", LogLevel.Warning, logScope);
                     continue;
                 }
+                // ... or if the user is not null, and
+                // we have been told to only make new
+                // accounts ...
+                else if (user is not null
+                    && !config.UpdateExistingAccounts)
+                {
+                    // ... log an info statement and continue ...
+                    log.Log($"Skipping row {rowCount} - a user was found and the import is configured to skip existing accounts.", LogLevel.Information, logScope);
+                    continue;
+                }
                 // ... or if the user is null, the id is a username,
                 // and we should create new accounts ...
                 else if (user is null 
@@ -217,7 +227,7 @@ public class ImportService : IImportService
 
                 // ... next up is configuring the assignable values
                 // and static properties for the user object ...
-                foreach(var bindingPair in config.ValueBindings)
+                foreach (var bindingPair in config.ValueBindings)
                 {
                     // ... throw if we arent supposed to continue ...
                     cancellationToken.ThrowIfCancellationRequested();
@@ -233,36 +243,66 @@ public class ImportService : IImportService
 
                     using var bindingLog = log.CreateScope($"Started converting {binding.PropertyName}", LogLevel.Information, logScope);
 
+                    // ... create the part holder so we dont have to do this twice ...
+                    string[] propertyParts = null;
+
                     // ... then grab the new value ...
 
-                    // ... if it should auto convert
-                    // and is static ...
-                    if (binding.AutoConvert && binding.IsStatic)
+                    // ... if it should auto convert ...
+                    if (binding.AutoConvert)
                     {
-                        // ... then we need to convert it ourselves ...
-                        Type? propertyType = userType.GetProperty(binding.PropertyName)?.PropertyType;
-
-                        // ... if the proeprty is null, log it and continue ...
-                        if(propertyType is null)
+                        // ... and is static ...
+                        if (binding.IsStatic)
                         {
-                            bindingLog.Log($"No property type was found for {binding.PropertyName}", LogLevel.Warning, logScope);
-                            continue;
-                        }
+                            // ... then we need to convert it ourselves ...
+                            Type? propertyType = userType.GetProperty(binding.PropertyName)?.PropertyType;
 
-                        try
-                        {
-                            // ... otherwise convert the value ...
-                            binding.DataValue = Convert.ChangeType(row[bindingPair.Key], propertyType);
-                        }
-                        catch (Exception ex)
-                        {
-                            // ... if the conversion failed, log it and continue ...
-                            bindingLog.Log($"Failed to convert {row[bindingPair.Key]} to {propertyType.Name}: {ex.Message}", LogLevel.Error, logScope);
-                            continue;
-                        }
+                            // ... if the proeprty is null, log it and continue ...
+                            if (propertyType is null)
+                            {
+                                bindingLog.Log($"No property type was found for {binding.PropertyName}", LogLevel.Warning, logScope);
+                                continue;
+                            }
 
-                        // ... otherwise log the success ...
-                        bindingLog.Log($"Got static value: {binding.DataValue}", LogLevel.Information, logScope);
+                            try
+                            {
+                                // ... otherwise convert the value ...
+                                binding.DataValues.Clear();
+                                binding.DataValues[row[bindingPair.Key]] = Convert.ChangeType(row[bindingPair.Key], propertyType);
+                            }
+                            catch (Exception ex)
+                            {
+                                // ... if the conversion failed, log it and continue ...
+                                bindingLog.Log($"Failed to convert {row[bindingPair.Key]} to {propertyType.Name}: {ex.Message}", LogLevel.Error, logScope);
+                                continue;
+                            }
+
+                            // ... otherwise log the success ...
+                            bindingLog.Log($"Got static value: {binding.DataValues}", LogLevel.Information, logScope);
+                        }
+                        // ... and is dynamic ...
+                        else
+                        {
+                            // ... if there is a multiple value delimiter ...
+                            if (config.MultipleValueDelimiter is not null)
+                            {
+                                // ... break the data down into its parts ...
+                                propertyParts = row[bindingPair.Key].Split(config.MultipleValueDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                                // ... then trim any whitespace ...
+                                for (int i = 0; i < propertyParts.Length; i++)
+                                    propertyParts[i] = propertyParts[i].Trim();
+
+                                // ... then save it to the data values ...
+                                foreach (var propertyPart in propertyParts)
+                                    binding.DataValues[propertyPart] = propertyPart;
+                            }
+                            else
+                            {
+                                // ... otherwise add the bulk values to the set ...
+                                binding.DataValues[row[bindingPair.Key]] = row[bindingPair.Key];
+                            }
+                        }
                     }
 
                     // ... throw if we arent supposed to continue ...
@@ -271,9 +311,9 @@ public class ImportService : IImportService
                     // ... if the binding is static ...
                     if (binding.IsStatic)
                     {
-                        // ... then we already converted it, so 
+                        // ... then we already converted it, so
                         // lets set the value ...
-                        userType.GetProperty(binding.PropertyName)?.SetValue(user, binding.DataValue);
+                        userType.GetProperty(binding.PropertyName)?.SetValue(user, binding.DataValues[row[bindingPair.Key]]);
                     }
                     else
                     {
@@ -297,8 +337,16 @@ public class ImportService : IImportService
                             // ... and a custom delimiter is set ...
                             if(config.MultipleValueDelimiter is not null)
                             {
-                                // ... break the data down into its parts ...
-                                var propertyParts = row[bindingPair.Key].Split(config.MultipleValueDelimiter, StringSplitOptions.RemoveEmptyEntries);
+                                if(propertyParts is null)
+                                {
+                                    // ... break the data down into its parts ...
+                                    propertyParts = row[bindingPair.Key].Split(config.MultipleValueDelimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                                    // ... then trim any whitespace ...
+                                    for (int i = 0; i < propertyParts.Length; i++)
+                                        propertyParts[i] = propertyParts[i].Trim();
+                                }
+
                                 // ... then clear any exisitng value ...
                                 propertyContainer.ClearValue();
                                 // ... and save those parts ...
@@ -309,12 +357,22 @@ public class ImportService : IImportService
 
                                     try
                                     {
-                                        propertyContainer.ConvertAndAddValue(propertyPart);
+                                        if (binding.DataValues.TryGetValue(propertyPart, out var actualBindingValue))
+                                        {
+                                            propertyContainer.ConvertAndAddValue(actualBindingValue);
+                                        }
+                                        else
+                                        {
+                                            bindingLog.Log($"Failed to save {propertyPart} to " +
+                                                $"{propertyContainer.AssignableConfiguration.PropertyName}: " +
+                                                $"No binding was configured for this value.", LogLevel.Warning, logScope);
+                                        }
                                     }
                                     catch (Exception ex)
                                     {
                                         // ... then log this as a warning and continue ...
-                                        bindingLog.Log($"Failed to save {propertyPart} to {propertyContainer.AssignableConfiguration.PropertyName}: {ex.Message}", 
+                                        bindingLog.Log($"Failed to save {propertyPart} to " +
+                                            $"{propertyContainer.AssignableConfiguration.PropertyName}: {ex.Message}", 
                                             LogLevel.Warning, logScope);
                                         continue;
                                     }
@@ -335,7 +393,16 @@ public class ImportService : IImportService
                             // then all we have to do is set the value ...
                             try
                             {
-                                propertyContainer.ConvertAndReplaceValue(row[bindingPair.Key], 0);
+                                if (binding.DataValues.TryGetValue(row[bindingPair.Key], out var actualBindingValue))
+                                {
+                                    propertyContainer.ConvertAndAddValue(actualBindingValue);
+                                }
+                                else
+                                {
+                                    bindingLog.Log($"Failed to save {row[bindingPair.Key]} to " +
+                                        $"{propertyContainer.AssignableConfiguration.PropertyName}: " +
+                                        $"No binding was configured for this value.", LogLevel.Warning, logScope);
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -388,7 +455,7 @@ public class ImportService : IImportService
         string? line = null;
         int lineNumber = -1;
         int cols = -1;
-        while((line = await sr.ReadLineAsync()) is not null)
+        while ((line = await sr.ReadLineAsync()) is not null)
         {
             lineNumber++;
 
@@ -411,29 +478,69 @@ public class ImportService : IImportService
                     });
             }
 
-            // ... then save the data to the config ...
-            config.DataRows.Add(parts);
-
-            // ... now for each column ...
-            for (int i = 0; i < parts.Length; i++)
+            // ... if we have a header row, and we are on it ...
+            if (config.HasHeaderRow && lineNumber == 0)
             {
-                // ... and for the values in that column ...
-                config.UniqueValues.AddOrUpdate(i, 
-                    // ... Add the value to the unqiue values list ...
-                    (key) => {
-                        return new() { parts[i] };
-                    },
-                    // ... or update the value to the uniqe values list ...
-                    (key, value) =>
-                    {
-                        // We utilize a HashSet here, so only
-                        // new items will be added.
-                        value.Add(parts[i]);
-                        return value;
-                    });
+                // ... then save the values to the header config ...
+                foreach (var p in parts)
+                    config.HeaderValues.Add(p);
             }
+            // ... otherwise, this is not the header ...
+            else
+            {
+                // ... if we dont have a header row ...
+                if(!config.HasHeaderRow && lineNumber == 0)
+                {
+                    // ... populate the values with default data ...
+                    for (int i = 0; i < cols; i++)
+                        config.HeaderValues.Add($"Row {i}");
+                }
 
-            // ... then continue until the stream has been completely read.
+                // ... then trim any whitespace ...
+                for(int i = 0; i < cols; i++)
+                    parts[i] = parts[i].Trim();
+
+                // ... then save the data to the config ...
+                config.DataRows.Add(parts);
+
+                // ... now for each column ...
+                for (int i = 0; i < cols; i++)
+                {
+                    // ... get the local parts array ...
+                    List<string> localParts = new(); ;
+                    if (config.MultipleValueDelimiter is not null)
+                    {
+                        // ... and add all entries if we have a multiple value delimiter ...
+                        localParts.AddRange(parts[i].Split(config.MultipleValueDelimiter, StringSplitOptions.RemoveEmptyEntries));
+                        for(int x = 0; x < localParts.Count; x++)
+                            localParts[x] = localParts[x].Trim();
+                    }
+                    else
+                    {
+                        // ... otherwise just add the value ...
+                        localParts.Add(parts[i]);
+                    }
+
+                    // ... and for the values in that column ...
+                    config.UniqueValues.AddOrUpdate(i,
+                        // ... Add the value to the unqiue values list ...
+                        (key) =>
+                        {
+                            return new(localParts);
+                        },
+                        // ... or update the value to the uniqe values list ...
+                        (key, value) =>
+                        {
+                            // We utilize a HashSet here, so only
+                            // new items will be added.
+                            foreach (var lp in localParts)
+                                value.Add(lp);
+                            return value;
+                        });
+                }
+
+                // ... then continue until the stream has been completely read.
+            }
         }
 
         // ... then tell the caller the operation is done.

@@ -42,13 +42,25 @@
     @apply w-full placeholder-transparent p-1 px-2 border border-slate-600 rounded-lg;
 }
 
+.input-radio {
+    @apply appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer;
+}
+
 /* Custom Color Buttons */
+.button-base {
+    @apply px-2 py-1 text-center;
+}
+
 .button-op-success {
-    @apply border border-op_success hover:bg-op_success hover:text-op_success_t;
+    @apply border border-op_success hover:bg-op_success hover:text-op_success_t button-base;
 }
 
 .button-op-danger {
-    @apply border border-op_danger hover:bg-op_danger hover:text-op_danger_t;
+    @apply border border-op_danger hover:bg-op_danger hover:text-op_danger_t px-2 py-1 button-base;
+}
+
+.button-util-action {
+    @apply border border-util_action hover:bg-util_action hover:text-util_action_t px-2 py-1 button-base;
 }
 
 /* Resize Tool */
