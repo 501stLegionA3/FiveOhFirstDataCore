@@ -84,7 +84,7 @@ public class ImportService : IImportService
                         user = await _dbContext.Users
                             .Where(x => x.Id == userId)
                             .AsNoTracking()
-                            .FirstOrDefaultAsync();
+                            .FirstOrDefaultAsync(cancellationToken);
                     }
                     // ... or checking the username ...
                     else if (idBinding.IsUsernameIdentifier)
@@ -94,7 +94,7 @@ public class ImportService : IImportService
                         user = await _dbContext.Users
                             .Where(x => x.UserName == id)
                             .AsNoTracking()
-                            .FirstOrDefaultAsync();
+                            .FirstOrDefaultAsync(cancellationToken);
                     }
                     // ... or throwing an error if neither the ID
                     // or username was configured to be checked ...
@@ -191,7 +191,7 @@ public class ImportService : IImportService
                 // with tracking ...
                 user = await _dbContext.Users
                     .Where(x => x.Id == user.Id)
-                    .FirstOrDefaultAsync();
+                    .FirstOrDefaultAsync(cancellationToken);
 
                 if(user is null)
                 {
