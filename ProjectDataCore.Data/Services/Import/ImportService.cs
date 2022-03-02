@@ -359,7 +359,7 @@ public class ImportService : IImportService
 
                 try
                 {
-                    await _dbContext.SaveChangesAsync();
+                    await _dbContext.SaveChangesAsync(cancellationToken);
                 }
                 catch (Exception ex)
                 {
