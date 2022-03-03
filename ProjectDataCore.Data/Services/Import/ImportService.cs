@@ -295,7 +295,7 @@ public class ImportService : IImportService
 
                                 // ... then save it to the data values ...
                                 foreach (var propertyPart in propertyParts)
-                                    binding.DataValues[propertyPart] = propertyPart;
+                                    binding.DataValues[propertyPart] = new();
                             }
                             else
                             {

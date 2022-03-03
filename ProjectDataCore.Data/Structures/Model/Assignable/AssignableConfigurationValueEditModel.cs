@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Assignable.Value;
+﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
+using ProjectDataCore.Data.Structures.Assignable.Value;
 
 using System;
 using System.Collections.Generic;
@@ -78,4 +79,16 @@ public class AssignableConfigurationValueEditModel
                 break;
         }
     }
+
+    public string GetValueAsString(BaseAssignableConfiguration value) 
+        => value switch
+        {
+            IAssignableConfiguration<DateTime> => (DateValue + TimeValue).ToString(),
+            IAssignableConfiguration<DateOnly> => DateValue.ToString(),
+            IAssignableConfiguration<TimeOnly> => TimeValue.ToString(),
+            IAssignableConfiguration<int> => IntValue.ToString(),
+            IAssignableConfiguration<double> => DoubleValue.ToString(),
+            IAssignableConfiguration<string> => StringValue,
+            _ => string.Empty,
+        };
 }

@@ -46,6 +46,14 @@ public partial class DataImportPage
     private string? FilePath { get; set; }
 
     private DataCoreUser? MockTrooper { get; set; }
+    private Type[] AllowedStaticTypes { get; init; } = new Type[]
+    {
+        typeof(string),
+        typeof(int),
+        typeof(double),
+        typeof(ulong),
+        typeof(DateTime)
+    };
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
@@ -371,6 +379,44 @@ public partial class DataImportPage
                 ToEdit.PasswordIdentifier = false;
                 ImportConfiguration.PasswordColumn = -1;
             }
+        }
+    }
+    #endregion
+
+    #region Assignables
+    protected void SingleAssignbaleValueUpdated(string key)
+    {
+        if (ToEdit is not null)
+        {
+            if (ToEdit.DataValueModels.TryGetValue(key, out var valuePair))
+                ToEdit.DataValues[key] = valuePair.Item1.GetValueAsString(valuePair.Item2);
+        }
+    }
+
+    protected void CreateSingleValueAssignable(string key)
+    {
+        if(ToEdit is not null && MockTrooper is not null)
+        {
+            var container = MockTrooper.GetAssignablePropertyContainer(ToEdit.PropertyName);
+
+            if (container is not null)
+            {
+                ToEdit.DataValueModels[key] = (new(), container.AssignableConfiguration);
+                ToEdit.DataValues[key] = "";
+            }
+            else
+            {
+                AlertService.CreateErrorAlert("The container for the provided property name when creating an assignable config was not found.");
+            }
+        }
+    }
+
+    protected void DeleteSingleValueAssignable(string key)
+    {
+        if (ToEdit is not null)
+        {
+            _ = ToEdit.DataValues.TryRemove(key, out _);
+            _ = ToEdit.DataValueModels.TryRemove(key, out _);
         }
     }
     #endregion

@@ -154,7 +154,7 @@
 												<label class="inline-flex items-center">
 													<InputCheckbox @bind-Value="ToEdit.IsUsernameIdentifier" class="input-radio" type="radio"
 														name="special_states" @onclick="ToggleUsernameIdentifier" />
-													<span class="ml-2">Column Is Emails</span>
+													<span class="ml-2">Column Is Usernames</span>
 												</label>
 											</div>
 											
@@ -178,25 +178,59 @@
 										@if(!ToEdit.EmailIdentifier && !ToEdit.IsUserIdIdentifier
 											&& !ToEdit.PasswordIdentifier && !ToEdit.IsUsernameIdentifier)
 										{
-											<div class="justify-self-center">
-												<label class="inline-flex items-center">
-													<InputCheckbox @bind-Value="ToEdit.AutoConvert" />
-													<span class="ml-2">Auto Convert Value</span>
-												</label>
-											</div>
+											<div class="p-2 shadow-md border-slate-400 border-2 text-center">Value Configuration</div>
 
-											@if (!ToEdit.AutoConvert)
+											<UserPropertySelector PropertyName="@ToEdit.PropertyName" User="MockTrooper"
+												UseStaticProperties="ToEdit.IsStatic" SetPropertyName="(x) => { ToEdit.PropertyName = x; StateHasChanged(); }"
+												SetPropertyType="(x) => { ToEdit.IsStatic = x; StateHasChanged(); }"
+												AllowedStaticTypes="AllowedStaticTypes" />
+
+											@if(!ToEdit.IsStatic)
 											{
-												<div class="p-2 bg-slate-600 border rounded-lg border-slate-200 m-2 h-max flex flex-col">
-
-													@*@foreach(var )
-														<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1 @colorCode">
-														<p class="flex-1">@ImportConfiguration.HeaderValues[col]</p>
-
-														</div>*@
-
-
+												<div class="justify-self-center">
+													<label class="inline-flex items-center">
+														<InputCheckbox @bind-Value="ToEdit.AutoConvert" />
+														<span class="ml-2">Auto Convert Value</span>
+													</label>
 												</div>
+
+												@if (!ToEdit.AutoConvert)
+												{
+													<div class="p-2 shadow-md border-slate-400 border-2 text-center">Manual Conversion Bindings</div>
+
+													if((ImportConfiguration?.UniqueValues.TryGetValue(ToEditCol, out var values) ?? false)
+														&& !string.IsNullOrWhiteSpace(ToEdit.PropertyName))
+													{
+														<div class="p-2 bg-slate-600 border rounded-lg border-slate-200 m-2 h-max flex flex-col">
+
+															@foreach(var item in values)
+															{
+																var key = item;
+																<div class="m-1 p-2 relative inline-flex bg-gray-400 rounded-md">
+																	<p class="flex-0">@item</p>
+																	@if(ToEdit.DataValueModels.TryGetValue(item, out var pair))
+																	{
+																		<div class="flex-grow grid grid-cols-1 gap-2">
+																			<AssignableValueInput EditModel="pair.Item1" ToEdit="pair.Item2"
+																				SingleValueUpdate="() => SingleAssignbaleValueUpdated(key)" />
+
+																			<hr />
+
+																			<button class="button-op-danger material-icons-round" 
+																				@onclick="() => DeleteSingleValueAssignable(key)">
+																				delete
+																			</button>
+																		</div>
+																	}
+																	else
+																	{
+																		<button class="button-op-success" @onclick="() => CreateSingleValueAssignable(key)">Configure</button>
+																	}
+																</div>
+															}
+														</div>
+													}
+												}
 											}
 										}
 
