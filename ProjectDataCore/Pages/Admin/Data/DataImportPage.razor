@@ -71,8 +71,35 @@
 								{
 									var col = i;
 
-									<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1">
+									var colorCode = "";
+									if (ImportConfiguration.IdentifierColumn == col)
+									{
+										colorCode = "bg-blue-300";
+									}
+									else if (ImportConfiguration.EmailColumn == col)
+									{
+										colorCode = "bg-purple-400";
+									}
+									else if (ImportConfiguration.PasswordColumn == col)
+									{
+										colorCode = "bg-slate-300";
+									}
+
+									<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1 @colorCode">
 										<p class="flex-1">@ImportConfiguration.HeaderValues[col]</p>
+
+										@if(ImportConfiguration.IdentifierColumn == col)
+										{
+											<code class="flex-1">user id</code>
+										}
+										else if (ImportConfiguration.EmailColumn == col)
+										{
+											<code class="flex-1">email</code>
+										}
+										else if (ImportConfiguration.PasswordColumn == col)
+										{
+											<code class="flex-1">password</code>
+										}
 
 										@if (ImportConfiguration.ValueBindings.ContainsKey(col))
 										{
@@ -107,7 +134,7 @@
 
 										<div class="flex gap-2">
 											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
-											<button class="button-op-danger material-icons-round flex-none" @onclick="DelteValueBinding">delete</button>
+											<button class="button-op-danger material-icons-round flex-none" @onclick="DeleteValueBinding">delete</button>
 										</div>
 										
 										<hr />
@@ -118,7 +145,7 @@
 											<div class="justify-self-center">
 												<label class="inline-flex items-center">
 													<InputCheckbox @bind-Value="ToEdit.IsUserIdIdentifier" class="input-radio" type="radio" 
-														name="special_states" />
+														name="special_states" @onclick="ToggleUserIdIdentifier" />
 													<span class="ml-2">Column Is User IDs</span>
 												</label>
 											</div>
@@ -126,39 +153,58 @@
 											<div class="justify-self-center">
 												<label class="inline-flex items-center">
 													<InputCheckbox @bind-Value="ToEdit.IsUsernameIdentifier" class="input-radio" type="radio"
-														name="special_states" />
+														name="special_states" @onclick="ToggleUsernameIdentifier" />
 													<span class="ml-2">Column Is Emails</span>
 												</label>
 											</div>
 											
 											<div class="justify-self-center">
 												<label class="inline-flex items-center">
-													<InputCheckbox @bind-Value="ToEdit.Email" class="input-radio" type="radio"
-														name="special_states" />
+													<InputCheckbox @bind-Value="ToEdit.EmailIdentifier" class="input-radio" type="radio"
+														name="special_states" @onclick="ToggleEmailIdentifier" />
 													<span class="ml-2">Column Is Emails</span>
 												</label>
 											</div>
 
 											<div class="justify-self-center">
 												<label class="inline-flex items-center">
-													<InputCheckbox @bind-Value="ToEdit.Password" class="input-radio" type="radio" 
-														name="special_states" />
+													<InputCheckbox @bind-Value="ToEdit.PasswordIdentifier" class="input-radio" type="radio" 
+														name="special_states" @onclick="TogglePasswordIdentifier" />
 													<span class="ml-2">Column Is User Password Hashes</span>
 												</label>
 											</div>
 										</div>
 
-										@if(!ToEdit.Email && !ToEdit.IsUserIdIdentifier
-											&& !ToEdit.Password && !ToEdit.IsUsernameIdentifier)
+										@if(!ToEdit.EmailIdentifier && !ToEdit.IsUserIdIdentifier
+											&& !ToEdit.PasswordIdentifier && !ToEdit.IsUsernameIdentifier)
 										{
-											
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.AutoConvert" />
+													<span class="ml-2">Auto Convert Value</span>
+												</label>
+											</div>
+
+											@if (!ToEdit.AutoConvert)
+											{
+												<div class="p-2 bg-slate-600 border rounded-lg border-slate-200 m-2 h-max flex flex-col">
+
+													@*@foreach(var )
+														<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1 @colorCode">
+														<p class="flex-1">@ImportConfiguration.HeaderValues[col]</p>
+
+														</div>*@
+
+
+												</div>
+											}
 										}
 
 										<hr />
 
 										<div class="flex gap-2">
 											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
-											<button class="button-op-danger material-icons-round flex-none" @onclick="DelteValueBinding">delete</button>
+											<button class="button-op-danger material-icons-round flex-none" @onclick="DeleteValueBinding">delete</button>
 										</div>
 
 									</div>

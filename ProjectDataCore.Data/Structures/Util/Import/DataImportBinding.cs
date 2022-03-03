@@ -12,6 +12,6 @@ public class DataImportBinding
     public bool IsUsernameIdentifier { get; set; } = false;
     public bool IsUserIdIdentifier { get; set; } = false;
 
-    public bool Password { get; set; } = false;
-    public bool Email { get; set; } = false;
+    public bool PasswordIdentifier { get; set; } = false;
+    public bool EmailIdentifier { get; set; } = false;
 }

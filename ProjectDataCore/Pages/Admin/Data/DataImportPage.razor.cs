@@ -45,7 +45,7 @@ public partial class DataImportPage
     private FileStream? ImportStream { get; set; }
     private string? FilePath { get; set; }
 
-    private DataCoreUser MockTrooper { get; set; }
+    private DataCoreUser? MockTrooper { get; set; }
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
@@ -175,6 +175,7 @@ public partial class DataImportPage
         }
     }
 
+    #region Value Bindings
     protected void EditValueBinding(int col)
     {
         if(ImportConfiguration?.ValueBindings.TryGetValue(col, out var binding)
@@ -213,13 +214,164 @@ public partial class DataImportPage
         StateHasChanged();
     }
 
-    protected void DelteValueBinding()
+    protected void DeleteValueBinding()
     {
         if(ToEdit is not null && ToEditCol >= 0)
         {
             _ = ImportConfiguration?.ValueBindings.TryRemove(ToEditCol, out _);
 
+            ClearIdentifierTags();
+            RemoveOldIdentifierColumn();
             CloseValueBinding();
         }
     }
+
+    private void ClearIdentifierTags(DataImportBinding? edit = null)
+    {
+        edit ??= ToEdit;
+
+        if (edit is not null)
+        {
+            edit.EmailIdentifier = false;
+            edit.IsUserIdIdentifier = false;
+            edit.IsUsernameIdentifier = false;
+            edit.PasswordIdentifier = false;
+        }
+    }
+
+    private void RemoveOldIdentifierColumn()
+    {
+        if (ImportConfiguration is not null)
+        {
+            if (ImportConfiguration.IdentifierColumn == ToEditCol)
+                ImportConfiguration.IdentifierColumn = -1;
+
+            if (ImportConfiguration.PasswordColumn == ToEditCol)
+                ImportConfiguration.PasswordColumn = -1;
+
+            if (ImportConfiguration.EmailColumn == ToEditCol)
+                ImportConfiguration.EmailColumn = -1;
+        }
+    }
+
+    protected void ToggleUserIdIdentifier()
+    {
+        if (ImportConfiguration is not null
+            && ToEdit is not null)
+        {
+            if (!ToEdit.IsUserIdIdentifier)
+            {
+                RemoveOldIdentifierColumn();
+
+                if(ImportConfiguration.IdentifierColumn != ToEditCol
+                    && ImportConfiguration.IdentifierColumn >= 0)
+                {
+                    if(ImportConfiguration.ValueBindings
+                        .TryGetValue(ImportConfiguration.IdentifierColumn, out var binding))
+                        ClearIdentifierTags(binding);
+                }
+
+                ImportConfiguration.IdentifierColumn = ToEditCol;
+
+                ClearIdentifierTags();
+                ToEdit.IsUserIdIdentifier = true;
+            }
+            else
+            {
+                ToEdit.IsUserIdIdentifier = false;
+                ImportConfiguration.IdentifierColumn = -1;
+            }
+        }
+    }
+
+    protected void ToggleUsernameIdentifier()
+    {
+        if (ImportConfiguration is not null
+            && ToEdit is not null)
+        {
+            if (!ToEdit.IsUsernameIdentifier)
+            {
+                RemoveOldIdentifierColumn();
+
+                if (ImportConfiguration.IdentifierColumn != ToEditCol
+                    && ImportConfiguration.IdentifierColumn >= 0)
+                {
+                    if (ImportConfiguration.ValueBindings
+                        .TryGetValue(ImportConfiguration.IdentifierColumn, out var binding))
+                        ClearIdentifierTags(binding);
+                }
+
+                ImportConfiguration.IdentifierColumn = ToEditCol;
+
+                ClearIdentifierTags();
+                ToEdit.IsUsernameIdentifier = true;
+            }
+            else
+            {
+                ToEdit.IsUsernameIdentifier = false;
+                ImportConfiguration.IdentifierColumn = -1;
+            }
+        }
+    }
+
+    protected void ToggleEmailIdentifier()
+    {
+        if (ImportConfiguration is not null
+            && ToEdit is not null)
+        {
+            if (!ToEdit.EmailIdentifier)
+            {
+                RemoveOldIdentifierColumn();
+
+                if (ImportConfiguration.EmailColumn != ToEditCol
+                    && ImportConfiguration.EmailColumn >= 0)
+                {
+                    if (ImportConfiguration.ValueBindings
+                        .TryGetValue(ImportConfiguration.EmailColumn, out var binding))
+                        ClearIdentifierTags(binding);
+                }
+
+                ImportConfiguration.EmailColumn = ToEditCol;
+
+                ClearIdentifierTags();
+                ToEdit.EmailIdentifier = true;
+            }
+            else
+            {
+                ToEdit.EmailIdentifier = false;
+                ImportConfiguration.EmailColumn = -1;
+            }
+        }
+    }
+
+    protected void TogglePasswordIdentifier()
+    {
+        if (ImportConfiguration is not null
+            && ToEdit is not null)
+        {
+            if (!ToEdit.PasswordIdentifier)
+            {
+                RemoveOldIdentifierColumn();
+
+                if (ImportConfiguration.PasswordColumn != ToEditCol
+                    && ImportConfiguration.PasswordColumn >= 0)
+                {
+                    if (ImportConfiguration.ValueBindings
+                        .TryGetValue(ImportConfiguration.PasswordColumn, out var binding))
+                        ClearIdentifierTags(binding);
+                }
+
+                ImportConfiguration.PasswordColumn = ToEditCol;
+
+                ClearIdentifierTags();
+                ToEdit.PasswordIdentifier = true;
+            }
+            else
+            {
+                ToEdit.PasswordIdentifier = false;
+                ImportConfiguration.PasswordColumn = -1;
+            }
+        }
+    }
+    #endregion
 }
