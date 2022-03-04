@@ -13,4 +13,5 @@ public class DataCoreLog : DataObject<Guid>
     public LogLevel LogLevel { get; set; }
     public Guid? Scope { get; set; }
     public List<DataCoreLog> ChildLogs { get; set; } = new();
+    public int Depth { get; set; } = 0;
 }

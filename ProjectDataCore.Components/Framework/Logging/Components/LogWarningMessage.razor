@@ -1,0 +1,13 @@
+﻿@inherits LogMessageBase
+
+<div class="inline-flex">
+	@for(int i = 0; i < Depth; i++)
+	{
+		<div class="p-6"></div>
+	}
+	<div class="m-1 p-2 relative inline-flex bg-yellow-400 rounded-md max-h-16">
+		<p class="flex-none mr-2 w-14">WARN</p>
+		<p class="flex-grow text-left overflow-y-auto">@Message</p>
+		<p class="flex-none text-right ml-2 w-36">@Date.ToString("MM/dd/yyyy-HH:mm:ss")</p>
+	</div>
+</div>

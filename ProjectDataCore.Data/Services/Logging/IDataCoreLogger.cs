@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Services.Logging;
 public interface IDataCoreLogger
 {
-    public void Log(DataCoreLog log, DataCoreLog? parentLog = null);
-    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null);
+    public void Log(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0);
+    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0);
 
     public void Log(string message, LogLevel logLevel, Guid scope);
     public DataCoreLogScope CreateScope(string message, LogLevel logLevel, Guid scope);

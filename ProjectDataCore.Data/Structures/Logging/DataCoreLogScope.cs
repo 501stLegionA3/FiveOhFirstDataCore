@@ -17,11 +17,11 @@ public class DataCoreLogScope : IDisposable, IDataCoreLogger
     internal DataCoreLogScope(IDataCoreLogger logger, DataCoreLog scope)
         => (Logger, Scope) = (logger, scope);
 
-    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null)
-        => Logger.CreateScope(log, parentLog ?? Scope);
+    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
+        => Logger.CreateScope(log, parentLog ?? Scope, depth + 1);
 
-    public void Log(DataCoreLog log, DataCoreLog? parentLog = null)
-        => Logger.Log(log, parentLog ?? Scope);
+    public void Log(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
+        => Logger.Log(log, parentLog ?? Scope, depth + 1);
 
     public void Log(string message, LogLevel logLevel, Guid scope)
         => Log(new()

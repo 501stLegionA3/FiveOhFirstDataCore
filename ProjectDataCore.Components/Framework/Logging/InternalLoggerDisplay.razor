@@ -1,0 +1,65 @@
+﻿<div class="p-5 bg-slate-300">
+	<div class="border rounded-lg shadow-lg border-slate-100 bg-white grid grid-cols-1">
+		<div class="p-2 inline-flex gap-2">
+			<div class="flex-none mr-10">
+				@Title
+			</div>
+
+			@switch(LoggerLevel)
+			{
+				case LogLevel.Debug:
+					<button class="flex-grow rounded-md bg-green-300 px-2 py-1 w-18"
+						@onclick="() => ToggleLogDisplay(LogLevel.Debug)">Debug</button>
+					goto case LogLevel.Information;
+				case LogLevel.Information:
+					<button class="flex-grow rounded-md bg-gray-400 px-2 py-1 w-18"
+						@onclick="() => ToggleLogDisplay(LogLevel.Information)">Info</button>
+					goto case LogLevel.Warning;
+				case LogLevel.Warning:
+					<button class="flex-grow rounded-md bg-yellow-400 px-2 py-1 w-18"
+						@onclick="() => ToggleLogDisplay(LogLevel.Warning)">Warn</button>
+					goto case LogLevel.Error;
+				case LogLevel.Error:
+					<button class="flex-grow rounded-md bg-red-400 px-2 py-1 w-18"
+						@onclick="() => ToggleLogDisplay(LogLevel.Error)">Error</button>
+					goto case LogLevel.Critical;
+				case LogLevel.Critical:
+					<button class="flex-grow rounded-md bg-red-800 px-2 py-1 w-18 text-white"
+						@onclick="() => ToggleLogDisplay(LogLevel.Critical)">Critical</button>
+					break;
+			}
+
+			@if (CancellationSource is not null)
+			{
+				<div class="flex-none border border-black"></div>
+				<button class="flex-grow rounded-md bg-black text-white px-2 py-1" @onclick="() => CancellationSource.Cancel()">Abort</button>
+			}
+		</div>
+		<hr />
+		<div class="flex flex-col-reverse h-96 overflow-auto">
+			<div class="p-2 bg-slate-600 border rounded-lg border-slate-200 m-2 h-max flex flex-col">
+				@foreach(var log in Logs)
+				{
+					switch(log.LogLevel)
+					{
+						case LogLevel.Debug:
+							<LogDebugMessage Message="@log.Message" Date="log.LastEdit" Depth="log.Depth" />
+							break;
+						case LogLevel.Information:
+							<LogInfoMessage Message="@log.Message" Date="log.LastEdit" Depth="log.Depth" />
+							break;
+						case LogLevel.Warning:
+							<LogWarningMessage Message="@log.Message" Date="log.LastEdit" Depth="log.Depth" />
+							break;
+						case LogLevel.Error:
+							<LogErrorMessage Message="@log.Message" Date="log.LastEdit" Depth="log.Depth" />
+							break;
+						case LogLevel.Critical:
+							<LogCriticalMessage Message="@log.Message" Date="log.LastEdit" Depth="log.Depth" />
+							break;
+					}
+				}
+			</div>
+		</div>
+	</div>
+</div>

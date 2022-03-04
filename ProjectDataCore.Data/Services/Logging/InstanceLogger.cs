@@ -15,9 +15,9 @@ public class InstanceLogger : IInstanceLogger
     public ConcurrentDictionary<Action<DataCoreLog>, (Guid, LogLevel)> Loggers { get; init; } = new();
     public HashSet<Guid> Keys { get; init; } = new();
 
-    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null)
+    public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
     {
-        Log(log, parentLog);
+        Log(log, parentLog, depth);
 
         return new(this, log);
     }
@@ -30,8 +30,11 @@ public class InstanceLogger : IInstanceLogger
             Scope = scope
         });
 
-    public void Log(DataCoreLog log, DataCoreLog? parentLog = null)
+    public void Log(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
     {
+        log.Depth = depth;
+        log.LastEdit = DateTime.UtcNow;
+
         if (parentLog is not null)
             parentLog.ChildLogs.Add(log);
 

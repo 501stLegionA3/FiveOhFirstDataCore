@@ -1,4 +1,5 @@
 ﻿@page "/admin/data/import"
+
 <AuthorizationHandler ForceAdmin="true">
 	<Authorized>
 		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
@@ -263,7 +264,7 @@
 						|| Stage == ImportStage.Done
 						|| Stage == ImportStage.Errored)
 					{
-
+						<InternalLoggerDisplay Title="Import Log" Scope="LogScope" CancellationSource="CancellationSource" />
 					}
 				</div>
 			</div>
