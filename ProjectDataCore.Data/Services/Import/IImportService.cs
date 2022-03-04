@@ -9,6 +9,6 @@ namespace ProjectDataCore.Data.Services.Import;
 
 public interface IImportService
 {
-    public Task<ActionResult> BulkUpdateUsersAsync(DataImportConfiguration config, CancellationToken cancellationToken, Guid logScope = default);
+    public Task<ActionResult> BulkUpdateUsersAsync(DataImportConfiguration config, CancellationToken cancellationToken = default, Guid logScope = default);
     public Task<ActionResult> GetCSVUniqueValuesAsync(Stream dataStream, DataImportConfiguration config);
 }

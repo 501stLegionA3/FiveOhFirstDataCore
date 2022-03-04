@@ -56,4 +56,11 @@ public class ValueBaseAssignableValue<T> : BaseAssignableValue, IAssignableValue
 
     public override void ClearValue()
         => SetValue.Clear();
+
+    public override BaseAssignableValue Clone()
+    {
+        var clone = (ValueBaseAssignableValue<T>)this.MemberwiseClone();
+        clone.SetValue = SetValue.ToList();
+        return clone;
+    }
 }

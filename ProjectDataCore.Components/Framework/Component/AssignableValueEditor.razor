@@ -41,7 +41,9 @@
 			{
 				<div class="grid gird-cols-1 grid-flow-row-dense gap-2">
 					<div class="flex-grow input-group inline-flex gap-2">
-						<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+						<InputSelect class="input-control peer"
+							TValue="int" Value="StaticSelectorIndex" ValueExpression="() => StaticSelectorIndex"
+							ValueChanged="StaticSelectorChanged">
 							<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
 						</InputSelect>
 						<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
@@ -64,7 +66,10 @@
 			else
 			{
 				<div class="input-group">
-					<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+					<InputSelect class="input-control peer"
+						TValue="int" Value="StaticSelectorIndex" ValueExpression="() => StaticSelectorIndex"
+						ValueChanged="StaticSelectorChanged">
+						<option value="@(-1)"></option>
 						<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
 					</InputSelect>
 					<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
@@ -86,7 +91,9 @@
 								@*Static Selector*@
 
 								<div class="flex-grow input-group inline-flex gap-2">
-									<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+									<InputSelect class="input-control peer"
+										TValue="int" Value="StaticSelectorIndex" ValueExpression="() => StaticSelectorIndex"
+										ValueChanged="StaticSelectorChanged">
 										<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
 									</InputSelect>
 									<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>
@@ -133,7 +140,10 @@
 					<div class="hidden peer-checked:block">
 						@*Static Selector*@
 						<div class="input-group">
-							<InputSelect @bind-Value="StaticSelectorIndex" class="input-control peer">
+							<InputSelect class="input-control peer"
+								TValue="int" Value="StaticSelectorIndex" ValueExpression="() => StaticSelectorIndex"
+								ValueChanged="StaticSelectorChanged">
+								<option value="@(-1)"></option>
 								<AssignableConfigurationOptions Config="EditModel.AssignableConfiguration" />
 							</InputSelect>
 							<label class="input-label">@(EditModel.ComponentData?.Label ?? "")</label>

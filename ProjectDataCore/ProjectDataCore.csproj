@@ -37,6 +37,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Development\unsafe_uploads\" />
 	  <Folder Include="wwwroot\css\scoped\" />
 	</ItemGroup>
 </Project>

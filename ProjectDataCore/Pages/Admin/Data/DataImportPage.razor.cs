@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-
+using ProjectDataCore.Components.Parts.Edit;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Import;
+using ProjectDataCore.Data.Structures.Util;
 using ProjectDataCore.Data.Structures.Util.Import;
 
 using System;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Pages.Admin.Data;
-public partial class DataImportPage
+public partial class DataImportPage : IDisposable
 {
 #pragma warning disable CS8618 // Imports are never null.
     [Inject]
@@ -22,6 +23,8 @@ public partial class DataImportPage
     public IWebHostEnvironment WebHostEnvironment { get; set; }
     [Inject]
     public IAssignableDataService AssignableDataService { get; set; }
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected enum ImportStage
@@ -29,7 +32,9 @@ public partial class DataImportPage
         FileSelect,
         FileOptions,
         ColumnConfiguration,
-        Import
+        Errored,
+        Import,
+        Done
     }
 
     protected ImportStage Stage { get; set; } = ImportStage.FileSelect;
@@ -54,6 +59,9 @@ public partial class DataImportPage
         typeof(ulong),
         typeof(DateTime)
     };
+
+    private CancellationTokenSource? CancellationSource { get; set; }
+    public Guid LogScope { get; set; }
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
@@ -171,6 +179,47 @@ public partial class DataImportPage
                 {
                     AlertService.CreateErrorAlert("No Import File stream has been created.");
                 }
+            }
+            else
+            {
+                AlertService.CreateWarnAlert("No delimiter was selected. The delimiter can not be a space.", true);
+            }
+        }
+        else
+        {
+            AlertService.CreateErrorAlert("No Import Configuration has been created.");
+        }
+    }
+
+    protected async Task ImportDataAsync()
+    {
+        if (ImportConfiguration is not null)
+        {
+            if (!string.IsNullOrWhiteSpace(ImportConfiguration.StandardDelimiter))
+            {
+                CancellationSource = new();
+                var token = CancellationSource.Token;
+                LogScope = Guid.NewGuid();
+
+                // Change the stage so we get logging information
+                Stage = ImportStage.Import;
+                StateHasChanged();
+
+                _ = ImportService.BulkUpdateUsersAsync(ImportConfiguration, token, LogScope)
+                    .ContinueWith(async (resTask) =>
+                    {
+                        var res = await resTask;
+                        if (res.GetResult(out var err))
+                        {
+                            Stage = ImportStage.Done;
+                            AlertService.CreateSuccessAlert("Data Import Completed.", true);
+                        }
+                        else
+                        {
+                            Stage = ImportStage.Errored;
+                            AlertService.CreateErrorAlert(err);
+                        }
+                    });
             }
             else
             {
@@ -384,15 +433,6 @@ public partial class DataImportPage
     #endregion
 
     #region Assignables
-    protected void SingleAssignbaleValueUpdated(string key)
-    {
-        if (ToEdit is not null)
-        {
-            if (ToEdit.DataValueModels.TryGetValue(key, out var valuePair))
-                ToEdit.DataValues[key] = valuePair.Item1.GetValueAsString(valuePair.Item2);
-        }
-    }
-
     protected void CreateSingleValueAssignable(string key)
     {
         if(ToEdit is not null && MockTrooper is not null)
@@ -401,7 +441,17 @@ public partial class DataImportPage
 
             if (container is not null)
             {
-                ToEdit.DataValueModels[key] = (new(), container.AssignableConfiguration);
+                // We never want to allow this for assignable setup.
+                container.AssignableConfiguration.AllowMultiple = false;
+                container = container.Clone();
+                var editContainer = new EditBase()
+                {
+                    AssignableConfiguration = container.AssignableConfiguration,
+                    AssignableValue = container,
+                    
+                };
+
+                ToEdit.DataValueModels[key] = (editContainer, new());
                 ToEdit.DataValues[key] = "";
             }
             else
@@ -419,5 +469,45 @@ public partial class DataImportPage
             _ = ToEdit.DataValueModels.TryRemove(key, out _);
         }
     }
+
+    protected void OnSingleValueAssignableUpdated(string key)
+    {
+        if (ToEdit is not null)
+        {
+            if (ToEdit.DataValueModels.TryGetValue(key, out var valuePair))
+            {
+                // property.ReplaceValue(item.Value);
+                var edit = valuePair.Item1 as EditBase;
+                var value = valuePair.Item2.ToList(x => x.Item2);
+
+                if (value is not null && edit is not null)
+                {
+                    edit.AssignableValue!.ReplaceValue(value);
+                    ToEdit.DataValues[key] = value.FirstOrDefault()?.ToString() ?? "";
+                }
+            }
+        }
+    }
     #endregion
+
+    public void Dispose()
+    {
+        if (ImportStream is not null)
+            ImportStream.Dispose();
+
+        ImportStream = null;
+        ImportFile = null;
+
+        if(FilePath is not null)
+        {
+            try
+            {
+                File.Delete(FilePath);
+            }
+            catch { /* ignore */ }
+        }
+
+        MockTrooper = null;
+        ImportConfiguration = null;
+    }
 }

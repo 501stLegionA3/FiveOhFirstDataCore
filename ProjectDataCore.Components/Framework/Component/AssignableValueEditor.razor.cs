@@ -16,11 +16,13 @@ public partial class AssignableValueEditor
 
     public AssignableConfigurationValueEditModel MultipleValueInput { get; set; } = new();
     public AssignableConfigurationValueEditModel SingleValueInput { get; set; }
-    public int StaticSelectorIndex { get; set; } = 0;
+    public int StaticSelectorIndex { get; set; } = -1;
     public bool BothOnStatic { get; set; } = true;
 
     [Parameter]
     public List<(string, dynamic)> SelectedValues { get; set; } = new();
+    [Parameter]
+    public Action? OnUpdate { get; set; }
 
 	protected override async Task OnParametersSetAsync()
 	{
@@ -41,10 +43,26 @@ public partial class AssignableValueEditor
             if (EditModel.AssignableValue is not null 
                 && EditModel.AssignableConfiguration is IAssignableConfiguration config)
             {
+                SelectedValues.Clear();
                 for (int i = 0; i < EditModel.AssignableValue.GetValues().Count; i++)
                 {
                     var val = config.GetSingleValuePair(new AssignableConfigurationValueEditModel(EditModel.AssignableValue, i));
-                    SelectedValues.Add(val.Value);
+                    SelectedValues.Add(val!.Value);
+                }
+
+                if(!(EditModel.AssignableConfiguration.AllowedInput == BaseAssignableConfiguration.InputType.FreehandOnly
+                    || (EditModel.AssignableConfiguration.AllowedInput == BaseAssignableConfiguration.InputType.Both
+                        && !BothOnStatic)))
+                {
+                    if(SelectedValues.Count > 0 
+                        && !EditModel.AssignableConfiguration.AllowMultiple)
+                    {
+                        var vals = config.GetDisplayValues();
+                        StaticSelectorIndex = vals.IndexOf(SelectedValues.FirstOrDefault().Item1 ?? "");
+
+                        if (StaticSelectorIndex < 0)
+                            AddValue();
+                    }
                 }
             }
 
@@ -89,12 +107,23 @@ public partial class AssignableValueEditor
                     else
                         SelectedValues[0] = val.Value;
                 }
-			}
+
+                if (OnUpdate is not null)
+                    OnUpdate.Invoke();
+            }
         }
 	}
 
     protected void RemoveValue((string, dynamic) toRemove)
 	{
         SelectedValues.Remove(toRemove);
-	}
+        if (OnUpdate is not null)
+            OnUpdate.Invoke();
+    }
+
+    protected void StaticSelectorChanged(int newIndex)
+    {
+        StaticSelectorIndex = newIndex;
+        AddValue();
+    }
 }

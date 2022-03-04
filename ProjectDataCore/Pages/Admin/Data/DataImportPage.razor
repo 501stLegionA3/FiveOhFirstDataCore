@@ -21,13 +21,13 @@
 								<button class="button-op-danger" @onclick="GoBack">Go Back</button>
 
 								<div class="input-group">
-									<InputText @bind-Value="ImportConfiguration.StandardDelimiter" id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
-									<label for="name" class="input-label">File Delimiter</label>
+									<InputText @bind-Value="ImportConfiguration.StandardDelimiter" id="delim" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+									<label for="delim" class="input-label">File Delimiter</label>
 								</div>
 
 								<div class="input-group">
-									<InputText @bind-Value="ImportConfiguration.MultipleValueDelimiter" id="name" type="text" class="input-control peer" placeholder="Assignable Value Name" />
-									<label for="name" class="input-label">Multiple Value (Internal) Delimiter</label>
+									<InputText @bind-Value="ImportConfiguration.MultipleValueDelimiter" id="alt-delim" type="text" class="input-control peer" placeholder="Assignable Value Name" />
+									<label for="alt-delim" class="input-label">Multiple Value (Internal) Delimiter</label>
 								</div>
 
 								<div class="grid gird-cols-3 gap-2">
@@ -111,21 +111,33 @@
 										}
 									</div>
 								}
+
+								<hr />
+
+								<button class="button-op-success" @onclick="ImportDataAsync">Import</button>
 							}
 							else
 							{
 								<em>An error occoured. Pelase refresh the page.</em>
 							}
 							break;
+						case ImportStage.Errored:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - Import Errored</div>
+
+							<button class="button-op-danger" @onclick="GoBack">Go Back</button>
+							break;
 						case ImportStage.Import:
 							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - Import In Progress</div>
+							break;
+						case ImportStage.Done:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">CSV Import - Import Complete</div>
 							break;
 					}
 				</EditForm>
 			</div>
 			<div class="col-span-2">
 				<div class="border-l-2 border-slate-400 pl-4 h-full">
-					@if (ToEdit is not null)
+					@if (ToEdit is not null && Stage == ImportStage.ColumnConfiguration)
 					{
 						<div class="grid grid-cols-1 grid-flow-row gap-2">
 							<div class="border-2 border-slate-400 pt-4 p-2 rounded-lg shadow-lg">
@@ -206,13 +218,14 @@
 															@foreach(var item in values)
 															{
 																var key = item;
-																<div class="m-1 p-2 relative inline-flex bg-gray-400 rounded-md">
+																<div class="m-1 p-2 relative inline-flex bg-gray-400 rounded-md gap-2">
 																	<p class="flex-0">@item</p>
 																	@if(ToEdit.DataValueModels.TryGetValue(item, out var pair))
 																	{
 																		<div class="flex-grow grid grid-cols-1 gap-2">
-																			<AssignableValueInput EditModel="pair.Item1" ToEdit="pair.Item2"
-																				SingleValueUpdate="() => SingleAssignbaleValueUpdated(key)" />
+																			<AssignableValueEditor EditModel="pair.Item1" 
+																				OnUpdate="() => OnSingleValueAssignableUpdated(key)"
+																				SelectedValues="pair.Item2" />
 
 																			<hr />
 
@@ -224,7 +237,7 @@
 																	}
 																	else
 																	{
-																		<button class="button-op-success" @onclick="() => CreateSingleValueAssignable(key)">Configure</button>
+																		<button class="button-op-success flex-grow" @onclick="() => CreateSingleValueAssignable(key)">Configure</button>
 																	}
 																</div>
 															}
@@ -245,6 +258,12 @@
 								</EditForm>
 							</div>
 						</div>
+					}
+					else if (Stage == ImportStage.Import 
+						|| Stage == ImportStage.Done
+						|| Stage == ImportStage.Errored)
+					{
+
 					}
 				</div>
 			</div>
