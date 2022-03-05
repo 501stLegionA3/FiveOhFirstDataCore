@@ -64,7 +64,7 @@ public class InstanceLogger : IInstanceLogger
 
     public bool Register(Action<DataCoreLog> receiver, LogLevel minLogLevel, Guid scope)
     {
-        if (!Keys.Contains(scope))
+        if (Keys.Contains(scope))
             return false;
 
         Keys.Add(scope);
@@ -86,7 +86,7 @@ public class InstanceLogger : IInstanceLogger
             foreach (var pair in Loggers)
             {
                 if (pair.Value.Item1 == log.Scope
-                    && pair.Value.Item2 >= log.LogLevel)
+                    && pair.Value.Item2 <= log.LogLevel)
                     pair.Key.Invoke(log);
             }
         });

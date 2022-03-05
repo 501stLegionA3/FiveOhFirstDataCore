@@ -2,6 +2,7 @@
 using ProjectDataCore.Components.Parts.Edit;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Import;
+using ProjectDataCore.Data.Services.Logging;
 using ProjectDataCore.Data.Structures.Util;
 using ProjectDataCore.Data.Structures.Util.Import;
 
@@ -25,6 +26,8 @@ public partial class DataImportPage : IDisposable
     public IAssignableDataService AssignableDataService { get; set; }
     [Inject]
     public NavigationManager NavigationManager { get; set; }
+    [Inject]
+    public IInstanceLogger InstanceLogger { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected enum ImportStage
@@ -205,21 +208,39 @@ public partial class DataImportPage : IDisposable
                 Stage = ImportStage.Import;
                 StateHasChanged();
 
-                _ = ImportService.BulkUpdateUsersAsync(ImportConfiguration, token, LogScope)
-                    .ContinueWith(async (resTask) =>
+                _ = Task.Run(async () =>
+                {
+                    try
                     {
-                        var res = await resTask;
+                        await Task.Delay(TimeSpan.FromSeconds(0.5));
+
+                        InstanceLogger.Log("Import starting in 5 seconds.", LogLevel.Information, LogScope);
+
+                        // Give time for the logger to load.
+                        await Task.Delay(TimeSpan.FromSeconds(5), token);
+
+                        var res = await ImportService.BulkUpdateUsersAsync(ImportConfiguration, token, LogScope);
+
                         if (res.GetResult(out var err))
                         {
                             Stage = ImportStage.Done;
                             AlertService.CreateSuccessAlert("Data Import Completed.", true);
+                            await InvokeAsync(StateHasChanged);
                         }
                         else
                         {
                             Stage = ImportStage.Errored;
                             AlertService.CreateErrorAlert(err);
+                            await InvokeAsync(StateHasChanged);
                         }
-                    });
+                    }
+                    catch
+                    {
+                        InstanceLogger.Log("Import canclled before it began.", LogLevel.Critical, LogScope);
+                        Stage = ImportStage.Errored;
+                        await InvokeAsync(StateHasChanged);
+                    }
+                });
             }
             else
             {
