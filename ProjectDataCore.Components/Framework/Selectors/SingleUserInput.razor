@@ -5,7 +5,7 @@
 		@if(SelectedUsers.Count < 1)
 		{
 			<InputText class="input-control peer" id="user-search" placeholder="User Search"
-				Value="@SearchRaw" ValueChanged="(x) => OnSearchUpdated(x)" ValueExpression="() => SearchRaw"
+				Value="@SearchRaw" ValueChanged="OnSearchUpdated" ValueExpression="() => SearchRaw"
 				@oninput="(x) => OnSearchUpdated((string?)x.Value)" autocomplete="off" />
 			<label class="input-label" for="user-search">User Search</label>
 
