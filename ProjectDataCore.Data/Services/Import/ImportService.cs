@@ -229,6 +229,21 @@ public class ImportService : IImportService
                     log.Log($"Updated password for {user.UserName}", LogLevel.Information, logScope);
                 }
 
+                // ... if we have an email column ...
+                if (config.EmailColumn != -1)
+                {
+                    // ... then set the emails ...
+                    user.Email = row[config.EmailColumn];
+                    user.NormalizedEmail = row[config.EmailColumn].Normalize();
+                    user.EmailConfirmed = !string.IsNullOrWhiteSpace(user.Email);
+
+                    // ... then log it ...
+                    if (user.EmailConfirmed)
+                        log.Log($"Updated email for {user.UserName}", LogLevel.Information, logScope);
+                    else
+                        log.Log($"No email found for {user.UserName}. They need this to receive password resets.", LogLevel.Warning, logScope);
+                }
+
                 // ... next up is configuring the assignable values
                 // and static properties for the user object ...
                 foreach (var bindingPair in config.ValueBindings)

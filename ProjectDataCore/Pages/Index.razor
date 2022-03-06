@@ -1,4 +1,6 @@
 ﻿@page "//{*Route}"
 @page "/"
 
-<CoreRouter Route="@Route" />
+<CascadingValue Value="Query" Name="QueryParams">
+	<CoreRouter Route="@Route" />
+</CascadingValue>

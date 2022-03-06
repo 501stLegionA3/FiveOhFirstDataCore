@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="DSharpPlus" Version="4.1.0" />
     <PackageReference Include="DSharpPlus.Rest" Version="4.1.0" />
+    <PackageReference Include="MailKit" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.0-rc.2.21480.10" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0-rc.2" />

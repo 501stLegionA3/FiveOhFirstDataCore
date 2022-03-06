@@ -20,6 +20,10 @@ using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Services.InternalAuth;
 using ProjectDataCore.Data.Services.Logging;
 using ProjectDataCore.Data.Services.Import;
+using ProjectDataCore.Data.Structures.Mail;
+using AngleSharp.Text;
+using MailKit.Net.Smtp;
+using ProjectDataCore.Data.Services.Mail;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +125,21 @@ builder.Services.AddSingleton<IRoutingService, RoutingService>()
     .AddSingleton<IInternalAuthorizationService, InternalAuthorizationService>()
     .AddSingleton<IInstanceLogger, InstanceLogger>();
 
+#endregion
+
+#region Email Setup
+var mailSection = builder.Configuration.GetRequiredSection("Email");
+builder.Services.AddSingleton(new MailConfiguration()
+{
+    Client = mailSection["Client"],
+    Port = mailSection["Port"].ToInteger(0),
+    Email = mailSection["Email"],
+    RequireLogin = mailSection["RequireLogin"].ToBoolean(false),
+    User = mailSection["User"],
+    Password = mailSection["Password"]
+})
+    .AddScoped<SmtpClient>()
+    .AddScoped<ICustomMailSender, CustomMailSender>();
 #endregion
 
 #region Discord Setup
