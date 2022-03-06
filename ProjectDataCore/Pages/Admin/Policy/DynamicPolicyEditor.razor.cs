@@ -38,6 +38,7 @@ public partial class DynamicPolicyEditor
     public List<DynamicAuthorizationPolicy> SelectedParents { get; set; } = new();
 
     public string? Error { get; set; } = null;
+    public bool DeleteCheck { get; set; } = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -80,6 +81,7 @@ public partial class DynamicPolicyEditor
     {
         ToEdit = policy;
 
+        DeleteCheck = false;
         ButtonActive = false;
 
         // Load the selection values.
@@ -255,6 +257,42 @@ public partial class DynamicPolicyEditor
         }
 
         await StopEditAsync();
+    }
+
+    protected void OnStartDelete()
+    {
+        DeleteCheck = true;
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+
+            DeleteCheck = false;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    protected async Task OnDeletePolicyAsync()
+    {
+        if(ToEdit is not null && DeleteCheck)
+        {
+            var res = await PolicyService.DeletePolicyAsync(ToEdit.Key);
+
+            if(res.GetResult(out var err))
+            {
+                AlertService.CreateSuccessAlert($"Policy deleted: {ToEdit.PolicyName}", true);
+
+                ToEdit = null;
+                DeleteCheck = false;
+            }
+            else
+            {
+                AlertService.CreateErrorAlert(err);
+                DeleteCheck = false;
+            }
+
+            StateHasChanged();
+        }
     }
 
     protected async Task SaveChangesAsync()

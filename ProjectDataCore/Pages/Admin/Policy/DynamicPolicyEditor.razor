@@ -123,6 +123,17 @@
 											<button class="border border-green-400 hover:bg-green-400 rounded-lg px-2 p-1" @onclick="SaveChangesAsync">Save</button>
 											<button class="border border-red-600 hover:bg-red-600 rounded-lg px-2 p-1" @onclick="StopEditAsync">Discard</button>
 										</div>
+
+										<hr />
+
+										@if(!DeleteCheck)
+										{
+											<button class="button-op-danger" @onclick="OnStartDelete">Delete Policy</button>
+										}
+										else
+										{
+											<button class="button-op-danger" @onclick="OnDeletePolicyAsync">Confirm Delete Policy</button>
+										}
 									</div>
 								</EditForm>
 							</div>
