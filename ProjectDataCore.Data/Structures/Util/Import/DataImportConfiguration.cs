@@ -19,7 +19,7 @@ public class DataImportConfiguration
     public int IdentifierColumn { get; set; } = -1;
     public int PasswordColumn { get; set; } = -1;
     public int EmailColumn { get; set; } = -1;
-
+    public int RosterColumn { get; set; } = -1;
     // Imported Data Configuration
 
     public string? MultipleValueDelimiter { get; set; }

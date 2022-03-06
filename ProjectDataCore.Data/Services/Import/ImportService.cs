@@ -235,7 +235,8 @@ public class ImportService : IImportService
                     // ... skip all the unique columns ...
                     if (bindingPair.Key == config.IdentifierColumn
                         || bindingPair.Key == config.EmailColumn
-                        || bindingPair.Key == config.PasswordColumn)
+                        || bindingPair.Key == config.PasswordColumn
+                        || bindingPair.Key == config.RosterColumn)
                         continue;
 
                     // ... and grab the binding info ...
@@ -417,7 +418,13 @@ public class ImportService : IImportService
                     }
                 }
 
-                // ... now that we have saved all the updated information ...
+                // ... now that we have saved all the updated information
+                // its time to work on the roster values ...
+
+                // ... throw if we arent supposed to continue ...
+                cancellationToken.ThrowIfCancellationRequested();
+
+
 
                 // ... throw if we arent supposed to continue ...
                 cancellationToken.ThrowIfCancellationRequested();
