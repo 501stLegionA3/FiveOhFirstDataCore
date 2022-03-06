@@ -12,16 +12,21 @@ public partial class RosterDisplayComponent : RosterDisplayBase
 
     public class RosterUserSettingsModel
     {
-        public string Search { get; set; }
         public DataCoreUserProperty SelectedParameter { get; set; } = new() { Order = 0 };
         public Guid? SelectedRosterSettings { get; set; }
         public int SelectedRosterPosition { get; set; }
         public bool UserListing { get; set; } = false;
         public List<DataCoreUser> UserListingValues { get; set; } = new();
+
         public bool SortAscending { get; set; } = true;
+        public string Search { get; set; }
+        public int SortIndex { get; set; } = 0;
+        public DataComparer Comparer = new();
 
         public List<string>[] DisplayedProperties { get; set; } = Array.Empty<List<string>>();
         private int RegisterIndex { get; set; } = 0;
+
+        public List<SortedSet<string>> SortedProperties { get; set; } = new();
 
         public void StartUserLoad(int paramSize)
         {
@@ -54,16 +59,71 @@ public partial class RosterDisplayComponent : RosterDisplayBase
                     {
                         disp = user.GetAssignableProperty(properties[x].PropertyName, properties[x].FormatString);
                     }
-                    DisplayedProperties[x].Add(disp);
+
+                    if(string.IsNullOrWhiteSpace(disp))
+                        DisplayedProperties[x].Add("n/a");
+                    else
+                        DisplayedProperties[x].Add(disp);
                 }
             }
 
             RegisterIndex = UserListingValues.Count;
+
+            foreach (var res in RunSort(properties))
+                continue;
         }
 
-        public IEnumerable<bool> RunSort(int paramIndex, string value)
+        public IEnumerable<bool> RunSort(List<DataCoreUserProperty> properties)
         {
-            throw new NotImplementedException();
+            SortedProperties.Clear();
+            Comparer.Ascending = SortAscending;
+
+            for (int i = 0; i < properties.Count; i++)
+                SortedProperties.Add(new(Comparer));
+
+            for (int i = 0; i < DisplayedProperties.Length; i++)
+            {
+                string sortValue = DisplayedProperties[SortIndex][i] ?? "";
+
+                if (sortValue.StartsWith(Search ?? "", StringComparison.OrdinalIgnoreCase))
+                {
+                    for (int x = 0; x < properties.Count; x++)
+                    {
+                        var value = DisplayedProperties[x][i] ?? "n/a";
+
+                        SortedProperties[x].Add(value);
+
+                        yield return true;
+                    }
+                }
+            }
+
+            yield return true;
+        }
+
+        public class DataComparer : IComparer<string>
+        {
+            public bool Ascending { get; set; } = true;
+
+            public int Compare(string? x, string? y)
+            {
+                if (x is null && y is null) return 0;
+                if (x is null) return Ascending ? -1 : 1;
+                if (y is null) return Ascending ? 1 : -1;
+
+                if (Ascending)
+                {
+                    var res = x.CompareTo(y);
+
+                    return res == 0 ? 1 : res;
+                }
+                else
+                {
+                    var res = y.CompareTo(x);
+
+                    return res == 0 ? 1 : res;
+                }
+            }
         }
     }
 
@@ -97,19 +157,46 @@ public partial class RosterDisplayComponent : RosterDisplayBase
 
     protected void SelectedParameterChanged(int newParameter)
     {
-        if(ComponentData is not null)
-            if(ComponentData.UserListDisplayedProperties is not null)
+        if (ComponentData is not null)
+        {
+            if (ComponentData.UserListDisplayedProperties is not null)
+            {
                 RosterUserSettings.SelectedParameter =
                     ComponentData.UserListDisplayedProperties[newParameter];
 
+                RosterUserSettings.SortIndex = newParameter;
 
+                TriggerSort();
+            }
+        }
     }
 
     protected void SearchValueChanged(string newSearch)
     {
         RosterUserSettings.Search = newSearch;
 
+        TriggerSort();
+    }
 
+    protected void TriggerSort()
+    {
+        if (ComponentData is not null)
+        {
+            _ = Task.Run(async () =>
+            {
+                int c = 1;
+                foreach (var trigger in RosterUserSettings.RunSort(ComponentData.UserListDisplayedProperties))
+                {
+                    if (c++ >= 5)
+                    {
+                        await InvokeAsync(StateHasChanged);
+                        c = 1;
+                    }
+
+                    await InvokeAsync(StateHasChanged);
+                }
+            });
+        }
     }
 
     protected async Task SelectedRosterChangedAsync(int newPos)
@@ -170,7 +257,11 @@ public partial class RosterDisplayComponent : RosterDisplayBase
     }
 
     protected void OnChangeSortDirection()
-        => RosterUserSettings.SortAscending = !RosterUserSettings.SortAscending;
+    {
+        RosterUserSettings.SortAscending = !RosterUserSettings.SortAscending;
+
+        TriggerSort();
+    }
 
     protected async Task ReloadInterop()
     {

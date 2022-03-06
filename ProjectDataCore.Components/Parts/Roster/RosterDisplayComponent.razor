@@ -114,10 +114,14 @@
 										@for(int i = 0; i < ComponentData.UserListDisplayedProperties.Count; i++)
 										{
 											var ia = i;
-											<div id="rt-size-@ia" class="flex-grow grid grid-cols-1">
+											<div id="rt-size-@ia" class="flex-grow grid grid-cols-1 gap-1">
 												<div class="bg-roster_primary text-roster_primary_t">@ComponentData.UserListDisplayedProperties[i].PropertyName</div>
-									
-
+												
+												@foreach(var value in RosterUserSettings.SortedProperties.ElementAtOrDefault(i) 
+													?? new())
+												{
+													<div class="text-center">@value</div>
+												}
 											</div>
 										}
 									</div>
