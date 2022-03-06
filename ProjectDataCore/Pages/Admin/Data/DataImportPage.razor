@@ -85,6 +85,10 @@
 									{
 										colorCode = "bg-slate-300";
 									}
+									else if (ImportConfiguration.RosterColumn == col)
+									{
+										colorCode = "bg-emerald-400";
+									}
 
 									<div class="p-2 shadow-md border-slate-400 rounded-lg border-2 flex align-middle gap-1 @colorCode">
 										<p class="flex-1">@ImportConfiguration.HeaderValues[col]</p>
@@ -101,6 +105,10 @@
 										{
 											<code class="flex-1">password</code>
 										}
+										else if (ImportConfiguration.RosterColumn == col)
+										{
+											<code class="flex-1">roster</code>
+										}
 
 										@if (ImportConfiguration.ValueBindings.ContainsKey(col))
 										{
@@ -115,7 +123,7 @@
 
 								<hr />
 
-								<button class="button-op-success" @onclick="ImportDataAsync">Import</button>
+								<button class="button-op-success" @onclick="ImportData">Import</button>
 							}
 							else
 							{
@@ -154,7 +162,7 @@
 
 										<div class="p-2 shadow-md border-slate-400 border-2 text-center">Column: @ColumnTitle</div>
 
-										<div class="grid gird-cols-2 md:grid-cols-4 gap-2">
+										<div class="grid gird-cols-3 md:grid-cols-5 gap-2">
 											<div class="justify-self-center">
 												<label class="inline-flex items-center">
 													<InputCheckbox @bind-Value="ToEdit.IsUserIdIdentifier" class="input-radio" type="radio" 
@@ -186,10 +194,19 @@
 													<span class="ml-2">Column Is User Password Hashes</span>
 												</label>
 											</div>
+
+											<div class="justify-self-center">
+												<label class="inline-flex items-center">
+													<InputCheckbox @bind-Value="ToEdit.RosterIdentifier" class="input-radio" type="radio" 
+														name="special_states" @onclick="ToggleRosterDataIdentifier" />
+													<span class="ml-2">Column Is Roster Data</span>
+												</label>
+											</div>
 										</div>
 
 										@if(!ToEdit.EmailIdentifier && !ToEdit.IsUserIdIdentifier
-											&& !ToEdit.PasswordIdentifier && !ToEdit.IsUsernameIdentifier)
+											&& !ToEdit.PasswordIdentifier && !ToEdit.IsUsernameIdentifier
+											&& !ToEdit.RosterIdentifier)
 										{
 											<div class="p-2 shadow-md border-slate-400 border-2 text-center">Value Configuration</div>
 
@@ -247,6 +264,139 @@
 												}
 											}
 										}
+										else if (ToEdit.RosterIdentifier)
+										{
+											<div class="p-2 shadow-md border-slate-400 border-2 text-center">Roster Import Configuration</div>
+
+											@if(ImportConfiguration?.UniqueValues.TryGetValue(ImportConfiguration.RosterColumn, out var set) ?? false
+												&& set.Count > 0)
+											{
+
+												<button class="button-util-action" @onclick="AddRosterImportConditional">Add New Conditional</button>
+
+												@if(ToEdit.RosterImportConditionals.Count > 0)
+												{
+													<div class="p-2 bg-slate-600 border rounded-lg border-grey-400 m-2 h-max flex flex-col">
+
+													@for(int i = 0; i < ToEdit.RosterImportConditionals.Count; i++)
+													{
+														var index = i;
+														<div class="grid grid-cols-1 gap-2 m-1 p-2 relative bg-slate-200 rounded-md gap-2 flex-grow">
+															<div class="input-group">
+																<InputSelect @bind-Value="ToEdit.RosterImportConditionals[index].RosterTree" class="input-control" id="new-check-select">
+																	<option value="@Guid.Empty"></option>
+																	@foreach(var item in RosterTrees)
+																	{
+																		<option value="@item.Key">@item.Name</option>
+																	}
+																</InputSelect>
+																<label for="new-check-select" class="input-label">Roster Tree to Apply To</label>
+															</div>
+
+															<hr />
+
+															<div class="grid grid-cols-5 gap-2 items-botom">
+																<div class="input-group col-span-2">
+																	<InputNumber @bind-Value="ToEdit.RosterImportConditionals[index].AddRangeStart" class="input-control" />
+																	<label for="new-check-select" class="input-label">Roster Slot Min</label>
+																</div>
+																<div class="input-group col-span-2">
+																	<InputNumber @bind-Value="ToEdit.RosterImportConditionals[index].AddRangeEnd" class="input-control" />
+																	<label for="new-check-select" class="input-label">Roster Slot Max</label>
+																</div>
+																<button class="button-op-success" @onclick="() => ConditionalAddRange(index)">Add</button>
+															</div>
+
+															@for(int z = 0; z < ToEdit.RosterImportConditionals[index].SlotRange.Count; z++)
+															{
+																var rangeIndex = z;
+																var minPart = ToEdit.RosterImportConditionals[index].SlotRange[rangeIndex].Start.Value;
+																var maxPart = ToEdit.RosterImportConditionals[index].SlotRange[rangeIndex].End.Value;
+																<div class="grid grid-cols-5 gap-2 items-bottom">
+																	<div class="input-group col-span-2 gap-2 align-items-center">
+																		<InputNumber @bind-Value="minPart" class="input-control" disabled="true" />
+																		<label for="new-check-select" class="input-label">Roster Slot Min</label>
+																	</div>
+																	<div class="input-group col-span-2">
+																		<InputNumber @bind-Value="maxPart" class="input-control" disabled="true" />
+																		<label for="new-check-select" class="input-label">Roster Slot Max</label>
+																	</div>
+																	<button class="button-op-danger material-icons-round" @onclick="() => ConditionalRemoveRange(index, rangeIndex)">delete</button>
+																</div>
+															}
+
+															<hr />
+
+															<div class="input-group">
+																<InputSelect @bind-Value="NewCheckValueString" id="new-check-select" class="input-control">
+																	<option value=""></option>
+																	@foreach(var item in set)
+																	{
+																		if(!ToEdit.ValueInRosterImports(item))
+																		{
+																			<option value="@item">@item</option>
+																		}
+																	}
+																</InputSelect>
+																<label for="new-check-select" class="input-label">Roster Value To Check</label>
+															</div>
+
+															<button class="button-op-success" @onclick="() => ConditionalAddCondition(index)">Add Condition</button>
+
+															@for (int x = 0; x < ToEdit.RosterImportConditionals[index].Checks.Count; x++)
+															{
+																var checkIndex = x;
+																var check = ToEdit.RosterImportConditionals[index].Checks[checkIndex];
+																<div class="inline-flex gap-1 items-center">
+																	<button class="rounded-md px-2 pb-1 flex-0
+																		@(check.ParenValue == -1 ? "bg-op_success text-op_success_t" : "border border-op_success")"
+																		@onclick="() => check.ParenValue = check.ParenValue == -1 ? 0 : -1">
+																			(
+																	</button>
+
+																	@if(checkIndex != 0)
+																	{
+																		<InputEnumSelect @bind-Value="check.PreviousConditional" 
+																			id="new-mapping-select" />
+																	}
+
+																	<div class="flex-grow px-2">
+																		@check.Value
+																	</div>
+
+																	<button class="rounded-md px-2 pb-1 flex-0
+																		@(check.ParenValue == 1 ? "bg-op_success text-op_success_t" : "border border-op_success")"
+																		@onclick="() => check.ParenValue = check.ParenValue == 1 ? 0 : 1">
+																			)
+																	</button>
+
+																	<div class="flex-none border border-black h-full mx-2"></div>
+
+																	<button class="button-util-action material-icons-round"
+																		@onclick="() => ConditionalMoveCheck(index, checkIndex, -1)">expand_less</button>
+																	
+																	<button class="button-util-action material-icons-round"
+																		@onclick="() => ConditionalMoveCheck(index, checkIndex, 1)">expand_more</button>
+
+																	<div class="flex-none border border-black h-full mx-2"></div>
+
+																	<button class="button-op-danger material-icons-round"
+																		@onclick="() => ConditionalDeleteCheck(index, checkIndex)">delete</button>
+																</div>
+															}
+
+															<button class="button-util-action" 
+																@onclick="() => ConditionalValidateCheck(index)">Validate Check</button>
+														</div>
+													}
+													</div>
+												}
+											}
+											else
+											{
+												<em>No Settings to Display</em>
+											}
+										}
 
 										<hr />
 
@@ -264,7 +414,8 @@
 						|| Stage == ImportStage.Done
 						|| Stage == ImportStage.Errored)
 					{
-						<InternalLoggerDisplay Title="Import Log" Scope="LogScope" CancellationSource="CancellationSource" />
+						<InternalLoggerDisplay Title="Import Log" Scope="LogScope" CancellationSource="CancellationSource"
+							RefreshCalled="StateHasChanged"/>
 					}
 				</div>
 			</div>

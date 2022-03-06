@@ -3,6 +3,7 @@ using ProjectDataCore.Components.Parts.Edit;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.Logging;
+using ProjectDataCore.Data.Structures.Roster;
 using ProjectDataCore.Data.Structures.Util;
 using ProjectDataCore.Data.Structures.Util.Import;
 
@@ -28,6 +29,8 @@ public partial class DataImportPage : IDisposable
     public NavigationManager NavigationManager { get; set; }
     [Inject]
     public IInstanceLogger InstanceLogger { get; set; }
+    [Inject]
+    public IModularRosterService ModularRosterService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected enum ImportStage
@@ -65,6 +68,8 @@ public partial class DataImportPage : IDisposable
 
     private CancellationTokenSource? CancellationSource { get; set; }
     public Guid LogScope { get; set; }
+
+    private List<RosterTree> RosterTrees { get; set; } = new();
 
     private void LoadFile(InputFileChangeEventArgs e)
     {
@@ -110,12 +115,24 @@ public partial class DataImportPage : IDisposable
             // ... and get rid of the ImportFile
             ImportFile = null;
 
-            // ... then get a mock dataset for the trooper object
+            // ... then get a mock dataset for the trooper object ...
             var res = await AssignableDataService.GetMockUserWithAssignablesAsync();
 
             if (res.GetResult(out var t, out var err))
             {
                 MockTrooper = t;
+            }
+            else
+            {
+                Stage = ImportStage.FileSelect;
+                AlertService.CreateErrorAlert(err);
+            }
+
+            // ... then get the roster objects for later ...
+            var rosterRes = await ModularRosterService.GetAllRosterTreesAsync();
+            if(rosterRes.GetResult(out var trees, out err))
+            {
+                RosterTrees = trees;
             }
             else
             {
@@ -194,7 +211,7 @@ public partial class DataImportPage : IDisposable
         }
     }
 
-    protected async Task ImportDataAsync()
+    protected void ImportData()
     {
         if (ImportConfiguration is not null)
         {
@@ -234,9 +251,11 @@ public partial class DataImportPage : IDisposable
                             await InvokeAsync(StateHasChanged);
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        InstanceLogger.Log("Import canclled before it began.", LogLevel.Critical, LogScope);
+                        var msg = $"An error occoured during the operation: {ex.Message}.";
+                        InstanceLogger.Log(msg, LogLevel.Critical, LogScope);
+                        AlertService.CreateErrorAlert(msg);
                         Stage = ImportStage.Errored;
                         await InvokeAsync(StateHasChanged);
                     }
@@ -314,6 +333,7 @@ public partial class DataImportPage : IDisposable
             edit.IsUserIdIdentifier = false;
             edit.IsUsernameIdentifier = false;
             edit.PasswordIdentifier = false;
+            edit.RosterIdentifier = false;
         }
     }
 
@@ -329,6 +349,9 @@ public partial class DataImportPage : IDisposable
 
             if (ImportConfiguration.EmailColumn == ToEditCol)
                 ImportConfiguration.EmailColumn = -1;
+
+            if(ImportConfiguration.RosterColumn == ToEditCol)
+                ImportConfiguration.RosterColumn = -1;
         }
     }
 
@@ -451,6 +474,36 @@ public partial class DataImportPage : IDisposable
             }
         }
     }
+
+    protected void ToggleRosterDataIdentifier()
+    {
+        if (ImportConfiguration is not null
+            && ToEdit is not null)
+        {
+            if (!ToEdit.RosterIdentifier)
+            {
+                RemoveOldIdentifierColumn();
+
+                if (ImportConfiguration.RosterColumn != ToEditCol
+                    && ImportConfiguration.RosterColumn >= 0)
+                {
+                    if (ImportConfiguration.ValueBindings
+                        .TryGetValue(ImportConfiguration.RosterColumn, out var binding))
+                        ClearIdentifierTags(binding);
+                }
+
+                ImportConfiguration.RosterColumn = ToEditCol;
+
+                ClearIdentifierTags();
+                ToEdit.RosterIdentifier = true;
+            }
+            else
+            {
+                ToEdit.RosterIdentifier = false;
+                ImportConfiguration.RosterColumn = -1;
+            }
+        }
+    }
     #endregion
 
     #region Assignables
@@ -507,6 +560,109 @@ public partial class DataImportPage : IDisposable
                     ToEdit.DataValues[key] = value.FirstOrDefault()?.ToString() ?? "";
                 }
             }
+        }
+    }
+    #endregion
+
+    #region Roster Data
+    protected string NewCheckValueString { get; set; } = "";
+
+    protected void AddRosterImportConditional()
+    {
+        if (ToEdit is not null)
+        {
+            RosterImportConditional conditional = new();
+            ToEdit.RosterImportConditionals.Add(conditional);
+        }
+    }
+
+    protected void ConditionalAddCondition(int index)
+    {
+        if (ToEdit is not null)
+        {
+            if (!string.IsNullOrWhiteSpace(NewCheckValueString))
+            {
+                var conditional = ToEdit.RosterImportConditionals[index];
+                conditional.AddCheck(NewCheckValueString);
+                NewCheckValueString = "";
+            }
+            else
+            {
+                AlertService.CreateWarnAlert("Please select a check value.", true);
+            }
+        }
+    }
+
+    protected void ConditionalMoveCheck(int index, int start, int direction)
+    {
+        if (ToEdit is not null)
+        {
+            var newPos = start + direction;
+            if (newPos < 0)
+                newPos = 0;
+
+            var conditional = ToEdit.RosterImportConditionals[index];
+            if(newPos >= conditional.Checks.Count)
+                newPos = conditional.Checks.Count - 1;
+
+            conditional.MoveCheck(start, newPos);
+
+            StateHasChanged();
+        }
+    }
+
+    protected void ConditionalDeleteCheck(int index, int checkIndex)
+    {
+        if(ToEdit is not null)
+        {
+            var conditional = ToEdit.RosterImportConditionals[index];
+            conditional.DeleteCheck(checkIndex);
+
+            StateHasChanged();
+        }
+    }
+
+    protected void ConditionalValidateCheck(int index)
+    {
+        if(ToEdit is not null)
+        {
+            var conditional = ToEdit.RosterImportConditionals[index];
+            var res = conditional.Validate();
+
+            if (res)
+                AlertService.CreateSuccessAlert("This is a valid conditional.", true);
+            else
+                AlertService.CreateErrorAlert("This is an invalid conditional. Make sure the parentheses are valid.", true);
+        }
+    }
+
+    protected void ConditionalAddRange(int index)
+    {
+        if (ToEdit is not null)
+        {
+            var conditional = ToEdit.RosterImportConditionals[index];
+
+            if (conditional.AddRangeStart > conditional.AddRangeEnd)
+            {
+                var tmp = conditional.AddRangeStart;
+                conditional.AddRangeEnd = conditional.AddRangeStart;
+                conditional.AddRangeStart = tmp;
+            }
+
+            var range = new Range(conditional.AddRangeStart, conditional.AddRangeEnd);
+            conditional.SlotRange.Add(range);
+
+            StateHasChanged();
+        }
+    }
+
+    protected void ConditionalRemoveRange(int index, int rangeIndex)
+    {
+        if (ToEdit is not null)
+        {
+            ToEdit.RosterImportConditionals[index].SlotRange.RemoveAt(rangeIndex);
+
+            StateHasChanged();
         }
     }
     #endregion

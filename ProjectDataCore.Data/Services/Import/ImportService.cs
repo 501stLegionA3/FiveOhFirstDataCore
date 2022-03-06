@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 using ProjectDataCore.Data.Account;
@@ -17,13 +18,13 @@ public class ImportService : IImportService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
     private readonly IInstanceLogger _instanceLogger;
-    private readonly UserManager<DataCoreUser> _userManager;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IAssignableDataService _assignableDataService;
 
     public ImportService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IInstanceLogger instanceLogger, 
-        UserManager<DataCoreUser> userManager, IAssignableDataService assignableDataService)
-        => (_dbContextFactory, _instanceLogger, _userManager, _assignableDataService) 
-        =  (dbContextFactory, instanceLogger, userManager, assignableDataService);
+        IServiceProvider serviceProvider, IAssignableDataService assignableDataService)
+        => (_dbContextFactory, _instanceLogger, _serviceProvider, _assignableDataService) 
+        =  (dbContextFactory, instanceLogger, serviceProvider, assignableDataService);
 
     public async Task<ActionResult> BulkUpdateUsersAsync(DataImportConfiguration config, CancellationToken cancellationToken = default, Guid logScope = default)
     {
@@ -56,6 +57,9 @@ public class ImportService : IImportService
             DataImportBinding? idBinding = null;
             foreach(var row in config.DataRows)
             {
+                await using var serviceScope = _serviceProvider.CreateAsyncScope();
+                using var _userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<DataCoreUser>>();
+
                 rowCount++;
 
                 // ... throw if we arent supposed to continue ...
@@ -296,7 +300,7 @@ public class ImportService : IImportService
 
                                 // ... then save it to the data values ...
                                 foreach (var propertyPart in propertyParts)
-                                    binding.DataValues[propertyPart] = new();
+                                    binding.DataValues[propertyPart] = propertyPart;
                             }
                             else
                             {
@@ -360,7 +364,8 @@ public class ImportService : IImportService
                                     {
                                         if (binding.DataValues.TryGetValue(propertyPart, out var actualBindingValue))
                                         {
-                                            propertyContainer.ConvertAndAddValue(actualBindingValue);
+                                            propertyContainer.ConvertAndAddValue(actualBindingValue); 
+                                            bindingLog.Log($"Saved {actualBindingValue} to {propertyContainer.AssignableConfiguration.PropertyName}", LogLevel.Information, logScope);
                                         }
                                         else
                                         {
@@ -397,6 +402,7 @@ public class ImportService : IImportService
                                 if (binding.DataValues.TryGetValue(row[bindingPair.Key], out var actualBindingValue))
                                 {
                                     propertyContainer.ConvertAndAddValue(actualBindingValue);
+                                    bindingLog.Log($"Saved {actualBindingValue} to {propertyContainer.AssignableConfiguration.PropertyName}", LogLevel.Information, logScope);
                                 }
                                 else
                                 {
@@ -418,29 +424,123 @@ public class ImportService : IImportService
                     }
                 }
 
+                // ... throw if we arent supposed to continue ...
+                cancellationToken.ThrowIfCancellationRequested();
+
                 // ... now that we have saved all the updated information
                 // its time to work on the roster values ...
-
-                // ... throw if we arent supposed to continue ...
-                cancellationToken.ThrowIfCancellationRequested();
-
-
-
-                // ... throw if we arent supposed to continue ...
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // ... then save to the datbase ...
-
-                try
+                if(config.RosterColumn != -1)
                 {
-                    await _dbContext.SaveChangesAsync(cancellationToken);
+                    using var rosterLog = log.CreateScope("Starting Roster Assignments", LogLevel.Information, logScope);
+
+                    // ... lets get the binding pair for the roster ...
+                    if(config.ValueBindings.TryGetValue(config.RosterColumn, out var bindingPair))
+                    {
+                        // ... the for each part of the row data ...
+                        var dataRaw = row[config.RosterColumn];
+                        var data = dataRaw.Split(config.MultipleValueDelimiter).ToList(x => x.Trim());
+
+                        // ... then get all roster tree data so
+                        // we dont assign two people to the same
+                        // spot on accident ...
+                        var trees = await _dbContext.RosterTrees
+                            .Include(x => x.RosterPositions)
+                            .ToListAsync();
+
+                        // ... throw if we arent supposed to continue ...
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        // ... and each roster import conditional ...
+                        int conditionalCount = 0;
+                        foreach(var conditional in bindingPair.RosterImportConditionals)
+                        {
+                            conditionalCount++;
+
+                            // ... throw if we arent supposed to continue ...
+                            cancellationToken.ThrowIfCancellationRequested();
+
+                            // ... make sure we have all information we need
+                            // to use this conditional ...
+                            if (conditional.RosterTree == default
+                                || conditional.SlotRange.Count <= 0)
+                                continue;
+
+                            // ... check the validity of the condition ...
+                            if (conditional.Resolve(data))
+                            {
+                                // ... and if it is valid, get the roster object ...
+                                var tree = trees.FirstOrDefault(x => x.Key == conditional.RosterTree);
+
+                                // ... if the roster tree is null ...
+                                if(tree is null)
+                                {
+                                    // ... log and continue to the next comparision ...
+                                    rosterLog.Log($"Could not find Roster Tree {conditional.RosterTree}", LogLevel.Warning, logScope);
+                                    continue;
+                                }
+
+                                // ... otherwise log and assign values ...
+                                rosterLog.Log($"Found roster tree {tree.Name} to assign {user.UserName} to.", LogLevel.Information, logScope);
+
+                                // ... then for each range pair in the 
+                                // configured conditional ...
+                                bool found = false;
+                                foreach(var range in conditional.SlotRange)
+                                {
+                                    // ... throw if we arent supposed to continue ...
+                                    cancellationToken.ThrowIfCancellationRequested();
+
+                                    for (int x = range.Start.Value; x < range.End.Value; x++)
+                                    {
+                                        // ... throw if we arent supposed to continue ...
+                                        cancellationToken.ThrowIfCancellationRequested();
+
+                                        // ... find a roster position in the tree that matcehs the index
+                                        // value ...
+                                        var position = tree.RosterPositions.FirstOrDefault(y => y.Order.Order == x);
+                                        // ... if it exists and is not occupied ...
+                                        if(position is not null
+                                            && position.OccupiedById is null)
+                                        {
+                                            // ... then assign it to this user  ...
+                                            position.OccupiedById = user.Id;
+                                            found = true;
+
+                                            // ... then log and exit the loops ...
+                                            rosterLog.Log($"Added {user.UserName} to {position.Name}", LogLevel.Information, logScope);
+                                            break;
+                                        }
+                                    }
+
+                                    // ... additional exit statement ...
+                                    if (found)
+                                        break;
+                                }
+
+                                // ... if nothing was found at all, log that ...
+                                if(!found)
+                                {
+                                    rosterLog.Log($"Failed to find a roster position for {user.UserName} in conditional {conditionalCount}.", LogLevel.Information, logScope);
+                                }
+                            }
+                        }
+                    }
                 }
-                catch (Exception ex)
-                {
-                    var msg = $"Failed to save to database: {ex.Message}";
-                    _instanceLogger.Log(msg, LogLevel.Critical, logScope);
-                    return new(false, new List<string>() { msg });
-                }
+            }
+
+            // ... throw if we arent supposed to continue ...
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // ... then save to the datbase ...
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                var msg = $"Failed to save to database: {ex.Message}";
+                _instanceLogger.Log(msg, LogLevel.Critical, logScope);
+                return new(false, new List<string>() { msg });
             }
         }
         catch (OperationCanceledException)

@@ -46,6 +46,8 @@ public partial class InternalLoggerDisplay : IDisposable
     public Guid Scope { get; set; }
     [Parameter]
     public CancellationTokenSource? CancellationSource { get; set; }
+    [Parameter]
+    public Action? RefreshCalled { get; set; }
 
     public List<DataCoreLog> Logs { get; set; } = new();
 
@@ -80,6 +82,8 @@ public partial class InternalLoggerDisplay : IDisposable
     {
         Logs.Add(log);
         StateHasChanged();
+        if(RefreshCalled is not null)
+            RefreshCalled.Invoke();
     }
 
     protected void ToggleLogDisplay(LogLevel level)

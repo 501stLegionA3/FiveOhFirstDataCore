@@ -19,7 +19,7 @@ public class InstanceLogger : IInstanceLogger
     {
         Log(log, parentLog, depth);
 
-        return new(this, log);
+        return new(this, log, depth + 1);
     }
 
     public DataCoreLogScope CreateScope(string message, LogLevel logLevel, Guid scope)

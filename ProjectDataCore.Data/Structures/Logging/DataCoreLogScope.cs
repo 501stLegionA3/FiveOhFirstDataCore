@@ -13,15 +13,16 @@ public class DataCoreLogScope : IDisposable, IDataCoreLogger
 {
     private IDataCoreLogger Logger { get; set; }
     private DataCoreLog Scope { get; set; }
+    private int Depth { get; set; } = 1;
 
-    internal DataCoreLogScope(IDataCoreLogger logger, DataCoreLog scope)
-        => (Logger, Scope) = (logger, scope);
+    internal DataCoreLogScope(IDataCoreLogger logger, DataCoreLog scope, int depth)
+        => (Logger, Scope, Depth) = (logger, scope, depth);
 
     public DataCoreLogScope CreateScope(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
-        => Logger.CreateScope(log, parentLog ?? Scope, depth + 1);
+        => Logger.CreateScope(log, parentLog ?? Scope, depth == 0 ? Depth : depth);
 
     public void Log(DataCoreLog log, DataCoreLog? parentLog = null, int depth = 0)
-        => Logger.Log(log, parentLog ?? Scope, depth + 1);
+        => Logger.Log(log, parentLog ?? Scope, depth == 0 ? Depth : depth);
 
     public void Log(string message, LogLevel logLevel, Guid scope)
         => Log(new()
@@ -36,7 +37,7 @@ public class DataCoreLogScope : IDisposable, IDataCoreLogger
         {
             Message = message,
             LogLevel = logLevel,
-            Scope = scope
+            Scope = scope,
         });
 
     public void Dispose()
