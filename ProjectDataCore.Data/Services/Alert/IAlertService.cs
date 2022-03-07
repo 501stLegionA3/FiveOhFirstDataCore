@@ -92,7 +92,7 @@ namespace ProjectDataCore.Data.Services.Alert
         /// <returns>True/False depedning on errors</returns>
         public ActionResult CreateWarnAlert(List<string> messages, bool enableTimer = false, int duration = 3200);
         /// <summary>
-        /// Delete an alert based on its Id
+        /// Delete an alert
         /// </summary>
         /// <param name="alert">The alert to delete.</param>
         /// <returns>True/False depedning on errors</returns>
