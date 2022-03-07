@@ -80,7 +80,7 @@ public class PageEditService : IPageEditService
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        return await _dbContext.CustomPageSettings.ToListAsync();
+        return await _dbContext.CustomPageSettings.Include(e=>e.Layout).ToListAsync();
     }
 
     public async Task<ActionResult<CustomPageSettings>> GetPageSettingsAsync(Guid page)
@@ -233,7 +233,15 @@ public class PageEditService : IPageEditService
         if (comp is null)
             return new(false, new List<string>() { "No component settings found for the provided key. " });
 
-        comp.AuthorizationPolicyKey = newAuthorzationItem?.Key;
+        if(newAuthorzationItem is not null)
+        {
+            comp.AuthorizationPolicyKey = newAuthorzationItem?.Key;
+            var nav = await _dbContext.NavModules.Where(e => e.PageId == key).ToListAsync();
+            foreach (var m in nav)
+            {
+                m.AuthKey = newAuthorzationItem?.Key;
+            }
+        }
         comp.RequireAuth = requireAuth;
 
         await _dbContext.SaveChangesAsync();

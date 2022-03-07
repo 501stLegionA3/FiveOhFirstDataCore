@@ -1,4 +1,7 @@
-﻿namespace ProjectDataCore.Data.Structures.Nav;
+﻿using ProjectDataCore.Data.Structures.Page;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ProjectDataCore.Data.Structures.Nav;
 
 /// <summary>
 /// Used to represent modules for the top navigation bar
@@ -12,6 +15,8 @@ public class NavModule : DataObject<Guid>
     public NavModule? Parent { get; set; }
     public Guid? ParentId { get; set; }
     public Guid? PageId { get; set; }
+    public Guid? AuthKey { get; set; }
+    public bool IsAdmin { get; set; } = false;
 
     public NavModule()
     {

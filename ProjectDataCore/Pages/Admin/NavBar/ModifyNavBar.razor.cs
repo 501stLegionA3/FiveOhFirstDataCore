@@ -1,17 +1,20 @@
 ﻿using ProjectDataCore.Data.Services.Nav;
+using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Structures.Nav;
+using ProjectDataCore.Data.Structures.Policy;
 
 namespace ProjectDataCore.Pages.Admin.NavBar
 {
     public partial class ModifyNavBar : ComponentBase
     {
         [Inject] public INavModuleService NavModuleService { get; set; }
-
         [Inject] public IPageEditService PageEditService { get; set; }
+        [Inject] public IPolicyService PolicyService { get; set; }
 
         List<NavModule> navModules = new();
         List<NavModule> allNavModules = new();
         List<CustomPageSettings> allPages = new();
+        List<DynamicAuthorizationPolicy>? allPolicies = new();
 
         bool LinkToPage = false;
 
@@ -25,6 +28,7 @@ namespace ProjectDataCore.Pages.Admin.NavBar
             navModules = await NavModuleService.GetAllModulesWithChildren();
             allNavModules = await NavModuleService.GetAllModules();
             allPages = await PageEditService.GetAllPagesAsync();
+            _ = (await PolicyService.GetAllPoliciesAsync()).GetResult(out allPolicies, out _);
         }
 
         private void EditNavModule(NavModule navModule)
@@ -80,6 +84,12 @@ namespace ProjectDataCore.Pages.Admin.NavBar
             Editing = null;
             navModules = await NavModuleService.GetAllModulesWithChildren();
             await InvokeAsync(StateHasChanged);
+        }
+
+        private void PageSelect(Guid? id)
+        {
+            Editing.AuthKey = allPages.Where(x => x.Key == id).FirstOrDefault()?.Layout?.AuthorizationPolicyKey;
+            Editing.PageId = id;
         }
     }
 }

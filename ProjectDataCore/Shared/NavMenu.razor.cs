@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
 using ProjectDataCore.Data.Services.Nav;
+using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Structures.Nav;
 
 namespace ProjectDataCore.Shared;
@@ -16,7 +17,7 @@ public partial class NavMenu : ComponentBase, IDisposable
     [Inject]
     public INavModuleService NavModuleService { get; set; }
     [Inject]
-    public DataCoreSignInManager SignInManager { get; set; }
+    public IPolicyService PolicyService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter(Name = "ActiveUser")]
@@ -27,8 +28,6 @@ public partial class NavMenu : ComponentBase, IDisposable
         URI = NavManager.Uri;
         NavManager.LocationChanged += LocationChanged;
         _modules = await NavModuleService.GetAllModulesWithChildren();
-        if (_modules.Count == 0)
-            _modules.Add(new("Edit NavBar", "admin/navbar/edit", new(), true));
         
     }
 
@@ -38,16 +37,9 @@ public partial class NavMenu : ComponentBase, IDisposable
         InvokeAsync(StateHasChanged);
     }
 
-    private void Navigate(string href)
+    private void Navigate(string href, bool refresh = false)
     {
-        NavManager.NavigateTo(href, false);
-    }
-
-    private async void LogOut()
-    {
-        return;
-        await SignInManager.SignOutAsync();
-        await InvokeAsync(StateHasChanged);
+        NavManager.NavigateTo(href, refresh);
     }
 
     public void Dispose()
