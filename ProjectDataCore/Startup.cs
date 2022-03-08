@@ -115,7 +115,7 @@ public class Startup
         services.AddSingleton<IRoutingService, RoutingService>()
             .AddSingleton<RoutingService.RoutingServiceSettings>(x =>
             {
-                var asm = Assembly.GetAssembly(typeof(ProjectDataCore.Components._Imports));
+                var asm = Assembly.GetAssembly(typeof(Components._Imports));
 
                 if (asm is null)
                     throw new Exception("Missing components assembly.");

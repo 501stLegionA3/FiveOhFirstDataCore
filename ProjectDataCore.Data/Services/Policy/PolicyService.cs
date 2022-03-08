@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Model.Policy;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Model.Policy;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -18,33 +19,45 @@ public class PolicyService : IPolicyService
     private bool Initalized { get; set; } = false;
     private bool Initalizing { get; set; } = false;
 
+    private Timer? InitalizeTimer { get; set; }
+
     public PolicyService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IModularRosterService modularRosterService)
         => (_dbContextFactory, _modularRosterService) = (dbContextFactory, modularRosterService);
 
     public async Task InitalizeAsync()
     {
-        Initalizing = true;
-
-        PolicyCache.Clear();
-
-        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
-
-        var policies = _dbContext.DynamicAuthorizationPolicies
-            .AsAsyncEnumerable();
-
-        await foreach (var policy in policies)
+        try
         {
-            await policy.InitalizePolicyAsync(_modularRosterService, _dbContextFactory);
+            Initalizing = true;
 
-            _ = PolicyCache.TryAdd(policy.Key.ToString(), policy);
+            PolicyCache.Clear();
 
-            // Add the admin policy for use on internal admin pages.
-            if (policy.AdminPolicy)
-                _ = PolicyCache.TryAdd("internal-admin-policy", policy);
+            await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+            var policies = _dbContext.DynamicAuthorizationPolicies
+                .AsAsyncEnumerable();
+
+            await foreach (var policy in policies)
+            {
+                await policy.InitalizePolicyAsync(_modularRosterService, _dbContextFactory);
+
+                _ = PolicyCache.TryAdd(policy.Key.ToString(), policy);
+
+                // Add the admin policy for use on internal admin pages.
+                if (policy.AdminPolicy)
+                    _ = PolicyCache.TryAdd("internal-admin-policy", policy);
+            }
+
+            Initalizing = false;
+            Initalized = true;
         }
+        finally
+        {
+            if (InitalizeTimer is not null)
+                await InitalizeTimer.DisposeAsync();
 
-        Initalizing = false;
-        Initalized = true;
+            InitalizeTimer = new(async (x) => await InitalizeAsync(), null, TimeSpan.FromMinutes(15), Timeout.InfiniteTimeSpan);
+        }
     }
 
     public async Task<DynamicAuthroizationPolicyBuilder?> GetPolicyBuilderAsync(string component, bool forceReload)
@@ -95,6 +108,8 @@ public class PolicyService : IPolicyService
 
         await _dbContext.AddAsync(policy);
         await _dbContext.SaveChangesAsync();
+
+        await InitalizeAsync();
 
         return new(true, null);
     }
@@ -155,9 +170,13 @@ public class PolicyService : IPolicyService
                 if (!policy.AuthorizedUsers.Any(x => x.Id == m.Id))
                     policy.AuthorizedUsers.Add(m);
 
+            List<DataCoreUser> toRemove = new();
             foreach (var p in policy.AuthorizedUsers)
                 if (!model.AuthorizedUsers.Any(x => x.Id == p.Id))
-                    policy.AuthorizedUsers.Remove(p);
+                    toRemove.Add(p);
+
+            foreach(var item in toRemove)
+                policy.AuthorizedUsers.Remove(item);
         }
 
         if (model.Parents is not null)
@@ -185,6 +204,8 @@ public class PolicyService : IPolicyService
 
         await _dbContext.SaveChangesAsync();
 
+        await InitalizeAsync();
+
         return new(true, null);
     }
 
@@ -201,6 +222,8 @@ public class PolicyService : IPolicyService
 
         _dbContext.Remove(policy);
         await _dbContext.SaveChangesAsync();
+
+        await InitalizeAsync();
 
         return new(true, null);
     }
