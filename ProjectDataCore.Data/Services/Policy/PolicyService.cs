@@ -133,9 +133,17 @@ public class PolicyService : IPolicyService
 
         if (model.AuthorizedSlots is not null)
         {
+            List<RosterSlot> toAdd = new();
             foreach(var m in model.AuthorizedSlots)
                 if(!policy.AuthorizedSlots.Any(x => x.Key == m.Key))
-                    policy.AuthorizedSlots.Add(m);
+                    toAdd.Add(m);
+
+            foreach (var item in toAdd)
+            {
+                var actual = await _dbContext.FindAsync<RosterSlot>(item.Key);
+                if (actual is not null)
+                    policy.AuthorizedSlots.Add(actual);
+            }
 
             List<RosterSlot> toRemove = new();
             foreach (var p in policy.AuthorizedSlots)
@@ -148,9 +156,17 @@ public class PolicyService : IPolicyService
 
         if (model.AuthorizedTrees is not null)
         {
+            List<RosterTree> toAdd = new();
             foreach (var m in model.AuthorizedTrees)
                 if (!policy.AuthorizedTrees.Any(x => x.Key == m.Key))
-                    policy.AuthorizedTrees.Add(m);
+                    toAdd.Add(m);
+
+            foreach (var item in toAdd)
+            {
+                var actual = await _dbContext.FindAsync<RosterTree>(item.Key);
+                if (actual is not null)
+                    policy.AuthorizedTrees.Add(actual);
+            }
 
             List<RosterTree> toRemove = new();
             foreach (var p in policy.AuthorizedTrees)
@@ -163,9 +179,17 @@ public class PolicyService : IPolicyService
 
         if (model.AuthorizedDisplays is not null)
         {
+            List<RosterDisplaySettings> toAdd = new();
             foreach (var m in model.AuthorizedDisplays)
                 if (!policy.AuthorizedDisplays.Any(x => x.Key == m.Key))
-                    policy.AuthorizedDisplays.Add(m);
+                    toAdd.Add(m);
+
+            foreach (var item in toAdd)
+            {
+                var actual = await _dbContext.FindAsync<RosterDisplaySettings>(item.Key);
+                if (actual is not null)
+                    policy.AuthorizedDisplays.Add(actual);
+            }
 
             List<RosterDisplaySettings> toRemove = new();
             foreach (var p in policy.AuthorizedDisplays)
@@ -178,9 +202,17 @@ public class PolicyService : IPolicyService
 
         if (model.AuthorizedUsers is not null)
         {
+            List<DataCoreUser> toAdd = new();
             foreach (var m in model.AuthorizedUsers)
                 if (!policy.AuthorizedUsers.Any(x => x.Id == m.Id))
-                    policy.AuthorizedUsers.Add(m);
+                    toAdd.Add(m);
+
+            foreach (var item in toAdd)
+            {
+                var actual = await _dbContext.FindAsync<DataCoreUser>(item.Id);
+                if (actual is not null)
+                    policy.AuthorizedUsers.Add(actual);
+            }
 
             List<DataCoreUser> toRemove = new();
             foreach (var p in policy.AuthorizedUsers)
@@ -193,9 +225,17 @@ public class PolicyService : IPolicyService
 
         if (model.Parents is not null)
         {
+            List<DynamicAuthorizationPolicy> toAdd = new();
             foreach (var m in model.Parents)
                 if (!policy.Parents.Any(x => x.Key == m.Key))
-                    policy.Parents.Add(m);
+                    toAdd.Add(m);
+
+            foreach (var item in toAdd)
+            {
+                var actual = await _dbContext.FindAsync<DynamicAuthorizationPolicy>(item.Key);
+                if (actual is not null)
+                    policy.Parents.Add(actual);
+            }
 
             List<DynamicAuthorizationPolicy> toRemove = new();
             foreach (var p in policy.Parents)
