@@ -30,7 +30,7 @@ public partial class AuthorizationHandler
     [CascadingParameter(Name = "PageEdit")]
     public bool Editing { get; set; } = false;
 
-    private string AuthPolicy { get; set; } = "";
+    private string? AuthPolicy { get; set; } = "";
     private DynamicAuthorizationPolicy? AdminPagePolicy { get; set; }
 
     protected override async Task OnParametersSetAsync()
@@ -62,6 +62,10 @@ public partial class AuthorizationHandler
             else if (Settings?.AuthorizationPolicyKey is not null)
             {
                 AuthPolicy = Settings.AuthorizationPolicyKey.Value.ToString();
+            }
+            else
+            {
+                AuthPolicy = null;
             }
         }
     }

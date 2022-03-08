@@ -28,7 +28,8 @@ public class PageComponentSettingsBase : DataObject<Guid>
 
     /// <summary>
     /// If a user is required to be authroized to view this page. Setting this to <i><b>false</b></i> will
-    /// make it a public page.
+    /// make it a public page. Setting this to <i><b>true</b></i> without a policy assigned
+    /// will make it a page that can be see by anyone who is logged in.
     /// </summary>
     public bool RequireAuth { get; set; } = true;
 

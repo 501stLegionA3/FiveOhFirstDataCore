@@ -12,6 +12,12 @@
 				</Contnet>
 			</DisplayBox>
 		</Authorized>
+		<NotAuthorized>	
+			@if(ComponentData?.ParentLayout is null)
+			{
+				<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
+			}
+		</NotAuthorized>
 	</AuthorizationHandler>
 }
 else

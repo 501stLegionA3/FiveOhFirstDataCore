@@ -60,7 +60,7 @@ public partial class ComponentAuthorizationEditForm
 
     protected async Task SaveChangesAsync()
     {
-        if (ComponentData is not null && (NewAuthorzationItem is not null || !RequireAuth))
+        if (ComponentData is not null)
         {
             var res = await PageEditService.UpdatePermissionsAsync(ComponentData.Key, RequireAuth, NewAuthorzationItem);
 
@@ -68,14 +68,10 @@ public partial class ComponentAuthorizationEditForm
             {
                 AlertService.CreateErrorAlert(err);
             }
-        }
-        else
-        {
-            AlertService.CreateErrorAlert("A policy must be selected or no authorization must be required.");
-        }
 
-        if (OnSettingsClose is not null)
-            await OnSettingsClose.Invoke();
+            if (OnSettingsClose is not null)
+                await OnSettingsClose.Invoke();
+        }
     }
 
     protected async Task AbortChangesAsync()
@@ -89,6 +85,10 @@ public partial class ComponentAuthorizationEditForm
         if(index is not null)
         {
             NewAuthorzationItem = AllAuthPolicies[index.Value];
+        }
+        else
+        {
+            NewAuthorzationItem = null;
         }
 
         AuthIndex = index;

@@ -40,7 +40,7 @@ public interface IPageEditService
     /// <param name="key">The page to update.</param>
     /// <param name="newAuthorzationItem">The new authoriaztion policy to use.</param>
     /// <returns>A task with an <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy newAuthorzationItem);
+    public Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy? newAuthorzationItem);
 
     /// <summary>
     /// Sets a page's primary layout.

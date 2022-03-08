@@ -1,11 +1,11 @@
 ﻿.display-box-frame {
-    @apply py-6 flex flex-col justify-center relative overflow-hidden sm:py-12;
+    @apply flex flex-col justify-center relative overflow-hidden;
 }
 
 .display-box {
-    @apply relative px-6 pt-10 pb-8 bg-white shadow-xl ring-gray-900/20 md:mx-10 md:rounded-lg md:px-10;
+    @apply relative bg-white shadow-xl ring-gray-900/20 m-2;
 }
 
 .display-box-content {
-    @apply mx-auto py-6 sm:px-6 inset-0 relative text-center;
+    @apply mx-auto py-3 sm:px-3 inset-0 relative text-center;
 }

@@ -4,11 +4,29 @@
 }
 else if(Settings is not null || !string.IsNullOrWhiteSpace(AuthPolicy))
 {
-	if(Settings is null || Settings.RequireAuth)
+	if((Settings is null || Settings.RequireAuth) && AuthPolicy is not null)
 	{
 		<AuthorizeView Policy="@AuthPolicy">
 			<Authorized>
 				@Authorized
+			</Authorized>
+			<NotAuthorized>
+				@if (NotAuthorized is not null)
+				{
+					@NotAuthorized
+				}
+				else
+				{
+					<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
+				}
+			</NotAuthorized>
+		</AuthorizeView>
+	}
+	else if ((Settings?.RequireAuth ?? false) && AuthPolicy is null)
+	{
+		<AuthorizeView>
+			<Authorized>
+				@Authorized	
 			</Authorized>
 			<NotAuthorized>
 				@if (NotAuthorized is not null)

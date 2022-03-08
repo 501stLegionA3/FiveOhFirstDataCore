@@ -210,7 +210,7 @@ public class PageEditService : IPageEditService
         return new(true, null);
     }
 
-    public async Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy newAuthorzationItem)
+    public async Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy? newAuthorzationItem)
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
@@ -218,8 +218,7 @@ public class PageEditService : IPageEditService
         if (comp is null)
             return new(false, new List<string>() { "No component settings found for the provided key. " });
 
-        if(newAuthorzationItem is not null)
-            comp.AuthorizationPolicyKey = newAuthorzationItem.Key;
+        comp.AuthorizationPolicyKey = newAuthorzationItem?.Key;
         comp.RequireAuth = requireAuth;
 
         await _dbContext.SaveChangesAsync();
