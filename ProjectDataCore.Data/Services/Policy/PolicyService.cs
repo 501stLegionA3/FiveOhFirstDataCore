@@ -215,7 +215,7 @@ public class PolicyService : IPolicyService
             if (oldAdminPage is not null)
                 oldAdminPage.AdminPagePolicy = false;
 
-            model.AdminPagePolicy = true;
+            policy.AdminPagePolicy = model.AdminPagePolicy.Value;
         }
 
         await _dbContext.SaveChangesAsync();
