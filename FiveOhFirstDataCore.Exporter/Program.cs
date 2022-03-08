@@ -203,17 +203,19 @@ static async Task Execute(IServiceProvider provider)
             foreach (var item in values)
                 logger.LogDebug("{Item}: {Value}", nameof(item), item);
         }
-
-        logger.LogInformation("Finished data gathering. Starting data export...");
-
-        var path = Path.Combine("Exports", $"export_data_{DateTime.Now.ToString("MM-dd-yyy_hh-mm-ss")}.csv");
-        await using FileStream fs = new(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
-        await using StreamWriter sw = new(fs);
-
-        foreach (var row in dataRows)
-            await sw.WriteLineAsync(string.Join(",", row));
-
-        logger.LogInformation($"Wrote {dataRows.Count} rows to {path}");
     }
+
+    logger.LogInformation("Finished data gathering. Starting data export...");
+
+    var path = Path.Combine("Exports", $"export_data_{DateTime.Now.ToString("MM-dd-yyy_hh-mm-ss")}.csv");
+    await using FileStream fs = new(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
+    await using StreamWriter sw = new(fs);
+
+    foreach (var row in dataRows)
+        await sw.WriteLineAsync(string.Join(",", row));
+
+    logger.LogInformation($"Wrote {dataRows.Count} rows to {path}");
+
+    Console.ReadLine();
 }
 
