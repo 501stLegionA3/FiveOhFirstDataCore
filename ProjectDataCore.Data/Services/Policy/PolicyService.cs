@@ -137,9 +137,13 @@ public class PolicyService : IPolicyService
                 if(!policy.AuthorizedSlots.Any(x => x.Key == m.Key))
                     policy.AuthorizedSlots.Add(m);
 
+            List<RosterSlot> toRemove = new();
             foreach (var p in policy.AuthorizedSlots)
                 if (!model.AuthorizedSlots.Any(x => x.Key == p.Key))
-                    policy.AuthorizedSlots.Remove(p);
+                    toRemove.Remove(p);
+
+            foreach(var item in toRemove)
+                policy.AuthorizedSlots.Remove(item);
         }
 
         if (model.AuthorizedTrees is not null)
@@ -148,9 +152,13 @@ public class PolicyService : IPolicyService
                 if (!policy.AuthorizedTrees.Any(x => x.Key == m.Key))
                     policy.AuthorizedTrees.Add(m);
 
+            List<RosterTree> toRemove = new();
             foreach (var p in policy.AuthorizedTrees)
                 if (!model.AuthorizedTrees.Any(x => x.Key == p.Key))
-                    policy.AuthorizedTrees.Remove(p);
+                    toRemove.Remove(p);
+
+            foreach(var item in toRemove)
+                policy.AuthorizedTrees.Remove(item);
         }
 
         if (model.AuthorizedDisplays is not null)
@@ -159,9 +167,13 @@ public class PolicyService : IPolicyService
                 if (!policy.AuthorizedDisplays.Any(x => x.Key == m.Key))
                     policy.AuthorizedDisplays.Add(m);
 
+            List<RosterDisplaySettings> toRemove = new();
             foreach (var p in policy.AuthorizedDisplays)
                 if (!model.AuthorizedDisplays.Any(x => x.Key == p.Key))
-                    policy.AuthorizedDisplays.Remove(p);
+                    toRemove.Remove(p);
+
+            foreach(var item in toRemove)
+                policy.AuthorizedDisplays.Remove(item);
         }
 
         if (model.AuthorizedUsers is not null)
@@ -185,9 +197,13 @@ public class PolicyService : IPolicyService
                 if (!policy.Parents.Any(x => x.Key == m.Key))
                     policy.Parents.Add(m);
 
+            List<DynamicAuthorizationPolicy> toRemove = new();
             foreach (var p in policy.Parents)
                 if (!model.Parents.Any(x => x.Key == p.Key))
-                    policy.Parents.Remove(p);
+                    toRemove.Remove(p);
+
+            foreach(var item in toRemove)
+                policy.Parents.Remove(item);
         }
 
         if(model.AdminPagePolicy is not null)
