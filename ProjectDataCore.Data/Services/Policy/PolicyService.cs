@@ -248,12 +248,15 @@ public class PolicyService : IPolicyService
 
         if(model.AdminPagePolicy is not null)
         {
-            var oldAdminPage = await _dbContext.DynamicAuthorizationPolicies
-                .Where(x => x.AdminPagePolicy)
-                .FirstOrDefaultAsync();
+            if (model.AdminPagePolicy.Value)
+            {
+                var oldAdminPage = await _dbContext.DynamicAuthorizationPolicies
+                    .Where(x => x.AdminPagePolicy)
+                    .FirstOrDefaultAsync();
 
-            if (oldAdminPage is not null)
-                oldAdminPage.AdminPagePolicy = false;
+                if (oldAdminPage is not null)
+                    oldAdminPage.AdminPagePolicy = false;
+            }
 
             policy.AdminPagePolicy = model.AdminPagePolicy.Value;
         }
