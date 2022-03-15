@@ -201,7 +201,7 @@ static async Task Execute(IServiceProvider provider)
             for (int z = 0; z < values.Length; z++)
             {
                 logger.LogDebug("{Item}: {Value}", z, values[z]);
-                if (!string.IsNullOrWhiteSpace(values[z]))
+                if (!string.IsNullOrEmpty(values[z]))
                 {
                     values[z] = values[z].Replace(',', ';');
                     values[z] = values[z].ReplaceLineEndings(";");
