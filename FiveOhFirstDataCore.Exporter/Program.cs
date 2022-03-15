@@ -197,12 +197,15 @@ static async Task Execute(IServiceProvider provider)
                 lastUpdate,
                 rosterAggergate
             };
-
+            
             for (int z = 0; z < values.Length; z++)
             {
                 logger.LogDebug("{Item}: {Value}", z, values[z]);
-                if(!string.IsNullOrWhiteSpace(values[z]))
+                if (!string.IsNullOrWhiteSpace(values[z]))
+                {
                     values[z] = values[z].Replace(',', ';');
+                    values[z] = values[z].ReplaceLineEndings(";");
+                }
             }
 
             dataRows.Add(values);
