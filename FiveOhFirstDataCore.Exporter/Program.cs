@@ -25,8 +25,22 @@ services.AddLogging(o => o.AddConsole()
 
 var provider = services.BuildServiceProvider();
 
-// Run the program
-Execute(provider).GetAwaiter().GetResult();
+try
+{
+    // Run the program
+    Execute(provider).GetAwaiter().GetResult();
+}
+catch (Exception ex)
+{
+    Console.WriteLine(ex.Message);
+    Console.WriteLine();
+    Console.WriteLine(ex.StackTrace);
+}
+finally
+{
+    // Wait at the end
+    Console.ReadLine();
+}
 
 static async Task Execute(IServiceProvider provider)
 {
@@ -222,7 +236,5 @@ static async Task Execute(IServiceProvider provider)
         await sw.WriteLineAsync(string.Join(",", row));
 
     logger.LogInformation($"Wrote {dataRows.Count} rows to {path}");
-
-    Console.ReadLine();
 }
 
