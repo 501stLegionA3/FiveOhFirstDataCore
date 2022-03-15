@@ -11,20 +11,24 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Services.Bus;
 public partial class DataBus : IDataBus
 {
-    protected ConcurrentDictionary<ClaimsPrincipal, ILocalUserService> LocalUsers { get; init; } = new();
-    protected ConcurrentDictionary<ILocalUserService, ClaimsPrincipal> LocalUsersInverse { get; init; } = new();
+    protected ConcurrentDictionary<string, ILocalUserService> LocalUsers { get; init; } = new();
+    protected ConcurrentDictionary<ILocalUserService, string> LocalUsersInverse { get; init; } = new();
 
     public ILocalUserService? GetLoaclUserServiceFromClaimsPrincipal(ClaimsPrincipal principal)
     {
-        _ = LocalUsers.TryGetValue(principal, out var user);
+        var princName = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        _ = LocalUsers.TryGetValue(princName, out var user);
 
         return user;
     }
 
-    public void RegisterLocalUserService(ILocalUserService localUser, ref ClaimsPrincipal principal)
+    public void RegisterLocalUserService(ILocalUserService localUser, Guid userId)
     {
-        LocalUsers.TryAdd(principal, localUser);
-        LocalUsersInverse.TryAdd(localUser, principal);
+        var name = userId.ToString();
+
+        LocalUsers.TryAdd(name, localUser);
+        LocalUsersInverse.TryAdd(localUser, name);
     }
 
     public void UnregisterLocalUserService(ILocalUserService localUser)

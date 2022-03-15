@@ -36,6 +36,15 @@ public class LocalUserService : ILocalUserService
             .FirstOrDefaultAsync();
 
         LocalUser = user;
+
+        if(LocalUser is not null)
+        {
+            _dataBus.RegisterLocalUserService(this, LocalUser.Id);
+        }
+        else
+        {
+            initalizeValue = false;
+        }
     }
 
     public void Deinitalize()
@@ -72,19 +81,6 @@ public class LocalUserService : ILocalUserService
             return false;
 
         return policy.Validate(LocalUser);
-    }
-
-    public void RegisterClaimsPrincipal(ref ClaimsPrincipal principal)
-    {
-        if (LocalUser is not null)
-        {
-            // Do any other setup and event registration here.
-            _dataBus.RegisterLocalUserService(this, ref principal);
-        }
-        else
-        {
-            initalizeValue = false;
-        }
     }
 
     protected virtual void Dispose(bool disposing)

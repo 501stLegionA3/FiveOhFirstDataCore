@@ -16,5 +16,4 @@ public interface ILocalUserService : IDisposable
     public void Deinitalize();
     public void DeinitalizeIfInitalized();
     public bool ValidateWithPolicy(DynamicAuthorizationPolicy policy);
-    public void RegisterClaimsPrincipal(ref ClaimsPrincipal principal);
 }
