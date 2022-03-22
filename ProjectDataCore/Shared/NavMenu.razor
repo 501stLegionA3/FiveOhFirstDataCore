@@ -1,4 +1,5 @@
-﻿<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
+﻿<CascadingAuthenticationState>
+<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
     <ul class="flex gap-4">
         <li class="top-link">
             <NavLink href="/" @onclick='() => Navigate("/")'>Your Roster</NavLink>
@@ -43,6 +44,7 @@
                                 </li>
                             }
                         </Authorized>
+                        <NotAuthorized></NotAuthorized>
                     </AuthorizationHandler>
                 }
             </ul>
@@ -83,3 +85,4 @@
 
     </ul>
 </nav>
+</CascadingAuthenticationState>
