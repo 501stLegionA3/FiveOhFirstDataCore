@@ -14,43 +14,49 @@
         @foreach (var sM in Module.SubModules) //List all sub Modules
         {
             var subModule = sM;
-            @if (subModule.SubModules is not null) //If the sub Module has sub Modules list them 1 deep
-            {
-                <li class="drLink relative">
-                    @if (subModule.HasMainPage)
+            //TODO: Needs force admin when not broken
+            <AuthorizationHandler Settings="new(){AuthorizationPolicyKey=subModule.AuthKey, RequireAuth=subModule.IsAdmin||(subModule.AuthKey is not null)}">
+                <Authorized>
+                    @if (subModule.SubModules.Count > 0) //If the sub Module has sub Modules list them 1 deep
                     {
-                        <button class="has-dropdown">
-                            <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
-                        </button>
+                        <li class="drLink relative">
+                            @if (subModule.HasMainPage)
+                            {
+                                <button class="has-dropdown">
+                                    <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="has-dropdown">@subModule.DisplayName</button>
+                            }
+                            <ul class="nested">
+                                @foreach (var l in subModule.SubModules)
+                                {
+                                    var link = l;
+                                    <li class="drLink">
+                                        <NavLink href="@link.Href" @onclick="() => Navigate(link.Href)">@link.DisplayName</NavLink>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
                     }
                     else
                     {
-                        <button class="has-dropdown">@subModule.DisplayName</button>
+                        <li class="drLink">
+                            <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
+                        </li>
                     }
-                    <ul class="nested">
-                        @foreach (var l in subModule.SubModules)
-                        {
-                            var link = l;
-                            <li class="drLink">
-                                <NavLink href="@link.Href" @onclick="() => Navigate(link.Href)">@link.DisplayName</NavLink>
-                            </li>
-                        }
-                    </ul>
-                </li>
-            }
-            else
-            {
-                <li class="drLink">
-                    <NavLink href="@subModule.Href" @onclick="() => Navigate(subModule.Href)">@subModule.DisplayName</NavLink>
-                </li>
-            }
+                </Authorized>
+                <NotAuthorized></NotAuthorized>
+            </AuthorizationHandler>
         }
     </ul>
 </li>
 @foreach (var sM in Module.SubModules)
 {
     var subModule = sM;
-    @if (URI.Contains(subModule.Href??"") && subModule.SubModules is not null)
+    @if (URI.Contains(subModule.Href??"") && subModule.SubModules.Count > 0)
     {
         <ModuleDisplay Module="subModule"/>
     }

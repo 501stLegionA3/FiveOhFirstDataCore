@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Services.Routing;
+﻿using ProjectDataCore.Data.Services.Nav;
+using ProjectDataCore.Data.Services.Routing;
 using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Attributes;
@@ -19,9 +20,10 @@ public class PageEditService : IPageEditService
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
     private readonly IRoutingService _routingService;
     private readonly IScopedUserService _scopedUserService;
+    private readonly INavModuleService _navModuleService;
 
-    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRoutingService routingService, IScopedUserService scopedUserService)
-        => (_dbContextFactory, _routingService, _scopedUserService) = (dbContextFactory, routingService, scopedUserService);
+    public PageEditService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IRoutingService routingService, IScopedUserService scopedUserService, INavModuleService navModuleService)
+        => (_dbContextFactory, _routingService, _scopedUserService, _navModuleService) = (dbContextFactory, routingService, scopedUserService, navModuleService);
 
     #region Page Actions
     public async Task<ActionResult> CreateNewPageAsync(string name, string route)
@@ -62,6 +64,12 @@ public class PageEditService : IPageEditService
         // so we can do a proper cascade delete ...
         await foreach (var _ in _routingService.LoadPageSettingsAsync(obj)) { }
 
+        var nav = await _dbContext.NavModules.Where(e => e.PageId == page).ToListAsync();
+        foreach (var m in nav)
+        {
+            m.PageId = null;
+        }
+
         _dbContext.Remove(obj);
         await _dbContext.SaveChangesAsync();
 
@@ -72,7 +80,7 @@ public class PageEditService : IPageEditService
     {
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
 
-        return await _dbContext.CustomPageSettings.ToListAsync();
+        return await _dbContext.CustomPageSettings.Include(e=>e.Layout).ToListAsync();
     }
 
     public async Task<ActionResult<CustomPageSettings>> GetPageSettingsAsync(Guid page)
@@ -177,7 +185,14 @@ public class PageEditService : IPageEditService
             pageData.Name = update.Name;
 
         if(update.Route is not null)
+        {
             pageData.Route = update.Route;
+            var nav = await _dbContext.NavModules.Where(e => e.PageId == page).ToListAsync();
+            foreach (var m in nav)
+            {
+                m.Href = pageData.Route;
+            }
+        }
 
         try
         {
@@ -218,7 +233,15 @@ public class PageEditService : IPageEditService
         if (comp is null)
             return new(false, new List<string>() { "No component settings found for the provided key. " });
 
-        comp.AuthorizationPolicyKey = newAuthorzationItem?.Key;
+        if(newAuthorzationItem is not null)
+        {
+            comp.AuthorizationPolicyKey = newAuthorzationItem?.Key;
+            var nav = await _dbContext.NavModules.Where(e => e.PageId == key).ToListAsync();
+            foreach (var m in nav)
+            {
+                m.AuthKey = newAuthorzationItem?.Key;
+            }
+        }
         comp.RequireAuth = requireAuth;
 
         await _dbContext.SaveChangesAsync();

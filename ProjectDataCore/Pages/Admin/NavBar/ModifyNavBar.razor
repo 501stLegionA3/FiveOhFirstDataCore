@@ -21,24 +21,65 @@
 		                <label class="form-label" for="name-input">Display Name</label>
 		                <InputText id="name-input" class="form-control" @bind-Value="Editing.DisplayName" />
 		                <hr />
-		                <label class="form-label" for="link-input">Link</label>
-		                <InputText id="link-input" class="form-control" @bind-Value="Editing.Href" />
+                        <div class="flex" >
+                            <div>
+                                <label class="form-label" for="link-input">Link</label>
+		                        <InputText id="link-input" class="form-control" @bind-Value="Editing.Href" disabled="@(LinkToPage)" />
+                            </div>
+                            <div class="px-3">
+                                <label class="form-label" for="pageLink-Input" >Link to page?</label>
+                                <InputCheckbox id="pageLink-input" @bind-Value="LinkToPage" />
+                            </div>
+                            <div class="" >
+                                <label class="form-label">Page</label>
+                                <InputSelect id="page-input" Value="@Editing.PageId"
+                                 ValueChanged="(x) => PageSelect(x)" ValueExpression="() => Editing.PageId" disabled="@(!LinkToPage)" TValue="Guid?" >
+                                    <option value="">None</option>
+                                    @foreach(var p in allPages)
+                                    {
+                                        <option value="@p.Key" >@p.Name</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
 		                <hr />
-                        <label class="form-label">Parent</label>
-                        <InputSelect id="parent-input" @bind-Value="Editing.ParentId">
-                            <option value="">None</option>
-                            @foreach(NavModule m in allNavModules)
-                            {
+                        <div class="flex" > 
+                            <div>
+                                <label class="form-label">Parent</label>
+                                <InputSelect id="parent-input" @bind-Value="Editing.ParentId">
+                                    <option value="">None</option>
+                                    @foreach(NavModule m in allNavModules)
+                                    {
 
-                                @if(m.Key != Editing.Key && !Editing.SubModules.Contains(m))
-                                {
-                                <option value="@m.Key">@m.DisplayName</option>
-                                }
-                            }
-                        </InputSelect>
+                                        @if(m.Key != Editing.Key && !Editing.SubModules!.Contains(m))
+                                        {
+                                        <option value="@m.Key">@m.DisplayName</option>
+                                        }
+                                    }
+                                </InputSelect>
+                            </div>
+                            <div class="px-3" >
+                                <label class="form-label">Pollicy</label>
+                                <InputSelect id="page-input" @bind-Value="Editing.AuthKey" disabled="@(LinkToPage)" >
+                                    <option value="">None</option>
+                                    @foreach(var p in allPolicies)
+                                    {
+                                        <option value="@p.Key" >@p.PolicyName</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
                         <hr />
-                        <label class="form-label" for="mainPage-input">Has Main Page</label>
-                        <InputCheckbox id="mainPage-input" @bind-Value="Editing.HasMainPage" />
+                        <div class="flex" >
+                            <div>
+                                <label class="form-label" for="mainPage-input">Has Main Page</label>
+                                <InputCheckbox id="mainPage-input" @bind-Value="Editing.HasMainPage" />
+                            </div>
+                            <div class="px-3" >
+                                <label class="form-label" for="adminPage-input">Admin Page</label>
+                                <InputCheckbox id="adminPage-input" @bind-Value="Editing.IsAdmin" />
+                            </div>
+                        </div>
                         <hr />
 		                <button class="" @onclick="async ()=> await HandleForm()">Save</button>
                         <button class="" @onclick="async ()=> await DeleteModule()">Delete</button>

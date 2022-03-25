@@ -1,4 +1,5 @@
-﻿<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
+﻿<CascadingAuthenticationState>
+<nav class="bg-emerald-800 h-[32px] text-white z-10 pl-3">
     <ul class="flex gap-4">
         <li class="top-link">
             <NavLink href="/" @onclick='() => Navigate("/")'>Your Roster</NavLink>
@@ -10,36 +11,42 @@
                 @foreach (var m in _modules) //Display all modules under modules tab
                 {
                     var module = m;
-                    @if (module.SubModules.Any()) //Check if module has sub links if so display them
-                    {
-                        <li class="drLink relative">
-                            @if (module.HasMainPage) //If module has a main page make the link clickable
+                    //TODO: Needs force admin when not broken
+                    <AuthorizationHandler Settings="new(){AuthorizationPolicyKey=module.AuthKey, RequireAuth=module.IsAdmin||(module.AuthKey is not null)}" >
+                        <Authorized>
+                            @if (module.SubModules.Any()) //Check if module has sub links if so display them
                             {
-                                <button class="has-dropdown">
-                                    <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
-                                </button>
+                                <li class="drLink relative">
+                                    @if (module.HasMainPage) //If module has a main page make the link clickable
+                                    {
+                                        <button class="has-dropdown">
+                                            <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="has-dropdown">@module.DisplayName</button>
+                                    }
+                                    <ul class="nested">
+                                        @foreach (var l in module.SubModules) //List all sub links
+                                        {
+                                            var link = l;
+                                            <li class="drLink">
+                                                <NavLink href="@link.Href" @onclick='() => Navigate(link.Href)'>@link.DisplayName</NavLink>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
                             }
                             else
                             {
-                                <button class="has-dropdown">@module.DisplayName</button>
+                                <li class="drLink">
+                                    <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
+                                </li>
                             }
-                            <ul class="nested">
-                                @foreach (var l in module.SubModules) //List all sub links
-                                {
-                                    var link = l;
-                                    <li class="drLink">
-                                        <NavLink href="@link.Href" @onclick='() => Navigate(link.Href)'>@link.DisplayName</NavLink>
-                                    </li>
-                                }
-                            </ul>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="drLink">
-                            <NavLink href="@module.Href" @onclick="() => Navigate(module.Href)">@module.DisplayName</NavLink>
-                        </li>
-                    }
+                        </Authorized>
+                        <NotAuthorized></NotAuthorized>
+                    </AuthorizationHandler>
                 }
             </ul>
         </li>
@@ -48,7 +55,7 @@
         {
             var module = m;
             //TODO: Make this work with null null HREF -Thunder
-            @if (URI.Contains(module.Href) && module.SubModules is not  null) //Check url and that the module has sub modules
+            @if (URI.Contains(module.Href) && module.SubModules.Count > 0) //Check url and that the module has sub modules
             {
                 <CascadingValue Value="@URI">
                     <ModuleDisplay Module="module"/>
@@ -57,7 +64,26 @@
         }
 
         <li class="grow"></li>
-        <li class="top-link">@NavManager.Uri</li>
-        <li class="top-link">@URI</li>
+
+        @if(ActiveUser is not null)
+        {
+            //TODO: Make Configurable
+            <li class="top-link group !px-3" >
+                <button class="has-dropdown" >@ActiveUser.UserName</button>
+                <ul class="dropdown" >
+                    <li class="drLink">
+                        <NavLink href="/logout" @onclick='() => Navigate("/logout", true) ' >Logout</NavLink>
+                    </li>
+                </ul>
+            </li>
+        }
+        else
+        {
+            <li class="top-link">
+                <NavLink href="/login" @onclick='() => Navigate("/login", true)'>Login</NavLink>
+            </li>
+        }
+
     </ul>
 </nav>
+</CascadingAuthenticationState>
