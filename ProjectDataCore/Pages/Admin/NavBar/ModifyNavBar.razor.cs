@@ -7,9 +7,14 @@ namespace ProjectDataCore.Pages.Admin.NavBar
 {
     public partial class ModifyNavBar : ComponentBase
     {
-        [Inject] public INavModuleService NavModuleService { get; set; }
-        [Inject] public IPageEditService PageEditService { get; set; }
-        [Inject] public IPolicyService PolicyService { get; set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        [Inject]
+        public INavModuleService NavModuleService { get; set; }
+        [Inject]
+        public IPageEditService PageEditService { get; set; }
+        [Inject]
+        public IPolicyService PolicyService { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         List<NavModule> navModules = new();
         List<NavModule> allNavModules = new();
