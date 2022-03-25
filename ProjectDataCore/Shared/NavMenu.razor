@@ -11,7 +11,8 @@
                 @foreach (var m in _modules) //Display all modules under modules tab
                 {
                     var module = m;
-                    <AuthorizationHandler ForceAdmin="@module.IsAdmin" Settings="new(){AuthorizationPolicyKey=module.AuthKey, RequireAuth=module.IsAdmin||(module.AuthKey is not null)}" >
+                    //TODO: Needs force admin when not broken
+                    <AuthorizationHandler Settings="new(){AuthorizationPolicyKey=module.AuthKey, RequireAuth=module.IsAdmin||(module.AuthKey is not null)}" >
                         <Authorized>
                             @if (module.SubModules.Any()) //Check if module has sub links if so display them
                             {

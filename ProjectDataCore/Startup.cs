@@ -22,6 +22,7 @@ using ProjectDataCore.Data.Services.Nav;
 using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Structures.Mail;
+using ProjectDataCore.Data.Structures.Nav;
 
 namespace ProjectDataCore;
 
@@ -362,6 +363,35 @@ public class Startup
                 await db.SaveChangesAsync();
             }
 
+            #endregion
+
+            #region NavBar Validation
+            var navCount = await db.NavModules.CountAsync();
+            var navSrvc = scope.ServiceProvider.GetRequiredService<INavModuleService>();
+            if (navCount == 0)
+            {
+                NavModule admin = new()
+                {
+                    DisplayName = "Admin",
+                    Href = "admin",
+                    HasMainPage = true,
+                    IsAdmin = true,
+                };
+                await navSrvc.CreateNavModuleAsync(admin);
+                await navSrvc.CreateNavModuleAsync("Edit Nav Bar", "admin/navbar/edit", true, admin.Key);
+                await navSrvc.CreateNavModuleAsync("Page Editor", "admin/page/edit", true, admin.Key);
+                await navSrvc.CreateNavModuleAsync("Roster Editor", "admin/roster/edit", true, admin.Key);
+                NavModule account = new()
+                {
+                    DisplayName = "Account",
+                    Href = "admin/account",
+                    HasMainPage = true,
+                    ParentId = admin.Key
+                };
+                await navSrvc.CreateNavModuleAsync(account);
+                await navSrvc.CreateNavModuleAsync("Assignable Value Editor", "admin/account/avedit", true, account.Key);
+                await navSrvc.CreateNavModuleAsync("Policy Editor", "admin/policy/dpedit", true, admin.Key);
+            }
             #endregion
         }).GetAwaiter().GetResult();
 

@@ -14,7 +14,8 @@
         @foreach (var sM in Module.SubModules) //List all sub Modules
         {
             var subModule = sM;
-            <AuthorizationHandler ForceAdmin="subModule.IsAdmin" Settings="new(){AuthorizationPolicyKey=subModule.AuthKey, RequireAuth=subModule.IsAdmin||(subModule.AuthKey is not null)}">
+            //TODO: Needs force admin when not broken
+            <AuthorizationHandler Settings="new(){AuthorizationPolicyKey=subModule.AuthKey, RequireAuth=subModule.IsAdmin||(subModule.AuthKey is not null)}">
                 <Authorized>
                     @if (subModule.SubModules.Count > 0) //If the sub Module has sub Modules list them 1 deep
                     {
