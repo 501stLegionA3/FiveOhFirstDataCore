@@ -18,6 +18,9 @@ public partial class DataBus : IDataBus
     {
         var princName = principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        if (string.IsNullOrWhiteSpace(princName))
+            return null;
+
         _ = LocalUsers.TryGetValue(princName, out var user);
 
         return user;
