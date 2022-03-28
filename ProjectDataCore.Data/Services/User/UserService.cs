@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.Roster;
 using ProjectDataCore.Data.Structures.Model.User;
+using ProjectDataCore.Data.Structures.Page.Components;
 using ProjectDataCore.Data.Structures.Util;
 
 using System;
@@ -19,11 +21,34 @@ public class UserService : IUserService
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
 	private readonly IAssignableDataService _assignableDataService;
     private readonly UserManager<DataCoreUser> _userManager;
+	private readonly IPolicyService _policyService;
 
-	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IAssignableDataService assignableDataService, UserManager<DataCoreUser> userManager)
-		=> (_dbContextFactory, _assignableDataService, _userManager) = (dbContextFactory, assignableDataService, userManager);
+	public UserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, 
+		IAssignableDataService assignableDataService, UserManager<DataCoreUser> userManager,
+		IPolicyService policyService)
+		=> (_dbContextFactory, _assignableDataService, _userManager, _policyService)
+		=  (dbContextFactory, assignableDataService, userManager, policyService);
 
-	public async Task<ActionResult> CreateOrUpdateAccountAsync(string? accessCode, string username, string password)
+    public async Task<bool> AuthorizeUserAsync(ClaimsPrincipal claims, PageComponentSettingsBase settings, bool forceReload = false)
+	{
+
+		if (settings.RequireAuth)
+		{
+			var user = await GetUserFromClaimsPrinciaplAsync(claims);
+
+			if (user is null)
+				return false;
+
+			if(settings.AuthorizationPolicyKey is not null)
+            {
+				return await _policyService.AuthorizeAsync(user, settings.AuthorizationPolicyKey.Value, forceReload);
+            }
+        }
+
+		return true;
+    }
+
+    public async Task<ActionResult> CreateOrUpdateAccountAsync(string? accessCode, string username, string password)
 	{
 		DataCoreUser user;
 		if (accessCode is null)

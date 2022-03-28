@@ -1,5 +1,5 @@
 ﻿@page "/admin/navbar/edit"
-<AuthorizationHandler ForceAdmin="true">
+<AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
         <h1 class="font-bold text-center text-2xl w-100 px-3">Nav Modules</h1>
 

@@ -1,6 +1,6 @@
 ﻿@page "/admin/data/import"
 
-<AuthorizationHandler ForceAdmin="true">
+<AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
 		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
 			<div>

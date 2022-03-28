@@ -1,6 +1,7 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Structures.Model.User;
-
+using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Policy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,4 +20,5 @@ public interface IUserService
     public Task<List<DataCoreUser>> GetAllUnregisteredUsersAsync();
     public Task<ActionResult> UpdateUserAsync(Guid user, Action<DataCoreUserEditModel> action);
     public Task<ActionResult> CreateUserAsync(DataCoreUser user, Action<DataCoreUserEditModel> model);
+    public Task<bool> AuthorizeUserAsync(ClaimsPrincipal claims, PageComponentSettingsBase policy, bool forceReload = false);
 }

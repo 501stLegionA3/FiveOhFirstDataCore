@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Model.Policy;
+﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Model.Policy;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -11,7 +12,7 @@ namespace ProjectDataCore.Data.Services.Policy;
 public interface IPolicyService
 {
     public Task InitalizeAsync();
-    public Task<DynamicAuthroizationPolicyBuilder?> GetPolicyBuilderAsync(string component, bool forceReload);
+    public Task<bool> AuthorizeAsync(DataCoreUser user, Guid policy, bool forceReload = false);
 
     #region Policy Editing
     public Task<ActionResult> CreatePolicyAsync(DynamicAuthorizationPolicy policy);

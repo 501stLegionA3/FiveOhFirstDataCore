@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-using ProjectDataCore.Data.Policy;
 using ProjectDataCore.Data.Services.Account;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Bus;
@@ -74,8 +73,6 @@ public class Startup
 
         services.AddRazorPages();
         services.AddServerSideBlazor();
-        services
-            .AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<DataCoreUser>>();
 
 #if DEBUG
         services.AddDatabaseDeveloperPageExceptionFilter();
@@ -125,7 +122,6 @@ public class Startup
             })
             .AddSingleton<IAccountLinkService, AccountLinkService>()
             .AddSingleton<IPolicyService, PolicyService>()
-            .AddSingleton<IAuthorizationPolicyProvider, DataCoreAuthorizationPolicyProvider>()
             .AddSingleton<IDataBus, DataBus>()
             .AddSingleton<IModularRosterService, ModularRosterService>()
             .AddSingleton<IPageEditService, PageEditService>()

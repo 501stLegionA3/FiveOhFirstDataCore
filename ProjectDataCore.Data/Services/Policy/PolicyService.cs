@@ -15,7 +15,7 @@ public class PolicyService : IPolicyService
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
     private readonly IModularRosterService _modularRosterService;
 
-    private ConcurrentDictionary<string, DynamicAuthorizationPolicy> PolicyCache { get; init; } = new();
+    private ConcurrentDictionary<Guid, DynamicAuthorizationPolicy> PolicyCache { get; init; } = new();
     private bool Initalized { get; set; } = false;
     private bool Initalizing { get; set; } = false;
 
@@ -41,11 +41,11 @@ public class PolicyService : IPolicyService
             {
                 await policy.InitalizePolicyAsync(_modularRosterService, _dbContextFactory);
 
-                _ = PolicyCache.TryAdd(policy.Key.ToString(), policy);
+                _ = PolicyCache.TryAdd(policy.Key, policy);
 
                 // Add the admin policy for use on internal admin pages.
                 if (policy.AdminPolicy)
-                    _ = PolicyCache.TryAdd("internal-admin-policy", policy);
+                    _ = PolicyCache.TryAdd(Guid.Empty, policy);
             }
 
             Initalizing = false;
@@ -60,36 +60,25 @@ public class PolicyService : IPolicyService
         }
     }
 
-    public async Task<DynamicAuthroizationPolicyBuilder?> GetPolicyBuilderAsync(string component, bool forceReload)
+    public async Task<bool> AuthorizeAsync(DataCoreUser user, Guid policyKey, bool forceReload = false)
     {
         if (forceReload || (!Initalized && !Initalizing))
             await InitalizeAsync();
 
-        if (Initalizing)
+        if(Initalizing)
         {
-            var builder = new DynamicAuthroizationPolicyBuilder();
-            builder.RequireAssertion((ctx, p, bus) => false);
-            return builder;
+            await Task.Delay(10);
+            return await AuthorizeAsync(user, policyKey, false);
         }
 
-        if (PolicyCache.TryGetValue(component, out var policy))
+        if (PolicyCache.TryGetValue(policyKey, out var policy))
         {
-            var policyBuilder = new DynamicAuthroizationPolicyBuilder();
-
-            policyBuilder.RequireAssertion((ctx, p, bus) =>
-            {
-                var user = bus.GetLoaclUserServiceFromClaimsPrincipal(ctx.User);
-
-                if (user is not null)
-                    return user.ValidateWithPolicy(p);
-                else return false;
-            });
-
-            return policyBuilder.WithPolicy(policy);
+            return policy.Validate(user);
         }
-        
-        return null;
+
+        return false;
     }
+
 
     public async Task<ActionResult> CreatePolicyAsync(DynamicAuthorizationPolicy policy)
     {

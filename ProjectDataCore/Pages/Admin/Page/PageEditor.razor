@@ -1,5 +1,5 @@
 ﻿@page "/admin/page/edit"
-<AuthorizationHandler ForceAdmin="true">
+<AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
 		<h4>Page Editor</h4>
 

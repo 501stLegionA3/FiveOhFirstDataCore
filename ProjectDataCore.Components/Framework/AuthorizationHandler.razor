@@ -1,51 +1,12 @@
-﻿@if(Editing)
+﻿@if(IsAuthorized)
 {
 	@Authorized
 }
-else if(Settings is not null || !string.IsNullOrWhiteSpace(AuthPolicy))
+else if (NotAuthorized is not null)
 {
-	if((Settings is null || Settings.RequireAuth) && AuthPolicy is not null)
-	{
-		<AuthorizeView Policy="@AuthPolicy">
-			<Authorized>
-				@Authorized
-			</Authorized>
-			<NotAuthorized>
-				@if (NotAuthorized is not null)
-				{
-					@NotAuthorized
-				}
-				else
-				{
-					<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
-				}
-			</NotAuthorized>
-		</AuthorizeView>
-	}
-	else if ((Settings?.RequireAuth ?? false) && AuthPolicy is null)
-	{
-		<AuthorizeView>
-			<Authorized>
-				@Authorized	
-			</Authorized>
-			<NotAuthorized>
-				@if (NotAuthorized is not null)
-				{
-					@NotAuthorized
-				}
-				else
-				{
-					<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
-				}
-			</NotAuthorized>
-		</AuthorizeView>
-	}
-	else
-	{
-		@Authorized
-	}
+	@NotAuthorized
 }
 else
 {
-	<p>No authorization settings are configured for this page. Go <a href="/">home</a>.</p>
+	<em>You are not authroized to see this page. Go <a class="text-blue-600 visited:text-purple-600" href="/">home</a></em>
 }

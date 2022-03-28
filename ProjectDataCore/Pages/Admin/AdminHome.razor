@@ -1,5 +1,5 @@
 ﻿@page "/admin"
-<AuthorizationHandler ForceAdmin="true">
+<AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
 		<h4 class="p-3">Admin Home</h4>
 		

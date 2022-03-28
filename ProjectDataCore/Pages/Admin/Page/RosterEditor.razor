@@ -1,5 +1,5 @@
 ﻿@page "/admin/roster/edit"
-<AuthorizationHandler ForceAdmin="true">
+<AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
 		<div class="p-4 grid grid-cols-1 gap-3">
 			<h4>Roster Editor</h4>
