@@ -65,9 +65,13 @@
 			}
 		},
 		destory(id) {
-			editors[id].destroy()
-				.then(() => delete editors[id])
-				.catch(error => console.log(error));
+			try {
+				editors[id].destroy()
+					.then(() => delete editors[id])
+					.catch(error => console.log(error));
+            } catch (e) {
+				console.log(e);
+            }
 		}
 	};
 })();
