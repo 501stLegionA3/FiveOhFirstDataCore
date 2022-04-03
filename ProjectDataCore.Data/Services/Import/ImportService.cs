@@ -121,9 +121,14 @@ public class ImportService : IImportService
                 // ... throw if we arent supposed to continue ...
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (user?.UserName == "Administrator")
+                {
+                    // Skip the admin account.
+                    continue;
+                }
                 // ... then we check if the user is null, and
                 // we shound not create new accounts ...
-                if (user is null
+                else if (user is null
                     && !config.CreateNewAccounts)
                 {
                     // ... and log a warning for this row ...
@@ -269,7 +274,7 @@ public class ImportService : IImportService
                     // ... then grab the new value ...
 
                     // ... if it should auto convert ...
-                    if (binding.AutoConvert)
+                    if (binding.AutoConvert || binding.IsStatic)
                     {
                         // ... and is static ...
                         if (binding.IsStatic)
