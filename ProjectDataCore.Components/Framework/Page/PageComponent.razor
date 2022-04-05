@@ -1,0 +1,10 @@
+﻿@if(IsEditing && Editing is not null)
+{
+	@Editing
+	@*Call the configure render builder. There should be no HTML returned.*@
+	@Configure
+}
+else
+{
+	@Publish
+}
