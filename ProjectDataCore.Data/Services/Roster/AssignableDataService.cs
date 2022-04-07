@@ -161,6 +161,10 @@ public class AssignableDataService : IAssignableDataService
                 case StringValueAssignableConfiguration c:
                     c.AllowedValues = editModel.AllowedValues.ToList(x => (string?)Convert.ChangeType(x, typeof(string)) ?? "");
                     break;
+                
+                case BooleanValueAssignableConfiguration c:
+                    c.AllowedValues = editModel.AllowedValues.ToList(x => (bool)Convert.ChangeType(x, typeof(bool)));
+                    break;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
             }
         }
@@ -225,6 +229,13 @@ public class AssignableDataService : IAssignableDataService
                     return new(false, new List<string>() { "Assignable value type missmatch." });
 
                 c.SetValue = value.ToList(x => (string?)Convert.ChangeType(x, typeof(string)) ?? "");
+                break;
+            
+            case BooleanAssignableValue c:
+                if (c.SetValue.GetType() != value.GetType())
+                    return new(false, new List<string>() {"Assignable value type mismatch"});
+
+                c.SetValue = value.ToList(x => (bool)Convert.ChangeType(x, typeof(bool)));
                 break;
 #pragma warning restore CS8605 // Unboxing a possibly null value.
         }

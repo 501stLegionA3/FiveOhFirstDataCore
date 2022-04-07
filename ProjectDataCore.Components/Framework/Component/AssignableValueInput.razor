@@ -41,4 +41,10 @@
 			Value="@EditModel.StringValue" ValueExpression="() => EditModel.StringValue"
 			ValueChanged="(x) => ValueChanged(() => EditModel.StringValue = x)" />
 		break;
+		
+	case BooleanValueAssignableConfiguration c:
+		<InputCheckbox id="option-name" class="input-control peer" placeholder="Option Name"
+           Value="@EditModel.BoolValue" ValueExpression="() => EditModel.BoolValue"
+           ValueChanged="(x) => ValueChanged(() => EditModel.BoolValue = x)" />
+		break;
 }

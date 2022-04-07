@@ -51,6 +51,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<DateTimeValueAssignableConfiguration> DateTimeValueAssignableConfigurations { get; internal set; }
     public DbSet<DateOnlyValueAssignableConfiguration> DateOnlyValueAssignableConfigurations { get; internal set; }
     public DbSet<TimeOnlyValueAssignableConfiguration> TimeOnlyValueAssignableConfigurations{ get; internal set; }
+    public DbSet<BooleanValueAssignableConfiguration> BooleanValueAssignableConfigurations { get; internal set; }
 
     // Assigned Value Setes
     public DbSet<BaseAssignableValue> AssignableValues { get; internal set; }
@@ -60,6 +61,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<DateTimeAssignableValue> DateTimeAssignableValues { get; internal set; }
     public DbSet<DateOnlyAssignableValue> DateOnlyAssignableValues { get; internal set; }
     public DbSet<TimeOnlyAssignableValue> TimeOnlyAssignableValues { get; internal set; }
+    public DbSet<BooleanAssignableValue> BooleanAssignableValues { get; internal set; }
     #endregion
 
     #region Account Link
