@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ProjectDataCore.Components.Framework.Page;
+public partial class PageEditComponent
+{
+    protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
+    public string? OpenConfigurationNode { get; set; } = null;
+
+    public async Task OnConfigureNodePushed(string name, RenderFragment fragment)
+    {
+        ConfigurationNodes[name] = fragment;
+        await InvokeAsync(StateHasChanged);
+    }
+}
