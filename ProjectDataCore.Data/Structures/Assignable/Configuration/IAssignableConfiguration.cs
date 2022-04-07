@@ -51,6 +51,11 @@ public interface IAssignableConfiguration
                 foreach (var item in c.AllowedValues)
                     itemList.Add(item);
                 break;
+            
+            case IAssignableConfiguration<bool> c:
+                foreach (var item in c.AllowedValues)
+                    itemList.Add(item.ToString());
+                break;
         }
 
         return itemList;
@@ -81,6 +86,10 @@ public interface IAssignableConfiguration
 
             case IAssignableConfiguration<string> c:
                 c.AddElement(valueEditModel.StringValue);
+                break;
+            
+            case IAssignableConfiguration<bool> c:
+                c.AddElement(valueEditModel.BoolValue);
                 break;
         }
     }
@@ -114,6 +123,10 @@ public interface IAssignableConfiguration
             case IAssignableConfiguration<string> c:
                 var stringVal = c.AllowedValues[valueIndex];
                 return (stringVal, stringVal);
+            
+            case IAssignableConfiguration<bool> c:
+                var boolVal = c.AllowedValues[valueIndex];
+                return (boolVal.ToString(), boolVal);
         }
 
         return null;
@@ -146,6 +159,9 @@ public interface IAssignableConfiguration
 
             case IAssignableConfiguration<string>:
                 return (valueEditModel.StringValue, valueEditModel.StringValue);
+            
+            case IAssignableConfiguration<bool>:
+                return (valueEditModel.BoolValue.ToString(), valueEditModel.BoolValue);
         }
 
         return null;

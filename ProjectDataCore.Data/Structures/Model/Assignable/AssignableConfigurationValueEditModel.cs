@@ -31,6 +31,7 @@ public class AssignableConfigurationValueEditModel
     public int IntValue { get; set; }
     public double DoubleValue { get; set; }
     public string StringValue { get; set; } = "";
+    public bool BoolValue { get; set; }
 
     public AssignableConfigurationValueEditModel() { }
 
@@ -77,6 +78,12 @@ public class AssignableConfigurationValueEditModel
 
                 StringValue = c.SetValue[valueIndex];
                 break;
+            
+            case IAssignableValue<bool> c:
+                if ((c.SetValue.Count - 1) < valueIndex)
+                    break;
+                BoolValue = c.SetValue[valueIndex];
+                break;
         }
     }
 
@@ -89,6 +96,7 @@ public class AssignableConfigurationValueEditModel
             IAssignableConfiguration<int> => IntValue.ToString(),
             IAssignableConfiguration<double> => DoubleValue.ToString(),
             IAssignableConfiguration<string> => StringValue,
+            IAssignableConfiguration<bool> => BoolValue.ToString(),
             _ => string.Empty,
         };
 }
