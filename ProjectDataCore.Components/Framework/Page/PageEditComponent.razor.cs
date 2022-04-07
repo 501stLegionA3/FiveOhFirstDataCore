@@ -10,6 +10,7 @@ public partial class PageEditComponent
 {
     protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
     public string? OpenConfigurationNode { get; set; } = null;
+    public bool ShowConfigurationOptions { get; set; } = false;
 
     public async Task OnConfigureNodePushed(string name, RenderFragment fragment)
     {

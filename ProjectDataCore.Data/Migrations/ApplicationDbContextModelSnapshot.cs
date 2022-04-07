@@ -734,13 +734,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("RosterTreeRosterTree");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BooleanValueAssignableConfiguration", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
+
+                    b.Property<List<bool>>("AllowedValues")
+                        .IsRequired()
+                        .HasColumnType("boolean[]");
+
+                    b.HasDiscriminator().HasValue("BooleanValueAssignableConfiguration");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.DateOnlyValueAssignableConfiguration", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration");
 
                     b.Property<List<DateOnly>>("AllowedValues")
                         .IsRequired()
-                        .HasColumnType("date[]");
+                        .HasColumnType("date[]")
+                        .HasColumnName("DateOnlyValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("DateOnlyValueAssignableConfiguration");
                 });
@@ -805,13 +817,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TimeOnlyValueAssignableConfiguration");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BooleanAssignableValue", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
+
+                    b.Property<List<bool>>("SetValue")
+                        .IsRequired()
+                        .HasColumnType("boolean[]");
+
+                    b.HasDiscriminator().HasValue("BooleanAssignableValue");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.DateOnlyAssignableValue", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue");
 
                     b.Property<List<DateOnly>>("SetValue")
                         .IsRequired()
-                        .HasColumnType("date[]");
+                        .HasColumnType("date[]")
+                        .HasColumnName("DateOnlyAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("DateOnlyAssignableValue");
                 });
