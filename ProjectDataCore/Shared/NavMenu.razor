@@ -68,19 +68,19 @@
         @if(ActiveUser is not null)
         {
             //TODO: Make Configurable
-            <li class="top-link group !px-3" >
+            <li class="top-link group !px-3 mr-3" >
                 <button class="has-dropdown" >@ActiveUser.UserName</button>
                 <ul class="dropdown" >
-                    <li class="drLink">
-                        <NavLink href="/logout" @onclick='() => Navigate("/logout", true) ' >Logout</NavLink>
+                    <li class="drLink cursor-pointer" @onclick='() => Navigate("/logout", true)'>
+                        <NavLink href="/logout">Logout</NavLink>
                     </li>
                 </ul>
             </li>
         }
         else
         {
-            <li class="top-link">
-                <NavLink href="/login" @onclick='() => Navigate("/login", true)'>Login</NavLink>
+            <li class="top-link mr-3 cursor-pointer" @onclick='() => Navigate("/login", true)'>
+                <NavLink href="/login">Login</NavLink>
             </li>
         }
 
