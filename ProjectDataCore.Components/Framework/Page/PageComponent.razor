@@ -1,8 +1,20 @@
 ﻿@if(IsEditing && Editing is not null)
 {
-	@Editing
-	@*Call the configure render builder. There should be no HTML returned.*@
-	@Configure
+	<div class="relative group hover:border-2 hover:border-">
+		@Editing
+
+		<div class="hidden group-hover:block absolute ">
+
+		</div>
+	</div>
+
+	@*Call the configure render builder. There should be no visible HTML to render.*@
+	@if(IsConfiguring)
+	{
+		<div class="hidden">
+			@Configure
+		</div>
+	}
 }
 else
 {

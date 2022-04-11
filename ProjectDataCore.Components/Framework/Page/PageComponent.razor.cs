@@ -12,6 +12,9 @@ public partial class PageComponent
     public RenderFragment? Configure { get; set; }
     [Parameter]
     public string Name { get; set; }
+
+    private bool IsConfiguring { get; set; } = false;
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();

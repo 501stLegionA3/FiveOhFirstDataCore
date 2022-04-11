@@ -12,9 +12,17 @@ public partial class PageEditComponent
     public string? OpenConfigurationNode { get; set; } = null;
     public bool ShowConfigurationOptions { get; set; } = false;
 
-    public async Task OnConfigureNodePushed(string name, RenderFragment fragment)
+    public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
     {
-        ConfigurationNodes[name] = fragment;
+        if (dispose)
+        {
+            _ = ConfigurationNodes.TryRemove(name, out _);
+        }
+        else
+        {
+            ConfigurationNodes[name] = fragment;
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 }
