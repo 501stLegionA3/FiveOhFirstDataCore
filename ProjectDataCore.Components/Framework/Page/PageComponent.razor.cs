@@ -2,7 +2,7 @@ namespace ProjectDataCore.Components.Framework.Page;
 public partial class PageComponent
 {
     [CascadingParameter(Name = "PageEdit")]
-    public bool IsEditing { get; set; }
+    public bool IsEditingScope { get; set; }
 
     [Parameter]
     public RenderFragment? Editing { get; set; }

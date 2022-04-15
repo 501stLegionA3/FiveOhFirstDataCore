@@ -12,6 +12,9 @@ public partial class PageEditComponent
     public string? OpenConfigurationNode { get; set; } = null;
     public bool ShowConfigurationOptions { get; set; } = false;
 
+    public delegate Task DraggableRefreshRequested(object sender);
+    public event DraggableRefreshRequested OnDragRefreshRequested;
+
     public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
     {
         if (dispose)

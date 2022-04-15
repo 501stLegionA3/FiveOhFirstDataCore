@@ -1,0 +1,52 @@
+﻿@if(ParentNode is not null)
+{
+	@if(ParentNode.Component is not null)
+	{
+		<DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+	}
+	else if (ParentNode.Nodes.Count > 0)
+	{
+		if(IsEditingScope)
+		{
+			@*We need to use a grid system here*@
+
+			<div class="w-max h-max relative grid" 
+				 style="@((ParentNode.Rows ? "grid-template-rows" : "grid-template-columns") + $": {ParentNode.RawNodeWidths}")"
+				 id="@ParentNode.Key">
+				@for (int i = 0; i < ParentNode.Nodes.Count; i++)
+				{
+					var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
+
+					if (node is not null)
+					{
+						<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+					}
+					else
+					{
+						@*Do some work for adding new components in this spot*@
+						<div></div>
+					}
+
+					@if(i < ParentNode.Nodes.Count - 1)
+					{
+						<div id="gutter-node-@i"></div>
+					}
+				}
+			</div>
+		}
+		else
+		{
+			@*We need to use divs with a percentage value here*@
+			<div class="w-max h-max flex @(ParentNode.Rows ? "flex-col" : "flex-row")">
+				@for(int i = 0; i < ParentNode.Nodes.Count; i++)
+				{
+					var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
+
+					<div style="@((ParentNode.Rows ? $"height" : "width") + $": {ParentNode.NodeWidths[i]}%")">
+						<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+					</div>
+				}
+			</div>
+		}
+	}
+}

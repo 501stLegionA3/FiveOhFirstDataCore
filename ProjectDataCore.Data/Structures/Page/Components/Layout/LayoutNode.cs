@@ -14,6 +14,7 @@ public class LayoutNode : DataObject<Guid>
     public Guid? ParentNodeId { get; set; }
 
     public List<LayoutNode> Nodes { get; set; } = new();
+    public int Order { get; set; }
     public bool Rows { get; set; } = false;
     public string RawNodeWidths { get; internal set; } = "";
     private string[]? _nodeWidths = null;
@@ -116,6 +117,6 @@ public class LayoutNode : DataObject<Guid>
 
     public bool DeleteNode(LayoutNode node)
     {
-
+        throw new NotImplementedException();
     }
 }
