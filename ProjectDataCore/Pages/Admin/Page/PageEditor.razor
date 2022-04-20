@@ -5,7 +5,6 @@
 		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
 			<div>
 				<div class="grid grid-cols-1 grid-flow-row gap-2">
-					<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Pages</div>
 					@*Page List Pannel
 						TODO: Search open pages
 						 - Order pages by route
@@ -16,23 +15,42 @@
 
 						 - Add drag and drop components for pages
 					*@
+
+					@switch(LeftMenuState)
+					{
+						case LeftMenu.PageSelection:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Pages</div>
+							break;
+
+						case LeftMenu.ComponentSelection:
+							break;
+
+						case LeftMenu.SettingsSelection:
+							break;
+					}
 				</div>
 			</div>
 			<div class="col-span-2">
 				<div class="border-l-2 border-slate-400 pl-4 h-full">
-					<div class="grid grid-cols-1 grid-flow-row gap-2">
-						<div class="shadow-lg border-2 border-slate-400 rounded-lg">
-							@*Page Editor Main
-								TODO: Edit exisitng pages
-								 - Edit all pages that have components to use a new edit system.
+					@*Page Editor Main
+						TODO: Edit exisitng pages
+							- Edit all pages that have components to use a new edit system.
 								 
-								 - Add setting configuration switch that is controlled from the settings
-									panel switch above
+							- Add setting configuration switch that is controlled from the settings
+							panel switch above
 								 
-								 - Support the ability to drop components
-							*@
-						</div>
-					</div>
+							- Support the ability to drop components
+					*@
+
+					@switch(RightMenuState)
+					{
+						case RightMenu.PageEditor:
+							<LayoutNodeTreeLoader EditComponent="" ParentNode="null" />
+							break;
+
+						case RightMenu.SettingsEditor:
+							break;
+					}
 				</div>
 			</div>
 		</div>
