@@ -45,7 +45,7 @@ namespace FiveOhFirstDataCore.Areas.Identity.Pages.Account.Manage
 
             Input.Username = userName;
             Input.NickName = user.NickName;
-            Input.TrooperNumber = user.Id;
+            Input.TrooperNumber = user.BirthNumber;
         }
 
         public async Task<IActionResult> OnGetAsync()
