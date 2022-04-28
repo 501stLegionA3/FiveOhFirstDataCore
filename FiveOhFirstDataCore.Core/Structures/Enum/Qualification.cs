@@ -34,7 +34,9 @@ namespace FiveOhFirstDataCore.Data.Structures
         [Description("Combat Engineer")]
         CombatEngineer = 0x0000001000, // 1 << 12
         [Description("Advanced Combat Engineer")]
-        AdvancedCombatEngineer = 0x0000002000 // 1 << 13
+        AdvancedCombatEngineer = 0x0000002000, // 1 << 13
+        [Description("Close Quarters Specalist")]
+        CloseQuartersSpecialist = 0x0000004000 // 1 << 14
     }
 
     public static class QualificationsExtensions

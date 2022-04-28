@@ -25,7 +25,7 @@
                 </thead>
                 <tbody>
                     <tr class="table-danger">
-                        <td><a href="/trooper/@(ModalAlert.PromotionFor?.Id ?? 0)" target="_blank">@(ModalAlert.PromotionFor?.BirthNumber ?? 0)</a></td>
+                        <td><a href="/trooper/@(ModalAlert.PromotionFor?.BirthNumber ?? 0)" target="_blank">@(ModalAlert.PromotionFor?.BirthNumber ?? 0)</a></td>
                         <td>@(ModalAlert.PromotionFor?.NickName ?? "")</td>
                         <td>@ModalAlert.PromoteFrom.GetRank().AsFull()</td>
                         <td>@ModalAlert.PromoteTo.GetRank().AsFull()</td>
@@ -70,7 +70,7 @@
                             {
                                 var c = Counter++;
                                 <tr>
-                                    <td><a href="/trooper/@e.PromotionFor.Id" target="_blank">@e.PromotionFor.BirthNumber</a></td>
+                                    <td><a href="/trooper/@e.PromotionFor.BirthNumber" target="_blank">@e.PromotionFor.BirthNumber</a></td>
                                     <td>@e.PromotionFor.NickName</td>
                                     <td>@(e.PromoteFrom.GetRank()?.AsFull() ?? "")</td>
                                     <td>@(e.PromoteTo.GetRank()?.AsFull() ?? "")</td>

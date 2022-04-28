@@ -88,6 +88,8 @@ public partial class CompanyPromotionBoard
 
                         Troopers.AddRange(t.Troopers.Where(x => x != null));
                     }
+
+                    Troopers.AddRange(squad.AdditionalTroopers);
                 }
             }
         }

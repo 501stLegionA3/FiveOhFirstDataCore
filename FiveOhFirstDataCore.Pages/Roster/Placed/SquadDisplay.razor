@@ -238,6 +238,18 @@
             </td>
         </tr>
     }
+
+    @foreach(Trooper t in Squad.AdditionalTroopers)
+    {
+        <tr>
+            <th scope="row" class="table-primary text-end" colspan="2" role="button" @onclick="(x) => TrooperNav(t.BirthNumber)">
+                Misc
+            </th>
+            <td class="table-primary text-start" colspan="2" role="button" @onclick="(x) => TrooperNav(t.BirthNumber)">
+                @t.DisplayRankName()                
+            </td>
+        </tr>
+    }
 </tbody>
 
 @code {

@@ -15,7 +15,7 @@
     <CompanyStaff Company="Company" />
 }
 
-<CascadingValue Value="Name" Name="CompanyName">
+<CascadingValue Value="@Name" Name="CompanyName">
     <CascadingValue Value="Airborne" Name="Airborne">
         @for(int i = 0; i < Company.Platoons.Length; i++)
         {

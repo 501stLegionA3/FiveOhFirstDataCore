@@ -72,6 +72,8 @@
 
                     Troopers.AddRange(t.Troopers.Where(x => x != null));
                 }
+
+                Troopers.AddRange(squad.AdditionalTroopers);
             }
         }
         else if (Zeta is not null)
