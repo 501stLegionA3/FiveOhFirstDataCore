@@ -1,6 +1,6 @@
 ﻿@if(IsEditingScope && Editing is not null)
 {
-	<div class="relative group inset-0">
+	<div class="absolute group inset-0 hover:z-0">
 		@Editing
 
 		<div class="absolute inset-x-0 top-0 hidden border-gray-400 group-hover:block group-hover:border-4"></div>
@@ -21,7 +21,7 @@
 }
 else
 {
-	<div class="relative inset-0">
+	<div class="absolute inset-0">
 		@Publish
 	</div>
 }

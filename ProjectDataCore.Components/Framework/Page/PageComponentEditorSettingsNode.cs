@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components;
 
 namespace ProjectDataCore.Components.Framework.Page;
-public partial class PageComponentEditorSettingsNode : ComponentBase, IDisposable
+public class PageComponentEditorSettingsNode : ComponentBase, IDisposable
 {
     [Parameter]
     public RenderFragment Configure { get; set; }

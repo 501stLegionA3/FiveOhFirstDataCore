@@ -24,7 +24,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
     public PageEditComponent? EditComponent { get; set; }
 
     [Parameter]
-    public LayoutNode ParentNode { get; set; }
+    public LayoutNode? ParentNode { get; set; }
 
     /// <summary>
     /// The type of base layout component to display.
@@ -58,7 +58,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
         if (EditComponent is not null)
             EditComponent.OnDragRefreshRequested += ReloadDragabbles;
 
-        if (ParentNode.Component is not null)
+        if (ParentNode?.Component is not null)
         {
             // ... set the component params ...
             ComponentParams["ComponentData"] = ParentNode.Component;
@@ -69,12 +69,16 @@ public partial class LayoutNodeTreeLoader : IDisposable
 
     protected async Task ReloadDragabbles(object sender)
     {
-        var handle = await GetJSHandle();
+        if (ParentNode is null
+            || !IsEditingScope
+            || ParentNode.Nodes.Count <= 0)
+            return;
+
         var dotRef = GetDotNetReference();
 
         if (sender != this)
         {
-            await DisposeDragabbles(handle);
+            await DisposeDragabbles();
         }
 
         var rows = new List<string>();
@@ -89,27 +93,16 @@ public partial class LayoutNodeTreeLoader : IDisposable
         }
 
         // This is the first render, don't worry about disposing of any scopes.
-        await handle.InvokeVoidAsync("createSplit", ParentNode.Key.ToString(), dotRef,
+        await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNode.Key.ToString(), dotRef,
             nameof(UpdateSizes), rows.ToArray(), cols.ToArray());
     }
 
-    protected async Task DisposeDragabbles(IJSObjectReference? handle = null)
+    protected async Task DisposeDragabbles()
     {
-        if(handle is null)
-            handle = await GetJSHandle();
+        if (ParentNode is null)
+            return;
 
-        await handle.InvokeVoidAsync("destroy", ParentNode.Key.ToString());
-    }
-
-    protected async Task<IJSObjectReference> GetJSHandle()
-    {
-        if (InteropHandle is null)
-        {
-            var handle = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./split/splitHandler.js");
-            InteropHandle = handle;
-        }
-
-        return InteropHandle;
+        await JSRuntime.InvokeVoidAsync("SplitInterop.destroy", ParentNode.Key.ToString());
     }
 
     protected DotNetObjectReference<LayoutNodeTreeLoader> GetDotNetReference()
@@ -122,9 +115,9 @@ public partial class LayoutNodeTreeLoader : IDisposable
         return DotNetRef;
     }
 
-    public void UpdateSizes(string method, string size)
+    public void UpdateSizes(string size)
     {
-        ParentNode.SetNodeWidths(size);
+        ParentNode?.SetNodeWidths(size);
     }
 
     public async void Dispose()

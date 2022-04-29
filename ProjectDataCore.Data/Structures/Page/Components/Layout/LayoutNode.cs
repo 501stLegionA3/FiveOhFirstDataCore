@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Page.Components.Layout;
 public class LayoutNode : DataObject<Guid>
 {
+    internal const string GUTTER_SIZE = "10px";
+
     public PageComponentSettingsBase? Component { get; set; }
     public Guid? ComponentId { get; set; }
 
@@ -41,6 +43,8 @@ public class LayoutNode : DataObject<Guid>
         RawNodeWidths = raw;
     }
 
+    // TODO handle width setup on add node
+
     /// <summary>
     /// Adds a new Layout Node to the node tree.
     /// </summary>
@@ -54,18 +58,30 @@ public class LayoutNode : DataObject<Guid>
     /// and false if it was added to the parent.</returns>
     public bool AddNode(bool row)
     {
+        // ... check to see if this has a parent node ...
         if (ParentNode is null)
         {
-            // There should never be an instance where the parent node is null
-            // and we are attempting to add a new node.
-            throw new InvalidOperationException("The parent node can not be null when adding a new node.");
+            // ... if the parent node is null, then this is the uppermost node handler
+            // and we need to add two children ...
+            Nodes.Add(new());
+            // ... insert node will handle both new nodes to
+            // set the node widths value, so lets
+            // clear any existing values first ...
+            SetNodeWidths("");
+            InsertNode(new());
+
+            // ... because this is going to be the first node, we also set the
+            // row/col indicator ...
+            Rows = row;
+
+            return true;
         }
 
         // ... check to see if there is more than one node in the parent ...
         if(ParentNode.Nodes.Count <= 1)
         {
             // ... if there isnt, we add a new node ...
-            ParentNode.Nodes.Add(new());
+            ParentNode.InsertNode(new());
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
             // ... and let the user know the parent was modified ...
@@ -78,7 +94,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... if we can add, then add and let the user know ...
-                ParentNode.Nodes.Add(new());
+                ParentNode.InsertNode(new());
 
                 return false;
             }
@@ -101,6 +117,9 @@ public class LayoutNode : DataObject<Guid>
                 // ... then save the node as a child ...
                 Nodes.Add(node);
 
+                // ... clear this objects node widths values ...
+                SetNodeWidths("");
+
                 // ... finally call add on this new node ...
                 node.AddNode(row);
 
@@ -118,8 +137,207 @@ public class LayoutNode : DataObject<Guid>
         }
     }
 
-    public bool DeleteNode(LayoutNode node)
+    internal void InsertNode(LayoutNode node)
     {
-        throw new NotImplementedException();
+        // add the new node ...
+        Nodes.Add(node);
+        // ... then order those nodes ...
+        var sorted = OrderNodes();
+        // ... and for each item in the sort ...
+        foreach(var pair in sorted)
+        {
+            // ... if the node is the node we just added ...
+            if(pair.Value == node)
+            {
+                // ... get the width values ...
+                var widths = RawNodeWidths.Split(' ');
+                // ... then the values without the gutters ...
+                var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
+                // ... then if there is a previous value we can get ...
+                var prevSize = pair.Key - 1;
+                // ... and set an indicator for generating new size values ...
+                bool generateSizes = true;
+                if(sizes.Count > prevSize)
+                {
+                    // ... pull the size string ...
+                    var sizeStr = sizes[prevSize];
+                    // ... and trim that to remove the % sign ...
+                    var sizeTrim = sizeStr[0..(sizeStr.Length - 1)];
+                    // ... and turn it into an integer ...
+                    if(int.TryParse(sizeTrim, out int size))
+                    {
+                        // ... find the first half of the split ...
+                        int halfOne = size / 2;
+                        // ... and the second ...
+                        int halfTwo = size - halfOne;
+
+                        // ... then set the existing size to half one ...
+                        sizes[prevSize] = $"{halfOne}%";
+                        // ... and the new value to half two ...
+                        sizes.Insert(pair.Key, $"{halfTwo}%");
+
+                        // ... then make a new node widths value by combining all the
+                        // percentages with gutters ...
+                        SetNodeWidths(string.Join($" {GUTTER_SIZE} ", sizes));
+
+                        // ... because all this worked, set the generate sizes value
+                        // to false ...
+                        generateSizes = false;
+                    }
+                }
+
+                // ... if we need to generate new sizes ...
+                if (generateSizes)
+                {
+                    // ... generate them ...
+                    GenerateNodeSizes(sorted);
+                }
+
+                // ... then break out of the loop.
+                break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Deletes a child node from it's parent.
+    /// </summary>
+    /// <param name="node">The node to remove.</param>
+    /// <param name="mergeLeft">True if the system should merge left, false if it should merege right.
+    /// Does not have any effect when there is only one node to remove.</param>
+    /// <returns>True if the node was removed, false if not.</returns>
+    internal bool DeleteNode(LayoutNode node, bool mergeLeft = true)
+    {
+        var res = Nodes.Remove(node);
+        if (!res)
+            return false;
+
+        // ... if there is a single child node left ...
+        if(Nodes.Count == 1)
+        {
+            // ... get the child ...
+            var child = Nodes[0];
+            // ... take the child information and save it to this node ...
+            Component = child.Component;
+            ComponentId = child.ComponentId;
+
+            if(Component is not null)
+                Component.ParentNodeId = Key;
+
+            // ... then remove the child ...
+            Nodes.Remove(child);
+        }
+        // ... if there is more than one node ...
+        else if (Nodes.Count > 1)
+        {
+            // ... then sort the remaning nodes ...
+            var sorted = OrderNodes();
+
+            // ... then get the width values ...
+            var widths = RawNodeWidths.Split(' ');
+            // ... then the values without the gutters ...
+            var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
+            // ... then if there is a previous value we can get (either left or right) ...
+            var prevSize = node.Order + (mergeLeft ? -1 : 1);
+            // ... and set an indicator for generating new size values ...
+            bool generateSizes = true;
+            if (sizes.Count > prevSize && sizes.Count > node.Order)
+            {
+                // ... pull the size string ...
+                var sizeStr = sizes[prevSize];
+                // ... and trim that to remove the % sign ...
+                var sizeTrimLeft = sizeStr[0..(sizeStr.Length - 1)];
+
+                // ... then do it again for the other side of the removed node ...
+                sizeStr = sizes[node.Order];
+                var sizeTrimRight = sizeStr[0..(sizeStr.Length - 1)];
+
+                // ... and turn it into an integer ...
+                if (int.TryParse(sizeTrimLeft, out int sizeLeft)
+                    && int.TryParse(sizeTrimRight, out int sizeRight))
+                {
+                    // ... combine the sizes ...
+                    int size = sizeLeft + sizeRight;
+
+                    // ... then set the existing size to the new size ...
+                    sizes[prevSize] = $"{size}%";
+                    // ... then remove the value for the node we got rid of ...
+                    sizes.RemoveAt(node.Order);
+
+                    // ... then make a new node widths value by combining all the
+                    // percentages with gutters ...
+                    SetNodeWidths(string.Join($" {GUTTER_SIZE} ", sizes));
+
+                    // ... because all this worked, set the generate sizes value
+                    // to false ...
+                    generateSizes = false;
+                }
+            }
+
+            // ... if we need to generate new sizes ...
+            if (generateSizes)
+            {
+                // ... generate them ...
+                GenerateNodeSizes(sorted);
+            }
+        }
+
+        // ... then let the caller know this was a success
+        return true;
+    }
+
+    /// <summary>
+    /// Deletes this node.
+    /// </summary>
+    /// <param name="mergeLeft">True if the system should merge left, false if it should merege right.
+    /// Does not have any effect when there is only one node to remove.</param>
+    /// <remarks>
+    /// The top level parent node can not be deleted. If you want
+    /// to remove that node, you need to delete the page itself.
+    /// </remarks>
+    /// <returns>A <see cref="bool"/> value that is true if the
+    /// node was deleted and false if it was not.</returns>
+    public bool DeleteNode(bool mergeLeft = true)
+    {
+        if(ParentNode is null)
+        {
+            // The parent node can not be deleted - delete
+            // the page instead.
+            return false;
+        }
+
+        return ParentNode.DeleteNode(this, mergeLeft);
+    }
+
+    private SortedList<int, LayoutNode> OrderNodes()
+    {
+        // ... recalculate the order of the nodes ...
+        SortedList<int, LayoutNode> children = new();
+        // ... by placing them all in an sorted list ...
+        foreach (var child in Nodes)
+            children.Add(child.Order, child);
+        // ... then assigning the new order values ...
+        int i = 0;
+        foreach (var child in children.Values)
+            child.Order = i++;
+
+        return children;
+    }
+
+    private void GenerateNodeSizes(SortedList<int, LayoutNode> sorted)
+    {
+        // ... then make a new sizes list ...
+        List<string> newSizes = new();
+        // ... and calculate the percent that each item will take up ...
+        int percent = (int)(1d / sorted.Count * 100);
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            // ... then add the percent value for each item in the split ...
+            newSizes.Add($"{percent}%");
+        }
+
+        // ... then make a new node widths value by combining all the
+        // percentages with gutters ...
+        SetNodeWidths(string.Join($" {GUTTER_SIZE} ", newSizes));
     }
 }

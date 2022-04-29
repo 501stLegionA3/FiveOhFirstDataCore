@@ -1,20 +1,195 @@
 ﻿<CascadingValue Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
-	<div class="h-full grid grid-cols-3 grid-rows-1 gap-2 text-center">
-		<div class="relative col-span-1">
-			@*Component Selection*@
-			<div class="@(ShowConfigurationOptions ? "invisible" : "visible") transition-all absolute inset-0 overflow-auto">
+	<div class="inline-flex w-full h-full">
+		<div class="@(SidebarVisible ? "w-[33%] p-2" : "invisible w-[0%]") transition-all">
+			<div class="grid grid-cols-1 grid-flow-row gap-2">
+				@*Page List Pannel
+					TODO: Search open pages
+						- Order pages by route
+						- Nest routed pages
+						- Add edit buttons for pages
 
-			</div>
-			@*Component Setting Options Panel*@
-			<div class="@(ShowConfigurationOptions ? "visible" : "invisible") transition-all absolute inset-0 overflow-auto">
+						- Add settings panel switch
 
+						- Add drag and drop components for pages
+				*@
+
+				@switch(LeftMenuState)
+				{
+					case LeftMenu.PageSelection:
+						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+							Pages
+							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+								@onclick="ToggleSidebar">
+								keyboard_double_arrow_left
+							</button>
+						</div>
+						<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 gap-2
+							relative transition-all"
+							Model="this">
+							@if (DisplayNewPage)
+							{
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+									@onclick="() => DisplayNewPage = !DisplayNewPage">
+										keyboard_double_arrow_up
+								</button>
+							}
+							else
+							{
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+									@onclick="() => DisplayNewPage = !DisplayNewPage">
+										keyboard_double_arrow_down
+								</button>
+							}
+								
+							<p>Create New Page</p>
+
+							<div class="grid grid-cols-1 grid-flow-row gap-2
+								@(DisplayNewPage ? "block" : "hidden")">
+
+								<div class="input-group">
+									<InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
+									<label for="page-name" class="input-label">Page Name</label>
+								</div>
+
+								<div class="input-group">
+									<InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
+									<label for="page-route" class="input-label">Page Route</label>
+								</div>
+
+								<button class="button-op-success" @onclick="CreateNewPageAsync" type="submit">Create</button>
+							</div>
+						</EditForm>
+
+						<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+							relative transition-all"
+							Model="this">
+							@if (DisplaySearch)
+							{
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+									@onclick="() => DisplaySearch = !DisplaySearch">
+										keyboard_double_arrow_up
+								</button>
+							}
+							else
+							{
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+									@onclick="() => DisplaySearch = !DisplaySearch">
+										keyboard_double_arrow_down
+								</button>
+							}
+								
+							<p>Search Pages</p>
+
+							<div class="grid grid-cols-1 grid-flow-row gap-2
+								@(DisplaySearch ? "block" : "hidden")">
+
+								<div class="input-group">
+									<InputText id="page-name-search" type="text" class="input-control peer" placeholder="Search by Name"
+										Value="@NameSearch" ValueExpression="() => NameSearch" ValueChanged="OnNameSearchChanged"/>
+									<label for="page-name-search" class="input-label">Search by Name</label>
+								</div>
+
+								<div class="input-group">
+									<InputText id="page-route-search" type="text" class="input-control peer" placeholder="Search by Route"
+										Value="@RouteSearch" ValueExpression="() => RouteSearch" ValueChanged="OnRouteSearchChanged"/>
+									<label for="page-route-search" class="input-label">Search by Route</label>
+								</div>
+							</div>
+
+							<button class="invisble h-0 w-0" type="submit" id="mock-submit-handler"></button>
+						</EditForm>
+
+						@foreach(var pagePair in PageDisplayOrder)
+						{
+							var depth = pagePair.Item1;
+							var pageData = pagePair.Item2;
+							var visible = FilteredPages.Contains(pageData);
+
+							<div class="@(visible ? "h-full" : "h-0 invisible") transition-all inline-flex group">
+								@for (int i = 0; i < depth; i++)
+								{
+									<div class="px-2 flex-none"></div>
+								}
+
+								<div class="flex-grow p-2 shadow-md border-slate-400 rounded-r-lg border-2 group-last:rounded-tr-lg group-last:rounded-br-none
+									grid grid-cols-3 grid-rows-1 align-center">
+									<div class="font-mono text-left">@pageData.Route</div>
+									<div class="text-center">@pageData.Name</div>
+									<button class="button-util-action" @onclick="() => StartPageEdit(pageData)">Edit</button>
+								</div>
+							</div>
+						}
+						break;
+
+					case LeftMenu.ComponentSelection:
+						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+							Page Editor
+							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+								right-1 top-1 material-symbols-rounded bg-slate-200"
+								@onclick="ToggleSidebar">
+								keyboard_double_arrow_left
+							</button>
+						</div>
+
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative">
+							Components
+						</div>
+						break;
+
+					case LeftMenu.SettingsSelection:
+						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+							Settings
+							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+								right-1 top-1 material-symbols-rounded bg-slate-200"
+								@onclick="ToggleSidebar">
+								keyboard_double_arrow_left
+							</button>
+						</div>
+						break;
+				}
 			</div>
 		</div>
-		<div class="relative col-span-2">
-			@*Page/Component Editing Area*@
+		<div class="flex-grow relative transition-all">
+			@if(!SidebarVisible)
+			{
+				<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+					left-1 top-1 material-symbols-rounded bg-slate-200 z-50"
+					@onclick="ToggleSidebar">
+					keyboard_double_arrow_right
+				</button>
+			}
 
-			@*Settings Editor*@
+			<div class="@(SidebarVisible ? "border-l-2 border-slate-400 pl-4" : "") h-full">
+				@*Page Editor Main
+					TODO: Edit exisitng pages
+						- Edit all pages that have components to use a new edit system.
+								 
+						- Add setting configuration switch that is controlled from the settings
+						panel switch above
+								 
+						- Support the ability to drop components
+				*@
 
+				@switch(RightMenuState)
+				{
+					case RightMenu.PageEditor:
+						@if (PageToEdit is not null)
+						{
+							<CascadingValue Value="true" Name="PageEdit">
+								<LayoutNodeTreeLoader EditComponent="this" ParentNode="PageToEdit.Layout" />
+							</CascadingValue>
+						}
+						break;
+
+					case RightMenu.SettingsEditor:
+						break;
+				}
+			</div>
 		</div>
 	</div>
 </CascadingValue>

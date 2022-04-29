@@ -5,6 +5,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="npm install" />
+    <Exec Command="npx webpack --config ../webpack.config.js" />
+  </Target>
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\bundle\$(ProjectName).styles.css -o wwwroot/css/scoped/project.min.css" />
     <Exec Command="npx postcss $(ProjectDir)obj\$(ConfigurationName)\$(TargetFramework)\scopedcss\projectbundle\$(ProjectName).bundle.scp.css -o wwwroot/css/scoped/bundle.min.css" />
@@ -40,5 +45,6 @@
 	<ItemGroup>
 	  <Folder Include="Development\unsafe_uploads\" />
 	  <Folder Include="wwwroot\css\scoped\" />
+	  <Folder Include="wwwroot\dist\" />
 	</ItemGroup>
 </Project>

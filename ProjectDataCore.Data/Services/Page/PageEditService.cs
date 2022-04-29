@@ -34,7 +34,8 @@ public class PageEditService : IPageEditService
         var obj = new CustomPageSettings()
         {
             Name = name,
-            Route = route
+            Route = route,
+            Layout = new()
         };
         // ... add it ...
         await _dbContext.AddAsync(obj);
