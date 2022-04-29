@@ -4,6 +4,7 @@ using ProjectDataCore.Data.Structures.Model.Page;
 using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Attributes;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -82,7 +83,7 @@ public class PageEditService : IPageEditService
 
         return await _dbContext.CustomPageSettings.Include(e=>e.Layout).ToListAsync();
     }
-
+    // TODO REWORK THIS
     public async Task<ActionResult<CustomPageSettings>> GetPageSettingsAsync(Guid page)
     {
         // Code here is modified from the IRoutingService load page to load a 
@@ -103,7 +104,7 @@ public class PageEditService : IPageEditService
         if (obj.Layout is not null)
         {
             // ... then the base layout to the level queue ...
-            Queue<LayoutComponentSettings> level = new();
+            Queue<LayoutNode> level = new();
             level.Enqueue(obj.Layout);
 
             // ... and while we have level data ...
@@ -112,15 +113,15 @@ public class PageEditService : IPageEditService
                 // ... attach the level item ...
                 var layoutObj = _dbContext.Attach(levelItem);
                 // ... and load its direct children ...
-                var children = layoutObj.Collection(x => x.ChildComponents).Query()
-                    .Include(x => x.ParentLayout)
+                var children = layoutObj.Collection(x => x.Nodes).Query()
+                    .Include(x => x.ParentNode)
                     .AsAsyncEnumerable();
 
                 // ... then for each child ...
                 await foreach (var child in children)
                 {
                     // ... if the child is a layout component, enqueue it.
-                    if (child is LayoutComponentSettings childLayout)
+                    if (child is LayoutNode childLayout)
                         level.Enqueue(childLayout);
                 }
             }
@@ -161,7 +162,8 @@ public class PageEditService : IPageEditService
             QualifiedTypeName = name
         };
 
-        pageData.Layout = layoutData;
+        // TODO
+        // pageData.Layout = layoutData;
 
         await _dbContext.SaveChangesAsync();
 
@@ -367,8 +369,9 @@ public class PageEditService : IPageEditService
         // Get the layout.
         var layoutData = await _dbContext.LayoutComponentSettings
             .Where(x => x.Key == layout)
-            .Include(x => x.ParentLayout)
-            .Include(x => x.ParentPage)
+            .Include(x => x.ParentNode)
+            // TODO
+            // .Include(x => x.ParentPage)
             .Include(x => x.ChildComponents)
             .FirstOrDefaultAsync();
 
@@ -413,7 +416,7 @@ public class PageEditService : IPageEditService
         // Get the layout.
         var compData = await _dbContext.EditableComponentSettings
             .Where(x => x.Key == comp)
-            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentNode)
             .FirstOrDefaultAsync();
 
         if (compData is null)
@@ -472,7 +475,7 @@ public class PageEditService : IPageEditService
         // Get the layout.
         var compData = await _dbContext.DisplayComponentSettings
             .Where(x => x.Key == comp)
-            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentNode)
             .FirstOrDefaultAsync();
 
         if (compData is null)
@@ -521,7 +524,7 @@ public class PageEditService : IPageEditService
         // Get the layout.
         var compData = await _dbContext.RosterComponentSettings
             .Where(x => x.Key == comp)
-            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentNode)
             .FirstOrDefaultAsync();
 
         if (compData is null)
@@ -629,7 +632,7 @@ public class PageEditService : IPageEditService
         // Get the button.
         var compData = await _dbContext.ButtonComponentSettings
             .Where(x => x.Key == comp)
-            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentNode)
             .FirstOrDefaultAsync();
 
         if (compData is null)
@@ -688,7 +691,7 @@ public class PageEditService : IPageEditService
         // Get the layout.
         var compData = await _dbContext.TextDisplayComponentSettings
             .Where(x => x.Key == comp)
-            .Include(x => x.ParentLayout)
+            .Include(x => x.ParentNode)
             .FirstOrDefaultAsync();
 
         if (compData is null)

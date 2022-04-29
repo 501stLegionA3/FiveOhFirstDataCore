@@ -13,6 +13,9 @@ public class LayoutNode : DataObject<Guid>
     public LayoutNode? ParentNode { get; set; }
     public Guid? ParentNodeId { get; set; }
 
+    public CustomPageSettings? PageSettings { get; set; }
+    public Guid? PageSettingsId { get; set; }
+
     public List<LayoutNode> Nodes { get; set; } = new();
     public int Order { get; set; }
     public bool Rows { get; set; } = false;

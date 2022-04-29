@@ -20,7 +20,7 @@
 
 							<button class="p-2 rounded-lg bg-blue-500"
 								@onclick="ToggleAuthSettingsPanelAsync">
-								<span class="material-icons-round">settings</span>
+								<span class="material-symbols-rounded">settings</span>
 							</button>
 						}
 					}
@@ -48,11 +48,11 @@
 											<button class="form-right-button" @onclick="OnChangeSortDirection">
 												@if(RosterUserSettings.SortAscending)
 												{
-													<span class="material-icons-round">arrow_upward</span>
+													<span class="material-symbols-rounded">arrow_upward</span>
 												}
 												else
 												{
-													<span class="material-icons-round">arrow_downward</span>
+													<span class="material-symbols-rounded">arrow_downward</span>
 												}
 											</button>
 										</div>
@@ -80,11 +80,11 @@
 													<button class="form-right-button" @onclick="OnChangeViewMode">
 														@if(RosterUserSettings.UserListing)
 														{
-															<span class="material-icons-round">view_list</span>
+															<span class="material-symbols-rounded">view_list</span>
 														}
 														else
 														{
-															<span class="material-icons-round">account_tree</span>
+															<span class="material-symbols-rounded">account_tree</span>
 														}
 													</button>
 												}
@@ -94,11 +94,11 @@
 												<button class="w-full border border-blue-700 hover:bg-blue-700 hover:text-white items-center p-2" @onclick="OnChangeViewMode">
 													@if(RosterUserSettings.UserListing)
 													{
-														<span class="material-icons-round">view_list</span>
+														<span class="material-symbols-rounded">view_list</span>
 													}
 													else
 													{
-														<span class="material-icons-round">account_tree</span>
+														<span class="material-symbols-rounded">account_tree</span>
 													}
 												</button>
 											}
@@ -141,7 +141,7 @@
 		</DisplayBox>
 	</Authorized>
 	<NotAuthorized>	
-		@if(ComponentData?.ParentLayout is null)
+		@if(ComponentData?.ParentNode is null)
 		{
 			<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
 		}

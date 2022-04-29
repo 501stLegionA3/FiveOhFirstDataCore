@@ -93,7 +93,8 @@ namespace ProjectDataCore.Pages.Admin.NavBar
 
         private void PageSelect(Guid? id)
         {
-            Editing.AuthKey = allPages.Where(x => x.Key == id).FirstOrDefault()?.Layout?.AuthorizationPolicyKey;
+            // TODO
+            // Editing.AuthKey = allPages.Where(x => x.Key == id).FirstOrDefault()?.Layout?.AuthorizationPolicyKey;
             Editing.PageId = id;
         }
     }

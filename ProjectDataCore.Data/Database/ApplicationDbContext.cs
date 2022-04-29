@@ -16,6 +16,9 @@ using System.Threading.Tasks;
 using ProjectDataCore.Data.Structures.Nav;
 using ProjectDataCore.Data.Structures.Account;
 using ProjectDataCore.Data.Structures.Policy;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -30,6 +33,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
 
     #region Page
     public DbSet<DisplayComponentSettings> DisplayComponentSettings { get; internal set; }
+    public DbSet<LayoutNode> LayoutNodes { get; internal set; }
     public DbSet<EditableComponentSettings> EditableComponentSettings { get; internal set; }
     public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
@@ -128,21 +132,30 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         var customPageSettings = builder.Entity<CustomPageSettings>();
         customPageSettings.HasKey(e => e.Key);
         customPageSettings.HasOne(e => e.Layout)
-            .WithOne(p => p.ParentPage)
-            .HasForeignKey<CustomPageSettings>(e => e.LayoutId);
+            .WithOne(p => p.PageSettings)
+            .HasForeignKey<LayoutNode>(e => e.PageSettingsId);
         customPageSettings.HasIndex(e => e.Route)
             .IsUnique(true);
 
+        var layoutNodes = builder.Entity<LayoutNode>();
+        layoutNodes.HasKey(e => e.Key);
+        layoutNodes.HasOne(e => e.ParentNode)
+            .WithMany(p => p.Nodes)
+            .HasForeignKey(e => e.ParentNodeId);
+        layoutNodes.HasOne(e => e.Component)
+            .WithOne(p => p.ParentNode)
+            .HasForeignKey<PageComponentSettingsBase>(p => p.ParentNodeId)
+            .IsRequired(false);
+
+        layoutNodes.Ignore(e => e.NodeWidths);
+
         var layoutComponentSettings = builder.Entity<LayoutComponentSettings>();
-        layoutComponentSettings.HasOne(e => e.ParentPage)
-            .WithOne(p => p.Layout)
-            .HasForeignKey<LayoutComponentSettings>(p => p.ParentPageId);
+        //layoutComponentSettings.HasOne(e => e.ParentPage)
+        //    .WithOne(p => p.Layout)
+        //    .HasForeignKey<LayoutComponentSettings>(p => p.ParentPageId);
 
         var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
         pageComponentSettingsBase.HasKey(e => e.Key);
-        pageComponentSettingsBase.HasOne(e => e.ParentLayout)
-            .WithMany(p => p.ChildComponents)
-            .HasForeignKey(e => e.ParentLayoutId);
         pageComponentSettingsBase.HasOne(e => e.AuthorizationPolicy)
             .WithMany(p => p.PageComponenetSettings)
             .HasForeignKey(e => e.AuthorizationPolicyKey);
@@ -205,6 +218,16 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey(e => e.ForUserId);
         baseAssignableValues.Navigation(e => e.AssignableConfiguration)
             .AutoInclude();
+
+        // We give these names manually because EFCORE likes to change the value type
+        // for an existing col instead of just making a new col for these values.
+        var booleanAssignableConfiguration = builder.Entity<BooleanValueAssignableConfiguration>();
+        booleanAssignableConfiguration.Property(e => e.AllowedValues)
+            .HasColumnName($"{nameof(BooleanValueAssignableConfiguration)}_{nameof(BooleanValueAssignableConfiguration.AllowedValues)}");
+
+        var booleanAssignableValues = builder.Entity<BooleanAssignableValue>();
+        booleanAssignableValues.Property(e => e.SetValue)
+            .HasColumnName($"{nameof(BooleanAssignableValue)}_{nameof(BooleanAssignableValue.SetValue)}");
         #endregion
 
         #region User

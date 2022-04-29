@@ -19,11 +19,11 @@
                             <div class="p-2 border-r @(Depth > 2 ? "border-rostert" : 
                                 Depth > 1 ? "border-rosters" : "border-rosterp")">
                                 <EditForm Model="this" class="grid grid-cols-10">
-                                    <button class="border border-op_danger hover:bg-op_danger hover:text-op_danger_t material-icons-round"
+                                    <button class="border border-op_danger hover:bg-op_danger hover:text-op_danger_t material-symbols-rounded"
                                         @onclick="() => OnEditSlot(null)">
                                         close
                                     </button>
-                                    <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-icons-round"
+                                    <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-symbols-rounded"
                                         @onclick="OnSaveSlotEdit">
                                         save
                                     </button>
@@ -57,7 +57,7 @@
                         @*Move Up*@
                         <div class="hidden group-hover:block absolute top-0 right-0 w-8 h-8 rounded-l-lg 
                             bg-util_action text-util_action_t">
-                            <button class="material-icons-round"
+                            <button class="material-symbols-rounded"
                                 @onclick="async () => await OnSlotMoveUp(pa)">
                                 expand_less
                             </button>
@@ -66,7 +66,7 @@
                         @*Move Down*@
                         <div class="hidden group-hover:block absolute bottom-0 right-10 w-8 h-8 rounded-lg 
                             bg-util_action text-util_action_t">
-                            <button class="material-icons-round"
+                            <button class="material-symbols-rounded"
                                 @onclick="async () => await OnSlotMoveDown(pa)">
                                 expand_more
                             </button>
@@ -75,7 +75,7 @@
                         @*Edit*@
                         <div class="hidden group-hover:block absolute bottom-0 left-20 w-8 h-8 rounded-lg
                             bg-util_action text-util_action_t">
-                            <button class="material-icons-round"
+                            <button class="material-symbols-rounded"
                                 @onclick="() => OnEditSlot(pa)">
                                 edit
                             </button>
@@ -84,7 +84,7 @@
                         @*Delete*@
                         <div class="hidden group-hover:block absolute top-0 left-0 w-8 h-8 rounded-r-lg
                             bg-op_danger text-op_danger_t">
-                            <button class="material-icons-round"
+                            <button class="material-symbols-rounded"
                                 @onclick="() => OnStartDelete(pa)">
                                 delete
                             </button>
@@ -96,7 +96,7 @@
             <div class="absolute -bottom-8 left-10 rounded-b-lg bg-util_action text-util_action_t hover:bg-op_success hover:text-op_success_t">
                 <EditForm class="grid grid-cols-5 grid-rows-1" Model="this">
                     <InputText class="col-span-4 rounded-b-lg p-1 text-black focus:ring-0" placeholder="Roster Slot Name" @bind-Value="NewRosterSlotName" />
-                    <button class="material-icons-round"
+                    <button class="material-symbols-rounded"
                         @onclick="OnAddRosterSlot">
                         add
                     </button>

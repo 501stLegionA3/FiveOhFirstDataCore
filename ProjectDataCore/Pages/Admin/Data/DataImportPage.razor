@@ -155,7 +155,7 @@
 
 										<div class="flex gap-2">
 											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
-											<button class="button-op-danger material-icons-round flex-none" @onclick="DeleteValueBinding">delete</button>
+											<button class="button-op-danger material-symbols-rounded flex-none" @onclick="DeleteValueBinding">delete</button>
 										</div>
 										
 										<hr />
@@ -247,7 +247,7 @@
 
 																			<hr />
 
-																			<button class="button-op-danger material-icons-round" 
+																			<button class="button-op-danger material-symbols-rounded" 
 																				@onclick="() => DeleteSingleValueAssignable(key)">
 																				delete
 																			</button>
@@ -321,7 +321,7 @@
 																		<InputNumber @bind-Value="maxPart" class="input-control" disabled="true" />
 																		<label for="new-check-select" class="input-label">Roster Slot Max</label>
 																	</div>
-																	<button class="button-op-danger material-icons-round" @onclick="() => ConditionalRemoveRange(index, rangeIndex)">delete</button>
+																	<button class="button-op-danger material-symbols-rounded" @onclick="() => ConditionalRemoveRange(index, rangeIndex)">delete</button>
 																</div>
 															}
 
@@ -372,15 +372,15 @@
 
 																	<div class="flex-none border border-black h-full mx-2"></div>
 
-																	<button class="button-util-action material-icons-round"
+																	<button class="button-util-action material-symbols-rounded"
 																		@onclick="() => ConditionalMoveCheck(index, checkIndex, -1)">expand_less</button>
 																	
-																	<button class="button-util-action material-icons-round"
+																	<button class="button-util-action material-symbols-rounded"
 																		@onclick="() => ConditionalMoveCheck(index, checkIndex, 1)">expand_more</button>
 
 																	<div class="flex-none border border-black h-full mx-2"></div>
 
-																	<button class="button-op-danger material-icons-round"
+																	<button class="button-op-danger material-symbols-rounded"
 																		@onclick="() => ConditionalDeleteCheck(index, checkIndex)">delete</button>
 																</div>
 															}
@@ -402,7 +402,7 @@
 
 										<div class="flex gap-2">
 											<button class="button-util-action flex-grow" @onclick="CloseValueBinding">Close</button>
-											<button class="button-op-danger material-icons-round flex-none" @onclick="DeleteValueBinding">delete</button>
+											<button class="button-op-danger material-symbols-rounded flex-none" @onclick="DeleteValueBinding">delete</button>
 										</div>
 
 									</div>

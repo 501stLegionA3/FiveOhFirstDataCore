@@ -19,7 +19,7 @@
 							<Authorized>
 								<button class="absolute top-0 left-0 p-2 rounded-lg bg-blue-500"
 									@onclick="ToggleLiveEditAsync">
-									<span class="material-icons-round">edit</span>
+									<span class="material-symbols-rounded">edit</span>
 								</button>
 							</Authorized>
 						</AuthorizationHandler>
@@ -53,7 +53,7 @@
 			</DisplayBox>
 		</Authorized>
 		<NotAuthorized>	
-			@if(ComponentData?.ParentLayout is null)
+			@if(ComponentData?.ParentNode is null)
 			{
 				<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
 			}
@@ -106,7 +106,7 @@ else if (ComponentData is not null)
 
 		<button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
 			@onclick="ToggleAuthSettingsPanelAsync">
-			<span class="material-icons-round">settings</span>
+			<span class="material-symbols-rounded">settings</span>
 		</button>
 	</div>
 }

@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 using System;
 using System.Collections.Concurrent;
@@ -77,7 +78,7 @@ public class RoutingService : IRoutingService
             yield return true;
 
             // ... then the base layout to the level queue ...
-            Queue<LayoutComponentSettings> level = new();
+            Queue<LayoutNode> level = new();
             level.Enqueue(settings.Layout);
 
             // ... and while we have level data ...
@@ -86,8 +87,8 @@ public class RoutingService : IRoutingService
                 // ... attach the level item ...
                 var layoutObj = _dbContext.Attach(levelItem);
                 // ... and load its direct children ...
-                var children = layoutObj.Collection(x => x.ChildComponents).Query()
-                    .Include(x => x.ParentLayout)
+                var children = layoutObj.Collection(x => x.Nodes).Query()
+                    .Include(x => x.ParentNode)
                     .AsAsyncEnumerable();
 
                 // ... then for each child ...
@@ -97,7 +98,7 @@ public class RoutingService : IRoutingService
                     yield return true;
 
                     // ... and if the child is a layout component, enqueue it.
-                    if (child is LayoutComponentSettings childLayout)
+                    if (child is LayoutNode childLayout)
                         level.Enqueue(childLayout);
                 }
             }

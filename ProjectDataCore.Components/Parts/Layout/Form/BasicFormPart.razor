@@ -61,19 +61,19 @@
 
                     <button class="absolute bottom-0 right-0 p-2 rounded-lg bg-slate-500"
                         @onclick="ToggleSettingsPanelAsync">
-                        <span class="material-icons-round">settings</span>
+                        <span class="material-symbols-rounded">settings</span>
                     </button>
 
                     <button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
                         @onclick="ToggleAuthSettingsPanelAsync">
-                        <span class="material-icons-round">settings</span>
+                        <span class="material-symbols-rounded">settings</span>
                     </button>
                 }
             }
         </div>
     </Authorized>
 	<NotAuthorized>	
-		@if(ComponentData?.ParentLayout is null)
+		@if(ComponentData?.ParentNode is null)
 		{
 			<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
 		}

@@ -59,7 +59,7 @@
 
 									<button class="absolute right-0 -bottom-7 px-1 border-red-500 border hover:bg-red-500 hover:text-white"
 											@onclick="async () => await RosterComponentSettings.ULPE_RemoveProperty(ia, OnRefreshRequested)">
-										<span class="material-icons-round">
+										<span class="material-symbols-rounded">
 											delete
 										</span>
 									</button>
@@ -69,11 +69,11 @@
 									<div class="absolute left-0 -bottom-7 grid grid-cols-2 grid-rows-1 gap-1">
 										<button class="add-button" 
 											@onclick="async () => await RosterComponentSettings.ULPE_MoveItem(ia, -1, OnRefreshRequested)">
-											<span class="material-icons-round">chevron_left</span>
+											<span class="material-symbols-rounded">chevron_left</span>
 										</button>
 										<button class="add-button" 
 											@onclick="async () => await RosterComponentSettings.ULPE_MoveItem(ia, 1, OnRefreshRequested)">
-											<span class="material-icons-round">chevron_right</span>
+											<span class="material-symbols-rounded">chevron_right</span>
 										</button>
 									</div>
 								</th>
@@ -112,18 +112,18 @@
 						@RosterComponentSettings.RosterDisplayProperties[i].PropertyName
 						<button class="absolute right-0 -bottom-7 px-1 border-red-500 border hover:bg-red-500 hover:text-white"
 							@onclick="async () => await RosterComponentSettings.RDPE_RemoveProperty(ia, OnRefreshRequested)">
-							<span class="material-icons-round">
+							<span class="material-symbols-rounded">
 								delete
 							</span>
 						</button>
 						<div class="absolute left-0 -bottom-7 grid grid-cols-2 grid-rows-1 gap-1">
 							<button class="add-button" 
 								@onclick="async () => await RosterComponentSettings.RDPE_MoveItem(ia, -1, OnRefreshRequested)">
-								<span class="material-icons-round">chevron_left</span>
+								<span class="material-symbols-rounded">chevron_left</span>
 							</button>
 							<button class="add-button" 
 								@onclick="async () => await RosterComponentSettings.RDPE_MoveItem(ia, 1, OnRefreshRequested)">
-								<span class="material-icons-round">chevron_right</span>
+								<span class="material-symbols-rounded">chevron_right</span>
 							</button>
 						</div>
 					</div>

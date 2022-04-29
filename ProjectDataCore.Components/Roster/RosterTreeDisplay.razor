@@ -10,7 +10,7 @@
                 Depth >= 1 ? "text-roster_secondary_t border-roster_secondary" : "text-roster_primary_t border-roster_primary")">
                 @if(!EditingRosterSection)
                 {
-                    <button class="mr-4 material-icons-round" @onclick="StartRosterSectionEdit">edit</button>
+                    <button class="mr-4 material-symbols-rounded" @onclick="StartRosterSectionEdit">edit</button>
                     <span>@Tree.Name</span>
                 }
                 else
@@ -20,12 +20,12 @@
                     </EditForm>
 
                     @*Close Edit*@
-                    <button class="absolute top-0 left-0 w-8 h-8 rounded-br-lg material-icons-round bg-op_danger text-op_danger_t"
+                    <button class="absolute top-0 left-0 w-8 h-8 rounded-br-lg material-symbols-rounded bg-op_danger text-op_danger_t"
                         @onclick="CancelRosterSectionEdit">
                         close
                     </button>
                     @*Save Edits*@
-                    <button class="absolute top-0 left-10 w-8 h-8 rounded-b-lg material-icons-round bg-op_success text-op_success_t"
+                    <button class="absolute top-0 left-10 w-8 h-8 rounded-b-lg material-symbols-rounded bg-op_success text-op_success_t"
                         @onclick="SaveRosterSectionEditAsync">
                         save
                     </button>
@@ -33,21 +33,21 @@
                     @*Add Display*@
                     if(!AddingDisplay)
                     {
-                        <button class="absolute top-0 right-0 w-8 h-8 rounded-bl-lg material-icons-round bg-util_action text-util_action_t"
+                        <button class="absolute top-0 right-0 w-8 h-8 rounded-bl-lg material-symbols-rounded bg-util_action text-util_action_t"
                             @onclick="ToggleAddDisplay">
                             tv
                         </button>
                     }
                     else
                     {
-                        <button class="absolute top-0 right-0 w-8 h-10 material-icons-round bg-util_action text-util_action_t"
+                        <button class="absolute top-0 right-0 w-8 h-10 material-symbols-rounded bg-util_action text-util_action_t"
                             @onclick="ToggleAddDisplay">
                             tv
                         </button>
                         <div class="absolute top-10 right-0 w-auto rounded-l-lg p-1 bg-util_action text-util_action_t">
                             <EditForm Model="this" class="grid grid-cols-5 grid-rows-1">
                                 <InputText class="text-black p-1 col-span-4 rounded-l-lg" placeholder="New Display Name" @bind-Value="NewDisplayName" />
-                                <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-icons-round"
+                                <button class="border border-op_success hover:bg-op_success hover:text-op_success_t material-symbols-rounded"
                                     @onclick="AddDisplayAsync">
                                     add
                                 </button>
@@ -59,13 +59,13 @@
                     @if (Parent is not null)
                     {
                         @*Move Up*@
-                        <button class="absolute top-0 right-10 w-8 h-8 rounded-b-lg bg-util_action text-util_action_t material-icons-round"
+                        <button class="absolute top-0 right-10 w-8 h-8 rounded-b-lg bg-util_action text-util_action_t material-symbols-rounded"
                             @onclick="OnRosterMoveUp">
                             expand_less
                         </button>
 
                         @*Move Down*@
-                        <button class="absolute bottom-0 right-10 w-8 h-8 rounded-t-lg bg-util_action text-util_action_t material-icons-round"
+                        <button class="absolute bottom-0 right-10 w-8 h-8 rounded-t-lg bg-util_action text-util_action_t material-symbols-rounded"
                             @onclick="OnRosterMoveDown">
                             expand_more
                         </button>
@@ -73,14 +73,14 @@
                         @*Delete Roster*@
                         @if(!ConfirmDelete)
                         {
-                            <button class="absolute top-0 right-32 w-8 h-8 rounded-b-lg bg-op_danger text-op_danger_t material-icons-round"
+                            <button class="absolute top-0 right-32 w-8 h-8 rounded-b-lg bg-op_danger text-op_danger_t material-symbols-rounded"
                                 @onclick="ToggleDeleteDisplay">
                                 delete
                             </button>
                         }
                         else
                         {
-                            <button class="absolute top-0 right-32 w-8 h-10 bg-op_danger text-op_danger_t material-icons-round"
+                            <button class="absolute top-0 right-32 w-8 h-10 bg-op_danger text-op_danger_t material-symbols-rounded"
                                 @onclick="ToggleDeleteDisplay">
                                 delete
                             </button>
@@ -127,7 +127,7 @@
                             <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
                             <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
                                 @onclick="() => SetPendingAdd(ai)">
-                                <span class="material-icons-round place-self-center text-util_action_t">add</span>
+                                <span class="material-symbols-rounded place-self-center text-util_action_t">add</span>
                             </button>
                         }
                     </div>
@@ -163,7 +163,7 @@
                         <div class="absolute border-y-2 border-util_action -right-2 -top-0.5 w-2" />
                         <button class="absolute -right-10 -top-4 h-8 w-8 rounded-full bg-util_action grid grid-cols-1"
                         @onclick="() => SetPendingAdd(RosterIndex)">
-                            <span class="material-icons-round place-self-center text-util_action_t">add</span>
+                            <span class="material-symbols-rounded place-self-center text-util_action_t">add</span>
                         </button>
                     }
                 </div>

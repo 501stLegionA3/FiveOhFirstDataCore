@@ -15,7 +15,7 @@
 								&& (ButtonUse != 0 || (ButtonUse == 0 && !i.AdminPolicy)))
 							{
 								<button class="flex-auto bg-pink-400 rounded-lg" @onclick="async () => await PolicySelectedAsync(i)">
-									<span class="material-icons-round">arrow_forward</span>
+									<span class="material-symbols-rounded">arrow_forward</span>
 								</button>
 							}
 						</div>
@@ -109,7 +109,7 @@
 													<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
 														@onclick="async () => await RemoveParentAsync(p)">
 															<span class="flex-grow px-2">@p.PolicyName</span>
-															<span class="material-icons-round flex-0">highlight_off</span>
+															<span class="material-symbols-rounded flex-0">highlight_off</span>
 													</button>
 												}
 											</div>

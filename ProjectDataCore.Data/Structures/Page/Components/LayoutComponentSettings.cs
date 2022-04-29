@@ -27,15 +27,15 @@ public class LayoutComponentSettings : PageComponentSettingsBase
     /// </summary>
     public List<PageComponentSettingsBase> ChildComponents { get; set; } = new();
 
-    /// <summary>
-    /// The page this layout belongs to. Will be null unless
-    /// this layout is the top level layout of the page.
-    /// </summary>
-    public CustomPageSettings? ParentPage { get; set; }
-    /// <summary>
-    /// The ID of the page in <see cref="ParentPage"/>
-    /// </summary>
-    public Guid? ParentPageId { get; set; }
+    ///// <summary>
+    ///// The page this layout belongs to. Will be null unless
+    ///// this layout is the top level layout of the page.
+    ///// </summary>
+    //public CustomPageSettings? ParentPage { get; set; }
+    ///// <summary>
+    ///// The ID of the page in <see cref="ParentPage"/>
+    ///// </summary>
+    //public Guid? ParentPageId { get; set; }
 
     public UserSelectComponentSettings? UserSelectSettings { get; set; }
 }

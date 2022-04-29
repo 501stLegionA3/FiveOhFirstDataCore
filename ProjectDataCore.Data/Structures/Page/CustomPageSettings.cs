@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ public class CustomPageSettings : DataObject<Guid>
     /// component, meaning the page can have multiple different
     /// items displayed.
     /// </summary>
-    public LayoutComponentSettings? Layout { get; set; }
+    public LayoutNode? Layout { get; set; }
     /// <summary>
     /// The ID for the layout in <see cref="Layout"/>
     /// </summary>

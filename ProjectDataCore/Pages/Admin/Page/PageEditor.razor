@@ -2,8 +2,8 @@
 
 <AuthorizationHandler Settings="new() { AuthorizationPolicyKey = Guid.Empty }">
 	<Authorized>
-		<div class="grid grid-cols-3 gap-4 grid-rows-1 p-3">
-			<div>
+		<div class="inline-flex w-full">
+			<div class="@(SidebarVisible ? "w-[33%] p-2" : "invisible w-[0%]") transition-all">
 				<div class="grid grid-cols-1 grid-flow-row gap-2">
 					@*Page List Pannel
 						TODO: Search open pages
@@ -19,19 +19,57 @@
 					@switch(LeftMenuState)
 					{
 						case LeftMenu.PageSelection:
-							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2">Pages</div>
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+								Pages
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200"
+									@onclick="ToggleSidebar">
+									keyboard_double_arrow_left
+								</button>
+							</div>
+							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2">
+								<p>Create New Page</p>
+							</div>
+							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2">
+								<p>Search Pages</p>
+							</div>
 							break;
 
 						case LeftMenu.ComponentSelection:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+								Components
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200"
+									@onclick="ToggleSidebar">
+									keyboard_double_arrow_left
+								</button>
+							</div>
 							break;
 
 						case LeftMenu.SettingsSelection:
+							<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+								Settings
+								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+									right-1 top-1 material-symbols-rounded bg-slate-200"
+									@onclick="ToggleSidebar">
+									keyboard_double_arrow_left
+								</button>
+							</div>
 							break;
 					}
 				</div>
 			</div>
-			<div class="col-span-2">
-				<div class="border-l-2 border-slate-400 pl-4 h-full">
+			<div class="@(SidebarVisible ? "w-[66%]" : "w-full") relative transition-all">
+				@if(!SidebarVisible)
+				{
+					<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+						left-1 top-1 material-symbols-rounded bg-slate-200"
+						@onclick="ToggleSidebar">
+						keyboard_double_arrow_right
+					</button>
+				}
+
+				<div class="@(SidebarVisible ? "border-l-2 border-slate-400 pl-4" : "") h-full">
 					@*Page Editor Main
 						TODO: Edit exisitng pages
 							- Edit all pages that have components to use a new edit system.
@@ -45,7 +83,7 @@
 					@switch(RightMenuState)
 					{
 						case RightMenu.PageEditor:
-							<LayoutNodeTreeLoader EditComponent="" ParentNode="null" />
+							<LayoutNodeTreeLoader @*EditComponent=""*@ ParentNode="null" />
 							break;
 
 						case RightMenu.SettingsEditor:

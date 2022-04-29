@@ -18,7 +18,7 @@ namespace ProjectDataCore.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.2")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -450,6 +450,44 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("NavModules");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("PageSettingsId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ParentNodeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("RawNodeWidths")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Rows")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("PageSettingsId")
+                        .IsUnique();
+
+                    b.HasIndex("ParentNodeId");
+
+                    b.ToTable("LayoutNodes");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.Property<Guid>("Key")
@@ -470,10 +508,13 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("LayoutComponentSettingsKey")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Order")
                         .HasColumnType("integer");
 
-                    b.Property<Guid?>("ParentLayoutId")
+                    b.Property<Guid?>("ParentNodeId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("QualifiedTypeName")
@@ -487,7 +528,10 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.HasIndex("AuthorizationPolicyKey");
 
-                    b.HasIndex("ParentLayoutId");
+                    b.HasIndex("LayoutComponentSettingsKey");
+
+                    b.HasIndex("ParentNodeId")
+                        .IsUnique();
 
                     b.ToTable("PageComponentSettingsBase");
 
@@ -740,7 +784,8 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<List<bool>>("AllowedValues")
                         .IsRequired()
-                        .HasColumnType("boolean[]");
+                        .HasColumnType("boolean[]")
+                        .HasColumnName("BooleanValueAssignableConfiguration_AllowedValues");
 
                     b.HasDiscriminator().HasValue("BooleanValueAssignableConfiguration");
                 });
@@ -751,8 +796,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<List<DateOnly>>("AllowedValues")
                         .IsRequired()
-                        .HasColumnType("date[]")
-                        .HasColumnName("DateOnlyValueAssignableConfiguration_AllowedValues");
+                        .HasColumnType("date[]");
 
                     b.HasDiscriminator().HasValue("DateOnlyValueAssignableConfiguration");
                 });
@@ -823,7 +867,8 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<List<bool>>("SetValue")
                         .IsRequired()
-                        .HasColumnType("boolean[]");
+                        .HasColumnType("boolean[]")
+                        .HasColumnName("BooleanAssignableValue_SetValue");
 
                     b.HasDiscriminator().HasValue("BooleanAssignableValue");
                 });
@@ -834,8 +879,7 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<List<DateOnly>>("SetValue")
                         .IsRequired()
-                        .HasColumnType("date[]")
-                        .HasColumnName("DateOnlyAssignableValue_SetValue");
+                        .HasColumnType("date[]");
 
                     b.HasDiscriminator().HasValue("DateOnlyAssignableValue");
                 });
@@ -922,12 +966,6 @@ namespace ProjectDataCore.Data.Migrations
 
                     b.Property<int>("MaxChildComponents")
                         .HasColumnType("integer");
-
-                    b.Property<Guid?>("ParentPageId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("ParentPageId")
-                        .IsUnique();
 
                     b.HasDiscriminator().HasValue("LayoutComponentSettings");
                 });
@@ -1206,19 +1244,38 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "PageSettings")
+                        .WithOne("Layout")
+                        .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "PageSettingsId");
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "ParentNode")
+                        .WithMany("Nodes")
+                        .HasForeignKey("ParentNodeId");
+
+                    b.Navigation("PageSettings");
+
+                    b.Navigation("ParentNode");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
                         .WithMany("PageComponenetSettings")
                         .HasForeignKey("AuthorizationPolicyKey");
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentLayout")
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", null)
                         .WithMany("ChildComponents")
-                        .HasForeignKey("ParentLayoutId");
+                        .HasForeignKey("LayoutComponentSettingsKey");
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "ParentNode")
+                        .WithOne("Component")
+                        .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "ParentNodeId");
 
                     b.Navigation("AuthorizationPolicy");
 
-                    b.Navigation("ParentLayout");
+                    b.Navigation("ParentNode");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
@@ -1319,15 +1376,6 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "ParentPage")
-                        .WithOne("Layout")
-                        .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "ParentPageId");
-
-                    b.Navigation("ParentPage");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "UserScope")
@@ -1378,6 +1426,13 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
                 {
                     b.Navigation("SubModules");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", b =>
+                {
+                    b.Navigation("Component");
+
+                    b.Navigation("Nodes");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>

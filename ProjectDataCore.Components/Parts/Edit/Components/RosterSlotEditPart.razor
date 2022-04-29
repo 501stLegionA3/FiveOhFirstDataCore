@@ -42,7 +42,7 @@
 								<button class="border border-op_success hover:bg-op_success hover:text-op_success_t inline-flex align-middle"
 									@onclick="OnAddAllowedRosterDisplay">
 									<span class="flex-grow px-2">Add</span>
-									<span class="material-icons-round flex-0">add</span>
+									<span class="material-symbols-rounded flex-0">add</span>
 								</button>
 								<div class="inline-flex justify-start gap-2">
 									@foreach (var display in EditModel.AllowedDisplays)
@@ -51,7 +51,7 @@
 										<button class="border border-green-500 px-2 py-1 hover:bg-green-500 hover:text-white inline-flex align-middle"
 										@onclick="() => OnRemoveAllowedRosterDisplay(u)">
 											<span class="flex-grow px-2">@u.Name</span>
-											<span class="material-icons-round flex-0">highlight_off</span>
+											<span class="material-symbols-rounded flex-0">highlight_off</span>
 										</button>
 									}
 								</div>
@@ -107,14 +107,14 @@
 						
 								<button class="flex border border-op_success hover:bg-op_success hover:text-op_success_t"
 										@onclick="OnAddRosterSlot">
-									<span class="material-icons-round">person_add</span>
+									<span class="material-symbols-rounded">person_add</span>
 								</button>
 							</div>
 
 							@if(RosterSlots.ElementAtOrDefault(SelectedSlot)?.OccupiedById.HasValue ?? false)
 							{
 								<div class="inline-flex justify-center text-left text-op_danger">
-									<span class="material-icons-round flex-0">warning</span>
+									<span class="material-symbols-rounded flex-0">warning</span>
 									<em class="flex-grow">This slot is currenlty occupied. Savings this form will replace the curant occupant with your selected user.</em>
 								</div>
 							}
@@ -126,7 +126,7 @@
 								<div class="flex-grow inline-flex gap-2 p-2 w-full text-center">
 									<button class="flex border border-op_danger hover:bg-op_danger hover:text-op_danger_t"
 										@onclick="() => OnRemoveRosterSlot(s)">
-										<span class="material-icons-round">person_remove</span>
+										<span class="material-symbols-rounded">person_remove</span>
 									</button>
 
 									<div class="flex-grow">
@@ -144,14 +144,14 @@
 								<button class="border border-util_action hover:bg-util_action hover:text-util_action_t inline-flex text-center"
 									@onclick="OnStartComponentEditAsync">
 									<span class="flex-grow px-2">Edit</span>
-									<span class="material-icons-round flex-0">edit</span>
+									<span class="material-symbols-rounded flex-0">edit</span>
 								</button>
 												
 								<button class="absolute top-0 right-0 p-2 rounded-lg bg-red-500" @onclick="RemoveCurrentDisplay">Remove Display</button>
 
 								<button class="absolute bottom-0 left-0 p-2 rounded-lg bg-blue-500"
 									@onclick="ToggleAuthSettingsPanelAsync">
-									<span class="material-icons-round">settings</span>
+									<span class="material-symbols-rounded">settings</span>
 								</button>
 							}
 						</div>
@@ -161,7 +161,7 @@
 		</DisplayBox>
 	</Authorized>
 	<NotAuthorized>	
-		@if(ComponentData?.ParentLayout is null)
+		@if(ComponentData?.ParentNode is null)
 		{
 			<p>You do not have permission to see this page. Go <a href="/">home</a>.</p>
 		}

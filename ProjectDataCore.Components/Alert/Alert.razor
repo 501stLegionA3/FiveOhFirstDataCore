@@ -5,25 +5,25 @@
         @switch (AlertItem.AlertType)
         {
             case Data.Structures.Model.Alert.AlertType.Error:
-                <span class="material-icons-outlined mr-2">
+                <span class="material-symbols-outlined mr-2">
                     error_outline
                 </span>
                 break;
 
             case Data.Structures.Model.Alert.AlertType.Warn:
-                <span class="material-icons-round mr-2">
+                <span class="material-symbols-rounded mr-2">
                     warning_amber
                 </span>
                 break;
 
             case Data.Structures.Model.Alert.AlertType.Success:
-                <span class="material-icons-round mr-2">
+                <span class="material-symbols-rounded mr-2">
                     check
                 </span>
                 break;
 
             default:
-                    <span class="material-icons-outlined mr-2">
+                    <span class="material-symbols-outlined mr-2">
                         info
                     </span>
                 break;
@@ -32,7 +32,7 @@
         <p>@AlertItem.Message</p>
 
         <span class="absolute top-0 bottom-0 right-0 px-4 py-3 closealertbutton cursor-pointer" @onclick="@CloseAlert">
-            <span class="material-icons-round">
+            <span class="material-symbols-rounded">
                 close
             </span>
         </span>

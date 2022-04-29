@@ -56,11 +56,11 @@ public class PageComponentSettingsBase : DataObject<Guid>
     /// <summary>
     /// The parent settings object. May be null if the page reference is not null for a layout component.
     /// </summary>
-    public LayoutComponentSettings? ParentLayout { get; set; }
+    public Layout.LayoutNode? ParentNode { get; set; }
     /// <summary>
-    /// The key for the <see cref="ParentLayout"/>
+    /// The key for the <see cref="ParentNode"/>
     /// </summary>
-    public Guid? ParentLayoutId { get; set; }
+    public Guid? ParentNodeId { get; set; }
 
     /// <summary>
     /// A list of parameter components that are using this page component as a scope

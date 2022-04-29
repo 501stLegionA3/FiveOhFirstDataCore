@@ -111,7 +111,8 @@ namespace ProjectDataCore.Components.Parts
                     // ... if its the first load, set the layout parameter ...
                     ComponentParams["ComponentData"] = PageSettings.Layout;
                     // ... and the component type ...
-                    ComponentType = RoutingService.GetComponentType(PageSettings.Layout.QualifiedTypeName);
+                    // TODO
+                    // ComponentType = RoutingService.GetComponentType(PageSettings.Layout.QualifiedTypeName);
                     first = false;
                 }
                 else if (first && PageSettings.Layout is null)
