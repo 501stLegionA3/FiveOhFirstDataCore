@@ -27,12 +27,85 @@
 									keyboard_double_arrow_left
 								</button>
 							</div>
-							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2">
+							<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 gap-2
+								relative transition-all"
+								Model="this">
+								@if (DisplayNewPage)
+								{
+									<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+										right-1 top-1 material-symbols-rounded bg-slate-200"
+										@onclick="() => DisplayNewPage = !DisplayNewPage">
+											keyboard_double_arrow_up
+									</button>
+								}
+								else
+								{
+									<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+										right-1 top-1 material-symbols-rounded bg-slate-200"
+										@onclick="() => DisplayNewPage = !DisplayNewPage">
+											keyboard_double_arrow_down
+									</button>
+								}
+								
 								<p>Create New Page</p>
-							</div>
-							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2">
+
+								<div class="grid grid-cols-1 grid-flow-row gap-2
+									@(DisplayNewPage ? "block" : "hidden")">
+
+									<div class="input-group">
+										<InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
+										<label for="page-name" class="input-label">Page Name</label>
+									</div>
+
+									<div class="input-group">
+										<InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
+										<label for="page-route" class="input-label">Page Route</label>
+									</div>
+
+									<button class="button-op-success">Create</button>
+								</div>
+							</EditForm>
+
+							<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+								relative transition-all"
+								Model="this">
+								@if (DisplaySearch)
+								{
+									<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+										right-1 top-1 material-symbols-rounded bg-slate-200"
+										@onclick="() => DisplaySearch = !DisplaySearch">
+											keyboard_double_arrow_up
+									</button>
+								}
+								else
+								{
+									<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+										right-1 top-1 material-symbols-rounded bg-slate-200"
+										@onclick="() => DisplaySearch = !DisplaySearch">
+											keyboard_double_arrow_down
+									</button>
+								}
+								
 								<p>Search Pages</p>
-							</div>
+
+								<div class="grid grid-cols-1 grid-flow-row gap-2
+									@(DisplaySearch ? "block" : "hidden")">
+
+									<div class="input-group">
+										<InputText id="page-name-search" type="text" class="input-control peer" placeholder="Search by Name"
+											Value="@NameSearch" ValueExpression="() => NameSearch" ValueChanged="OnNameSearchChanged"/>
+										<label for="page-name-search" class="input-label">Search by Name</label>
+									</div>
+
+									<div class="input-group">
+										<InputText id="page-route-search" type="text" class="input-control peer" placeholder="Search by Route"
+											Value="@RouteSearch" ValueExpression="() => RouteSearch" ValueChanged="OnRouteSearchChanged"/>
+										<label for="page-route-search" class="input-label">Search by Route</label>
+									</div>
+								</div>
+							</EditForm>
+
+
 							break;
 
 						case LeftMenu.ComponentSelection:

@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Page.Components.Layout;
+﻿using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ public partial class PageEditor : ComponentBase
 #pragma warning disable CS8618 // Inject is always non-null.
     [Inject]
     public IPageEditService PageEditService { get; set; }
+    [Inject]
+    public IAlertService AlertService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public LeftMenu LeftMenuState { get; set; } = LeftMenu.PageSelection;
@@ -59,43 +62,42 @@ public partial class PageEditor : ComponentBase
     private List<CustomPageSettings> Pages { get; set; } = new();
     private List<CustomPageSettings> FilteredPages { get; set; } = new();
 
-    private bool SearchingByName { get; set; } = true;
+    private bool DisplaySearch { get; set; } = false;
     private string NameSearch { get; set; } = "";
     private string RouteSearch { get; set; } = "";
 
     private CustomPageSettings? PageToEdit { get; set; }
 
+    public bool DisplayNewPage { get; set; } = false;
+    private string NewPageName { get; set; } = "";
+    private string NewPageRoute { get; set; } = "";
+
     private async Task RefreshPageListAsync()
     {
         Pages = await PageEditService.GetAllPagesAsync();
 
-        SearchingByName = !SearchingByName;
-        ChangeSearchType();
+        UpdateSearch();
     }
 
-    private void SearchPagesByName(string search)
+    private void OnNameSearchChanged(string search)
     {
         NameSearch = search;
 
-        FilteredPages = Pages.Where(x => x.Name.StartsWith(search, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+        UpdateSearch();
     }
 
-    private void SearchPagesByRoute(string search)
+    private void OnRouteSearchChanged(string search)
     {
         RouteSearch = search;
 
-        FilteredPages = Pages.Where(x => x.Route.StartsWith(search, StringComparison.OrdinalIgnoreCase))
-            .ToList();
+        UpdateSearch();
     }
 
-    private void ChangeSearchType()
+    private void UpdateSearch()
     {
-        SearchingByName = !SearchingByName;
-
-        if (SearchingByName)
-            SearchPagesByName(RouteSearch);
-        else SearchPagesByRoute(RouteSearch);
+        FilteredPages = Pages.Where(x => x.Route.StartsWith(RouteSearch, StringComparison.OrdinalIgnoreCase))
+            .Where(x => x.Name.StartsWith(NameSearch, StringComparison.OrdinalIgnoreCase))
+            .ToList();
     }
 
     private void StartPageEdit(CustomPageSettings? settings)
@@ -115,6 +117,11 @@ public partial class PageEditor : ComponentBase
 
         StartPageEdit(null);
         await RefreshPageListAsync();
+    }
+
+    private async Task CreateNewPageAsync()
+    {
+
     }
     #endregion
 }
