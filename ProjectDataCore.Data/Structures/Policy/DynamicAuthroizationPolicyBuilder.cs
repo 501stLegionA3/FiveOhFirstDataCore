@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
 using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Bus.Global;
 using ProjectDataCore.Data.Services.User;
 
 using System;
@@ -13,15 +14,15 @@ namespace ProjectDataCore.Data.Structures.Policy;
 public class DynamicAuthroizationPolicyBuilder : AuthorizationPolicyBuilder
 {
     public DynamicAuthorizationPolicy Policy { get; set; }
-    public IDataBus DataBus { get; set; }
+    public IGlobalDataBus DataBus { get; set; }
 
-    public void RequireAssertion(Func<AuthorizationHandlerContext, DynamicAuthorizationPolicy, IDataBus, bool> handler)
+    public void RequireAssertion(Func<AuthorizationHandlerContext, DynamicAuthorizationPolicy, IGlobalDataBus, bool> handler)
         => RequireAssertion(ctx => handler.Invoke(ctx, Policy, DataBus));
 
-    public void RequireAssertion(Func<AuthorizationHandlerContext, DynamicAuthorizationPolicy, IDataBus, Task<bool>> handler)
+    public void RequireAssertion(Func<AuthorizationHandlerContext, DynamicAuthorizationPolicy, IGlobalDataBus, Task<bool>> handler)
         => RequireAssertion(ctx => handler.Invoke(ctx, Policy, DataBus));
 
-    public DynamicAuthroizationPolicyBuilder WithDataBus(IDataBus dataBus)
+    public DynamicAuthroizationPolicyBuilder WithDataBus(IGlobalDataBus dataBus)
     {
         DataBus = dataBus;
         return this;

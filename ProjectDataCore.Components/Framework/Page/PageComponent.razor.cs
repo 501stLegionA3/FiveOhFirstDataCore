@@ -1,6 +1,9 @@
 using Microsoft.JSInterop;
 
 using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Bus.Scoped;
+using ProjectDataCore.Data.Structures.Events.Parameters;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 namespace ProjectDataCore.Components.Framework.Page;
@@ -11,6 +14,8 @@ public partial class PageComponent : IDisposable
     public IJSRuntime JSRuntime { get; set; }
     [Inject]
     public IAlertService AlertService { get; set; }
+    [Inject]
+    public IScopedDataBus ScopedDataBus { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter(Name = "PageEdit")]
@@ -27,9 +32,8 @@ public partial class PageComponent : IDisposable
 
     [Parameter]
     public LayoutNode? EditingNode { get; set; }
-    [Parameter]
-    public Func<Task>? NodeTreeLoaderRefresh { get; set; }
-    private string NodeKeyRoot { get; set; }
+    [CascadingParameter]
+    public Func<NodeTreeLoaderRefreshRequestedEventArgs, Task>? NodeTreeLoaderRefresh { get; set; }
     private bool DraggingSplitscreen { get; set; } = false;
 
     private bool IsConfiguring { get; set; } = false;
@@ -55,8 +59,6 @@ public partial class PageComponent : IDisposable
             throw new ArgumentException("There must be at least a publish section to a Page Component.", nameof(PageComponent));
         if (string.IsNullOrWhiteSpace(Name))
             throw new ArgumentException("The name must have a non-blank value.", nameof(Name));
-
-        NodeKeyRoot = EditingNode?.Key.ToString() ?? "";
     }
 
     protected DotNetObjectReference<PageComponent> GetDotNetReference()
@@ -84,10 +86,10 @@ public partial class PageComponent : IDisposable
                     case "right":
                         EditingNode.AddNode(true, false);
                         break;
-                    case "bottom":
+                    case "left":
                         EditingNode.AddNode(true, true);
                         break;
-                    case "left":
+                    case "bottom":
                         EditingNode.AddNode(false, false);
                         break;
                 }
@@ -97,8 +99,7 @@ public partial class PageComponent : IDisposable
                 AlertService.CreateErrorAlert(ex.Message);
             }
 
-            if (NodeTreeLoaderRefresh is not null)
-                await NodeTreeLoaderRefresh.Invoke();
+            ScopedDataBus.RequestLayoutNodeTreeRefresh(this, new());
         }
     }
 
@@ -106,7 +107,7 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{NodeKeyRoot}-add_split", GetDotNetReference(), nameof(AddSplit));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplit));
         }
     }
 
@@ -114,7 +115,7 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.init", NodeKeyRoot, GetDotNetReference(), true, nameof(DragChanged));
+            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, nameof(DragChanged));
         }
     }
 
@@ -129,7 +130,7 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDroppable", NodeKeyRoot);
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDroppable", EditingNode.EditorKey);
         }
     }
 
@@ -137,7 +138,7 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{NodeKeyRoot}-add_split");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add_split");
         }
     }
 

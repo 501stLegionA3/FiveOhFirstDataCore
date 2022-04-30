@@ -8,8 +8,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Data.Services.Bus;
-public partial class DataBus : IDataBus
+namespace ProjectDataCore.Data.Services.Bus.Global;
+public partial class GlobalDataBus : IGlobalDataBus
 {
     protected ConcurrentDictionary<string, ILocalUserService> LocalUsers { get; init; } = new();
     protected ConcurrentDictionary<ILocalUserService, string> LocalUsersInverse { get; init; } = new();

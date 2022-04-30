@@ -11,6 +11,18 @@ public class LayoutNode : DataObject<Guid>
 {
     internal const string GUTTER_SIZE = "10px";
 
+    private string? _editorKey;
+    public string EditorKey
+    {
+        get
+        {
+            if (_editorKey is null)
+                _editorKey = Guid.NewGuid().ToString();
+
+            return _editorKey;
+        }
+    }
+
     public PageComponentSettingsBase? Component { get; set; }
     public Guid? ComponentId { get; set; }
 
@@ -67,12 +79,12 @@ public class LayoutNode : DataObject<Guid>
         {
             // ... if the parent node is null, then this is the uppermost node handler
             // and we need to add two children ...
-            Nodes.Add(new());
+            Nodes.Add(CreateChild());
             // ... insert node will handle both new nodes to
             // set the node widths value, so lets
             // clear any existing values first ...
             SetNodeWidths("");
-            InsertNode(new(), addAboveOrLeft);
+            InsertNode(CreateChild(), addAboveOrLeft);
 
             // ... because this is going to be the first node, we also set the
             // row/col indicator ...
@@ -98,7 +110,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... if we can add, then add and let the user know ...
-                ParentNode.InsertNode(new(), addAboveOrLeft);
+                ParentNode.InsertNode(CreateChild(), addAboveOrLeft);
 
                 return false;
             }
@@ -107,16 +119,7 @@ public class LayoutNode : DataObject<Guid>
             else if (Nodes.Count <= 0)
             {
                 // ... first, lets make a new child node that contains the information from this node ...
-                var node = new LayoutNode()
-                {
-                    Component = Component,
-                    ComponentId = ComponentId,
-                    ParentNode = this
-                };
-
-                // ... and clear the component data for this node ...
-                Component = null;
-                ComponentId = null;
+                var node = CreateChild(true);
 
                 // ... then save the node as a child ...
                 Nodes.Add(node);
@@ -344,5 +347,45 @@ public class LayoutNode : DataObject<Guid>
         // ... then make a new node widths value by combining all the
         // percentages with gutters ...
         SetNodeWidths(string.Join($" {GUTTER_SIZE} ", newSizes));
+    }
+
+    /// <summary>
+    /// Creates a new node that is child of this node.
+    /// </summary>
+    /// <remarks>
+    /// This method does not add the child node to <see cref="Nodes"/>
+    /// </remarks>
+    /// <param name="transferComponentData">If the component data for this node should
+    /// be transfered to the new child.</param>
+    /// <returns>A new <see cref="LayoutNode"/> that is a child of this node.</returns>
+    private LayoutNode CreateChild(bool transferComponentData = false)
+    {
+        // ... create a new child object ...
+        var node = new LayoutNode()
+        {
+            ParentNode = this,
+            ParentNodeId = this.Key
+        };
+
+        // ... if we need to transfer component data ...
+        if (transferComponentData)
+        {
+            // ... then move the data over ...
+            node.Component = Component;
+            node.ComponentId = ComponentId;
+
+            // ... and configure the component if its exists ...
+            if (node.Component is not null)
+            {
+                node.Component.ParentNode = node;
+                node.Component.ParentNodeId = node.Key;
+            }
+
+            // ... and clear this nodes data ...
+            Component = null;
+            ComponentId = null;
+        }
+        // ... then treturn the node.
+        return node;
     }
 }

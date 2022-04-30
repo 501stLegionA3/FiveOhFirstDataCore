@@ -13,6 +13,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using ProjectDataCore.Data.Services.Account;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Bus.Global;
+using ProjectDataCore.Data.Services.Bus.Scoped;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.InternalAuth;
 using ProjectDataCore.Data.Services.Logging;
@@ -102,7 +104,8 @@ public class Startup
             .AddScoped<INavModuleService, NavModuleService>()
             .AddScoped<IAssignableDataService, AssignableDataService>()
             .AddScoped<IAlertService, AlertService>()
-            .AddScoped<IImportService, ImportService>();
+            .AddScoped<IImportService, ImportService>()
+            .AddScoped<IScopedDataBus, ScopedDataBus>();
 
         // Scoped Services
         services
@@ -122,7 +125,7 @@ public class Startup
             })
             .AddSingleton<IAccountLinkService, AccountLinkService>()
             .AddSingleton<IPolicyService, PolicyService>()
-            .AddSingleton<IDataBus, DataBus>()
+            .AddSingleton<IGlobalDataBus, GlobalDataBus>()
             .AddSingleton<IModularRosterService, ModularRosterService>()
             .AddSingleton<IPageEditService, PageEditService>()
             .AddSingleton<IScopedUserService, ScopedUserService>()

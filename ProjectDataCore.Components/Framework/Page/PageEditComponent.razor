@@ -120,7 +120,7 @@
 									grid grid-cols-3 grid-rows-1 align-center">
 									<div class="font-mono text-left">@pageData.Route</div>
 									<div class="text-center">@pageData.Name</div>
-									<button class="button-util-action" @onclick="() => StartPageEdit(pageData)">Edit</button>
+									<button class="button-util-action" @onclick="async () => await StartPageEditAsync(pageData)">Edit</button>
 								</div>
 							</div>
 						}

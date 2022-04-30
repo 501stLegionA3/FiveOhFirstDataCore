@@ -5,8 +5,8 @@ window.DropInterop = (() => {
     const dropzones = {};
 
     return {
-        init(guid, dotNetRef, uniqueDrops = false, dragChangeMethod = "", pickup = '.dragzone', draggable = '.drag-item', dropzone = '.dropzone') {
-            const elements = document.querySelectorAll(pickup);
+        init(guid, dotNetRef, uniqueDrops = false, dragChangeMethod = "", draggable = '.drag-item', dropzone = '.dropzone') {
+            const elements = document.querySelectorAll(`[data-drag-container="${guid}"]`);
 
             const drop = new Droppable(elements, {
                 draggable: draggable,

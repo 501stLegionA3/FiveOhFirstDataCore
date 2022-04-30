@@ -1,61 +1,66 @@
-﻿@if(ParentNode is not null)
+﻿@using ProjectDataCore.Components.Framework.Cascade
+@if(ParentNode is not null)
 {
-	@if(ParentNode.Component is not null)
-	{
-		<DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
-	}
-	else if (ParentNode.Nodes.Count > 0)
-	{
-		if(IsEditingScope)
-		{
-			@*We need to use a grid system here*@
-
-			<div class="w-full h-full relative grid" 
-				 style="@((ParentNode.Rows ? "grid-template-rows" : "grid-template-columns") + $": {ParentNode.RawNodeWidths}")"
-				 data-split-container="@ParentNodeId">
-				@for (int i = 0; i < ParentNode.Nodes.Count; i++)
+	<CascadeIfNull Value="RefreshRequested">
+		<Content>
+			@if(ParentNode.Component is not null)
+			{
+				<DynamicComponent Type="ComponentType" Parameters="ComponentParams" />
+			}
+			else if (ParentNode.Nodes.Count > 0)
+			{
+				if(IsEditingScope)
 				{
-					var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
-					
-					<div class="relative">
-						@if (node is not null)
+					@*We need to use a grid system here*@
+
+					<div class="w-full h-full relative grid" 
+						 style="@((ParentNode.Rows ? "grid-template-rows" : "grid-template-columns") + $": {ParentNode.RawNodeWidths}")"
+						 data-split-container="@ParentNode.EditorKey">
+						@for (int i = 0; i < ParentNode.Nodes.Count; i++)
 						{
-							<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+							var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
+					
+							<div class="relative">
+								@if (node is not null)
+								{
+									<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+								}
+							</div>
+
+							@if(i < ParentNode.Nodes.Count - 1)
+							{
+								<div id="gutter-node-@i"></div>
+							}
 						}
 					</div>
-
-					@if(i < ParentNode.Nodes.Count - 1)
-					{
-						<div id="gutter-node-@i"></div>
-					}
 				}
-			</div>
-		}
-		else
-		{
-			@*We need to use divs with a percentage value here*@
-			<div class="w-max h-max flex @(ParentNode.Rows ? "flex-col" : "flex-row")">
-				@for(int i = 0; i < ParentNode.Nodes.Count; i++)
+				else
 				{
-					var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
+					@*We need to use divs with a percentage value here*@
+					<div class="w-max h-max flex @(ParentNode.Rows ? "flex-col" : "flex-row")">
+						@for(int i = 0; i < ParentNode.Nodes.Count; i++)
+						{
+							var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);
 
-					<div style="@((ParentNode.Rows ? $"height" : "width") + $": {ParentNode.NodeWidths[i]}%")">
-						<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+							<div style="@((ParentNode.Rows ? $"height" : "width") + $": {ParentNode.NodeWidths[i]}%")">
+								<LayoutNodeTreeLoader ParentNode="node" EditComponent="EditComponent" />
+							</div>
+						}
 					</div>
 				}
-			</div>
-		}
-	}
-	else
-	{
-		<PageComponent Name="DummyComponent" EditingNode="ParentNode" NodeTreeLoaderRefresh="RefreshRequested">
-			<Publish></Publish>
-			<Editing>
-				@*Droppable
-					TODO
-						- Implement droppable div box and handle component additions.
-				*@
-			</Editing>
-		</PageComponent>
-	}
+			}
+			else
+			{
+				<PageComponent Name="DummyComponent" EditingNode="ParentNode">
+					<Publish></Publish>
+					<Editing>
+						@*Droppable
+							TODO
+								- Implement droppable div box and handle component additions.
+						*@
+					</Editing>
+				</PageComponent>
+			}
+		</Content>
+	</CascadeIfNull>
 }

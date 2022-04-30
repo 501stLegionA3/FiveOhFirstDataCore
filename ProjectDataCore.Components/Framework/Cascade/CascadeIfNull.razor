@@ -1,0 +1,12 @@
+﻿@typeparam TValue
+
+@if (Cascaded is null)
+{
+	<CascadingValue Value="Value">
+		@Content
+	</CascadingValue>
+}
+else
+{
+	@Content
+}

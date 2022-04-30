@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220429002752_Dev2")]
+    [Migration("20220430140457_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Bus.Global;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -13,13 +14,13 @@ namespace ProjectDataCore.Data.Services.User;
 public class LocalUserService : ILocalUserService
 {
     private readonly IDbContextFactory<ApplicationDbContext> _dbContextFactory;
-    private readonly IDataBus _dataBus;
+    private readonly IGlobalDataBus _dataBus;
     
     private bool disposedValue;
     private bool initalizeValue;
     protected DataCoreUser? LocalUser { get; set; }
 
-    public LocalUserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IDataBus dataBus)
+    public LocalUserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IGlobalDataBus dataBus)
     {
         _dbContextFactory = dbContextFactory;
         _dataBus = dataBus;

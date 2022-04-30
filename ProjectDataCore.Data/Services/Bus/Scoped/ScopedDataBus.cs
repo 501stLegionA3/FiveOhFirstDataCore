@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Data.Services.Bus;
-public partial interface IDataBus
+namespace ProjectDataCore.Data.Services.Bus.Scoped;
+public partial class ScopedDataBus : IScopedDataBus
 {
-    // Placeholder
 }

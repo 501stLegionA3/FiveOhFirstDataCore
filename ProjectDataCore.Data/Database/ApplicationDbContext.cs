@@ -147,7 +147,8 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey<PageComponentSettingsBase>(p => p.ParentNodeId)
             .IsRequired(false);
 
-        layoutNodes.Ignore(e => e.NodeWidths);
+        layoutNodes.Ignore(e => e.NodeWidths)
+            .Ignore(e => e.EditorKey);
 
         var layoutComponentSettings = builder.Entity<LayoutComponentSettings>();
         //layoutComponentSettings.HasOne(e => e.ParentPage)

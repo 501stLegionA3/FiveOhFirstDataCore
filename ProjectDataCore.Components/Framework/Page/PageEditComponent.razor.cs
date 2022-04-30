@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Services.Routing;
 using ProjectDataCore.Data.Structures.Page;
 
 using System;
@@ -17,6 +18,8 @@ public partial class PageEditComponent
     public IPageEditService PageEditService { get; set; }
     [Inject]
     public IAlertService AlertService { get; set; }
+    [Inject]
+    public IRoutingService RoutingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
@@ -188,9 +191,14 @@ public partial class PageEditComponent
             .ToHashSet();
     }
 
-    private void StartPageEdit(CustomPageSettings? settings)
+    private async Task StartPageEditAsync(CustomPageSettings settings)
     {
         PageToEdit = settings;
+
+        var loader = RoutingService.LoadPageSettingsAsync(settings);
+
+        await foreach (var _ in loader)
+            StateHasChanged();
 
         LeftMenuState = LeftMenu.ComponentSelection;
         RightMenuState = RightMenu.PageEditor;
@@ -198,7 +206,7 @@ public partial class PageEditComponent
 
     private async Task AbortPageEditAsync()
     {
-        StartPageEdit(null);
+        PageToEdit = null;
         await RefreshPageListAsync();
 
         LeftMenuState = LeftMenu.PageSelection;
@@ -209,7 +217,7 @@ public partial class PageEditComponent
     {
         // TODO: Save page edits code.
 
-        StartPageEdit(null);
+        PageToEdit = null;
         await RefreshPageListAsync();
 
         LeftMenuState = LeftMenu.PageSelection;

@@ -16,7 +16,7 @@ window.SplitInterop = (() => {
                     for (var item in rows) {
                         if (rows[item] !== "") {
                             rowGutters.push({
-                                track: item,
+                                track: parseInt(item),
                                 element: head.querySelector(rows[item])
                             });
                         }
@@ -25,7 +25,7 @@ window.SplitInterop = (() => {
                     for (var item in cols) {
                         if (cols[item] !== "") {
                             columnGutters.push({
-                                track: item,
+                                track: parseInt(item),
                                 element: head.querySelector(cols[item])
                             });
                         }
@@ -34,9 +34,9 @@ window.SplitInterop = (() => {
                     let conf = {
                         columnGutters,
                         rowGutters,
-                        writeStyle: (grid, gridTemplateProp, gridTemplateStlye) => {
-                            dotNetRef.invokeMethodAsync(sizeUpdateMethod, gridTemplateStlye);
-                            grid.style[gridTemplateProp] = gridTemplateStyle
+                        writeStyle: (grid, gridTemplateProp, gridTemplateStyle) => {
+                            dotNetRef.invokeMethodAsync(sizeUpdateMethod, gridTemplateStyle);
+                            grid.style[gridTemplateProp] = gridTemplateStyle;
                         }
                     }
 

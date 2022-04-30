@@ -1,5 +1,9 @@
 ﻿using Microsoft.JSInterop;
+
+using ProjectDataCore.Data.Services.Bus;
+using ProjectDataCore.Data.Services.Bus.Scoped;
 using ProjectDataCore.Data.Services.Routing;
+using ProjectDataCore.Data.Structures.Events.Parameters;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using System;
 using System.Collections.Generic;
@@ -15,6 +19,8 @@ public partial class LayoutNodeTreeLoader : IDisposable
     public IRoutingService RoutingService { get; set; }
     [Inject]
     public IJSRuntime JSRuntime { get; set; }
+    [Inject]
+    public IScopedDataBus ScopedDataBus { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter(Name = "PageEdit")]
@@ -25,7 +31,6 @@ public partial class LayoutNodeTreeLoader : IDisposable
 
     [Parameter]
     public LayoutNode? ParentNode { get; set; }
-    public string ParentNodeId { get; set; }
 
     private bool DraggablesNeedReloading { get; set; } = false;
 
@@ -69,8 +74,6 @@ public partial class LayoutNodeTreeLoader : IDisposable
 
         if (ParentNode is not null)
         {
-            ParentNodeId = ParentNode.Key.ToString().Replace("-", string.Empty);
-
             if (ParentNode.Component is not null)
             {
                 // ... set the component params ...
@@ -79,6 +82,8 @@ public partial class LayoutNodeTreeLoader : IDisposable
                 ComponentType = RoutingService.GetComponentType(ParentNode.Component.QualifiedTypeName);
             }
         }
+
+        ScopedDataBus.NodeTreeLoaderRefreshRequested += RefreshRequested;
     }
 
     protected async Task ReloadDragabbles(object sender)
@@ -113,7 +118,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
         }
 
         // This is the first render, don't worry about disposing of any scopes.
-        await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNodeId, dotRef,
+        await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNode.EditorKey, dotRef,
             nameof(UpdateSizes), rows.ToArray(), cols.ToArray());
     }
 
@@ -122,7 +127,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
         if (ParentNode is null)
             return;
 
-        await JSRuntime.InvokeVoidAsync("SplitInterop.destroy", ParentNodeId);
+        await JSRuntime.InvokeVoidAsync("SplitInterop.destroy", ParentNode.EditorKey);
     }
 
     protected DotNetObjectReference<LayoutNodeTreeLoader> GetDotNetReference()
@@ -141,10 +146,10 @@ public partial class LayoutNodeTreeLoader : IDisposable
         ParentNode?.SetNodeWidths(size);
     }
 
-    public async Task RefreshRequested()
+    public void RefreshRequested(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
     {
-        DraggablesNeedReloading = true;
-        await InvokeAsync(StateHasChanged);
+        DraggablesNeedReloading = args.ReloadDraggables;
+        _ = InvokeAsync(StateHasChanged);
     }
 
     public async void Dispose()
@@ -160,5 +165,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
             // dispose of anything, so ignore any
             // errors that occour during this step.
         }
+
+        ScopedDataBus.NodeTreeLoaderRefreshRequested -= RefreshRequested;
     }
 }
