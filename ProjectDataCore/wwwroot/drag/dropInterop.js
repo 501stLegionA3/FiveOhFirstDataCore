@@ -5,7 +5,7 @@ window.DropInterop = (() => {
     const dropzones = {};
 
     return {
-        init(guid, dotNetRef, uniqueDrops = false, dragChangeMethod = "", draggable = '.drag-item', dropzone = '.dropzone') {
+        init(guid, dotNetRef, uniqueDrops = false, returnToStart = false, dragChangeMethod = "", draggable = '.drag-item', dropzone = '.dropzone') {
             const elements = document.querySelectorAll(`[data-drag-container="${guid}"]`);
 
             const drop = new Droppable(elements, {
@@ -18,9 +18,14 @@ window.DropInterop = (() => {
 
             let itemType;
             let dropZone;
+            let startZone;
 
             drop.on('drag:start', (evt) => {
                 itemType = evt.source.dataset.itemType;
+
+                if (returnToStart) {
+                    startZone = evt.source.parentNode;
+                }
 
                 if (uniqueDrops) {
                     dropZone = evt.source.dataset.dropZone;
@@ -51,8 +56,13 @@ window.DropInterop = (() => {
 
                 dotNetRef.invokeMethodAsync(dragChangeMethod, false);
 
-                // No matter what, we cancel this operation
-                evt.cancel();
+                // Move the dropped element back to its starting position.
+                if (returnToStart && startZone) {
+                    while (evt.dropzone.firstChild) {
+                        startZone.appendChild(evt.dropzone.firstChild);
+                        evt.dropzone.classList.remove('draggable-dropzone--occupied');
+                    }
+                }
             });
 
             liveDrops[guid] = drop;

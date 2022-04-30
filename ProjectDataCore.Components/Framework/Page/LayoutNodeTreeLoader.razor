@@ -13,9 +13,9 @@
 				{
 					@*We need to use a grid system here*@
 
-					<div class="w-full h-full relative grid" 
-						 style="@((ParentNode.Rows ? "grid-template-rows" : "grid-template-columns") + $": {ParentNode.RawNodeWidths}")"
-						 data-split-container="@ParentNode.EditorKey">
+					<div class="w-full h-full relative grid overflow-hidden" 
+							style="@((ParentNode.Rows ? "grid-template-rows" : "grid-template-columns") + $": {ParentNode.RawNodeWidths}")"
+							data-split-container="@ParentNode.EditorKey">
 						@for (int i = 0; i < ParentNode.Nodes.Count; i++)
 						{
 							var node = ParentNode.Nodes.FirstOrDefault(x => x.Order == i);

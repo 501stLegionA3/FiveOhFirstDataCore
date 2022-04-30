@@ -37,7 +37,8 @@ window.SplitInterop = (() => {
                         writeStyle: (grid, gridTemplateProp, gridTemplateStyle) => {
                             dotNetRef.invokeMethodAsync(sizeUpdateMethod, gridTemplateStyle);
                             grid.style[gridTemplateProp] = gridTemplateStyle;
-                        }
+                        },
+                        minSize: 40,
                     }
 
                     let inst = Split(conf);

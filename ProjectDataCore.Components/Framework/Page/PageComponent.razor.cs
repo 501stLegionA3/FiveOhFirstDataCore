@@ -32,6 +32,7 @@ public partial class PageComponent : IDisposable
 
     [Parameter]
     public LayoutNode? EditingNode { get; set; }
+    private string? LastKey { get; set; }
     [CascadingParameter]
     public Func<NodeTreeLoaderRefreshRequestedEventArgs, Task>? NodeTreeLoaderRefresh { get; set; }
     private bool DraggingSplitscreen { get; set; } = false;
@@ -46,8 +47,14 @@ public partial class PageComponent : IDisposable
 
         if(firstRender)
         {
-            await RegisterDroppableContainersAsync();
             await RegisterDraggableElementsAsync();
+        }
+
+        if (LastKey != EditingNode?.EditorKey)
+        {
+            LastKey = EditingNode?.EditorKey;
+
+            await RegisterDroppableContainersAsync();
         }
     }
 
@@ -72,7 +79,7 @@ public partial class PageComponent : IDisposable
     }
 
     [JSInvokable]
-    public async void AddSplit(string startType, string destType)
+    public async Task AddSplitAsync(string startType, string destType)
     {
         if (EditingNode is not null)
         {
@@ -80,16 +87,16 @@ public partial class PageComponent : IDisposable
             {
                 switch (destType)
                 {
-                    case "top":
+                    case "left":
                         EditingNode.AddNode(false, true);
                         break;
-                    case "right":
+                    case "top":
                         EditingNode.AddNode(true, false);
                         break;
-                    case "left":
+                    case "bottom":
                         EditingNode.AddNode(true, true);
                         break;
-                    case "bottom":
+                    case "right":
                         EditingNode.AddNode(false, false);
                         break;
                 }
@@ -100,6 +107,8 @@ public partial class PageComponent : IDisposable
             }
 
             ScopedDataBus.RequestLayoutNodeTreeRefresh(this, new());
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -107,7 +116,7 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplit));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
         }
     }
 
@@ -115,15 +124,15 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, nameof(DragChanged));
+            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, true, nameof(DragChanged));
         }
     }
 
     [JSInvokable]
-    public void DragChanged(bool started)
+    public async Task DragChanged(bool started)
     {
         DraggingSplitscreen = started;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task UnregisterDraggableElementsAsync()

@@ -79,12 +79,12 @@ public class LayoutNode : DataObject<Guid>
         {
             // ... if the parent node is null, then this is the uppermost node handler
             // and we need to add two children ...
-            Nodes.Add(CreateChild());
+            Nodes.Add(CreateChild(!addAboveOrLeft, 0));
             // ... insert node will handle both new nodes to
             // set the node widths value, so lets
             // clear any existing values first ...
             SetNodeWidths("");
-            InsertNode(CreateChild(), addAboveOrLeft);
+            InsertNode(CreateChild(!addAboveOrLeft, 0), addAboveOrLeft);
 
             // ... because this is going to be the first node, we also set the
             // row/col indicator ...
@@ -97,7 +97,7 @@ public class LayoutNode : DataObject<Guid>
         if(ParentNode.Nodes.Count <= 1)
         {
             // ... if there isnt, we add a new node ...
-            ParentNode.InsertNode(new(), addAboveOrLeft);
+            ParentNode.InsertNode(ParentNode.CreateChild(false, Order), addAboveOrLeft);
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
             // ... and let the user know the parent was modified ...
@@ -110,7 +110,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... if we can add, then add and let the user know ...
-                ParentNode.InsertNode(CreateChild(), addAboveOrLeft);
+                ParentNode.InsertNode(ParentNode.CreateChild(false, Order), addAboveOrLeft);
 
                 return false;
             }
@@ -119,7 +119,7 @@ public class LayoutNode : DataObject<Guid>
             else if (Nodes.Count <= 0)
             {
                 // ... first, lets make a new child node that contains the information from this node ...
-                var node = CreateChild(true);
+                var node = CreateChild(true, 0);
 
                 // ... then save the node as a child ...
                 Nodes.Add(node);
@@ -149,7 +149,7 @@ public class LayoutNode : DataObject<Guid>
         // add the new node ...
         Nodes.Add(node);
         // ... then order those nodes ...
-        var sorted = OrderNodes();
+        var sorted = OrderNodes(addAboveOrLeft);
         // ... and for each item in the sort ...
         foreach(var pair in sorted)
         {
@@ -161,35 +161,40 @@ public class LayoutNode : DataObject<Guid>
                 // ... then the values without the gutters ...
                 var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
                 // ... then if there is a previous value we can get ...
-                var prevSize = pair.Key + (addAboveOrLeft ? -1 : 1);
+                var prevSize = pair.Value.Order + (addAboveOrLeft ? -1 : 0);
                 // ... and set an indicator for generating new size values ...
                 bool generateSizes = true;
                 if(sizes.Count > prevSize && prevSize >= 0)
                 {
                     // ... pull the size string ...
                     var sizeStr = sizes[prevSize];
-                    // ... and trim that to remove the % sign ...
-                    var sizeTrim = sizeStr[0..(sizeStr.Length - 1)];
-                    // ... and turn it into an integer ...
-                    if(int.TryParse(sizeTrim, out int size))
+
+                    // ... if there is a size value ...
+                    if (!string.IsNullOrWhiteSpace(sizeStr))
                     {
-                        // ... find the first half of the split ...
-                        int halfOne = size / 2;
-                        // ... and the second ...
-                        int halfTwo = size - halfOne;
+                        // ... then trim that to remove the % sign ...
+                        var sizeTrim = sizeStr[0..(sizeStr.Length - 1)];
+                        // ... and turn it into an integer ...
+                        if (double.TryParse(sizeTrim, out double size))
+                        {
+                            // ... find the first half of the split ...
+                            double halfOne = size / 2;
+                            // ... and the second ...
+                            double halfTwo = size - halfOne;
 
-                        // ... then set the existing size to half one ...
-                        sizes[prevSize] = $"{halfOne}%";
-                        // ... and the new value to half two ...
-                        sizes.Insert(pair.Key, $"{halfTwo}%");
+                            // ... then set the existing size to half one ...
+                            sizes[prevSize] = $"{halfOne}%";
+                            // ... and the new value to half two ...
+                            sizes.Insert(pair.Value.Order + (addAboveOrLeft ? -1 : 1), $"{halfTwo}%");
 
-                        // ... then make a new node widths value by combining all the
-                        // percentages with gutters ...
-                        SetNodeWidths(string.Join($" {GUTTER_SIZE} ", sizes));
+                            // ... then make a new node widths value by combining all the
+                            // percentages with gutters ...
+                            SetNodeWidths(string.Join($" {GUTTER_SIZE} ", sizes));
 
-                        // ... because all this worked, set the generate sizes value
-                        // to false ...
-                        generateSizes = false;
+                            // ... because all this worked, set the generate sizes value
+                            // to false ...
+                            generateSizes = false;
+                        }
                     }
                 }
 
@@ -238,7 +243,7 @@ public class LayoutNode : DataObject<Guid>
         else if (Nodes.Count > 1)
         {
             // ... then sort the remaning nodes ...
-            var sorted = OrderNodes();
+            var sorted = OrderNodes(mergeLeftOrUp);
 
             // ... then get the width values ...
             var widths = RawNodeWidths.Split(' ');
@@ -317,10 +322,10 @@ public class LayoutNode : DataObject<Guid>
         return ParentNode.DeleteNode(this, mergeLeft);
     }
 
-    private SortedList<int, LayoutNode> OrderNodes()
+    private SortedList<int, LayoutNode> OrderNodes(bool sameIsLower)
     {
         // ... recalculate the order of the nodes ...
-        SortedList<int, LayoutNode> children = new(new DuplicateComparer<int>());
+        SortedList<int, LayoutNode> children = new(new DuplicateComparer<int>(sameIsLower));
         // ... by placing them all in an sorted list ...
         foreach (var child in Nodes)
             children.Add(child.Order, child);
@@ -358,13 +363,14 @@ public class LayoutNode : DataObject<Guid>
     /// <param name="transferComponentData">If the component data for this node should
     /// be transfered to the new child.</param>
     /// <returns>A new <see cref="LayoutNode"/> that is a child of this node.</returns>
-    private LayoutNode CreateChild(bool transferComponentData = false)
+    private LayoutNode CreateChild(bool transferComponentData, int order)
     {
         // ... create a new child object ...
         var node = new LayoutNode()
         {
             ParentNode = this,
-            ParentNodeId = this.Key
+            ParentNodeId = this.Key,
+            Order = order,
         };
 
         // ... if we need to transfer component data ...
