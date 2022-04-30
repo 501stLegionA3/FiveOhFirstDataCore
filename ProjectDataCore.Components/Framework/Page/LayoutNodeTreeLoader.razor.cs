@@ -25,6 +25,9 @@ public partial class LayoutNodeTreeLoader : IDisposable
 
     [Parameter]
     public LayoutNode? ParentNode { get; set; }
+    public string ParentNodeId { get; set; }
+
+    private bool DraggablesNeedReloading { get; set; } = false;
 
     /// <summary>
     /// The type of base layout component to display.
@@ -49,6 +52,12 @@ public partial class LayoutNodeTreeLoader : IDisposable
         {
             await ReloadDragabbles(this);
         }
+
+        if(DraggablesNeedReloading)
+        {
+            DraggablesNeedReloading = false;
+            await ReloadDragabbles(this);
+        }
     }
 
     protected override async Task OnParametersSetAsync()
@@ -58,12 +67,17 @@ public partial class LayoutNodeTreeLoader : IDisposable
         if (EditComponent is not null)
             EditComponent.OnDragRefreshRequested += ReloadDragabbles;
 
-        if (ParentNode?.Component is not null)
+        if (ParentNode is not null)
         {
-            // ... set the component params ...
-            ComponentParams["ComponentData"] = ParentNode.Component;
-            // ... and the component type ...
-            ComponentType = RoutingService.GetComponentType(ParentNode.Component.QualifiedTypeName);
+            ParentNodeId = ParentNode.Key.ToString().Replace("-", string.Empty);
+
+            if (ParentNode.Component is not null)
+            {
+                // ... set the component params ...
+                ComponentParams["ComponentData"] = ParentNode.Component;
+                // ... and the component type ...
+                ComponentType = RoutingService.GetComponentType(ParentNode.Component.QualifiedTypeName);
+            }
         }
     }
 
@@ -84,16 +98,22 @@ public partial class LayoutNodeTreeLoader : IDisposable
         var rows = new List<string>();
         var cols = new List<string>();
 
-        for (int i = 0; i < ParentNode.Nodes.Count; i++)
+        for (int i = 0; i < ParentNode.Nodes.Count - 1; i++)
         {
             if (ParentNode.Rows)
-                rows.Add($"gutter-node-{i}");
+            {
+                rows.Add("");
+                rows.Add($"#gutter-node-{i}");
+            }
             else
-                cols.Add($"gutter-node-{i}");
+            {
+                cols.Add("");
+                cols.Add($"#gutter-node-{i}");
+            }
         }
 
         // This is the first render, don't worry about disposing of any scopes.
-        await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNode.Key.ToString(), dotRef,
+        await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNodeId, dotRef,
             nameof(UpdateSizes), rows.ToArray(), cols.ToArray());
     }
 
@@ -102,7 +122,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
         if (ParentNode is null)
             return;
 
-        await JSRuntime.InvokeVoidAsync("SplitInterop.destroy", ParentNode.Key.ToString());
+        await JSRuntime.InvokeVoidAsync("SplitInterop.destroy", ParentNodeId);
     }
 
     protected DotNetObjectReference<LayoutNodeTreeLoader> GetDotNetReference()
@@ -115,9 +135,16 @@ public partial class LayoutNodeTreeLoader : IDisposable
         return DotNetRef;
     }
 
+    [JSInvokable]
     public void UpdateSizes(string size)
     {
         ParentNode?.SetNodeWidths(size);
+    }
+
+    public async Task RefreshRequested()
+    {
+        DraggablesNeedReloading = true;
+        await InvokeAsync(StateHasChanged);
     }
 
     public async void Dispose()

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ProjectDataCore.Data.Structures.Util.Comparers;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,9 +56,11 @@ public class LayoutNode : DataObject<Guid>
     /// and the newly added node to 
     /// </remarks>
     /// <param name="row">Is the new node a row? true if it is, false if it is column.</param>
+    /// <param name="addAboveOrLeft">If the new node should be added above or to the left (depending of if it is a
+    /// row or column) or if it should be added below or to the right.</param>
     /// <returns>A <see cref="bool"/> that will be true if a node was added to this object,
     /// and false if it was added to the parent.</returns>
-    public bool AddNode(bool row)
+    public bool AddNode(bool row, bool addAboveOrLeft)
     {
         // ... check to see if this has a parent node ...
         if (ParentNode is null)
@@ -68,7 +72,7 @@ public class LayoutNode : DataObject<Guid>
             // set the node widths value, so lets
             // clear any existing values first ...
             SetNodeWidths("");
-            InsertNode(new());
+            InsertNode(new(), addAboveOrLeft);
 
             // ... because this is going to be the first node, we also set the
             // row/col indicator ...
@@ -81,7 +85,7 @@ public class LayoutNode : DataObject<Guid>
         if(ParentNode.Nodes.Count <= 1)
         {
             // ... if there isnt, we add a new node ...
-            ParentNode.InsertNode(new());
+            ParentNode.InsertNode(new(), addAboveOrLeft);
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
             // ... and let the user know the parent was modified ...
@@ -94,7 +98,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... if we can add, then add and let the user know ...
-                ParentNode.InsertNode(new());
+                ParentNode.InsertNode(new(), addAboveOrLeft);
 
                 return false;
             }
@@ -121,7 +125,7 @@ public class LayoutNode : DataObject<Guid>
                 SetNodeWidths("");
 
                 // ... finally call add on this new node ...
-                node.AddNode(row);
+                node.AddNode(row, addAboveOrLeft);
 
                 // ... then tell the user that a new subset of nodes was
                 // created ....
@@ -137,7 +141,7 @@ public class LayoutNode : DataObject<Guid>
         }
     }
 
-    internal void InsertNode(LayoutNode node)
+    internal void InsertNode(LayoutNode node, bool addAboveOrLeft)
     {
         // add the new node ...
         Nodes.Add(node);
@@ -154,10 +158,10 @@ public class LayoutNode : DataObject<Guid>
                 // ... then the values without the gutters ...
                 var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
                 // ... then if there is a previous value we can get ...
-                var prevSize = pair.Key - 1;
+                var prevSize = pair.Key + (addAboveOrLeft ? -1 : 1);
                 // ... and set an indicator for generating new size values ...
                 bool generateSizes = true;
-                if(sizes.Count > prevSize)
+                if(sizes.Count > prevSize && prevSize >= 0)
                 {
                     // ... pull the size string ...
                     var sizeStr = sizes[prevSize];
@@ -203,10 +207,10 @@ public class LayoutNode : DataObject<Guid>
     /// Deletes a child node from it's parent.
     /// </summary>
     /// <param name="node">The node to remove.</param>
-    /// <param name="mergeLeft">True if the system should merge left, false if it should merege right.
+    /// <param name="mergeLeftOrUp">True if the system should merge left, false if it should merege right.
     /// Does not have any effect when there is only one node to remove.</param>
     /// <returns>True if the node was removed, false if not.</returns>
-    internal bool DeleteNode(LayoutNode node, bool mergeLeft = true)
+    internal bool DeleteNode(LayoutNode node, bool mergeLeftOrUp = true)
     {
         var res = Nodes.Remove(node);
         if (!res)
@@ -238,10 +242,11 @@ public class LayoutNode : DataObject<Guid>
             // ... then the values without the gutters ...
             var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
             // ... then if there is a previous value we can get (either left or right) ...
-            var prevSize = node.Order + (mergeLeft ? -1 : 1);
+            var prevSize = node.Order + (mergeLeftOrUp ? -1 : 1);
             // ... and set an indicator for generating new size values ...
             bool generateSizes = true;
-            if (sizes.Count > prevSize && sizes.Count > node.Order)
+            if (sizes.Count > prevSize && sizes.Count > node.Order
+                && prevSize >= 0 && node.Order >= 0)
             {
                 // ... pull the size string ...
                 var sizeStr = sizes[prevSize];
@@ -312,7 +317,7 @@ public class LayoutNode : DataObject<Guid>
     private SortedList<int, LayoutNode> OrderNodes()
     {
         // ... recalculate the order of the nodes ...
-        SortedList<int, LayoutNode> children = new();
+        SortedList<int, LayoutNode> children = new(new DuplicateComparer<int>());
         // ... by placing them all in an sorted list ...
         foreach (var child in Nodes)
             children.Add(child.Order, child);

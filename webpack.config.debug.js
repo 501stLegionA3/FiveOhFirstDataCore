@@ -10,7 +10,7 @@ module.exports = [
             path: dist,
             filename: 'ckEditorInterop.bundle.js',
         },
-        mode: 'production',
+        mode: 'development',
     },
     {
         name: 'Split Interop',
@@ -19,7 +19,7 @@ module.exports = [
             path: dist,
             filename: 'splitInterop.bundle.js'
         },
-        mode: 'production',
+        mode: 'development',
     },
     {
         name: 'Drop Interop',
@@ -28,7 +28,7 @@ module.exports = [
             path: dist,
             filename: 'dropInterop.bundle.js',
         },
-        mode: 'production',
+        mode: 'development',
     }
 ];
 

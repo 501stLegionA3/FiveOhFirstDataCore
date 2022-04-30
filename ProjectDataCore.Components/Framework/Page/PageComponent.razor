@@ -1,14 +1,58 @@
 ﻿@if(IsEditingScope && Editing is not null)
 {
-	<div class="absolute group inset-0 hover:z-0">
+	<div class="absolute group inset-0">
 		@Editing
 
-		<div class="absolute inset-x-0 top-0 hidden border-gray-400 group-hover:block group-hover:border-4"></div>
-		<div class="absolute inset-x-0 bottom-0 hidden border-gray-400 group-hover:block group-hover:border-4"></div>
-		<div class="absolute inset-y-0 left-0 hidden border-gray-400 group-hover:block group-hover:border-4"></div>
-		<div class="absolute inset-y-0 right-0 hidden border-gray-400 group-hover:block group-hover:border-4"></div>
+		@*Editor Tools*@
+		@if(EditingNode is not null)
+		{
+			<div class="w-full h-full relative z-10 group-hover:block block bg-slate-200/80">
+				<div class="absolute inset-0 grid place-content-center dragzone">
+					<div class="dropzone h-8 w-8 z-20">
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md bg-slate-400 cursor-grab text-white
+							drag-item" data-drop-zone="@($"{NodeKeyRoot}-add_split")" data-item-type="split" draggable="true">
+							splitscreen
+						</button>
+					</div>
 
+					<div class="@(DraggingSplitscreen ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+						<div class="flex flex-none flex-col">
+							<div class="flex-none p-16"></div>
 
+							<div class="flex-grow bg-blue-400 dropzone" 
+								data-ref-id="@($"{NodeKeyRoot}-add_split")"
+								data-drop-zone="@($"{NodeKeyRoot}-add_split")"
+								data-item-type="top"></div>
+
+							<div class="flex-none p-16"></div>
+						</div>
+						<div class="flex flex-grow flex-col">
+							<div class="flex-none p-16 bg-blue-400 dropzone" 
+								data-ref-id="@($"{NodeKeyRoot}-add_split")"
+								data-drop-zone="@($"{NodeKeyRoot}-add_split")"
+								data-item-type="left"></div>
+
+							<div class="flex-grow"></div>
+
+							<div class="flex-none p-16 bg-blue-400 dropzone" 
+								data-ref-id="@($"{NodeKeyRoot}-add_split")"
+								data-drop-zone="@($"{NodeKeyRoot}-add_split")"
+								data-item-type="right"></div>
+						</div>
+						<div class="flex flex-none flex-col">
+							<div class="flex-none p-16"></div>
+
+							<div class="flex-grow bg-blue-400 dropzone" 
+								data-ref-id="@($"{NodeKeyRoot}-add_split")"
+								data-drop-zone="@($"{NodeKeyRoot}-add_split")"
+								data-item-type="bottom"></div>
+
+							<div class="flex-none p-16"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 
 	@*Call the configure render builder. There should be no visible HTML to render.*@

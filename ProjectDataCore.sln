@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{96ADD5
 		postcss.config.js = postcss.config.js
 		tailwind.config.js = tailwind.config.js
 		webpack.config.js = webpack.config.js
+		webpack.config.debug.js = webpack.config.debug.js
 	EndProjectSection
 EndProject
 Global

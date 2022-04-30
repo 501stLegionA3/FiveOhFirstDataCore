@@ -130,14 +130,34 @@
 						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
 							Page Editor
 							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-								right-1 top-1 material-symbols-rounded bg-slate-200"
+								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
 								@onclick="ToggleSidebar">
 								keyboard_double_arrow_left
 							</button>
 						</div>
 
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2">
+							<button class="flex-grow button-op-success" @onclick="SavePageEditAsync">Save Changes</button>
+						</div>
+
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex">
+							<div class="flex-grow">Page Settings</div>
+							<button class="flex-none button-util-action">Edit</button>
+						</div>
+
 						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative">
 							Components
+						</div>
+
+						@*Component Listing
+							TODO:
+								- Create component listing sections
+								- One section per type (layout, edit, display, etc.)
+								- Configure drag and drop capabilities for the editor
+						*@
+
+						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2">
+							<button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
 						</div>
 						break;
 
@@ -145,7 +165,7 @@
 						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
 							Settings
 							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-								right-1 top-1 material-symbols-rounded bg-slate-200"
+								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
 								@onclick="ToggleSidebar">
 								keyboard_double_arrow_left
 							</button>
@@ -158,7 +178,7 @@
 			@if(!SidebarVisible)
 			{
 				<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-					left-1 top-1 material-symbols-rounded bg-slate-200 z-50"
+					left-1 top-1 material-symbols-rounded bg-slate-200 z-30" type="button"
 					@onclick="ToggleSidebar">
 					keyboard_double_arrow_right
 				</button>
