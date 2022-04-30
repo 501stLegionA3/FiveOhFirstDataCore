@@ -17,38 +17,38 @@
 					</div>
 
 					<div class="@(DraggingSplitscreen ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
-						<div class="flex flex-none flex-col">
-							<div class="flex-none p-1 sm:p-4 md:p-8 lg:p-16"></div>
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
 
-							<div class="flex-grow bg-blue-400 dropzone" 
+							<div class="flex-none h-[60%] bg-blue-400 dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="left"></div>
 
-							<div class="flex-none p-1 sm:p-4 md:p-8 lg:p-16"></div>
+							<div class="flex-grow"></div>
 						</div>
 						<div class="flex flex-grow flex-col">
-							<div class="flex-none p-16 bg-blue-400 dropzone" 
+							<div class="flex-none h-[20%] bg-blue-400 dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="top"></div>
 
 							<div class="flex-grow"></div>
 
-							<div class="flex-none p-1 sm:p-4 md:p-8 lg:p-16 bg-blue-400 dropzone" 
+							<div class="flex-none h-[20%] bg-blue-400 dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="bottom"></div>
 						</div>
-						<div class="flex flex-none flex-col">
-							<div class="flex-none p-1 sm:p-4 md:p-8 lg:p-16"></div>
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
 
-							<div class="flex-grow bg-blue-400 dropzone" 
+							<div class="flex-none h-[60%] bg-blue-400 dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="right"></div>
 
-							<div class="flex-none p-1 sm:p-4 md:p-8 lg:p-16"></div>
+							<div class="flex-grow"></div>
 						</div>
 					</div>
 				</div>
