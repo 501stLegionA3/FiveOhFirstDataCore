@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Framework\Menus\" />
     <Folder Include="wwwroot\css\scoped\" />
   </ItemGroup>
 

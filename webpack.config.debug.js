@@ -4,6 +4,15 @@ const dist = path.resolve(root, 'dist');
 
 module.exports = [
     {
+        name: 'Site Utils',
+        entry: path.resolve(root, './site.js'),
+        output: {
+            path: dist,
+            filename: 'site.bundle.js',
+        },
+        mode: 'development',
+    },
+    {
         name: 'CK Editor Interop',
         entry: path.resolve(root, './ckeditor/interop/ckEditorInterop.js'),
         output: {
