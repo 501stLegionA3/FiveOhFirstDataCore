@@ -11,7 +11,7 @@ namespace ProjectDataCore.Data.Structures.Page.ContextMenu;
 public class PopupMenuBase : ComponentBase
 {
     [Parameter]
-    public MouseEventArgs EventArgs { get; set; }
+    public RenderFragment Popup { get; set; }
     [Parameter]
-    public RenderFragment Content { get; set; }
+    public RenderFragment Element { get; set; }
 }

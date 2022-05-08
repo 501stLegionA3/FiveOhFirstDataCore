@@ -146,10 +146,15 @@ public partial class LayoutNodeTreeLoader : IDisposable
         ParentNode?.SetNodeWidths(size);
     }
 
-    public void RefreshRequested(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
+    public Task RefreshRequested(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
     {
-        DraggablesNeedReloading = args.ReloadDraggables;
-        _ = InvokeAsync(StateHasChanged);
+        _ = Task.Run(async () =>
+        {
+            DraggablesNeedReloading = args.ReloadDraggables;
+            await InvokeAsync(StateHasChanged);
+        });
+
+        return Task.CompletedTask;
     }
 
     public async void Dispose()

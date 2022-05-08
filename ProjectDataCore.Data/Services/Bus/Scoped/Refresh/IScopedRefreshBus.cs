@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Services.Bus.Scoped;
 public partial interface IScopedDataBus
 {
-    public delegate void NodeTreeLoaderRefreshRequestedEventHandler(object sender, NodeTreeLoaderRefreshRequestedEventArgs args);
+    public delegate Task NodeTreeLoaderRefreshRequestedEventHandler(object sender, NodeTreeLoaderRefreshRequestedEventArgs args);
     public event NodeTreeLoaderRefreshRequestedEventHandler NodeTreeLoaderRefreshRequested;
-    public void RequestLayoutNodeTreeRefresh(object sender, NodeTreeLoaderRefreshRequestedEventArgs args);
+    public Task RequestLayoutNodeTreeRefreshAsync(object sender, NodeTreeLoaderRefreshRequestedEventArgs args);
 
 
 }

@@ -106,7 +106,7 @@ public partial class PageComponent : IDisposable
                 AlertService.CreateErrorAlert(ex.Message);
             }
 
-            ScopedDataBus.RequestLayoutNodeTreeRefresh(this, new());
+            await ScopedDataBus.RequestLayoutNodeTreeRefreshAsync(this, new());
 
             await InvokeAsync(StateHasChanged);
         }

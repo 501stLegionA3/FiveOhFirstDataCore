@@ -11,9 +11,11 @@ public partial class ScopedDataBus : IScopedDataBus
 {
     public event IScopedDataBus.NodeTreeLoaderRefreshRequestedEventHandler? NodeTreeLoaderRefreshRequested;
 
-    public void RequestLayoutNodeTreeRefresh(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
+    public Task RequestLayoutNodeTreeRefreshAsync(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
     {
         if (NodeTreeLoaderRefreshRequested is not null)
-            NodeTreeLoaderRefreshRequested.Invoke(sender, args);
+            _ = Task.Run(async () => await NodeTreeLoaderRefreshRequested.Invoke(sender, args));
+
+        return Task.CompletedTask;
     }
 }
