@@ -3,7 +3,7 @@
         getWindowDimensions() {
             return {
                 width: window.innerWidth,
-                heigh: window.innerHeight
+                height: window.innerHeight
             }
         },
 

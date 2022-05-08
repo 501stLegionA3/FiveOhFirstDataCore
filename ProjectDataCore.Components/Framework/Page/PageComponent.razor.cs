@@ -153,7 +153,14 @@ public partial class PageComponent : IDisposable
 
     public async void Dispose()
     {
-        await UnregisterDraggableElementsAsync();
-        await UnregisterDroppableContainersAsync();
+        try
+        {
+            await UnregisterDraggableElementsAsync();
+            await UnregisterDroppableContainersAsync();
+        }
+        catch 
+        { 
+            // Do nothing
+        }
     }
 }

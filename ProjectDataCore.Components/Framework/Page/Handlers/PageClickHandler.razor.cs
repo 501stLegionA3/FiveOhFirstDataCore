@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Components.Framework.Page.Handlers;
-public partial class PageClickHandler
+public partial class PageClickHandler : ComponentBase
 {
 #pragma warning disable CS8618 // Injections are never null.
     [Inject]
@@ -19,8 +19,8 @@ public partial class PageClickHandler
     [Parameter]
     public RenderFragment Content { get; set; }
 
-    public void OnClick(MouseEventArgs e)
+    public async Task OnClickAsync(MouseEventArgs e)
     {
-
+        await ScopedDataBus.SendPageClickEventAsync(this, new(e));
     }
 }

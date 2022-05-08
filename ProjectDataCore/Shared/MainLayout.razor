@@ -1,17 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
 <CascadingValue Name="ActiveUser" Value="@ActiveUser">
-    <div class="flex flex-col h-full">
-        <NavMenu />
-        <AlertContainer />
+    <PageClickHandler>
+        <Content>
+            <NavMenu />
+            <AlertContainer />        
+            <AbsoluteMenuPopupHandler />
 
-        <div class="page flex-grow">
-            <main class="h-full">
+            <div class="page flex-grow">
+                <main class="h-full">
 
-                <article class="h-full">
-                    @Body
-                </article>
-            </main>
-        </div>
-    </div>
+                    <article class="h-full">
+                        @Body
+                    </article>
+                </main>
+            </div>
+        </Content>
+    </PageClickHandler>
 </CascadingValue>

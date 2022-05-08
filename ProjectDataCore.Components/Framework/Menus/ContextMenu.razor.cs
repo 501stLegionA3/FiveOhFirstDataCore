@@ -49,26 +49,18 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
     private bool _menuReady = false;
     private readonly Guid _key = Guid.NewGuid();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    private async Task OnMenuLoaded()
     {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if (CloseWhenOutsideClickOccours && _positionReady && !_menuReady)
-        {
-            _boundingBox = await JSRuntime.InvokeAsync<BoundingBox?>("Util.getBoundingBox", $"#{_key}");
-        }
-
-        if(_positionReady && !_menuReady)
+        if (!_menuReady)
         {
             _menuReady = true;
-            StateHasChanged();
         }
     }
 
     private async Task OnContextMenu(MouseEventArgs args)
     {
-        _xPos = args.ScreenX;
-        _yPos = args.ScreenY;
+        _xPos = args.PageX;
+        _yPos = args.PageY;
 
         var wh = await JSRuntime.InvokeAsync<WH>("Util.getWindowDimensions");
 
@@ -103,7 +95,7 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
 
     private Task ScopedDataBus_PageClicked(object sender, PageClickedEventArgs args)
     {
-        _ = Task.Run(() =>
+        _ = Task.Run(async () =>
         {
             if(CloseWhenOutsideClickOccours 
                 && _boundingBox is not null)
@@ -113,7 +105,7 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
                     || args.YPos < _boundingBox.Top
                     || args.YPos > _boundingBox.Bottom)
                 {
-                    AbortMenu();
+                    await AbortMenuAsync();
                 }
             }
         });
@@ -121,10 +113,12 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
         return Task.CompletedTask;
     }
 
-    private void AbortMenu()
+    private async Task AbortMenuAsync()
     {
         _positionReady = false;
         _menuReady = false;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     protected virtual void Dispose(bool disposing)

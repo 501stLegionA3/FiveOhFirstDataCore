@@ -14,4 +14,6 @@ public class PopupMenuBase : ComponentBase
     public RenderFragment Popup { get; set; }
     [Parameter]
     public RenderFragment Element { get; set; }
+    [Parameter]
+    public string Class { get; set; }
 }
