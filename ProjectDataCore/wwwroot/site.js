@@ -8,7 +8,7 @@
         },
 
         getBoundingBox(elementRef) {
-            var element = document.querySelector(elementRef);
+            var element = document.querySelector(`[data-id="${elementRef}"]`);
             if (element) {
                 return element.getBoundingClientRect();
             }

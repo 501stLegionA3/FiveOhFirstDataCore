@@ -10,9 +10,11 @@ namespace ProjectDataCore.Data.Structures.Events.Parameters;
 public class DisplayMenuEventArgs : EventArgs
 {
     public RenderFragment Menu { get; set; }
+    public string Id { get; set; }
 
-    public DisplayMenuEventArgs(RenderFragment menu)
+    public DisplayMenuEventArgs(RenderFragment menu, string id)
     {
         Menu = menu;
+        Id = id;
     }
 }

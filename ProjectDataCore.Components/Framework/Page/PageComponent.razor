@@ -9,7 +9,7 @@
 			<div class="w-full h-full relative z-10 group-hover:block block bg-slate-200/80">
 				<div class="absolute inset-0 grid place-content-center"
 					data-drag-container="@EditingNode.EditorKey">
-					<ContextMenu class="dropzone h-8 w-8 z-20">
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
 						<Element>
 							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md bg-slate-400 cursor-grab text-white
 								drag-item" data-drop-zone="@($"{EditingNode.EditorKey}-add_split")" data-item-type="split" draggable="true">
@@ -17,7 +17,13 @@
 							</button>
 						</Element>
 						<Popup>
-							<p>This is a test</p>
+							<div class="w-100 h-100 p-2 flex flex-col gap-2 bg-slate-300 rounded-lg shadow-md">
+								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("left"))">Split Left</button>
+								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("right"))">Split Right</button>
+								<hr />
+								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("top"))">Split Up</button>
+								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("bottom"))">Split Down</button>
+							</div>
 						</Popup>
 					</ContextMenu>
 

@@ -17,7 +17,7 @@ public partial class AbsoluteMenuPopupHandler : ComponentBase, IDisposable
     public IScopedDataBus ScopedDataBus { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    private ConcurrentDictionary<object, RenderFragment> Menus { get; set; } = new();
+    private ConcurrentDictionary<string, RenderFragment> Menus { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -25,13 +25,21 @@ public partial class AbsoluteMenuPopupHandler : ComponentBase, IDisposable
 
         ScopedDataBus.DisplayMenu += ScopedDataBus_DisplayMenu;
         ScopedDataBus.CloseMenu += ScopedDataBus_CloseMenu;
+        ScopedDataBus.ReloadMenu += ScopedDataBus_ReloadMenu;
+    }
+
+    private Task ScopedDataBus_ReloadMenu(object sender)
+    {
+        _ = Task.Run(async () => await InvokeAsync(StateHasChanged));
+
+        return Task.CompletedTask;
     }
 
     private Task ScopedDataBus_DisplayMenu(object sender, DisplayMenuEventArgs args)
     {
         _ = Task.Run(async () =>
         {
-            Menus[sender] = args.Menu;
+            Menus[args.Id] = args.Menu;
 
             await InvokeAsync(StateHasChanged);
         });
@@ -39,11 +47,11 @@ public partial class AbsoluteMenuPopupHandler : ComponentBase, IDisposable
         return Task.CompletedTask;
     }
 
-    private Task ScopedDataBus_CloseMenu(object sender)
+    private Task ScopedDataBus_CloseMenu(object sender, string id)
     {
         _ = Task.Run(async () =>
         {
-            _ = Menus.TryRemove(sender, out _);
+            _ = Menus.TryRemove(id, out _);
 
             await InvokeAsync(StateHasChanged);
         });
@@ -60,6 +68,7 @@ public partial class AbsoluteMenuPopupHandler : ComponentBase, IDisposable
             {
                 ScopedDataBus.DisplayMenu -= ScopedDataBus_DisplayMenu;
                 ScopedDataBus.CloseMenu -= ScopedDataBus_CloseMenu;
+                ScopedDataBus.ReloadMenu -= ScopedDataBus_ReloadMenu;
             }
 
             ScopedDataBus = null;

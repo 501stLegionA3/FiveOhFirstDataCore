@@ -1,20 +1,26 @@
 ﻿@inherits PopupMenuBase
 
-<div class="@Class" @oncontextmenu="OnContextMenu" @oncontextmenu:preventDefault="true">
-	@Element
-</div>
+<CascadingValue Value="@Identifier" Name="MenuId">
+	<div class="@Class" @oncontextmenu="OnContextMenu" @oncontextmenu:preventDefault="true">
+		@Element
+	</div>
 
-<AbsoluteMenuPart OpenMenu="_positionReady">
-	<Display>
-		<div class="absolute p-2 rounded-md bg-slate-400 shadow-md z-50 transition-all ease-in-out duration-200 
-			@(_menuReady ? "scale-100 opacity-100" : "scale-90 opacity-0")" id="@_key"
-			style="@(_left ? "left" : "right"): @(_xPos)px; @(_top ? "top" : "bottom"): @(_yPos)px;">
-			@Popup
-		</div>
+	<AbsoluteMenuPart OpenMenu="_positionReady">
+		<Display>
+			<div class="absolute z-50 transition-all ease-in-out duration-200 
+				@(_menuReady ? "scale-100 opacity-100" : "scale-90 opacity-0")" data-id="@Identifier"
+				style="@(_left ? "left" : "right"): @(_xPos)px; @(_top ? "top" : "bottom"): @(_yPos)px;">
+				@Popup
+			</div>
 		
-		@if (_menuReady)
-		{
-			<HTMLRenderedHandler OnRender="OnMenuLoaded" />
-		}
-	</Display>
-</AbsoluteMenuPart>
+			@if (_menuReady)
+			{
+				<HTMLRenderedHandler OnRender="OnMenuReady" />
+			}
+			else
+			{
+				<HTMLRenderedHandler OnRender="OnMenuLoaded" />
+			}
+		</Display>
+	</AbsoluteMenuPart>
+</CascadingValue>

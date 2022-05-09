@@ -21,6 +21,9 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
     [Parameter]
     public bool CloseWhenOutsideClickOccours { get; set; } = true;
 
+    [Parameter, EditorRequired]
+    public string Identifier { get; set; } = "";
+
     private class WH
     {
         public int Width { get; set; }
@@ -47,13 +50,46 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
 
     private bool _positionReady = false;
     private bool _menuReady = false;
-    private readonly Guid _key = Guid.NewGuid();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        ScopedDataBus.MenuClosed += ScopedDataBus_MenuClosed;
+        ScopedDataBus.PageClicked += ScopedDataBus_PageClicked;
+    }
+
+    private Task ScopedDataBus_MenuClosed(object sender, DisplayMenuEventArgs args)
+    {
+        if (args.Id != Identifier)
+            return Task.CompletedTask;
+
+        _ = Task.Run(async () =>
+        {
+            await AbortMenuAsync();
+        });
+
+        return Task.CompletedTask;
+    }
 
     private async Task OnMenuLoaded()
     {
-        if (!_menuReady)
+        if(!_menuReady)
         {
             _menuReady = true;
+
+            await ScopedDataBus.RequestMenuReload(this);
+        }
+    }
+
+    private async Task OnMenuReady()
+    {
+        if (_menuReady)
+        {
+            if (CloseWhenOutsideClickOccours)
+            {
+                _boundingBox = await JSRuntime.InvokeAsync<BoundingBox>("Util.getBoundingBox", Identifier);
+            }
         }
     }
 
@@ -81,16 +117,9 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
 
         if(_yPos > (screen.Height / 2))
         {
-            _yPos = screen.Width - _yPos;
+            _yPos = screen.Height - _yPos;
             _top = false;
         }
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-
-        ScopedDataBus.PageClicked += ScopedDataBus_PageClicked;
     }
 
     private Task ScopedDataBus_PageClicked(object sender, PageClickedEventArgs args)
@@ -129,6 +158,7 @@ public partial class ContextMenu : PopupMenuBase, IDisposable
             {
                 // TODO: dispose managed state (managed objects)
                 ScopedDataBus.PageClicked -= ScopedDataBus_PageClicked;
+                ScopedDataBus.MenuClosed -= ScopedDataBus_MenuClosed;
             }
 
             _boundingBox = null;

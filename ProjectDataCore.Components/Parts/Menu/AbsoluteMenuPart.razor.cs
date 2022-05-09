@@ -23,6 +23,9 @@ public partial class AbsoluteMenuPart : ComponentBase, IDisposable
     public bool OpenMenu { get; set; } = false;
     private bool Opened { get; set; } = false;
 
+    [CascadingParameter(Name = "MenuId")]
+    public string Id { get; set; } = "";
+
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
@@ -30,12 +33,12 @@ public partial class AbsoluteMenuPart : ComponentBase, IDisposable
         if(OpenMenu && !Opened)
         {
             Opened = true;
-            await ScopedDataBus.DisplayMenuAsync(this, new(Display));
+            await ScopedDataBus.DisplayMenuAsync(this, new(Display, Id));
         }
         else if (!OpenMenu && Opened)
         {
             Opened = false;
-            await ScopedDataBus.CloseMenuAsync(this);
+            await ScopedDataBus.CloseMenuAsync(this, Id);
         }
     }
 
@@ -45,7 +48,7 @@ public partial class AbsoluteMenuPart : ComponentBase, IDisposable
         {
             if (disposing)
             {
-                _ = Task.Run(async () => await ScopedDataBus.CloseMenuAsync(this));
+                _ = Task.Run(async () => await ScopedDataBus.CloseMenuAsync(this, Id));
             }
 
             disposedValue = true;

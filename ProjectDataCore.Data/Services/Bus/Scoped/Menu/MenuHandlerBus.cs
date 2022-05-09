@@ -19,10 +19,28 @@ public partial class ScopedDataBus : IScopedDataBus
     }
 
     public event IScopedDataBus.CloseMenuEventHanlder? CloseMenu;
-    public Task CloseMenuAsync(object sender)
+    public Task CloseMenuAsync(object sender, string id)
     {
         if (CloseMenu is not null)
-            _ = Task.Run(async () => await CloseMenu.Invoke(sender));
+            _ = Task.Run(async () => await CloseMenu.Invoke(sender, id));
+
+        return Task.CompletedTask;
+    }
+
+    public event IScopedDataBus.MenuClosedEventArgs MenuClosed;
+    public Task MenuClosedAsync(object sender, DisplayMenuEventArgs args)
+    {
+        if (MenuClosed is not null)
+            _ = Task.Run(async () => await MenuClosed.Invoke(sender, args));
+
+        return Task.CompletedTask;
+    }
+
+    public event IScopedDataBus.ReloadMenuEventHandler? ReloadMenu;
+    public Task RequestMenuReload(object sender)
+    {
+        if (ReloadMenu is not null)
+            _ = Task.Run(async () => await ReloadMenu.Invoke(sender));
 
         return Task.CompletedTask;
     }

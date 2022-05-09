@@ -112,6 +112,14 @@ public partial class PageComponent : IDisposable
         }
     }
 
+    private async Task AddContextMenuSplitAsync(string destType)
+    {
+        await AddSplitAsync("", destType);
+
+        if(EditingNode is not null)
+            await ScopedDataBus.CloseMenuAsync(this, EditingNode.EditorKey);
+    }
+
     private async Task RegisterDroppableContainersAsync()
     {
         if (EditingNode is not null)
