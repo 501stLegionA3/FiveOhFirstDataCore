@@ -1,7 +1,7 @@
 ﻿<CascadingValue Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
 	<div class="inline-flex w-full h-full">
-		<div class="@(SidebarVisible ? "w-[33%] p-2" : "invisible w-[0%]") transition-all">
-			<div class="grid grid-cols-1 grid-flow-row gap-2">
+		<div class="@(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left">
+			<div class="flex flex-col">
 				@*Page List Pannel
 					TODO: Search open pages
 						- Order pages by route
@@ -13,81 +13,91 @@
 						- Add drag and drop components for pages
 				*@
 
+				<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative flex flex-row justify-between my-1 first:mt-0 last:mt-0">
+					<span class="flex-grow">Page Editor</span>
+					<div class="flex flex-row flex-none gap-1">
+						
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+							transition-all ease-in-out duration-500
+							@(DisplayNewPage ? "scale-0 invisible" : "scale-100 visible")"
+							@onclick="() => DisplayNewPage = true">
+							add_to_queue
+						</button>
+
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+							transition-all ease-in-out duration-500
+							@(DisplaySearch ? "scale-0 invisible" : "scale-100 visible")"
+							@onclick="() => DisplaySearch = true">
+							search
+						</button>
+
+						<div class="border border-black"></div>
+
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
+							type="button"
+							@onclick="OnUndoClickedAsync">
+							undo
+						</button>
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
+							type="button"
+							@onclick="OnRedoClickedAsync">
+							redo
+						</button>
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md material-symbols-rounded bg-slate-200" 
+							type="button"
+							@onclick="ToggleSidebar">
+							keyboard_double_arrow_left
+						</button>
+					</div>
+				</div>
+
 				@switch(LeftMenuState)
 				{
 					case LeftMenu.PageSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
 							Pages
-							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-								@onclick="ToggleSidebar">
-								keyboard_double_arrow_left
-							</button>
 						</div>
-						<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 gap-2
-							relative transition-all"
-							Model="this">
-							@if (DisplayNewPage)
-							{
-								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-									@onclick="() => DisplayNewPage = !DisplayNewPage">
-										keyboard_double_arrow_up
-								</button>
-							}
-							else
-							{
-								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-									@onclick="() => DisplayNewPage = !DisplayNewPage">
-										keyboard_double_arrow_down
-								</button>
-							}
-								
+						<div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+							relative transition-all origin-top-left duration-500 first:mt-0 last:mt-0
+							@(DisplayNewPage ? "w-full h-full scale-100 my-1 p-2" : "w-0 h-0 invisible scale-0 my-0")">							
 							<p>Create New Page</p>
 
-							<div class="grid grid-cols-1 grid-flow-row gap-2
-								@(DisplayNewPage ? "block" : "hidden")">
+							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+								@onclick="() => DisplayNewPage = false">
+									close
+							</button>
 
-								<div class="input-group">
-									<InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
-									<label for="page-name" class="input-label">Page Name</label>
-								</div>
+							<EditForm class="grid grid-cols-1 grid-flow-row gap-2"
+								Model="this">
+									<div class="input-group">
+										<InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
+										<label for="page-name" class="input-label">Page Name</label>
+									</div>
 
-								<div class="input-group">
-									<InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
-									<label for="page-route" class="input-label">Page Route</label>
-								</div>
+									<div class="input-group">
+										<InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
+										<label for="page-route" class="input-label">Page Route</label>
+									</div>
 
-								<button class="button-op-success" @onclick="CreateNewPageAsync" type="submit">Create</button>
-							</div>
-						</EditForm>
+									<button class="button-op-success" @onclick="CreateNewPageAsync" type="submit">Create</button>
+							</EditForm>
+						</div>
 
-						<EditForm class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
-							relative transition-all"
-							Model="this">
-							@if (DisplaySearch)
-							{
-								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-									@onclick="() => DisplaySearch = !DisplaySearch">
-										keyboard_double_arrow_up
-								</button>
-							}
-							else
-							{
-								<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-									right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-									@onclick="() => DisplaySearch = !DisplaySearch">
-										keyboard_double_arrow_down
-								</button>
-							}
+						<div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+							relative transition-all origin-top-left duration-500 after:transition-all first:mt-0 last:mt-0
+							@(DisplaySearch ? "w-full h-full scale-100 my-1 p-2" : "w-0 h-0 invisible scale-0 my-0")">
+
+							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
+								@onclick="() => DisplaySearch = false">
+									close
+							</button>
 								
 							<p>Search Pages</p>
 
-							<div class="grid grid-cols-1 grid-flow-row gap-2
-								@(DisplaySearch ? "block" : "hidden")">
-
+							<EditForm class="grid grid-cols-1 grid-flow-row gap-2"
+								Model="this">
 								<div class="input-group">
 									<InputText id="page-name-search" type="text" class="input-control peer" placeholder="Search by Name"
 										Value="@NameSearch" ValueExpression="() => NameSearch" ValueChanged="OnNameSearchChanged"/>
@@ -99,10 +109,9 @@
 										Value="@RouteSearch" ValueExpression="() => RouteSearch" ValueChanged="OnRouteSearchChanged"/>
 									<label for="page-route-search" class="input-label">Search by Route</label>
 								</div>
-							</div>
-
-							<button class="invisble h-0 w-0" type="submit" id="mock-submit-handler"></button>
-						</EditForm>
+								<button class="invisble h-0 w-0" type="submit" id="mock-submit-handler"></button>
+							</EditForm>
+						</div>
 
 						@foreach(var pagePair in PageDisplayOrder)
 						{
@@ -110,7 +119,7 @@
 							var pageData = pagePair.Item2;
 							var visible = FilteredPages.Contains(pageData);
 
-							<div class="@(visible ? "h-full" : "h-0 invisible") transition-all inline-flex group">
+							<div class="@(visible ? "h-full" : "h-0 invisible") transition-all inline-flex group my-1 first:mt-0 last:mt-0">
 								@for (int i = 0; i < depth; i++)
 								{
 									<div class="px-2 flex-none"></div>
@@ -127,25 +136,20 @@
 						break;
 
 					case LeftMenu.ComponentSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
 							Page Editor
-							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-								@onclick="ToggleSidebar">
-								keyboard_double_arrow_left
-							</button>
 						</div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
 							<button class="flex-grow button-op-success" @onclick="SavePageEditAsync">Save Changes</button>
 						</div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex my-1 first:mt-0 last:mt-0">
 							<div class="flex-grow">Page Settings</div>
 							<button class="flex-none button-util-action">Edit</button>
 						</div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
 							Components
 						</div>
 
@@ -156,19 +160,14 @@
 								- Configure drag and drop capabilities for the editor
 						*@
 
-						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2">
+						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
 							<button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
 						</div>
 						break;
 
 					case LeftMenu.SettingsSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative">
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
 							Settings
-							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-								@onclick="ToggleSidebar">
-								keyboard_double_arrow_left
-							</button>
 						</div>
 						break;
 				}
@@ -177,11 +176,25 @@
 		<div class="flex-grow relative transition-all">
 			@if(!SidebarVisible)
 			{
-				<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
-					left-1 top-1 material-symbols-rounded bg-slate-200 z-30" type="button"
-					@onclick="ToggleSidebar">
-					keyboard_double_arrow_right
-				</button>
+				<div class="absolute left-1 top-1 flex flex-col w-7 h-min gap-1">
+					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md 
+						material-symbols-rounded bg-slate-200 z-30" type="button"
+						@onclick="ToggleSidebar">
+						keyboard_double_arrow_right
+					</button>
+					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200
+						material-symbols-rounded z-30"
+						type="button"
+						@onclick="OnUndoClickedAsync">
+						undo
+					</button>
+					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 
+						material-symbols-rounded z-30"
+						type="button"
+						@onclick="OnRedoClickedAsync">
+						redo
+					</button>
+				</div>
 			}
 
 			<div class="@(SidebarVisible ? "border-l-2 border-slate-400 max-w-full max-h-full overflow-hidden" : "") h-full">

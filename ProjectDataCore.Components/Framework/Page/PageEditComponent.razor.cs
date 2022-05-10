@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Services.Alert;
+using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Services.Routing;
 using ProjectDataCore.Data.Structures.Page;
 
@@ -20,6 +21,8 @@ public partial class PageEditComponent
     public IAlertService AlertService { get; set; }
     [Inject]
     public IRoutingService RoutingService { get; set; }
+    [Inject]
+    public IEditHistoryService EditHistory { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
@@ -27,7 +30,7 @@ public partial class PageEditComponent
     public bool ShowConfigurationOptions { get; set; } = false;
 
     public delegate Task DraggableRefreshRequested(object sender);
-    public event DraggableRefreshRequested OnDragRefreshRequested;
+    public event DraggableRefreshRequested? OnDragRefreshRequested;
 
     public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
     {
@@ -273,6 +276,18 @@ public partial class PageEditComponent
         }
 
         await RefreshPageListAsync();
+    }
+    #endregion
+
+    #region Undo/Redo
+    private async Task OnUndoClickedAsync()
+    {
+        await EditHistory.UndoAsync();
+    }
+
+    private async void OnRedoClickedAsync()
+    {
+        await EditHistory.RedoAsync();
     }
     #endregion
 }

@@ -3,9 +3,28 @@
 	<div class="absolute group inset-0">
 		@Editing
 
-		@*Editor Tools*@
-		@if(EditingNode is not null)
+		@if (EditingNode is not null)
 		{
+			@*Editor Tools*@
+			@if (EditingNode.Component is not null)
+			{
+				@*There is a component here, so we need to render component settings:
+					- Settings wheel for opening the configuration panel
+					- Delete component actions (removes just the component, not this node)
+				*@
+
+				#region Component Settings
+
+				#endregion
+			}
+
+			@*The component needs some interactions no matter what is going on:
+				- Split interactions (to split this Node into two nodes)
+				- Merge interactions (to delete other components)
+				- Delete interaction (to delete this component)
+			*@
+
+			#region Split
 			<div class="w-full h-full relative z-10 group-hover:block block bg-slate-200/80">
 				<div class="absolute inset-0 grid place-content-center"
 					data-drag-container="@EditingNode.EditorKey">
@@ -64,6 +83,15 @@
 					</div>
 				</div>
 			</div>
+			#endregion
+
+			#region Merge
+
+			#endregion
+
+			#region Delete
+
+			#endregion
 		}
 	</div>
 
