@@ -37,8 +37,12 @@ public class EditHistoryService : IEditHistoryService
     {
         if(RedoStack.TryPop(out var item))
         {
-            UndoList.AddFirst(item);
-            return await item.Redo(_serviceProvider);
+            var res = await item.Redo(_serviceProvider);
+
+            if (res.GetResult(out _))
+                UndoList.AddFirst(item);
+
+            return res;
         }
 
         return new(false, new List<string> { "No items to redo." });
@@ -51,10 +55,20 @@ public class EditHistoryService : IEditHistoryService
             var item = UndoList.First.Value;
             UndoList.RemoveFirst();
 
-            RedoStack.Push(item);
-            return await item.Undo(_serviceProvider);
+            var res = await item.Undo(_serviceProvider);
+
+            if (res.GetResult(out _))
+                RedoStack.Push(item);
+
+            return res;
         }
 
         return new(false, new List<string> { "No items to undo." });
     }
+
+	public void Reset()
+	{
+        UndoList.Clear();
+        RedoStack.Clear();
+	}
 }

@@ -11,30 +11,31 @@ public class LayoutNodeMergedEditHistory : EditHistoryItemBase
 {
     public LayoutNode ReplacedBy { get; set; }
     public LayoutNode RemovedNode { get; set; }
+    public LayoutNode SecondaryNode { get; set; }
     public bool MergedLeftOrUp { get; set; }
     public bool Row { get; set; }
 
-    public LayoutNodeMergedEditHistory(string name, LayoutNode replacedBy, LayoutNode removedNode, bool mergedLeftOrUp, bool row)
+    public LayoutNodeMergedEditHistory(string name, LayoutNode replacedBy, LayoutNode removedNode, LayoutNode secondaryNode, bool mergedLeftOrUp, bool row)
         : base(name)
     {
         ReplacedBy = replacedBy;
         RemovedNode = removedNode;
+        SecondaryNode = secondaryNode;
         MergedLeftOrUp = mergedLeftOrUp;
         Row = row;
     }
 
     public override Task<ActionResult> Undo(IServiceProvider serviceProvider)
     {
-        _ = ReplacedBy.AddNode(Row, !MergedLeftOrUp, RemovedNode);
+        var res = ReplacedBy.AddNode(Row, !MergedLeftOrUp, new LayoutNode[] { RemovedNode, SecondaryNode });
         
-        return Task.FromResult<ActionResult>(new(true, null));
+        return Task.FromResult<ActionResult>(res);
     }
 
     public override Task<ActionResult> Redo(IServiceProvider serviceProvider)
     {
-        if(RemovedNode.DeleteNode())
-            return Task.FromResult<ActionResult>(new(true, null));
-
-        return Task.FromResult<ActionResult>(new(false, new List<string> { "Unable to delete the node." }));
+        var res = RemovedNode.DeleteNode();
+        
+        return Task.FromResult<ActionResult>(res);
     }
 }

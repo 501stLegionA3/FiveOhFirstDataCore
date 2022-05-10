@@ -22,7 +22,7 @@ public partial class PageEditComponent
     [Inject]
     public IRoutingService RoutingService { get; set; }
     [Inject]
-    public IEditHistoryService EditHistory { get; set; }
+    public IEditHistoryService EditHistoryService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
@@ -75,10 +75,10 @@ public partial class PageEditComponent
             await RefreshPageListAsync();
         }
     }
-    #endregion
+	#endregion
 
-    #region Page Control
-    private bool SidebarVisible { get; set; } = true;
+	#region Page Control
+	private bool SidebarVisible { get; set; } = true;
 
     private void ToggleSidebar()
     {
@@ -196,6 +196,9 @@ public partial class PageEditComponent
 
     private async Task StartPageEditAsync(CustomPageSettings settings)
     {
+        // New editor? Rest the edit history.
+        EditHistoryService.Reset();
+
         PageToEdit = settings;
 
         var loader = RoutingService.LoadPageSettingsAsync(settings);
@@ -282,12 +285,16 @@ public partial class PageEditComponent
     #region Undo/Redo
     private async Task OnUndoClickedAsync()
     {
-        await EditHistory.UndoAsync();
+        await EditHistoryService.UndoAsync();
+
+        StateHasChanged();
     }
 
     private async void OnRedoClickedAsync()
     {
-        await EditHistory.RedoAsync();
+        await EditHistoryService.RedoAsync();
+
+        StateHasChanged();
     }
     #endregion
 }

@@ -17,21 +17,24 @@
 					<span class="flex-grow">Page Editor</span>
 					<div class="flex flex-row flex-none gap-1">
 						
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+						@if (LeftMenuState == LeftMenu.PageSelection)
+						{
+							<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
 							transition-all ease-in-out duration-500
 							@(DisplayNewPage ? "scale-0 invisible" : "scale-100 visible")"
 							@onclick="() => DisplayNewPage = true">
-							add_to_queue
-						</button>
+								add_to_queue
+							</button>
 
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+							<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
 							transition-all ease-in-out duration-500
 							@(DisplaySearch ? "scale-0 invisible" : "scale-100 visible")"
 							@onclick="() => DisplaySearch = true">
-							search
-						</button>
+								search
+							</button>
+						}
 
-						<div class="border border-black"></div>
+						<div class="border border-slate-400"></div>
 
 						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
 							type="button"

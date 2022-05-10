@@ -3,7 +3,9 @@ using Microsoft.JSInterop;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Scoped;
+using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Structures.Events.Parameters;
+using ProjectDataCore.Data.Structures.History.PageEdit;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 namespace ProjectDataCore.Components.Framework.Page;
@@ -16,6 +18,8 @@ public partial class PageComponent : IDisposable
     public IAlertService AlertService { get; set; }
     [Inject]
     public IScopedDataBus ScopedDataBus { get; set; }
+    [Inject]
+    public IEditHistoryService EditHistoryService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter(Name = "PageEdit")]
@@ -83,27 +87,41 @@ public partial class PageComponent : IDisposable
     {
         if (EditingNode is not null)
         {
+            ActionResult<LayoutNodeModifiedResult>? addRes = null;
             try
             {
                 switch (destType)
                 {
                     case "left":
-                        EditingNode.AddNode(false, true);
+                        addRes = EditingNode.AddNode(false, true);
                         break;
                     case "top":
-                        EditingNode.AddNode(true, false);
+                        addRes = EditingNode.AddNode(true, false);
                         break;
                     case "bottom":
-                        EditingNode.AddNode(true, true);
+                        addRes = EditingNode.AddNode(true, true);
                         break;
                     case "right":
-                        EditingNode.AddNode(false, false);
+                        addRes = EditingNode.AddNode(false, false);
                         break;
                 }
             }
             catch (Exception ex)
             {
                 AlertService.CreateErrorAlert(ex.Message);
+            }
+
+            if (addRes is not null)
+            {
+                if (addRes.GetResult(out var res, out var err))
+                {
+                    EditHistoryService.Push(
+                        new LayoutNodeSplitEditHistory($"Split {destType}", res));
+                }
+                else
+				{
+                    AlertService.CreateErrorAlert(err);
+				}
             }
 
             await ScopedDataBus.RequestLayoutNodeTreeRefreshAsync(this, new());

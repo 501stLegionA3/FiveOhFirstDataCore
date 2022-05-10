@@ -9,15 +9,20 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.History.PageEdit;
 public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 {
-    public LayoutNode NewNode { get; init; }
+    public LayoutNode NewNode { get; set; }
+    public LayoutNode? SiblingNode { get; set; }
     public LayoutNode ParentNode { get; set; }
     public bool Row { get; set; }
     public bool AddedLeftOrUp { get; set; }
 
-    public LayoutNodeSplitEditHistory(string name, LayoutNode newNode, LayoutNode parentNode, bool row, bool addedLeftOrUp)
+    public LayoutNodeSplitEditHistory(string name, LayoutNodeModifiedResult result)
+        : this(name, result.ModifiedNode, result.SecondaryNode, result.ParentNode, result.Row, result.UpOrLeft) { }
+
+    public LayoutNodeSplitEditHistory(string name, LayoutNode newNode, LayoutNode? siblingNode, LayoutNode parentNode, bool row, bool addedLeftOrUp)
         : base (name)
     {
         NewNode = newNode;
+        SiblingNode = siblingNode;
         ParentNode = parentNode;
         Row = row;
         AddedLeftOrUp = addedLeftOrUp;
@@ -25,16 +30,15 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 
     public override Task<ActionResult> Undo(IServiceProvider serviceProvider)
     {
-        if (NewNode.DeleteNode())
-            return Task.FromResult<ActionResult>(new(true, null));
+        var res = NewNode.DeleteNode();
 
-        return Task.FromResult<ActionResult>(new(false, new List<string> { "Failed to remove the node." }));
+        return Task.FromResult<ActionResult>(res);
     }
 
     public override Task<ActionResult> Redo(IServiceProvider serviceProvider)
     {
-        _ = ParentNode.AddNode(Row, AddedLeftOrUp, NewNode);
-        
-        return Task.FromResult<ActionResult>(new(true, null));
+        var res = ParentNode.AddNode(Row, AddedLeftOrUp, new LayoutNode?[] { SiblingNode, NewNode });
+
+        return Task.FromResult<ActionResult>(res);
     }
 }
