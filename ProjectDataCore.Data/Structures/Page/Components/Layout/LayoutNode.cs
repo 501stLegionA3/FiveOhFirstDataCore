@@ -57,8 +57,6 @@ public class LayoutNode : DataObject<Guid>
         RawNodeWidths = raw;
     }
 
-    // TODO handle width setup on add node
-
     /// <summary>
     /// Adds a new Layout Node to the node tree.
     /// </summary>
@@ -70,16 +68,18 @@ public class LayoutNode : DataObject<Guid>
     /// <param name="row">Is the new node a row? true if it is, false if it is column.</param>
     /// <param name="addAboveOrLeft">If the new node should be added above or to the left (depending of if it is a
     /// row or column) or if it should be added below or to the right.</param>
+    /// <param name="nodeData">A <see cref="LayoutNode"/> to attach as a child for this object. If this object has
+    /// a parent already, it will be removed from that parent.</param>
     /// <returns>A <see cref="bool"/> that will be true if a node was added to this object,
     /// and false if it was added to the parent.</returns>
-    public bool AddNode(bool row, bool addAboveOrLeft)
+    public bool AddNode(bool row, bool addAboveOrLeft, LayoutNode? nodeData = null)
     {
         // ... check to see if this has a parent node ...
         if (ParentNode is null)
         {
             // ... if the parent node is null, then this is the uppermost node handler
             // and we need to add two children ...
-            Nodes.Add(CreateChild(!addAboveOrLeft, 0));
+            Nodes.Add(CreateChild(!addAboveOrLeft, 0, nodeData));
             // ... insert node will handle both new nodes to
             // set the node widths value, so lets
             // clear any existing values first ...
@@ -97,7 +97,7 @@ public class LayoutNode : DataObject<Guid>
         if(ParentNode.Nodes.Count <= 1)
         {
             // ... if there isnt, we add a new node ...
-            ParentNode.InsertNode(ParentNode.CreateChild(false, Order), addAboveOrLeft);
+            ParentNode.InsertNode(ParentNode.CreateChild(false, Order, nodeData), addAboveOrLeft);
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
             // ... and let the user know the parent was modified ...
@@ -110,7 +110,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... if we can add, then add and let the user know ...
-                ParentNode.InsertNode(ParentNode.CreateChild(false, Order), addAboveOrLeft);
+                ParentNode.InsertNode(ParentNode.CreateChild(false, Order, nodeData), addAboveOrLeft);
 
                 return false;
             }
@@ -119,7 +119,7 @@ public class LayoutNode : DataObject<Guid>
             else if (Nodes.Count <= 0)
             {
                 // ... first, lets make a new child node that contains the information from this node ...
-                var node = CreateChild(true, 0);
+                var node = CreateChild(true, 0, nodeData);
 
                 // ... then save the node as a child ...
                 Nodes.Add(node);
@@ -363,15 +363,25 @@ public class LayoutNode : DataObject<Guid>
     /// <param name="transferComponentData">If the component data for this node should
     /// be transfered to the new child.</param>
     /// <returns>A new <see cref="LayoutNode"/> that is a child of this node.</returns>
-    private LayoutNode CreateChild(bool transferComponentData, int order)
+    private LayoutNode CreateChild(bool transferComponentData, int order, LayoutNode? nodeData = null)
     {
-        // ... create a new child object ...
-        var node = new LayoutNode()
+        // Make a new node ...
+        LayoutNode node = new();
+
+        // ... if the node data is not null ...
+        if (nodeData is not null)
         {
-            ParentNode = this,
-            ParentNodeId = this.Key,
-            Order = order,
-        };
+            // ... remove this node from its parent ...
+            _ = nodeData.ParentNode?.DeleteNode(nodeData);
+
+            // ... and add it here ...
+            node = nodeData;
+        }
+
+        // ... then set the defaults ...
+        node.ParentNode = this;
+        node.ParentNodeId = Key;
+        node.Order = order;
 
         // ... if we need to transfer component data ...
         if (transferComponentData)
@@ -391,6 +401,7 @@ public class LayoutNode : DataObject<Guid>
             Component = null;
             ComponentId = null;
         }
+
         // ... then treturn the node.
         return node;
     }

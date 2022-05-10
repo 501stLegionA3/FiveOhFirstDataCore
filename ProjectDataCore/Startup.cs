@@ -15,6 +15,7 @@ using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Global;
 using ProjectDataCore.Data.Services.Bus.Scoped;
+using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.InternalAuth;
 using ProjectDataCore.Data.Services.Logging;
@@ -97,6 +98,7 @@ public class Startup
         #endregion
 
         #region Services
+        // Scoped Services
         services.AddScoped<IModularRosterService, ModularRosterService>()
             .AddScoped<IPageEditService, PageEditService>()
             .AddScoped<IScopedUserService, ScopedUserService>()
@@ -105,10 +107,8 @@ public class Startup
             .AddScoped<IAssignableDataService, AssignableDataService>()
             .AddScoped<IAlertService, AlertService>()
             .AddScoped<IImportService, ImportService>()
-            .AddScoped<IScopedDataBus, ScopedDataBus>();
-
-        // Scoped Services
-        services
+            .AddScoped<IScopedDataBus, ScopedDataBus>()
+            .AddScoped<IEditHistoryService, EditHistoryService>()
             .AddScoped<ILocalUserService, LocalUserService>()
             .AddScoped<IUserService, UserService>();
 
