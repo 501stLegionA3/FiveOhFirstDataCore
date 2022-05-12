@@ -13,7 +13,7 @@ public class DuplicateComparer<TKey> : IComparer<TKey> where TKey : IComparable
         int result = x.CompareTo(y);
 
         if (result == 0)
-            return _sameIsLower ? -1 : 1;
+            return _sameIsLower ? 1 : -1;
         return result;
     }
 }

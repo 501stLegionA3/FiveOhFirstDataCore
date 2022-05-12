@@ -10,12 +10,33 @@ namespace ProjectDataCore.Data.Structures.Result;
 
 public class LayoutNodeModifiedResult
 {
+    /// <summary>
+    /// The <see cref="LayoutNode"/> that called this action.
+    /// </summary>
     public LayoutNode CalledFrom { get; set; }
+    /// <summary>
+    /// The parent <see cref="LayoutNode"/> for the <see cref="ModifiedNode"/>
+    /// </summary>
     public LayoutNode ParentNode { get; set; }
+    /// <summary>
+    /// The <see cref="LayoutNode"/> that was modified.
+    /// </summary>
     public LayoutNode ModifiedNode { get; set; }
+    /// <summary>
+    /// The other <see cref="LayoutNode"/> that was also effected by this action, if any.
+    /// </summary>
     public LayoutNode? SecondaryNode { get; set; }
+    /// <summary>
+    /// The node that replaced the <see cref="ModifiedNode"/> during a delete operation, if any.
+    /// </summary>
     public LayoutNode? ReplacedBy { get; set; }
+    /// <summary>
+    /// True if this operation was done on a row of nodes.
+    /// </summary>
     public bool Row { get; set; }
+    /// <summary>
+    /// True if this operation was done upwards or leftwards in the grid.
+    /// </summary>
     public bool UpOrLeft { get; set; }
 
     public LayoutNodeModifiedResult(LayoutNode calledFrom, LayoutNode parentNode, LayoutNode modifiedNode, 

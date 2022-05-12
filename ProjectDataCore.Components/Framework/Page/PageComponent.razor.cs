@@ -96,10 +96,10 @@ public partial class PageComponent : IDisposable
                         addRes = EditingNode.AddNode(false, true);
                         break;
                     case "top":
-                        addRes = EditingNode.AddNode(true, false);
+                        addRes = EditingNode.AddNode(true, true);
                         break;
                     case "bottom":
-                        addRes = EditingNode.AddNode(true, true);
+                        addRes = EditingNode.AddNode(true, false);
                         break;
                     case "right":
                         addRes = EditingNode.AddNode(false, false);

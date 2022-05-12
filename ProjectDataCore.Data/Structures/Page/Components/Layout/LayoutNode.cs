@@ -115,7 +115,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... we get a child node ...
-                var child = ParentNode.CreateChild(false, Order, nodeData?.ElementAtOrDefault(0));
+                var child = ParentNode.CreateChild(false, Order + (addAboveOrLeft ? 0 : 1), nodeData?.ElementAtOrDefault(0));
 
                 // ... if we can add, then add and let the user know ...
                 ParentNode.InsertNode(child, addAboveOrLeft);
@@ -165,7 +165,7 @@ public class LayoutNode : DataObject<Guid>
                 // ... then the values without the gutters ...
                 var sizes = widths.Where(x => x != GUTTER_SIZE).ToList();
                 // ... then if there is a previous value we can get ...
-                var prevSize = pair.Value.Order + (addAboveOrLeft ? -1 : 0);
+                var prevSize = pair.Value.Order + (addAboveOrLeft ? 0 : -1);
                 // ... and set an indicator for generating new size values ...
                 bool generateSizes = true;
                 if(sizes.Count > prevSize && prevSize >= 0)
@@ -189,7 +189,7 @@ public class LayoutNode : DataObject<Guid>
                             // ... then set the existing size to half one ...
                             sizes[prevSize] = $"{halfOne}%";
                             // ... and the new value to half two ...
-                            sizes.Insert(pair.Value.Order + (addAboveOrLeft ? -1 : 1), $"{halfTwo}%");
+                            sizes.Insert(pair.Value.Order, $"{halfTwo}%");
 
                             // ... then make a new node widths value by combining all the
                             // percentages with gutters ...
@@ -303,7 +303,7 @@ public class LayoutNode : DataObject<Guid>
             }
 
             // ... then get the node that replaced this one for the result ...
-            replacedBy = Nodes[mergeLeftOrUp ? prevSize : prevSize - 1];
+            replacedBy = Nodes.FirstOrDefault(x => x.Order == (mergeLeftOrUp ? prevSize : prevSize - 1));
         }
 
         // ... then let the caller know this was a success

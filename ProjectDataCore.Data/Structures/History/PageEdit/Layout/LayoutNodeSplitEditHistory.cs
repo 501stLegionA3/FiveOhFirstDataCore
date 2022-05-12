@@ -23,7 +23,7 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
         Node = result.ModifiedNode;
         SiblingNode = result.SecondaryNode;
 
-        AddCaller = result.ParentNode;
+        AddCaller = result.ReplacedBy ?? result.ParentNode;
 
         Row = result.Row;
         UpOrLeft = result.UpOrLeft;
