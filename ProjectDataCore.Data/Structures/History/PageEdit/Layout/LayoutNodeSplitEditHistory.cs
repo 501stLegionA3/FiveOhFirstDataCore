@@ -13,19 +13,19 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
     public LayoutNode? SiblingNode { get; set; }
     public LayoutNode ParentNode { get; set; }
     public bool Row { get; set; }
-    public bool AddedLeftOrUp { get; set; }
+    public bool AddedUpOrLeft { get; set; }
 
     public LayoutNodeSplitEditHistory(string name, LayoutNodeModifiedResult result)
         : this(name, result.ModifiedNode, result.SecondaryNode, result.ParentNode, result.Row, result.UpOrLeft) { }
 
-    public LayoutNodeSplitEditHistory(string name, LayoutNode newNode, LayoutNode? siblingNode, LayoutNode parentNode, bool row, bool addedLeftOrUp)
+    public LayoutNodeSplitEditHistory(string name, LayoutNode newNode, LayoutNode? siblingNode, LayoutNode parentNode, bool row, bool addedUpOrLeft)
         : base (name)
     {
         NewNode = newNode;
         SiblingNode = siblingNode;
         ParentNode = parentNode;
         Row = row;
-        AddedLeftOrUp = addedLeftOrUp;
+        AddedUpOrLeft = addedUpOrLeft;
     }
 
     public override Task<ActionResult> Undo(IServiceProvider serviceProvider)
@@ -37,7 +37,16 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 
     public override Task<ActionResult> Redo(IServiceProvider serviceProvider)
     {
-        var res = ParentNode.AddNode(Row, AddedLeftOrUp, new LayoutNode?[] { SiblingNode, NewNode });
+        var res = ParentNode.AddNode(Row, AddedUpOrLeft, new LayoutNode?[] { SiblingNode, NewNode });
+
+        if(res.GetResult(out var resData, out _))
+        {
+            ParentNode = resData.ParentNode;
+            NewNode = resData.ModifiedNode;
+            SiblingNode = resData.SecondaryNode;
+            Row = resData.Row;
+            AddedUpOrLeft = resData.UpOrLeft;
+        }
 
         return Task.FromResult<ActionResult>(res);
     }
