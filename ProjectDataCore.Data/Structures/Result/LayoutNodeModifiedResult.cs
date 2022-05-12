@@ -10,17 +10,22 @@ namespace ProjectDataCore.Data.Structures.Result;
 
 public class LayoutNodeModifiedResult
 {
+    public LayoutNode CalledFrom { get; set; }
+    public LayoutNode ParentNode { get; set; }
     public LayoutNode ModifiedNode { get; set; }
     public LayoutNode? SecondaryNode { get; set; }
-    public LayoutNode ParentNode { get; set; }
+    public LayoutNode? ReplacedBy { get; set; }
     public bool Row { get; set; }
     public bool UpOrLeft { get; set; }
 
-    public LayoutNodeModifiedResult(LayoutNode parentNode, LayoutNode modifiedNode, LayoutNode? secondaryNode, bool upOrLeft)
-	{
+    public LayoutNodeModifiedResult(LayoutNode calledFrom, LayoutNode parentNode, LayoutNode modifiedNode, 
+        LayoutNode? secondaryNode, LayoutNode? replacedBy, bool upOrLeft)
+    {
+        CalledFrom = calledFrom;
         ParentNode = parentNode;
         ModifiedNode = modifiedNode;
         SecondaryNode = secondaryNode;
+        ReplacedBy = replacedBy;
         UpOrLeft = upOrLeft;
 
         Row = ParentNode.Rows;

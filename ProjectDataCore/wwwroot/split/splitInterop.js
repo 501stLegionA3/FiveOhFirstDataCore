@@ -4,7 +4,7 @@ window.SplitInterop = (() => {
     const liveNodes = {};
 
     return {
-        createSplit(guid, dotNetRef, sizeUpdateMethod, rows = {}, cols = {}) {
+        createSplit(guid, dotNetRef, sizeUpdateMethod, dragEndMethod, rows = {}, cols = {}) {
             try {
 
                 let columnGutters = [];
@@ -37,6 +37,9 @@ window.SplitInterop = (() => {
                         writeStyle: (grid, gridTemplateProp, gridTemplateStyle) => {
                             dotNetRef.invokeMethodAsync(sizeUpdateMethod, gridTemplateStyle);
                             grid.style[gridTemplateProp] = gridTemplateStyle;
+                        },
+                        onDragEnd: (direction, track) => {
+                            dotNetRef.invokeMethodAsync(dragEndMethod);
                         },
                         minSize: 40,
                     }

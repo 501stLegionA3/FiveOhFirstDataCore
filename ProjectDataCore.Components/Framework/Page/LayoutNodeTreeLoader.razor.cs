@@ -2,8 +2,10 @@
 
 using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Scoped;
+using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Services.Routing;
 using ProjectDataCore.Data.Structures.Events.Parameters;
+using ProjectDataCore.Data.Structures.History.PageEdit.Layout;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using System;
 using System.Collections.Generic;
@@ -21,6 +23,8 @@ public partial class LayoutNodeTreeLoader : IDisposable
     public IJSRuntime JSRuntime { get; set; }
     [Inject]
     public IScopedDataBus ScopedDataBus { get; set; }
+    [Inject]
+    public IEditHistoryService EditHistoryService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     [CascadingParameter(Name = "PageEdit")]
@@ -119,7 +123,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
 
         // This is the first render, don't worry about disposing of any scopes.
         await JSRuntime.InvokeVoidAsync("SplitInterop.createSplit", ParentNode.EditorKey, dotRef,
-            nameof(UpdateSizes), rows.ToArray(), cols.ToArray());
+            nameof(UpdateSizes), nameof(PushSizeUpdate), rows.ToArray(), cols.ToArray());
     }
 
     protected async Task DisposeDragabbles()
@@ -140,11 +144,35 @@ public partial class LayoutNodeTreeLoader : IDisposable
         return DotNetRef;
     }
 
+    #region Size Handler
+    private string? oldSize;
+
     [JSInvokable]
     public void UpdateSizes(string size)
     {
-        ParentNode?.SetNodeWidths(size);
+        if (ParentNode is not null)
+        {
+            if (oldSize is null)
+            {
+                oldSize = ParentNode.RawNodeWidths;
+            }
+
+            ParentNode.SetNodeWidths(size);
+        }
     }
+
+    [JSInvokable]
+    public void PushSizeUpdate()
+    {
+        if (oldSize is not null
+            && ParentNode is not null)
+        {
+            EditHistoryService.Push(new LayoutNodeSizesChangedEditHistory("Layout Size Dragged", ParentNode, oldSize));
+        }
+
+        oldSize = null;
+    }
+    #endregion
 
     public Task RefreshRequested(object sender, NodeTreeLoaderRefreshRequestedEventArgs args)
     {

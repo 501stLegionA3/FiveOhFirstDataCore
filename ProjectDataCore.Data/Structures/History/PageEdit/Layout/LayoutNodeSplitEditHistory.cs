@@ -1,52 +1,50 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ProjectDataCore.Data.Structures.History.PageEdit;
 public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 {
-    public LayoutNode NewNode { get; set; }
-    public LayoutNode? SiblingNode { get; set; }
-    public LayoutNode ParentNode { get; set; }
-    public bool Row { get; set; }
-    public bool AddedUpOrLeft { get; set; }
+    public LayoutNode Node { get; private set; }
+    public LayoutNode? SiblingNode { get; private set; }
+    public LayoutNode AddCaller { get; private set; }
+    public bool Row { get; private set; }
+    public bool UpOrLeft { get; private set; }
 
     public LayoutNodeSplitEditHistory(string name, LayoutNodeModifiedResult result)
-        : this(name, result.ModifiedNode, result.SecondaryNode, result.ParentNode, result.Row, result.UpOrLeft) { }
-
-    public LayoutNodeSplitEditHistory(string name, LayoutNode newNode, LayoutNode? siblingNode, LayoutNode parentNode, bool row, bool addedUpOrLeft)
-        : base (name)
+        : base(name) 
     {
-        NewNode = newNode;
-        SiblingNode = siblingNode;
-        ParentNode = parentNode;
-        Row = row;
-        AddedUpOrLeft = addedUpOrLeft;
+        Node = result.ModifiedNode;
+        AddCaller = result.CalledFrom;
+
+        AssignValues(result);
+    }
+
+    private void AssignValues(LayoutNodeModifiedResult result)
+    {
+        Node = result.ModifiedNode;
+        SiblingNode = result.SecondaryNode;
+
+        AddCaller = result.ParentNode;
+
+        Row = result.Row;
+        UpOrLeft = result.UpOrLeft;
     }
 
     public override Task<ActionResult> Undo(IServiceProvider serviceProvider)
     {
-        var res = NewNode.DeleteNode();
+        var res = Node.DeleteNode(!UpOrLeft);
+
+        if (res.GetResult(out var data, out _))
+            AssignValues(data);
 
         return Task.FromResult<ActionResult>(res);
     }
 
     public override Task<ActionResult> Redo(IServiceProvider serviceProvider)
     {
-        var res = ParentNode.AddNode(Row, AddedUpOrLeft, new LayoutNode?[] { SiblingNode, NewNode });
+        var res = AddCaller.AddNode(Row, !UpOrLeft, new LayoutNode?[] { Node, SiblingNode });
 
-        if(res.GetResult(out var resData, out _))
-        {
-            ParentNode = resData.ParentNode;
-            NewNode = resData.ModifiedNode;
-            SiblingNode = resData.SecondaryNode;
-            Row = resData.Row;
-            AddedUpOrLeft = resData.UpOrLeft;
-        }
+        if (res.GetResult(out var data, out _))
+            AssignValues(data);
 
         return Task.FromResult<ActionResult>(res);
     }

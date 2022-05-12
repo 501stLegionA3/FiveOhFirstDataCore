@@ -79,32 +79,34 @@ public class LayoutNode : DataObject<Guid>
         {
             // ... if the parent node is null, then this is the uppermost node handler
             // and we need to add two children ...
-            var secondChild = CreateChild(false, 0, nodeData?.ElementAtOrDefault(0));
+            var secondChild = CreateChild(false, 0, nodeData?.ElementAtOrDefault(1));
             Nodes.Add(secondChild);
             // ... insert node will handle both new nodes to
             // set the node widths value, so lets
             // clear any existing values first ...
             SetNodeWidths("");
-            var child = CreateChild(true, 0, nodeData?.ElementAtOrDefault(1));
+            var child = CreateChild(true, 0, nodeData?.ElementAtOrDefault(0));
             InsertNode(child, addAboveOrLeft);
 
             // ... because this is going to be the first node, we also set the
             // row/col indicator ...
             Rows = row;
 
-            return new(true, null, new(this, child, secondChild, addAboveOrLeft));
+            return new(true, null, new(this, this, child, secondChild, null, addAboveOrLeft));
         }
 
         // ... check to see if there is more than one node in the parent ...
         if(ParentNode.Nodes.Count <= 1)
         {
+            // ... grab the second child value ...
+            var secondChild = ParentNode.Nodes.FirstOrDefault();
             // ... if there isnt, we add a new node ...
-            var child = ParentNode.CreateChild(false, Order, nodeData?.ElementAtOrDefault(0));
+            var child = ParentNode.CreateChild(true, Order, nodeData?.ElementAtOrDefault(0));
             ParentNode.InsertNode(child, addAboveOrLeft);
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
             // ... and let the user know the parent was modified ...
-            return new(true, null, new(ParentNode, child, null, addAboveOrLeft));
+            return new(true, null, new(this, ParentNode, child, secondChild, null, addAboveOrLeft));
         }
         // ... otherwise, we need to check if we can add to the parent ...
         else
@@ -118,14 +120,14 @@ public class LayoutNode : DataObject<Guid>
                 // ... if we can add, then add and let the user know ...
                 ParentNode.InsertNode(child, addAboveOrLeft);
 
-                return new(true, null, new(ParentNode, child, null, addAboveOrLeft));
+                return new(true, null, new(this, ParentNode, child, null, null, addAboveOrLeft));
             }
             // ... otherwise, we need to do some fancy work,
             // but only if there are no child nodes yet ...
             else if (Nodes.Count <= 0)
             {
                 // ... first, lets make a new child node that contains the information from this node ...
-                var node = CreateChild(true, 0, nodeData?.ElementAtOrDefault(0));
+                var node = CreateChild(false, 0, nodeData?.ElementAtOrDefault(1));
 
                 // ... then save the node as a child ...
                 Nodes.Add(node);
@@ -228,6 +230,7 @@ public class LayoutNode : DataObject<Guid>
             return new(true, new List<string> { "Failed to remove the node." }, null);
 
         LayoutNode? secondRemoval = null;
+        LayoutNode? replacedBy = null;
         // ... if there is a single child node left ...
         if(Nodes.Count == 1)
         {
@@ -298,10 +301,13 @@ public class LayoutNode : DataObject<Guid>
                 // ... generate them ...
                 GenerateNodeSizes(sorted);
             }
+
+            // ... then get the node that replaced this one for the result ...
+            replacedBy = Nodes[mergeLeftOrUp ? prevSize : prevSize - 1];
         }
 
         // ... then let the caller know this was a success
-        return new(true, null, new(this, node, secondRemoval, mergeLeftOrUp));
+        return new(true, null, new(this, this, node, secondRemoval, replacedBy, mergeLeftOrUp));
     }
 
     /// <summary>
@@ -324,7 +330,10 @@ public class LayoutNode : DataObject<Guid>
             return new(false, new List<string> { "No parent to delete from." }, null);
         }
 
-        return ParentNode.DeleteNode(this, mergeLeft);
+        var res = ParentNode.DeleteNode(this, mergeLeft);
+        if (res.GetResult(out var data, out _))
+            data.CalledFrom = this;
+        return res;
     }
 
     private SortedList<int, LayoutNode> OrderNodes(bool sameIsLower)
