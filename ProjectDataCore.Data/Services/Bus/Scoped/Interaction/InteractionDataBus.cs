@@ -21,7 +21,7 @@ public partial class ScopedDataBus : IScopedDataBus
     }
 
     public event IScopedDataBus.KeyPressedEventHandler? KeyPressed;
-    public Task SendKeyPressEventAsync(object sender, KeyboardEventArgs args)
+    public Task SendKeyPressEventAsync(object sender, OnPressEventArgs args)
     {
         if (KeyPressed is not null)
             _ = Task.Run(async () => await KeyPressed.Invoke(sender, args));

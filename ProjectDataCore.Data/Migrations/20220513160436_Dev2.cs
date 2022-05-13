@@ -97,6 +97,30 @@ namespace ProjectDataCore.Data.Migrations
                         principalColumn: "Key");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserKeybinding",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Keybinding = table.Column<int>(type: "integer", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
+                    CtrlKey = table.Column<bool>(type: "boolean", nullable: false),
+                    AltKey = table.Column<bool>(type: "boolean", nullable: false),
+                    MetaKey = table.Column<bool>(type: "boolean", nullable: false),
+                    DataCoreUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserKeybinding", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_UserKeybinding_AspNetUsers_DataCoreUserId",
+                        column: x => x.DataCoreUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_LayoutNodes_PageSettingsId",
                 table: "LayoutNodes",
@@ -107,6 +131,11 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_LayoutNodes_ParentNodeId",
                 table: "LayoutNodes",
                 column: "ParentNodeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserKeybinding_DataCoreUserId",
+                table: "UserKeybinding",
+                column: "DataCoreUserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PageComponentSettingsBase_LayoutNodes_ParentNodeId",
@@ -135,6 +164,9 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "LayoutNodes");
+
+            migrationBuilder.DropTable(
+                name: "UserKeybinding");
 
             migrationBuilder.DropColumn(
                 name: "AuthKey",

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 
+using ProjectDataCore.Data.Structures.Events.Parameters;
 using ProjectDataCore.Data.Structures.Keybindings;
 
 using System;
@@ -30,11 +31,11 @@ public interface IKeybindingService
     /// </summary>
     /// <param name="args">The event args of a keyboard action on the website.</param>
     /// <returns>A task for this action.</returns>
-    public Task ExecuteKeybindingAsync(KeyboardEventArgs args);
+    public Task<Keybinding?> ExecuteKeybindingAsync(OnPressEventArgs args);
     /// <summary>
     /// Execute a keybinding.
     /// </summary>
     /// <param name="keybinding">The keybinding to execute.</param>
     /// <returns>A task for this action.</returns>
-    public Task ExecuteKeybindingAsync(Keybinding keybinding);
+    public Task ExecuteKeybindingAsync(Keybinding? keybinding);
 }

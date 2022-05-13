@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220430140457_Dev2")]
+    [Migration("20220513160436_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -411,6 +411,41 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AssignableValues");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableValue");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Keybindings.UserKeybinding", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("AltKey")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("CtrlKey")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("DataCoreUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Keybinding")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("MetaKey")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("DataCoreUserId");
+
+                    b.ToTable("UserKeybinding");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
@@ -1237,6 +1272,17 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("ForUser");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Keybindings.UserKeybinding", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "DataCoreUser")
+                        .WithMany("KeyBindings")
+                        .HasForeignKey("DataCoreUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DataCoreUser");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Nav.NavModule", "Parent")
@@ -1416,6 +1462,8 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreUser", b =>
                 {
                     b.Navigation("AssignableValues");
+
+                    b.Navigation("KeyBindings");
 
                     b.Navigation("RosterSlots");
                 });

@@ -19,6 +19,7 @@ using ProjectDataCore.Data.Structures.Policy;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using ProjectDataCore.Data.Structures.Keybindings;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -236,11 +237,17 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         dataCoreUser.HasMany(e => e.RosterSlots)
             .WithOne(e => e.OccupiedBy)
             .HasForeignKey(e => e.OccupiedById);
+        dataCoreUser.HasMany(e => e.KeyBindings)
+            .WithOne(e => e.DataCoreUser)
+            .HasForeignKey(e => e.DataCoreUserId);
         dataCoreUser.Navigation(e => e.AssignableValues)
             .AutoInclude();
             
         var dataCoreUserProperty = builder.Entity<DataCoreUserProperty>();
         dataCoreUserProperty.HasKey(e => e.Key);
+
+        var userKeybindings = builder.Entity<UserKeybinding>();
+        userKeybindings.HasKey(e => e.Key);
         #endregion
 
         #region Account Link

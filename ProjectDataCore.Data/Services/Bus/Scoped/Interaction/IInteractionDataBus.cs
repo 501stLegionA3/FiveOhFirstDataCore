@@ -15,7 +15,7 @@ public partial interface IScopedDataBus
     public event PageClickedEventHandler PageClicked;
     public Task SendPageClickEventAsync(object sender, PageClickedEventArgs args);
 
-    public delegate Task KeyPressedEventHandler(object sender, KeyboardEventArgs args);
+    public delegate Task KeyPressedEventHandler(object sender, OnPressEventArgs args);
     public event KeyPressedEventHandler KeyPressed;
-    public Task SendKeyPressEventAsync(object sender, KeyboardEventArgs args);
+    public Task SendKeyPressEventAsync(object sender, OnPressEventArgs args);
 }

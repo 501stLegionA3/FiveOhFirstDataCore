@@ -18,6 +18,7 @@ using ProjectDataCore.Data.Services.Bus.Scoped;
 using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.InternalAuth;
+using ProjectDataCore.Data.Services.Keybindings;
 using ProjectDataCore.Data.Services.Logging;
 using ProjectDataCore.Data.Services.Mail;
 using ProjectDataCore.Data.Services.Nav;
@@ -110,7 +111,8 @@ public class Startup
             .AddScoped<IScopedDataBus, ScopedDataBus>()
             .AddScoped<IEditHistoryService, EditHistoryService>()
             .AddScoped<ILocalUserService, LocalUserService>()
-            .AddScoped<IUserService, UserService>();
+            .AddScoped<IUserService, UserService>()
+            .AddScoped<IKeybindingService, KeybindingService>();
 
         // Singleton Services
         services.AddSingleton<IRoutingService, RoutingService>()

@@ -1,4 +1,6 @@
 ﻿using ProjectDataCore.Data.Account;
+using ProjectDataCore.Data.Structures.Events.Parameters;
+using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -16,4 +18,6 @@ public interface ILocalUserService : IDisposable
     public void Deinitalize();
     public void DeinitalizeIfInitalized();
     public bool ValidateWithPolicy(DynamicAuthorizationPolicy policy);
+    public Dictionary<OnPressEventArgs, Keybinding> GetCustomKeybindings();
+    public Task ReloadKeybindingsAsync();
 }

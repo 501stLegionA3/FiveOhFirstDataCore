@@ -1,11 +1,12 @@
 ﻿@inherits LayoutComponentBase
 
 <CascadingValue Name="ActiveUser" Value="@ActiveUser">
-    <PageClickHandler>
+    <PageInteractionHandler>
         <Content>
             <NavMenu />
             <AlertContainer />        
             <AbsoluteMenuPopupHandler />
+            <KeybindingEventHandler />
 
             <div class="page flex-grow">
                 <main class="h-full">
@@ -16,5 +17,5 @@
                 </main>
             </div>
         </Content>
-    </PageClickHandler>
+    </PageInteractionHandler>
 </CascadingValue>

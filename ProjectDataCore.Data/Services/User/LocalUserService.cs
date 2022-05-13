@@ -1,6 +1,8 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Global;
+using ProjectDataCore.Data.Structures.Events.Parameters;
+using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -17,7 +19,7 @@ public class LocalUserService : ILocalUserService
     private readonly IGlobalDataBus _dataBus;
     
     private bool disposedValue;
-    private bool initalizeValue;
+    private bool initalizedValue;
     protected DataCoreUser? LocalUser { get; set; }
 
     public LocalUserService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IGlobalDataBus dataBus)
@@ -34,6 +36,7 @@ public class LocalUserService : ILocalUserService
         await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
         var user = await _dbContext.Users
             .Where(x => x.Id == userId)
+            .Include(x => x.KeyBindings)
             .FirstOrDefaultAsync();
 
         LocalUser = user;
@@ -44,7 +47,7 @@ public class LocalUserService : ILocalUserService
         }
         else
         {
-            initalizeValue = false;
+            initalizedValue = false;
         }
     }
 
@@ -57,9 +60,9 @@ public class LocalUserService : ILocalUserService
     public async Task<bool> InitalizeIfDeinitalizedAsync(Guid userId)
     {
 
-        if (!initalizeValue)
+        if (!initalizedValue)
         {
-            initalizeValue = true;
+            initalizedValue = true;
             await InitalizeAsync(userId);
             return true;
         }
@@ -69,9 +72,9 @@ public class LocalUserService : ILocalUserService
 
     public void DeinitalizeIfInitalized()
     {
-        if (initalizeValue)
+        if (initalizedValue)
         {
-            initalizeValue = false;
+            initalizedValue = false;
             Deinitalize();
         }
     }
@@ -82,6 +85,30 @@ public class LocalUserService : ILocalUserService
             return false;
 
         return policy.Validate(LocalUser);
+    }
+
+    public Dictionary<OnPressEventArgs, Keybinding> GetCustomKeybindings()
+    {
+        if (LocalUser is null)
+            return new();
+
+        Dictionary<OnPressEventArgs, Keybinding> data = new();
+        foreach (var binding in LocalUser.KeyBindings)
+        {
+            data.Add(binding.GetMinimalKeyboardEventArgs(), binding.Keybinding);
+        }
+
+        return data;
+    }
+
+    public async Task ReloadKeybindingsAsync()
+    {
+        if (LocalUser is null)
+            return;
+
+        var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var entity = _dbContext.Attach(LocalUser);
+        await entity.Collection(e => e.KeyBindings).LoadAsync();
     }
 
     protected virtual void Dispose(bool disposing)
