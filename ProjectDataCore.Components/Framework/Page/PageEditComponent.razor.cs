@@ -1,19 +1,17 @@
 ﻿using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.History;
+using ProjectDataCore.Data.Services.Keybindings;
 using ProjectDataCore.Data.Services.Routing;
+using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Page;
 
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace ProjectDataCore.Components.Framework.Page;
-public partial class PageEditComponent
+public partial class PageEditComponent : IDisposable
 {
+    private bool disposedValue;
 #pragma warning disable CS8618 // Inject is always non-null.
     [Inject]
     public IPageEditService PageEditService { get; set; }
@@ -23,6 +21,8 @@ public partial class PageEditComponent
     public IRoutingService RoutingService { get; set; }
     [Inject]
     public IEditHistoryService EditHistoryService { get; set; }
+    [Inject]
+    public IKeybindingService KeybindingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
@@ -75,10 +75,18 @@ public partial class PageEditComponent
             await RefreshPageListAsync();
         }
     }
-	#endregion
 
-	#region Page Control
-	private bool SidebarVisible { get; set; } = true;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        KeybindingService.RegisterKeybindListener(Keybinding.Undo, OnUndoClickedAsync);
+        KeybindingService.RegisterKeybindListener(Keybinding.Redo, OnRedoClickedAsync);
+    }
+    #endregion
+
+    #region Page Control
+    private bool SidebarVisible { get; set; } = true;
 
     private void ToggleSidebar()
     {
@@ -287,14 +295,43 @@ public partial class PageEditComponent
     {
         await EditHistoryService.UndoAsync();
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
-    private async void OnRedoClickedAsync()
+    private async Task OnRedoClickedAsync()
     {
         await EditHistoryService.RedoAsync();
 
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
     #endregion
+
+#nullable disable
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                KeybindingService.RemoveKeybindListener(Keybinding.Undo, OnUndoClickedAsync);
+                KeybindingService.RemoveKeybindListener(Keybinding.Redo, OnRedoClickedAsync);
+            }
+
+            ConfigurationNodes = null;
+            Pages = null;
+            FilteredPages = null;
+            PageDisplayOrder = null;
+            PageToEdit = null;
+
+            disposedValue = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+#nullable enable
 }

@@ -413,16 +413,11 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Keybindings.UserKeybinding", b =>
                 {
-                    b.Property<Guid>("Key")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                    b.Property<string>("Key")
+                        .HasColumnType("text");
 
                     b.Property<bool>("AltKey")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<bool>("CtrlKey")
                         .HasColumnType("boolean");
@@ -437,6 +432,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("MetaKey")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ShiftKey")
                         .HasColumnType("boolean");
 
                     b.HasKey("Key");

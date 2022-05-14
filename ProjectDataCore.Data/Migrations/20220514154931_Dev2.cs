@@ -101,9 +101,9 @@ namespace ProjectDataCore.Data.Migrations
                 name: "UserKeybinding",
                 columns: table => new
                 {
-                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<string>(type: "text", nullable: false),
                     Keybinding = table.Column<int>(type: "integer", nullable: false),
-                    Code = table.Column<string>(type: "text", nullable: false),
+                    ShiftKey = table.Column<bool>(type: "boolean", nullable: false),
                     CtrlKey = table.Column<bool>(type: "boolean", nullable: false),
                     AltKey = table.Column<bool>(type: "boolean", nullable: false),
                     MetaKey = table.Column<bool>(type: "boolean", nullable: false),

@@ -19,8 +19,13 @@ public class KeybindingService : IKeybindingService
     // For all listener lists, the first node is the active listener.
     // Additions should be done to the front of the linked list, not the rear.
     private LinkedList<Func<Task>> saveListeners = new();
+    private HashSet<Func<Task>> saveListenersSet = new();
+
     private LinkedList<Func<Task>> undoListeners = new();
+    private HashSet<Func<Task>> undoListenersSet = new();
+
     private LinkedList<Func<Task>> redoListeners = new();
+    private HashSet<Func<Task>> redoListenersSet = new();
 
     private ConcurrentDictionary<OnPressEventArgs, Keybinding> defaults = new();
     private bool initalized = false;
@@ -32,56 +37,61 @@ public class KeybindingService : IKeybindingService
 
     public void RegisterKeybindListener(Keybinding binding, Func<Task> listener)
     {
-        LinkedList<Func<Task>>? list;
-        if((list = GetListeners(binding)) is not null)
+        (LinkedList<Func<Task>>, HashSet<Func<Task>>)? pair;
+        if((pair = GetListenerPair(binding)) is not null)
         {
-            list.AddFirst(listener);
+            if(pair.Value.Item2.Add(listener))
+            {
+                pair.Value.Item1.AddFirst(listener);
+            }
         }
     }
 
     public void RemoveKeybindListener(Keybinding binding, Func<Task> listener)
     {
-        LinkedList<Func<Task>>? list;
-        if ((list = GetListeners(binding)) is not null)
+        (LinkedList<Func<Task>>, HashSet<Func<Task>>)? pair;
+        if ((pair = GetListenerPair(binding)) is not null)
         {
-            list.Remove(listener);
+            _ = pair.Value.Item1.Remove(listener);
+            _ = pair.Value.Item2.Remove(listener);
         }
     }
 
     public async Task<Keybinding?> ExecuteKeybindingAsync(OnPressEventArgs args)
     {
-        var binding = await GetKeybindingAsync(args);
+        var binding = GetKeybinding(args);
 
-        await ExecuteKeybindingAsync(binding);
+        if(binding is not null)
+            await ExecuteKeybindingAsync(binding);
 
         return binding;
     }
 
     public async Task ExecuteKeybindingAsync(Keybinding? binding)
     {
-        LinkedList<Func<Task>>? list;
-        if ((list = GetListeners(binding)) is not null)
+        (LinkedList<Func<Task>>, HashSet<Func<Task>>)? pair;
+        if ((pair = GetListenerPair(binding)) is not null)
         {
-            if (list.First is not null)
-                await list.First.Value.Invoke();
+            if (pair.Value.Item1.First is not null)
+                await pair.Value.Item1.First.Value.Invoke();
         }
     }
 
-    private LinkedList<Func<Task>>? GetListeners(Keybinding? keybinding) 
+    private (LinkedList<Func<Task>>, HashSet<Func<Task>>)? GetListenerPair(Keybinding? keybinding) 
         => keybinding switch
         {
-            Keybinding.Save => saveListeners,
-            Keybinding.Undo => undoListeners,
-            Keybinding.Redo => redoListeners,
+            Keybinding.Save => (saveListeners, saveListenersSet),
+            Keybinding.Undo => (undoListeners, undoListenersSet),
+            Keybinding.Redo => (redoListeners, redoListenersSet),
             _ => null,
         };
 
-    private async Task<Keybinding?> GetKeybindingAsync(OnPressEventArgs args)
+    private Keybinding? GetKeybinding(OnPressEventArgs args)
     {
         if (!initalized)
             Initalize();
 
-        var userBindings = await _localUserService.GetCustomKeybindings();
+        var userBindings = _localUserService.GetCustomKeybindings();
         if (userBindings.TryGetValue(args, out var binding))
             return binding;
 
