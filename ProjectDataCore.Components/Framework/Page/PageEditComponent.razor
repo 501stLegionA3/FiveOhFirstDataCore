@@ -163,6 +163,8 @@
 								- Configure drag and drop capabilities for the editor
 						*@
 
+
+
 						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
 							<button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
 						</div>
@@ -216,8 +218,10 @@
 					case RightMenu.PageEditor:
 						@if (PageToEdit is not null)
 						{
-							<CascadingValue Value="true" Name="PageEdit">
-								<LayoutNodeTreeLoader EditComponent="this" ParentNode="PageToEdit.Layout" />
+							<CascadingValue Value="DraggingComponent" Name="DraggingComponent">
+								<CascadingValue Value="true" Name="PageEdit">
+									<LayoutNodeTreeLoader EditComponent="this" ParentNode="PageToEdit.Layout" />
+								</CascadingValue>
 							</CascadingValue>
 						}
 						break;

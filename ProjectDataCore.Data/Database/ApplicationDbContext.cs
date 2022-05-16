@@ -247,7 +247,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         dataCoreUserProperty.HasKey(e => e.Key);
 
         var userKeybindings = builder.Entity<UserKeybinding>();
-        userKeybindings.HasKey(e => e.Key);
+        userKeybindings.HasKey(e => e.KeyPressed);
         #endregion
 
         #region Account Link

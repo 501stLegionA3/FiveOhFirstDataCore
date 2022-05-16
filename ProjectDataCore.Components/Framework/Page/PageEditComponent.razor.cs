@@ -290,6 +290,12 @@ public partial class PageEditComponent : IDisposable
     }
     #endregion
 
+    #region Left Menu - Component Selection
+    private bool DraggingComponent { get; set; } = false;
+
+
+    #endregion
+
     #region Undo/Redo
     private async Task OnUndoClickedAsync()
     {

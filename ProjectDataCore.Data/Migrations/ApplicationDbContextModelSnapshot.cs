@@ -413,7 +413,7 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Keybindings.UserKeybinding", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("KeyPressed")
                         .HasColumnType("text");
 
                     b.Property<bool>("AltKey")
@@ -423,6 +423,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("DataCoreUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Key")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Keybinding")
@@ -437,7 +440,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<bool>("ShiftKey")
                         .HasColumnType("boolean");
 
-                    b.HasKey("Key");
+                    b.HasKey("KeyPressed");
 
                     b.HasIndex("DataCoreUserId");
 

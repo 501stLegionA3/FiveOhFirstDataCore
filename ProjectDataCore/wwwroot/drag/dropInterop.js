@@ -1,4 +1,4 @@
-﻿import { Droppable } from '@shopify/draggable';
+﻿import { Droppable, Plugins } from '@shopify/draggable';
 
 window.DropInterop = (() => {
     const liveDrops = {};

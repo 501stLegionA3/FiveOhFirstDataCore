@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220514154931_Dev2")]
+    [Migration("20220516183702_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -415,7 +415,7 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Keybindings.UserKeybinding", b =>
                 {
-                    b.Property<string>("Key")
+                    b.Property<string>("KeyPressed")
                         .HasColumnType("text");
 
                     b.Property<bool>("AltKey")
@@ -425,6 +425,9 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("DataCoreUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Key")
                         .HasColumnType("uuid");
 
                     b.Property<int>("Keybinding")
@@ -439,7 +442,7 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<bool>("ShiftKey")
                         .HasColumnType("boolean");
 
-                    b.HasKey("Key");
+                    b.HasKey("KeyPressed");
 
                     b.HasIndex("DataCoreUserId");
 

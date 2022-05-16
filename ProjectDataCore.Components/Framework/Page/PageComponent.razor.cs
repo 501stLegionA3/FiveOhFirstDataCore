@@ -39,6 +39,9 @@ public partial class PageComponent : IDisposable
     private string? LastKey { get; set; }
     [CascadingParameter]
     public Func<NodeTreeLoaderRefreshRequestedEventArgs, Task>? NodeTreeLoaderRefresh { get; set; }
+    [CascadingParameter(Name = "DraggingComponent")]
+    public bool DraggingComponent { get; set; } = false;
+    
     private bool DraggingSplitscreen { get; set; } = false;
 
     /// <summary>
@@ -329,14 +332,14 @@ public partial class PageComponent : IDisposable
 
     #region Component Management
     [JSInvokable]
-    public async Task AddComponentAsync(string componentType)
+    public async Task AddComponentAsync(string addedTo, string componentType)
     {
 
     }
 
     private void OnDeleteComponent()
     {
-
+        
     }
 
     private async Task OnOpenComponentSettingsAsync()
@@ -353,6 +356,7 @@ public partial class PageComponent : IDisposable
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", "add-component-action", GetDotNetReference(), nameof(AddComponentAsync));
         }
     }
 
@@ -379,6 +383,7 @@ public partial class PageComponent : IDisposable
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add_split");
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-merge");
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-delete");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", "add-component-action");
         }
     }
     #endregion

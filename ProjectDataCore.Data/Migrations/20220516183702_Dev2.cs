@@ -101,18 +101,19 @@ namespace ProjectDataCore.Data.Migrations
                 name: "UserKeybinding",
                 columns: table => new
                 {
-                    Key = table.Column<string>(type: "text", nullable: false),
+                    KeyPressed = table.Column<string>(type: "text", nullable: false),
                     Keybinding = table.Column<int>(type: "integer", nullable: false),
                     ShiftKey = table.Column<bool>(type: "boolean", nullable: false),
                     CtrlKey = table.Column<bool>(type: "boolean", nullable: false),
                     AltKey = table.Column<bool>(type: "boolean", nullable: false),
                     MetaKey = table.Column<bool>(type: "boolean", nullable: false),
                     DataCoreUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserKeybinding", x => x.Key);
+                    table.PrimaryKey("PK_UserKeybinding", x => x.KeyPressed);
                     table.ForeignKey(
                         name: "FK_UserKeybinding_AspNetUsers_DataCoreUserId",
                         column: x => x.DataCoreUserId,

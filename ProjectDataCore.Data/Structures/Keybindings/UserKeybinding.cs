@@ -10,7 +10,7 @@ namespace ProjectDataCore.Data.Structures.Keybindings;
 public class UserKeybinding : DataObject<Guid>
 {
     public Keybinding Keybinding { get; set; }
-    public string Key { get; set; }
+    public string KeyPressed { get; set; }
     public bool ShiftKey { get; set; }
     public bool CtrlKey { get; set; }
     public bool AltKey { get; set; }
@@ -20,5 +20,5 @@ public class UserKeybinding : DataObject<Guid>
     public Guid DataCoreUserId { get; set; }
 
     public OnPressEventArgs GetMinimalKeyboardEventArgs()
-        => new(Key, ShiftKey, CtrlKey, AltKey, MetaKey);
+        => new(KeyPressed, ShiftKey, CtrlKey, AltKey, MetaKey);
 }
