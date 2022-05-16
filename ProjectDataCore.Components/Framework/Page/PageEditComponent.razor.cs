@@ -262,8 +262,8 @@ public partial class PageEditComponent : IDisposable
             return;
         }
 
-        if (NewPageRoute.Contains("?")
-            || NewPageRoute.Contains("&"))
+        if (NewPageRoute.Contains('?')
+            || NewPageRoute.Contains('&'))
         {
             AlertService.CreateErrorAlert("The route contains one or more of the following invalid characters: ? &");
             return;
