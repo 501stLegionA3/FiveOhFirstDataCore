@@ -22,7 +22,4 @@ public class UserSelectComponentSettings : DataObject<Guid>
     /// Same length of the properties. Provides the formats for the property values.
     /// </summary>
     public List<string> Formats { get; set; } = new();
-
-    public LayoutComponentSettings LayoutComponent { get; set; }
-    public Guid LayoutComponentId { get; set; }
 }

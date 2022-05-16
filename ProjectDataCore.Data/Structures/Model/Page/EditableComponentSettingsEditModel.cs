@@ -1,4 +1,4 @@
-﻿using ProjectDataCore.Data.Structures.Page.Components;
+﻿using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 using System;
 using System.Collections.Generic;

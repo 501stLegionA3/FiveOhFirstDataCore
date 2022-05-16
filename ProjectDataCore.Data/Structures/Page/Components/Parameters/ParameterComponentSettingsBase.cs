@@ -1,10 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Data.Structures.Page.Components;
+namespace ProjectDataCore.Data.Structures.Page;
 
 public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
 {
@@ -13,26 +14,18 @@ public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
     /// <summary>
     /// The name of the property to edit.
     /// </summary>
-    public string PropertyToEdit { get; set; }
+    public string PropertyName { get; set; }
 
     /// <summary>
     /// True if the property name is a static property.
     /// </summary>
     /// <remarks>
-    /// If this value is set to True, the <see cref="PropertyToEdit"/> field will look for properties
+    /// If this value is set to True, the <see cref="PropertyName"/> field will look for properties
     /// that have been hard coded into the <see cref="Account.DataCoreUser"/> class.
     /// 
     /// If it is False, then it will search through assignable values.
     /// </remarks>
     public bool StaticProperty { get; set; }
-    /// <summary>
-    /// The label to display alongside this property.
-    /// </summary>
-    public string? Label { get; set; }
-    /// <summary>
-    /// The format string for a static property.
-    /// </summary>
-    public string? FormatString { get; set; }
 
     /// <summary>
     /// The component to pull a <see cref="Account.DataCoreUser"/> from. Leave as null to pull

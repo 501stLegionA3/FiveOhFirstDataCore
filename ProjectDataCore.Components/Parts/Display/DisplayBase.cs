@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Model.Page;
+using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 namespace ProjectDataCore.Components.Parts.Display;
 
@@ -85,12 +86,12 @@ public class DisplayBase : ParameterBase
     protected override void LoadStaticProperty()
     {
         if (ScopedUsers is not null && ComponentData is not null
-            && ComponentData.PropertyToEdit is not null)
+            && ComponentData.PropertyName is not null)
         {
             if (ScopedUsers.Count > 0)
             {
                 DisplayValue = ScopedUsers[ScopeIndex]
-                    .GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                    .GetStaticProperty(ComponentData.PropertyName, ComponentData.FormatString)
                     ?? "";
             }
         }
@@ -99,12 +100,12 @@ public class DisplayBase : ParameterBase
     protected override void LoadDynamicProperty()
     {
         if (ScopedUsers is not null && ComponentData is not null
-            && ComponentData.PropertyToEdit is not null)
+            && ComponentData.PropertyName is not null)
         {
             if(ScopedUsers.Count > 0)
             {
                 DisplayValue = ScopedUsers[ScopeIndex]
-                    .GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                    .GetAssignableProperty(ComponentData.PropertyName, ComponentData.FormatString)
                     ?? "";
             }
         }

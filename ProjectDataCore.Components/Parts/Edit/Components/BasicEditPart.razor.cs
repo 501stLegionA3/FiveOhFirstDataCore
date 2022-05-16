@@ -33,11 +33,11 @@ public partial class BasicEditPart : EditBase, ISubmittable
         {
             if (ComponentData.StaticProperty)
             {
-                model.StaticValues[ComponentData.PropertyToEdit] = StaticValue;
+                model.StaticValues[ComponentData.PropertyName] = StaticValue;
             }
             else
             {
-                model.AssignableValues[ComponentData.PropertyToEdit] = SelectedValues.ToList(x => x.Item2);
+                model.AssignableValues[ComponentData.PropertyName] = SelectedValues.ToList(x => x.Item2);
             }
         }
 

@@ -57,11 +57,11 @@ public partial class UnregisteredUserDisplayPart : DisplayBase
                 string val;
                 if(ComponentData.StaticProperty)
                 {
-                    val = u.GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
+                    val = u.GetStaticProperty(ComponentData.PropertyName, ComponentData.FormatString);
                 }
                 else
                 {
-                    val = u.GetAssignableProperty(ComponentData.PropertyToEdit, ComponentData.FormatString);
+                    val = u.GetAssignableProperty(ComponentData.PropertyName, ComponentData.FormatString);
                 }
 
                 DisplayValues.Add((val, u.AccessCode ?? ""));

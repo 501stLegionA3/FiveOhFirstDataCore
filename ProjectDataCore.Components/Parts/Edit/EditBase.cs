@@ -2,6 +2,7 @@
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Model.Assignable;
+using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 using System;
 using System.Collections.Generic;
@@ -96,12 +97,12 @@ public class EditBase : ParameterBase
     protected override void LoadDynamicProperty()
     {
         if (ScopedUsers is not null && ComponentData is not null
-            && ComponentData.PropertyToEdit is not null)
+            && ComponentData.PropertyName is not null)
         {
             if(ScopedUsers.Count > 0)
             {
                 AssignableValue = ScopedUsers[ScopeIndex]
-                    .GetAssignablePropertyContainer(ComponentData.PropertyToEdit);
+                    .GetAssignablePropertyContainer(ComponentData.PropertyName);
 
                 if (AssignableValue is not null)
                 {
@@ -114,12 +115,12 @@ public class EditBase : ParameterBase
     protected override void LoadStaticProperty()
     {
         if (ScopedUsers is not null && ComponentData is not null
-            && ComponentData.PropertyToEdit is not null)
+            && ComponentData.PropertyName is not null)
         {
             if (ScopedUsers.Count > 0)
             {
                 StaticValue = ScopedUsers[ScopeIndex]
-                    .GetStaticProperty(ComponentData.PropertyToEdit, ComponentData.FormatString)
+                    .GetStaticProperty(ComponentData.PropertyName, ComponentData.FormatString)
                     ?? "";
             }
         }

@@ -1,4 +1,4 @@
-﻿using ProjectDataCore.Data.Structures.Page.Components;
+﻿using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ public class ParameterComponentSettingsEditModel
     /// </summary>
     public Optional<string?> Label { get; set; } = Optional.FromNoValue<string?>();
     /// <summary>
-    /// Holds a change to <see cref="Structures.Page.Components.ParameterComponentSettingsBase.FormatString"/>
+    /// Holds a change to <see cref="ParameterComponentSettingsBase.FormatString"/>
     /// </summary>
     public Optional<string?> FormatString { get; set; } = Optional.FromNoValue<string?>();
     /// <summary>

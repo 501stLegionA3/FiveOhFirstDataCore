@@ -5,7 +5,6 @@ using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Page;
-using ProjectDataCore.Data.Structures.Page.Components;
 using ProjectDataCore.Data.Structures.Selector.User;
 
 using System;
@@ -20,6 +19,7 @@ using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ProjectDataCore.Data.Structures.Keybindings;
+using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -36,7 +36,6 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<DisplayComponentSettings> DisplayComponentSettings { get; internal set; }
     public DbSet<LayoutNode> LayoutNodes { get; internal set; }
     public DbSet<EditableComponentSettings> EditableComponentSettings { get; internal set; }
-    public DbSet<LayoutComponentSettings> LayoutComponentSettings { get; internal set;}
     public DbSet<CustomPageSettings> CustomPageSettings { get; internal set; }
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
     public DbSet<ButtonComponentSettings> ButtonComponentSettings { get; internal set; }
@@ -150,11 +149,6 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
 
         layoutNodes.Ignore(e => e.NodeWidths)
             .Ignore(e => e.EditorKey);
-
-        var layoutComponentSettings = builder.Entity<LayoutComponentSettings>();
-        //layoutComponentSettings.HasOne(e => e.ParentPage)
-        //    .WithOne(p => p.Layout)
-        //    .HasForeignKey<LayoutComponentSettings>(p => p.ParentPageId);
 
         var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
         pageComponentSettingsBase.HasKey(e => e.Key);

@@ -1,10 +1,11 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Data.Structures.Page.Components;
+namespace ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 /// <summary>
 /// Displays a single data value.

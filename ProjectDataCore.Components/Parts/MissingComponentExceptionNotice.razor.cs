@@ -1,4 +1,6 @@
-﻿namespace ProjectDataCore.Components.Parts;
+﻿using ProjectDataCore.Data.Structures.Page.Components.Parameters;
+
+namespace ProjectDataCore.Components.Parts;
 
 public partial class MissingComponentExceptionNotice : CustomComponentBase
 {
