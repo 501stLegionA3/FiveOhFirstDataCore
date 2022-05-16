@@ -8,6 +8,7 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
     public LayoutNode AddCaller { get; private set; }
     public bool Row { get; private set; }
     public bool UpOrLeft { get; private set; }
+    public string NodeWidths { get; private set; }
 
     public LayoutNodeSplitEditHistory(string name, LayoutNodeModifiedResult result)
         : base(name) 
@@ -27,6 +28,7 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 
         Row = result.Row;
         UpOrLeft = result.UpOrLeft;
+        NodeWidths = result.ParentWidths;
     }
 
     public override Task<ActionResult> Undo(IServiceProvider serviceProvider)
@@ -41,7 +43,7 @@ public class LayoutNodeSplitEditHistory : EditHistoryItemBase
 
     public override Task<ActionResult> Redo(IServiceProvider serviceProvider)
     {
-        var res = AddCaller.AddNode(Row, !UpOrLeft, new LayoutNode?[] { Node, SiblingNode });
+        var res = AddCaller.AddNode(Row, !UpOrLeft, new LayoutNode?[] { Node, SiblingNode }, NodeWidths);
 
         if (res.GetResult(out var data, out _))
             AssignValues(data);

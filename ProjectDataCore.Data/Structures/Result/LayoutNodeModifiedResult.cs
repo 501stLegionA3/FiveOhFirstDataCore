@@ -38,6 +38,10 @@ public class LayoutNodeModifiedResult
     /// True if this operation was done upwards or leftwards in the grid.
     /// </summary>
     public bool UpOrLeft { get; set; }
+    /// <summary>
+    /// The node width values of the parent of <see cref="ModifiedNode"/>.
+    /// </summary>
+    public string ParentWidths { get; set; }
 
     public LayoutNodeModifiedResult(LayoutNode calledFrom, LayoutNode parentNode, LayoutNode modifiedNode, 
         LayoutNode? secondaryNode, LayoutNode? replacedBy, bool upOrLeft)
@@ -50,5 +54,6 @@ public class LayoutNodeModifiedResult
         UpOrLeft = upOrLeft;
 
         Row = ParentNode.Rows;
-	}
+        ParentWidths = ParentNode.RawNodeWidths;
+    }
 }

@@ -70,9 +70,11 @@ public class LayoutNode : DataObject<Guid>
     /// row or column) or if it should be added below or to the right.</param>
     /// <param name="nodeData">A <see cref="LayoutNode"/> to attach as a child for this object. If this object has
     /// a parent already, it will be removed from that parent.</param>
+    /// <param name="widthOverwrite">Overwrites the node width values when adding a node. Can cause unexpected behavior and should not
+    /// be used execpt with the values from a <see cref="LayoutNodeModifiedResult"/>.</param>
     /// <returns>A <see cref="ActionResult"/> with a <see cref="LayoutNodeModifiedResult"/> if the operation
     /// was successful.</returns>
-    public ActionResult<LayoutNodeModifiedResult> AddNode(bool row, bool addAboveOrLeft, LayoutNode?[]? nodeData = null)
+    public ActionResult<LayoutNodeModifiedResult> AddNode(bool row, bool addAboveOrLeft, LayoutNode?[]? nodeData = null, string? widthOverwrite = null)
     {
         // ... check to see if this has a parent node ...
         if (ParentNode is null)
@@ -92,6 +94,10 @@ public class LayoutNode : DataObject<Guid>
             // row/col indicator ...
             Rows = row;
 
+            // ... then set the node widths if it needs to be overwritten ...
+            if (widthOverwrite is not null)
+                SetNodeWidths(widthOverwrite);
+
             return new(true, null, new(this, this, child, secondChild, null, addAboveOrLeft));
         }
 
@@ -105,6 +111,9 @@ public class LayoutNode : DataObject<Guid>
             ParentNode.InsertNode(child, addAboveOrLeft);
             // ... and set the direction of the parent grid ...
             ParentNode.Rows = row;
+            // ... then set the node widths if it needs to be overwritten ...
+            if (widthOverwrite is not null)
+                ParentNode.SetNodeWidths(widthOverwrite);
             // ... and let the user know the parent was modified ...
             return new(true, null, new(this, ParentNode, child, secondChild, null, addAboveOrLeft));
         }
@@ -117,9 +126,12 @@ public class LayoutNode : DataObject<Guid>
                 // ... we get a child node ...
                 var child = ParentNode.CreateChild(false, Order, nodeData?.ElementAtOrDefault(0));
 
-                // ... if we can add, then add and let the user know ...
+                // ... if we can add, add it ...
                 ParentNode.InsertNode(child, addAboveOrLeft);
-
+                // ... then set the node widths if it needs to be overwritten ...
+                if (widthOverwrite is not null)
+                    ParentNode.SetNodeWidths(widthOverwrite);
+                // ... then let the user know.
                 return new(true, null, new(this, ParentNode, child, null, null, addAboveOrLeft));
             }
             // ... otherwise, we need to do some fancy work,
@@ -136,7 +148,7 @@ public class LayoutNode : DataObject<Guid>
                 SetNodeWidths("");
 
                 // ... finally call add on this new node ...
-                return node.AddNode(row, addAboveOrLeft, nodeData);
+                return node.AddNode(row, addAboveOrLeft, nodeData, widthOverwrite);
             }
             // ... we should not get to this point,
             // so something went wrong when adding the node ...
