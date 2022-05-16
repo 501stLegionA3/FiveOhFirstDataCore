@@ -115,7 +115,7 @@ public class LayoutNode : DataObject<Guid>
             if (ParentNode.Rows == row)
             {
                 // ... we get a child node ...
-                var child = ParentNode.CreateChild(false, Order + (addAboveOrLeft ? 0 : 1), nodeData?.ElementAtOrDefault(0));
+                var child = ParentNode.CreateChild(false, Order, nodeData?.ElementAtOrDefault(0));
 
                 // ... if we can add, then add and let the user know ...
                 ParentNode.InsertNode(child, addAboveOrLeft);
@@ -219,7 +219,8 @@ public class LayoutNode : DataObject<Guid>
     /// Deletes a child node from it's parent.
     /// </summary>
     /// <param name="node">The node to remove.</param>
-    /// <param name="mergeLeftOrUp">True if the system should merge left or up, false if it should merge right or down.
+    /// <param name="mergeLeftOrUp">True if the system should replace <paramref name="node"/> with the node to its left or above it, 
+    /// false if it should replace <paramref name="node"/> with the node to its right or below it. <br /><br />
     /// Does not have any effect when there is only one node to remove.</param>
     /// <returns>A <see cref="ActionResult"/> with a <see cref="LayoutNodeModifiedResult"/> if the operation
     /// was successful.</returns>
@@ -313,7 +314,8 @@ public class LayoutNode : DataObject<Guid>
     /// <summary>
     /// Deletes this node.
     /// </summary>
-    /// <param name="mergeLeft">True if the system should merge left, false if it should merege right.
+    /// <param name="mergeLeftOrUp">True if the system should replace this node with the node to its left or above it, 
+    /// false if it should replace this node with the node to its right or below it. <br /><br />
     /// Does not have any effect when there is only one node to remove.</param>
     /// <remarks>
     /// The top level parent node can not be deleted. If you want
@@ -321,7 +323,7 @@ public class LayoutNode : DataObject<Guid>
     /// </remarks>
     /// <returns>A <see cref="ActionResult"/> with a <see cref="LayoutNodeModifiedResult"/> if the operation
     /// was successful.</returns>
-    public ActionResult<LayoutNodeModifiedResult> DeleteNode(bool mergeLeft = true)
+    public ActionResult<LayoutNodeModifiedResult> DeleteNode(bool mergeLeftOrUp = true)
     {
         if(ParentNode is null)
         {
@@ -330,7 +332,7 @@ public class LayoutNode : DataObject<Guid>
             return new(false, new List<string> { "No parent to delete from." }, null);
         }
 
-        var res = ParentNode.DeleteNode(this, mergeLeft);
+        var res = ParentNode.DeleteNode(this, mergeLeftOrUp);
         if (res.GetResult(out var data, out _))
             data.CalledFrom = this;
         return res;

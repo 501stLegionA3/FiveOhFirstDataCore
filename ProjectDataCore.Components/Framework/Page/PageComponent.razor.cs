@@ -202,12 +202,12 @@ public partial class PageComponent : IDisposable
                     case "left":
                     case "top":
                         var node = EditingNode.ParentNode.Nodes[EditingNode.Order - 1];
-                        addRes = node.DeleteNode(true);
+                        addRes = node.DeleteNode(false);
                         break;
                     case "bottom":
                     case "right":
                         node = EditingNode.ParentNode.Nodes[EditingNode.Order + 1];
-                        addRes = node.DeleteNode(false);
+                        addRes = node.DeleteNode(true);
                         break;
                 }
             }
