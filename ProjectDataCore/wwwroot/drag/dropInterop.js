@@ -31,11 +31,11 @@ window.DropInterop = (() => {
                     dropZone = evt.source.dataset.dropZone;
                 }
 
-                dotNetRef.invokeMethodAsync(dragChangeMethod, true);
+                dotNetRef.invokeMethodAsync(dragChangeMethod, true, itemType);
             });
 
             drop.on('drag:stop', () => {
-                dotNetRef.invokeMethodAsync(dragChangeMethod, false);
+                dotNetRef.invokeMethodAsync(dragChangeMethod, false, itemType);
             });
 
             drop.on('droppable:stop', (evt) => {

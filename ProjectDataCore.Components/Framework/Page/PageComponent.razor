@@ -23,25 +23,26 @@
 				- Merge interactions (to delete other components)
 				- Delete interaction (to delete this component)
 			*@
-
-			#region Split
 			<div class="w-full h-full relative z-10 group-hover:block block bg-slate-200/80">
-				<div class="absolute inset-0 grid place-content-center"
-					data-drag-container="@EditingNode.EditorKey">
+				<div class="absolute inset-0 grid grid-cols-[repeat(2,32px)] gap-2 place-content-center"
+					data-drag-container="@EditingNode.EditorKey">		
+
+					@*Split Code*@
+
 					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
 						<Element>
-							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md bg-slate-400 cursor-grab text-white
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md split-color cursor-grab
 								drag-item" data-drop-zone="@($"{EditingNode.EditorKey}-add_split")" data-item-type="split" draggable="true">
 								splitscreen
 							</button>
 						</Element>
 						<Popup>
-							<div class="w-100 h-100 p-2 flex flex-col gap-2 bg-slate-300 rounded-lg shadow-md">
-								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("left"))">Split Left</button>
-								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("right"))">Split Right</button>
+							<div class="split-menu">
+								<button @onclick="@(async () => await AddContextMenuSplitAsync("left"))">Split Left</button>
+								<button @onclick="@(async () => await AddContextMenuSplitAsync("right"))">Split Right</button>
 								<hr />
-								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("top"))">Split Up</button>
-								<button class="button-util-action" @onclick="@(async () => await AddContextMenuSplitAsync("bottom"))">Split Down</button>
+								<button @onclick="@(async () => await AddContextMenuSplitAsync("top"))">Split Up</button>
+								<button @onclick="@(async () => await AddContextMenuSplitAsync("bottom"))">Split Down</button>
 							</div>
 						</Popup>
 					</ContextMenu>
@@ -50,7 +51,7 @@
 						<div class="flex flex-none w-[15%] flex-col">
 							<div class="flex-grow"></div>
 
-							<div class="flex-none h-[60%] bg-blue-400 dropzone" 
+							<div class="flex-none h-[60%] split-color dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="left"></div>
@@ -58,14 +59,14 @@
 							<div class="flex-grow"></div>
 						</div>
 						<div class="flex flex-grow flex-col">
-							<div class="flex-none h-[20%] bg-blue-400 dropzone" 
+							<div class="flex-none h-[20%] split-color dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="top"></div>
 
 							<div class="flex-grow"></div>
 
-							<div class="flex-none h-[20%] bg-blue-400 dropzone" 
+							<div class="flex-none h-[20%] split-color dropzone" 
 								data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
 								data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
 								data-item-type="bottom"></div>
@@ -81,17 +82,193 @@
 							<div class="flex-grow"></div>
 						</div>
 					</div>
+					
+					@*Merge Code*@
+
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+						<Element>
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanMerge.All(x => !x) ? "bg-slate-300 text-slate-500" : "merge-color")
+								drag-item" disabled="@CanMerge.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-merge")" data-item-type="merge" draggable="true">
+								merge
+							</button>
+						</Element>
+						<Popup>
+							<div class="merge-menu">
+								@if (CanMerge[0])
+								{
+									<button @onclick="@(async () => await ContextMenuMergeNodeAsync("left"))">Merge Left</button>
+								}
+								@if (CanMerge[3])
+								{
+									<button @onclick="@(async () => await ContextMenuMergeNodeAsync("right"))">Merge Right</button>
+								}
+								@if (CanMerge[1])
+								{
+									<button @onclick="@(async () => await ContextMenuMergeNodeAsync("top"))">Merge Up</button>
+								}
+								@if (CanMerge[2])
+								{
+									<button @onclick="@(async () => await ContextMenuMergeNodeAsync("bottom"))">Merge Down</button>
+								}
+							</div>
+						</Popup>
+					</ContextMenu>
+
+					<div class="@(DraggingMerge ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
+
+							@if(CanMerge[0])
+							{
+								<div class="flex-none h-[60%] merge-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+									data-item-type="left"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[60%]"></div>
+							}
+
+							<div class="flex-grow"></div>
+						</div>
+						<div class="flex flex-grow flex-col">
+							@if(CanMerge[1])
+							{
+								<div class="flex-none h-[20%] merge-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+									data-item-type="top"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[20%]"></div>
+							}
+							<div class="flex-grow"></div>
+							@if(CanMerge[2])
+							{
+								<div class="flex-none h-[20%] merge-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+									data-item-type="bottom"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[20%]"></div>
+							}
+						</div>
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
+							@if(CanMerge[3])
+							{
+								<div class="flex-none h-[60%] merge-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+									data-item-type="right"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[60%]"></div>
+							}
+
+							<div class="flex-grow"></div>
+						</div>
+					</div>
+
+					@*Delete Node*@
+
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+						<Element>
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanDelete.All(x => !x) ? "bg-slate-300 text-slate-500" : "delete-color")
+								drag-item" disabled="@CanDelete.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-delete")" data-item-type="delete" draggable="true">
+								delete
+							</button>
+						</Element>
+						<Popup>
+							<div class="delete-menu">
+								@if (CanDelete[0])
+								{
+									<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("left"))">Delete (Fill from the Left)</button>
+								}
+								@if (CanDelete[3])
+								{
+									<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("right"))">Delete (Fill from the Right)</button>
+								}
+								@if (CanDelete[1])
+								{
+									<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("top"))">Delete (Fill from the Top)</button>
+								}
+								@if (CanDelete[2])
+								{
+									<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("bottom"))">Delete (Fill from the Bottom)</button>
+								}
+							</div>
+						</Popup>
+					</ContextMenu>
+
+					<div class="@(DraggingDelete ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
+
+							@if(CanDelete[0])
+							{
+								<div class="flex-none h-[60%] delete-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+									data-item-type="left"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[60%]"></div>
+							}
+
+							<div class="flex-grow"></div>
+						</div>
+						<div class="flex flex-grow flex-col">
+							@if(CanDelete[1])
+							{
+								<div class="flex-none h-[20%] delete-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+									data-item-type="top"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[20%]"></div>
+							}
+							<div class="flex-grow"></div>
+							@if(CanDelete[2])
+							{
+								<div class="flex-none h-[20%] delete-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+									data-item-type="bottom"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[20%]"></div>
+							}
+						</div>
+						<div class="flex flex-none w-[15%] flex-col">
+							<div class="flex-grow"></div>
+							@if(CanDelete[3])
+							{
+								<div class="flex-none h-[60%] delete-color dropzone" 
+									data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+									data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+									data-item-type="right"></div>
+							}
+							else
+							{
+								<div class="flex-none h-[60%]"></div>
+							}
+
+							<div class="flex-grow"></div>
+						</div>
+					</div>
+
 				</div>
 			</div>
-			#endregion
-
-			#region Merge
-
-			#endregion
-
-			#region Delete
-
-			#endregion
 		}
 	</div>
 

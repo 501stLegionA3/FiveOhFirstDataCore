@@ -1,0 +1,47 @@
+﻿.split-color {
+    @apply bg-blue-400 text-white;
+}
+
+.split-menu {
+    @apply bg-blue-400 text-white w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .split-menu > button {
+        @apply bg-blue-400 text-white hover:bg-white hover:text-blue-400 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .split-menu > hr {
+        @apply border-white;
+    }
+
+.merge-color {
+    @apply bg-yellow-400 text-black;
+}
+
+.merge-menu {
+    @apply bg-yellow-400 text-black w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .merge-menu > button {
+        @apply bg-yellow-400 text-black hover:bg-black hover:text-yellow-400 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .merge-menu > hr {
+        @apply border-black;
+    }
+
+.delete-color {
+    @apply bg-red-700 text-white;
+}
+
+.delete-menu {
+    @apply bg-red-700 text-white w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .delete-menu > button {
+        @apply bg-red-700 text-white hover:bg-white hover:text-red-700 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .delete-menu > hr {
+        @apply border-white;
+    }
