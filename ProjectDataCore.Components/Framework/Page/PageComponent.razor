@@ -5,26 +5,13 @@
 
 		@if (EditingNode is not null)
 		{
-			@*Editor Tools*@
-			@if (EditingNode.Component is not null)
-			{
-				@*There is a component here, so we need to render component settings:
-					- Settings wheel for opening the configuration panel
-					- Delete component actions (removes just the component, not this node)
-				*@
-
-				#region Component Settings
-
-				#endregion
-			}
-
 			@*The component needs some interactions no matter what is going on:
 				- Split interactions (to split this Node into two nodes)
 				- Merge interactions (to delete other components)
 				- Delete interaction (to delete this component)
 			*@
 			<div class="w-full h-full relative z-10 group-hover:block block bg-slate-200/80">
-				<div class="absolute inset-0 grid grid-cols-[repeat(2,32px)] gap-2 place-content-center"
+				<div class="absolute inset-0 grid grid-cols-[repeat(3,32px)] gap-2 place-content-center"
 					data-drag-container="@EditingNode.EditorKey">		
 
 					@*Split Code*@
@@ -266,7 +253,55 @@
 							<div class="flex-grow"></div>
 						</div>
 					</div>
+					
+					@*Node Settings*@
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+						<Element>
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md node-settings-color">
+								display_settings
+							</button>
+						</Element>
+						<Popup>
+							<div class="node-settings-menu">
+								<button @onclick="OnOpenNodeSettingsAsync">Open Node Settings</button>
+							</div>
+						</Popup>
+					</ContextMenu>
 
+					@*Editor Tools*@
+					@if (EditingNode.Component is not null)
+					{
+						@*There is a component here, so we need to render component settings:
+							- Settings wheel for opening the configuration panel
+							- Delete component actions (removes just the component, not this node)
+						*@
+
+						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+							<Element>
+								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md component-settings-color">
+									settings
+								</button>
+							</Element>
+							<Popup>
+								<div class="component-settings-menu">
+									<button @onclick="OnOpenComponentSettingsAsync">Open Component Settings</button>
+								</div>
+							</Popup>
+						</ContextMenu>
+
+						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+							<Element>
+								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md delete-component-color">
+									remove_from_queue
+								</button>
+							</Element>
+							<Popup>
+								<div class="delete-component-menu">
+									<button @onclick="OnDeleteComponent">Delete Component</button>
+								</div>
+							</Popup>
+						</ContextMenu>
+					}
 				</div>
 			</div>
 		}

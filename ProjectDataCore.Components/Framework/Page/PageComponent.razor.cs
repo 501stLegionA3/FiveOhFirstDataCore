@@ -56,7 +56,8 @@ public partial class PageComponent : IDisposable
     private bool IsConfiguring { get; set; } = false;
 
     private DotNetObjectReference<PageComponent>? DotNetRef { get; set; }
-
+    
+    #region Setup
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -129,6 +130,9 @@ public partial class PageComponent : IDisposable
 
         return DotNetRef;
     }
+    #endregion
+
+    #region Layout Node Editing
 
     [JSInvokable]
     public async Task AddSplitAsync(string type, string dest)
@@ -296,24 +300,6 @@ public partial class PageComponent : IDisposable
             await ScopedDataBus.CloseMenuAsync(this, EditingNode.EditorKey);
     }
 
-    private async Task RegisterDroppableContainersAsync()
-    {
-        if (EditingNode is not null)
-        {
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
-        }
-    }
-
-    private async Task RegisterDraggableElementsAsync()
-    {
-        if (EditingNode is not null)
-        {
-            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, true, nameof(DragChanged));
-        }
-    }
-
     [JSInvokable]
     public async Task DragChanged(bool started, string type)
     {
@@ -331,6 +317,51 @@ public partial class PageComponent : IDisposable
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+    #endregion
+
+    #region Node Settings
+    private async Task OnOpenNodeSettingsAsync()
+    {
+
+    }
+    #endregion
+
+    #region Component Management
+    [JSInvokable]
+    public async Task AddComponentAsync(string componentType)
+    {
+
+    }
+
+    private void OnDeleteComponent()
+    {
+
+    }
+
+    private async Task OnOpenComponentSettingsAsync()
+    {
+
+    }
+    #endregion
+
+    #region Draggables
+    private async Task RegisterDroppableContainersAsync()
+    {
+        if (EditingNode is not null)
+        {
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
+        }
+    }
+
+    private async Task RegisterDraggableElementsAsync()
+    {
+        if (EditingNode is not null)
+        {
+            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, true, nameof(DragChanged));
+        }
     }
 
     private async Task UnregisterDraggableElementsAsync()
@@ -350,7 +381,8 @@ public partial class PageComponent : IDisposable
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-delete");
         }
     }
-
+    #endregion
+    
     public async void Dispose()
     {
         try

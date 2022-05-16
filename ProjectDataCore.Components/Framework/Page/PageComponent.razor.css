@@ -45,3 +45,51 @@
     .delete-menu > hr {
         @apply border-white;
     }
+
+.node-settings-color {
+    @apply bg-indigo-500 text-white;
+}
+
+.node-settings-menu {
+    @apply bg-indigo-500 text-white w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .node-settings-menu > button {
+        @apply bg-indigo-500 text-white hover:bg-white hover:text-indigo-500 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .node-settings-menu > hr {
+        @apply border-white;
+    }
+
+.component-settings-color {
+    @apply bg-fuchsia-600 text-white;
+}
+
+.component-settings-menu {
+    @apply bg-fuchsia-600 text-white w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .component-settings-menu > button {
+        @apply bg-fuchsia-600 text-white hover:bg-white hover:text-fuchsia-600 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .component-settings-menu > hr {
+        @apply border-white;
+    }
+
+.delete-component-color {
+    @apply bg-orange-600 text-black;
+}
+
+.delete-component-menu {
+    @apply bg-orange-600 text-black w-full h-full flex flex-col rounded-lg shadow-md;
+}
+
+    .delete-component-menu > button {
+        @apply bg-orange-600 text-black hover:bg-black hover:text-orange-600 px-2 py-1 first:rounded-t-lg last:rounded-b-lg;
+    }
+
+    .delete-component-menu > hr {
+        @apply border-black;
+    }

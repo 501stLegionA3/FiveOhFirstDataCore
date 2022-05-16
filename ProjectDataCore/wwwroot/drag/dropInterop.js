@@ -54,7 +54,7 @@ window.DropInterop = (() => {
                     droppedOn.ref.invokeMethodAsync(droppedOn.method, itemType, destType);
                 }
 
-                dotNetRef.invokeMethodAsync(dragChangeMethod, false);
+                dotNetRef.invokeMethodAsync(dragChangeMethod, false, itemType);
 
                 // Move the dropped element back to its starting position.
                 if (returnToStart && startZone) {
