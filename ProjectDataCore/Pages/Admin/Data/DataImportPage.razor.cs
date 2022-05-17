@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using ProjectDataCore.Components.Parts.Edit;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.Logging;
@@ -515,18 +514,19 @@ public partial class DataImportPage : IDisposable
 
             if (container is not null)
             {
+                // TODO
                 // We never want to allow this for assignable setup.
-                container.AssignableConfiguration.AllowMultiple = false;
-                container = container.Clone();
-                var editContainer = new EditBase()
-                {
-                    AssignableConfiguration = container.AssignableConfiguration,
-                    AssignableValue = container,
+                //container.AssignableConfiguration.AllowMultiple = false;
+                //container = container.Clone();
+                //var editContainer = new EditBase()
+                //{
+                //    AssignableConfiguration = container.AssignableConfiguration,
+                //    AssignableValue = container,
                     
-                };
+                //};
 
-                ToEdit.DataValueModels[key] = (editContainer, new());
-                ToEdit.DataValues[key] = "";
+                //ToEdit.DataValueModels[key] = (editContainer, new());
+                //ToEdit.DataValues[key] = "";
             }
             else
             {
@@ -550,15 +550,16 @@ public partial class DataImportPage : IDisposable
         {
             if (ToEdit.DataValueModels.TryGetValue(key, out var valuePair))
             {
+                // TODO
                 // property.ReplaceValue(item.Value);
-                var edit = valuePair.Item1 as EditBase;
-                var value = valuePair.Item2.ToList(x => x.Item2);
+                //var edit = valuePair.Item1 as EditBase;
+                //var value = valuePair.Item2.ToList(x => x.Item2);
 
-                if (value is not null && edit is not null)
-                {
-                    edit.AssignableValue!.ReplaceValue(value);
-                    ToEdit.DataValues[key] = value.FirstOrDefault()?.ToString() ?? "";
-                }
+                //if (value is not null && edit is not null)
+                //{
+                //    edit.AssignableValue!.ReplaceValue(value);
+                //    ToEdit.DataValues[key] = value.FirstOrDefault()?.ToString() ?? "";
+                //}
             }
         }
     }

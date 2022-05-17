@@ -18,25 +18,56 @@ namespace ProjectDataCore.Data.Migrations
                 name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
                 table: "PageComponentSettingsBase");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_UserSelectComponentSettings_PageComponentSettingsBase_Layou~",
+                table: "UserSelectComponentSettings");
+
+            migrationBuilder.DropIndex(
+                name: "IX_UserSelectComponentSettings_LayoutComponentId",
+                table: "UserSelectComponentSettings");
+
+            migrationBuilder.DropIndex(
+                name: "IX_PageComponentSettingsBase_ParentLayoutId",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "LayoutComponentId",
+                table: "UserSelectComponentSettings");
+
+            migrationBuilder.DropColumn(
+                name: "FormatString",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "Label",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "MaxChildComponents",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "Order",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "ParentLayoutId",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.RenameColumn(
+                name: "PropertyToEdit",
+                table: "PageComponentSettingsBase",
+                newName: "PropertyName");
+
             migrationBuilder.RenameColumn(
                 name: "ParentPageId",
                 table: "PageComponentSettingsBase",
                 newName: "ParentNodeId");
 
-            migrationBuilder.RenameColumn(
-                name: "ParentLayoutId",
-                table: "PageComponentSettingsBase",
-                newName: "LayoutComponentSettingsKey");
-
             migrationBuilder.RenameIndex(
                 name: "IX_PageComponentSettingsBase_ParentPageId",
                 table: "PageComponentSettingsBase",
                 newName: "IX_PageComponentSettingsBase_ParentNodeId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_PageComponentSettingsBase_ParentLayoutId",
-                table: "PageComponentSettingsBase",
-                newName: "IX_PageComponentSettingsBase_LayoutComponentSettingsKey");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "AuthKey",
@@ -144,23 +175,12 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentNodeId",
                 principalTable: "LayoutNodes",
                 principalColumn: "Key");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_LayoutC~",
-                table: "PageComponentSettingsBase",
-                column: "LayoutComponentSettingsKey",
-                principalTable: "PageComponentSettingsBase",
-                principalColumn: "Key");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_PageComponentSettingsBase_LayoutNodes_ParentNodeId",
-                table: "PageComponentSettingsBase");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_LayoutC~",
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropTable(
@@ -190,24 +210,68 @@ namespace ProjectDataCore.Data.Migrations
                 table: "AssignableConfigurations");
 
             migrationBuilder.RenameColumn(
+                name: "PropertyName",
+                table: "PageComponentSettingsBase",
+                newName: "PropertyToEdit");
+
+            migrationBuilder.RenameColumn(
                 name: "ParentNodeId",
                 table: "PageComponentSettingsBase",
                 newName: "ParentPageId");
-
-            migrationBuilder.RenameColumn(
-                name: "LayoutComponentSettingsKey",
-                table: "PageComponentSettingsBase",
-                newName: "ParentLayoutId");
 
             migrationBuilder.RenameIndex(
                 name: "IX_PageComponentSettingsBase_ParentNodeId",
                 table: "PageComponentSettingsBase",
                 newName: "IX_PageComponentSettingsBase_ParentPageId");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_PageComponentSettingsBase_LayoutComponentSettingsKey",
+            migrationBuilder.AddColumn<Guid>(
+                name: "LayoutComponentId",
+                table: "UserSelectComponentSettings",
+                type: "uuid",
+                nullable: false,
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            migrationBuilder.AddColumn<string>(
+                name: "FormatString",
                 table: "PageComponentSettingsBase",
-                newName: "IX_PageComponentSettingsBase_ParentLayoutId");
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Label",
+                table: "PageComponentSettingsBase",
+                type: "text",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "MaxChildComponents",
+                table: "PageComponentSettingsBase",
+                type: "integer",
+                nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "Order",
+                table: "PageComponentSettingsBase",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<Guid>(
+                name: "ParentLayoutId",
+                table: "PageComponentSettingsBase",
+                type: "uuid",
+                nullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSelectComponentSettings_LayoutComponentId",
+                table: "UserSelectComponentSettings",
+                column: "LayoutComponentId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_ParentLayoutId",
+                table: "PageComponentSettingsBase",
+                column: "ParentLayoutId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PageComponentSettingsBase_CustomPageSettings_ParentPageId",
@@ -222,6 +286,14 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentLayoutId",
                 principalTable: "PageComponentSettingsBase",
                 principalColumn: "Key");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_UserSelectComponentSettings_PageComponentSettingsBase_Layou~",
+                table: "UserSelectComponentSettings",
+                column: "LayoutComponentId",
+                principalTable: "PageComponentSettingsBase",
+                principalColumn: "Key",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }

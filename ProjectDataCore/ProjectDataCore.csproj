@@ -46,5 +46,6 @@
 	  <Folder Include="Development\unsafe_uploads\" />
 	  <Folder Include="wwwroot\css\scoped\" />
 	  <Folder Include="wwwroot\dist\" />
+	  <Folder Include="wwwroot\ace\" />
 	</ItemGroup>
 </Project>

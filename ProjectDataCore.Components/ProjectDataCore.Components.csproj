@@ -12,11 +12,10 @@
   </Target>
 
   <ItemGroup>
-    <None Remove="Parts\Edit\NOTES.md" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Parts\Edit\NOTES.md" />
+    <Compile Remove="Parts\**" />
+    <Content Remove="Parts\**" />
+    <EmbeddedResource Remove="Parts\**" />
+    <None Remove="Parts\**" />
   </ItemGroup>
   
   <ItemGroup>
@@ -32,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Page\" />
+    <Folder Include="Framework\Page\Components\Display\" />
     <Folder Include="wwwroot\css\scoped\" />
   </ItemGroup>
 

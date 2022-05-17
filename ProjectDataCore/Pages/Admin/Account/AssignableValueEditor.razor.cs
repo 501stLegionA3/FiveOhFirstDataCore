@@ -14,7 +14,6 @@ using Microsoft.JSInterop;
 using ProjectDataCore;
 using ProjectDataCore.Shared;
 using ProjectDataCore.Components.Roster;
-using ProjectDataCore.Components.Parts;
 using ProjectDataCore.Data.Structures.Assignable.Value;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Result;

@@ -20,7 +20,7 @@ using ProjectDataCore.Data.Structures.Page;
 using System.Reflection;
 using ProjectDataCore.Data.Structures.Page.Attributes;
 
-namespace ProjectDataCore.Components.Parts
+namespace ProjectDataCore.Components.Page
 {
     public partial class CoreRouter
     {

@@ -19,8 +19,8 @@ public partial class BasicFormPart : LayoutBase
     [CascadingParameter(Name = "MultiAction")]
     public bool MultiAction { get; set; } = false;
 
-    [Parameter]
-    public LayoutComponentSettings ComponentSettings { get; set; }
+    //[Parameter]
+    //public LayoutComponentSettings ComponentSettings { get; set; }
     [Parameter]
     public RenderFragment? FormCap { get; set; }
     [Parameter]
@@ -52,28 +52,28 @@ public partial class BasicFormPart : LayoutBase
     {
         await base.OnParametersSetAsync();
 
-        var cfg = ComponentSettings?.ChildComponents.FirstOrDefault();
-        if (cfg is not null)
-        {
-            try
-            {
-                // Save the items to the array.
-                ComponentType = RoutingService.GetComponentType(cfg.QualifiedTypeName);
-                ComponentParams = new()
-                {
-                    { "ComponentData", cfg },
-                    { "ScopeIndex", 0 }
-                };
-            }
-            catch (MissingComponentException)
-            {
-                ComponentType = typeof(MissingComponentExceptionNotice);
-                ComponentParams = new()
-                {
-                    { "ComponentData", cfg },
-                    { "ScopeIndex", 0 }
-                };
-            }
-        }
+        //var cfg = ComponentSettings?.ChildComponents.FirstOrDefault();
+        //if (cfg is not null)
+        //{
+        //    try
+        //    {
+        //        // Save the items to the array.
+        //        ComponentType = RoutingService.GetComponentType(cfg.QualifiedTypeName);
+        //        ComponentParams = new()
+        //        {
+        //            { "ComponentData", cfg },
+        //            { "ScopeIndex", 0 }
+        //        };
+        //    }
+        //    catch (MissingComponentException)
+        //    {
+        //        ComponentType = typeof(MissingComponentExceptionNotice);
+        //        ComponentParams = new()
+        //        {
+        //            { "ComponentData", cfg },
+        //            { "ScopeIndex", 0 }
+        //        };
+        //    }
+        //}
     }
 }

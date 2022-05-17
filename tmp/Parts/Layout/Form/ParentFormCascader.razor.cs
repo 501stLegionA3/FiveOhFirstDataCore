@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Parts.Layout.Form;
 public partial class ParentFormCascader
 {
-    [Parameter]
-    public LayoutComponentSettings ComponentSettings { get; set; }
+    //[Parameter]
+    //public LayoutComponentSettings ComponentSettings { get; set; }
     [Parameter]
     public RenderFragment? FormCap { get; set; }
     [Parameter]

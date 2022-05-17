@@ -1,5 +1,4 @@
-﻿using ProjectDataCore.Components.Parts.Edit;
-using ProjectDataCore.Data.Structures.Assignable.Configuration;
+﻿using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Model.Assignable;
 
 using System;

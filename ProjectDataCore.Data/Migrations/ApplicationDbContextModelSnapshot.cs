@@ -544,12 +544,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid?>("LayoutComponentSettingsKey")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("integer");
-
                     b.Property<Guid?>("ParentNodeId")
                         .HasColumnType("uuid");
 
@@ -563,8 +557,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasKey("Key");
 
                     b.HasIndex("AuthorizationPolicyKey");
-
-                    b.HasIndex("LayoutComponentSettingsKey");
 
                     b.HasIndex("ParentNodeId")
                         .IsUnique();
@@ -728,17 +720,11 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("LayoutComponentId")
-                        .HasColumnType("uuid");
-
                     b.Property<List<string>>("Properties")
                         .IsRequired()
                         .HasColumnType("text[]");
 
                     b.HasKey("Key");
-
-                    b.HasIndex("LayoutComponentId")
-                        .IsUnique();
 
                     b.ToTable("UserSelectComponentSettings");
                 });
@@ -996,41 +982,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("ButtonComponentSettings");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<int>("MaxChildComponents")
-                        .HasColumnType("integer");
-
-                    b.HasDiscriminator().HasValue("LayoutComponentSettings");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("FormatString")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Label")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PropertyToEdit")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("UserScopeId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("UserScopeId");
-
-                    b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -1072,6 +1023,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TextDisplayComponentSettings");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("StaticProperty")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid?>("UserScopeId")
+                        .HasColumnType("uuid");
+
+                    b.HasIndex("UserScopeId");
+
+                    b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
@@ -1096,18 +1066,18 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("RosterTree");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.DisplayComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
-
-                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
                 {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase");
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
 
                     b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Parameters.DisplayComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
+
+                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 
             modelBuilder.Entity("DataCoreUserDynamicAuthorizationPolicy", b =>
@@ -1312,10 +1282,6 @@ namespace ProjectDataCore.Data.Migrations
                         .WithMany("PageComponenetSettings")
                         .HasForeignKey("AuthorizationPolicyKey");
 
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", null)
-                        .WithMany("ChildComponents")
-                        .HasForeignKey("LayoutComponentSettingsKey");
-
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "ParentNode")
                         .WithOne("Component")
                         .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "ParentNodeId");
@@ -1370,17 +1336,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("TreeToOrder");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Selector.User.UserSelectComponentSettings", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", "LayoutComponent")
-                        .WithOne("UserSelectSettings")
-                        .HasForeignKey("ProjectDataCore.Data.Structures.Selector.User.UserSelectComponentSettings", "LayoutComponentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("LayoutComponent");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Util.DataCoreUserProperty", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", null)
@@ -1423,15 +1378,6 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.ParameterComponentSettingsBase", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "UserScope")
-                        .WithMany("AttachedScopes")
-                        .HasForeignKey("UserScopeId");
-
-                    b.Navigation("UserScope");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.TextDisplayComponentSettings", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "EditPolicy")
@@ -1439,6 +1385,15 @@ namespace ProjectDataCore.Data.Migrations
                         .HasForeignKey("EditPolicyKey");
 
                     b.Navigation("EditPolicy");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "UserScope")
+                        .WithMany("AttachedScopes")
+                        .HasForeignKey("UserScopeId");
+
+                    b.Navigation("UserScope");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
@@ -1501,13 +1456,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("TextDisplayComponentSettings");
 
                     b.Navigation("WebsitePolciies");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.LayoutComponentSettings", b =>
-                {
-                    b.Navigation("ChildComponents");
-
-                    b.Navigation("UserSelectSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>

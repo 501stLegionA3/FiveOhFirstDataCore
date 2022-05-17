@@ -19,13 +19,9 @@ public abstract class ParameterBase : CustomComponentBase
         public string? FormatString { get; set; }
         public List<RosterDisplaySettings>? AllowedDisplays { get; set; }
 
-        public ParameterEditModel(ParameterComponentSettingsBase settings)
+        public ParameterEditModel()
         {
-            Key = settings.Key;
-            Label = settings.Label;
-            Property = settings.PropertyToEdit;
-            StaticProperty = settings.StaticProperty;
-            FormatString = settings.FormatString;
+
         }
     }
 

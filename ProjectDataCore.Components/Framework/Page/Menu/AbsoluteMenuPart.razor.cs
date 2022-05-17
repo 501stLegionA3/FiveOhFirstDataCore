@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProjectDataCore.Components.Parts.Menu;
+namespace ProjectDataCore.Components.Page.Menu;
 public partial class AbsoluteMenuPart : ComponentBase, IDisposable
 {
     private bool disposedValue;

@@ -15,7 +15,6 @@ using ProjectDataCore;
 using ProjectDataCore.Shared;
 using ProjectDataCore.Components.Roster;
 using ProjectDataCore.Components.Nav;
-using ProjectDataCore.Components.Parts;
 using ProjectDataCore.Components.Util;
 using ProjectDataCore.Components.Framework.Component;
 using ProjectDataCore.Data.Structures.Assignable.Configuration;

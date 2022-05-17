@@ -171,6 +171,66 @@ public class PageEditService : IPageEditService
             return new(false, new List<string>() { "Route name is already in use.", ex.Message });
         }
     }
+
+    public async Task<ActionResult> UpdateOrAddPageAsync(CustomPageSettings settings)
+    {
+        await using var _dbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        // If the page settings does not exist ...
+        if(settings.Key != default)
+        {
+            // ... add it to the database ...
+            await _dbContext.AddAsync(settings);
+        }
+        else
+        {
+            // ... otherwise attach the settings object and set it
+            // to modified ...
+            var settingsTracker = _dbContext.Attach(settings);
+            settingsTracker.State = EntityState.Modified;
+
+            // ... and if there is a layout ...
+            if (settings.Layout is not null)
+            {
+                // ... add the layout to the node stack ...
+                Stack<LayoutNode> nodes = new();
+                nodes.Push(settings.Layout);
+                // ... and for each node in the stack ...
+                while(nodes.TryPop(out var node))
+                {
+                    // ... attach the entity and set it to modified
+                    // if it is not a new entity ...
+                    var nodeTracker = _dbContext.Attach(node);
+                    if (nodeTracker.State != EntityState.Added)
+                        nodeTracker.State = EntityState.Modified;
+                    // ... if there is a component ...
+                    if (node.Component is not null)
+                    {
+                        // ... attach that as well ...
+                        var componentTracker = _dbContext.Attach(node.Component);
+                        if (componentTracker.State != EntityState.Added)
+                            componentTracker.State = EntityState.Modified;
+                    }
+                    // ... then add all child nodes to the stack ...
+                    foreach (var child in node.Nodes)
+                        nodes.Push(child);
+                }
+            }
+        }
+
+        try
+        {
+            // ... finally, attempt a save...
+            await _dbContext.SaveChangesAsync();
+            return new(true, null);
+        }
+        catch (Exception ex)
+        {
+            // ... if there was a violation of the unique constraint, then
+            // return the error.
+            return new(false, new List<string>() { "Failed to add or update the page.", ex.Message });
+        }
+    }
     #endregion
 
     public async Task<ActionResult> UpdateTextDisplayContentsAsync(Guid comp, string rawContents)

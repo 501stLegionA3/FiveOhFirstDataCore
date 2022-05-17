@@ -35,27 +35,11 @@ public interface IPageEditService
     public Task<ActionResult> UpdatePageAsync(Guid page, Action<CustomPageSettingsEditModel> action);
 
     /// <summary>
-    /// Updates the page with a new authoriaztion scheme.
+    /// Update an existing page.
     /// </summary>
-    /// <param name="key">The page to update.</param>
-    /// <param name="newAuthorzationItem">The new authoriaztion policy to use.</param>
+    /// <param name="settings">The page settings object to update.</param>
     /// <returns>A task with an <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> UpdatePermissionsAsync(Guid key, bool requireAuth, DynamicAuthorizationPolicy? newAuthorzationItem);
-
-    /// <summary>
-    /// Sets a page's primary layout.
-    /// </summary>
-    /// <remarks>
-    /// This operation will create a new layout object,
-    /// orphaning any other objects that were already there.
-    /// 
-    /// It is a distructive operation that will delete the old
-    /// layout for the provided page, and all of its children.
-    /// </remarks>
-    /// <param name="page">The page to set a layout for.</param>
-    /// <param name="layout">The <see cref="Type"/> of the layout to use.</param>
-    /// <returns>A task with an <see cref="ActionResult"/> for this action.</returns>
-    public Task<ActionResult> SetPageLayoutAsync(Guid page, Type layout);
+    public Task<ActionResult> UpdateOrAddPageAsync(CustomPageSettings settings);
 
     /// <summary>
     /// Delete an existing page.

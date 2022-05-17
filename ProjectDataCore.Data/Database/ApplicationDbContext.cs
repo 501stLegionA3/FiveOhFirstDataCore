@@ -195,9 +195,6 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         #region Forms
         var userSelectComponentSettings = builder.Entity<UserSelectComponentSettings>();
         userSelectComponentSettings.HasKey(e => e.Key);
-        userSelectComponentSettings.HasOne(e => e.LayoutComponent)
-            .WithOne(p => p.UserSelectSettings)
-            .HasForeignKey<UserSelectComponentSettings>(e => e.LayoutComponentId);
         #endregion
 
         #region Assignable Values
