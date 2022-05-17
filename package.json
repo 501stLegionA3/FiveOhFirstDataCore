@@ -8,18 +8,18 @@
   "author": "501st Holosite Support Team",
   "license": "MIT",
   "devDependencies": {
-    "@tailwindcss/forms": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.2",
-    "autoprefixer": "^10.4.0",
-    "postcss": "^8.4.5",
     "postcss-cli": "^9.1.0",
-    "tailwindcss": "^3.0.2",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
     "@shopify/draggable": "^1.0.0-beta.8",
-    "split-grid": "^1.0.11"
+    "@tailwindcss/forms": "^0.5.1",
+    "@tailwindcss/typography": "^0.5.2",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.13",
+    "split-grid": "^1.0.11",
+    "tailwindcss": "^3.0.24"
   },
   "repository": {
     "type": "git",

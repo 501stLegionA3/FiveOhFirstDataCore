@@ -12,5 +12,13 @@ namespace ProjectDataCore.Data.Structures.Page.Components.Parameters;
 /// </summary>
 public class DisplayComponentSettings : ParameterComponentSettingsBase
 {
+    public MarkupString Markup 
+    { 
+        get
+        {
+            return new(Raw);
+        }        
+    }
 
+    public string Raw { get; set; }
 }

@@ -7,6 +7,7 @@
 [Cc]onfig/
 unsafe_uploads/
 *.min.css
+!custom.min.css
 img_dev/
 dist/
 

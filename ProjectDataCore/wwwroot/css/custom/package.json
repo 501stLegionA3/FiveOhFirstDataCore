@@ -1,0 +1,19 @@
+{
+  "name": "Helper",
+  "version": "1.0.0",
+  "description": "Helper package to invoke runtime postcss actions.",
+  "main": "index.js",
+  "scripts": {
+    "css": "npx postcss custom.css -o custom.min.css"
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@tailwindcss/forms": "^0.5.1",
+    "@tailwindcss/typography": "^0.5.2",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.13",
+    "postcss-cli": "^9.1.0",
+    "tailwindcss": "^3.0.24"
+  }
+}
