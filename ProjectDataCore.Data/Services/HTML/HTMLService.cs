@@ -16,6 +16,7 @@ public class HTMLService : IHTMLService
     private readonly IConfiguration _configuration;
 
     private readonly SemaphoreSlim _cssUpdateLock = new(1, 1);
+    private bool installed = false;
 
     public HTMLService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IWebHostEnvironment hostingEnvironment,
         IConfiguration configuration)
@@ -69,7 +70,7 @@ public class HTMLService : IHTMLService
                         WindowStyle = ProcessWindowStyle.Hidden,
                         FileName = _configuration["Config:CustomCSS:CommandLineTool"],
                         WorkingDirectory = rootPath,
-                        Arguments = $"/C npm i {sep} npm run css"
+                        Arguments = $"/C{(installed ? "" : $" npm i {sep}")} npm run css"
                     }
                 };
 
@@ -84,7 +85,10 @@ public class HTMLService : IHTMLService
                 await process.WaitForExitAsync();
 
                 if (errors.Count < 0)
+                {
+                    installed = true;
                     return new(true, null);
+                }
 
                 errors.Insert(0, "Failed to run PostCSS");
                 return new(false, errors);
