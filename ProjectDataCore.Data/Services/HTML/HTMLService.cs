@@ -16,6 +16,7 @@ public class HTMLService : IHTMLService
     private readonly IConfiguration _configuration;
 
     private readonly SemaphoreSlim _cssUpdateLock = new(1, 1);
+    private bool installed = false;
 
     public HTMLService(IDbContextFactory<ApplicationDbContext> dbContextFactory, IWebHostEnvironment hostingEnvironment,
         IConfiguration configuration)
@@ -25,7 +26,7 @@ public class HTMLService : IHTMLService
         _configuration = configuration;
     }
 
-    public async Task<ActionResult> UpdateCustomSiteCSSAsync()
+    public async Task<ActionResult> UpdateCustomSiteCSSAsync(string? additionalHtml = null)
     {
         StringBuilder builder = new();
         await using (var _dbContext = await _dbContextFactory.CreateDbContextAsync())
@@ -41,6 +42,9 @@ public class HTMLService : IHTMLService
                 builder.AppendLine(item.Raw);
         }
         // ... then toss the DB context, we are done with it ...
+
+        if (additionalHtml is not null)
+            builder.AppendLine(additionalHtml);
 
         // ... and wait for the update lock to be free ...
         if(await _cssUpdateLock.WaitAsync(TimeSpan.FromMinutes(1)))
@@ -69,7 +73,7 @@ public class HTMLService : IHTMLService
                         WindowStyle = ProcessWindowStyle.Hidden,
                         FileName = _configuration["Config:CustomCSS:CommandLineTool"],
                         WorkingDirectory = rootPath,
-                        Arguments = $"/C npm i {sep} npm run css"
+                        Arguments = $"/C{(installed ? "" : $" npm i {sep}")} npm run css"
                     }
                 };
 
@@ -84,7 +88,10 @@ public class HTMLService : IHTMLService
                 await process.WaitForExitAsync();
 
                 if (errors.Count < 0)
+                {
+                    installed = true;
                     return new(true, null);
+                }
 
                 errors.Insert(0, "Failed to run PostCSS");
                 return new(false, errors);

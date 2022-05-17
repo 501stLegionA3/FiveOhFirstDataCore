@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Services.HTML;
 public interface IHTMLService
 {
-    public Task<ActionResult> UpdateCustomSiteCSSAsync();
+    public Task<ActionResult> UpdateCustomSiteCSSAsync(string? additionalHtml = null);
 }
