@@ -20,6 +20,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Page.Components.Parameters;
+using ProjectDataCore.Data.Structures.Assignable.Render;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -66,6 +67,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<DateOnlyAssignableValue> DateOnlyAssignableValues { get; internal set; }
     public DbSet<TimeOnlyAssignableValue> TimeOnlyAssignableValues { get; internal set; }
     public DbSet<BooleanAssignableValue> BooleanAssignableValues { get; internal set; }
+
+    // Assignable Value Rendering
+    public DbSet<AssignableValueRenderer> AssignableValueRenderers { get; internal set; }
+    public DbSet<AssignableValueConversion> AssignableValueConversions { get; internal set; }
     #endregion
 
     #region Account Link
@@ -214,6 +219,17 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey(e => e.ForUserId);
         baseAssignableValues.Navigation(e => e.AssignableConfiguration)
             .AutoInclude();
+
+        var assignableValueRenderers = builder.Entity<AssignableValueRenderer>();
+        assignableValueRenderers.HasKey(e => e.Key);
+        assignableValueRenderers.HasMany(e => e.Conversions)
+            .WithOne(p => p.Renderer)
+            .HasForeignKey(p => p.RendererId);
+        assignableValueRenderers.Navigation(e => e.Conversions)
+            .AutoInclude(true);
+
+        var assignableValueConversions = builder.Entity<AssignableValueConversion>();
+        assignableValueConversions.HasKey(e => e.Key);
 
         // We give these names manually because EFCORE likes to change the value type
         // for an existing col instead of just making a new col for these values.

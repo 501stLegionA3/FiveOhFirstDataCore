@@ -30,7 +30,20 @@ public class DataCoreUser : IdentityUser<Guid>
     [Description("Access Code")]
     public string? AccessCode { get; set; }
 
+
+    [Obsolete("Use Assignable Value Renderers instead.", false)]
     public string GetStaticProperty(string property, string? format = null)
+    {
+        var s = GetStaticPropertyObject(property);
+        if (s is not null)
+        {
+            return string.Format(format ?? "{0}", s);
+        }
+
+        return string.Empty;
+    }
+
+    public object? GetStaticPropertyObject(string property)
     {
         var typ = GetType();
         var p = typ.GetProperty(property);
@@ -38,14 +51,13 @@ public class DataCoreUser : IdentityUser<Guid>
         {
             var val = p.GetValue(this);
 
-            var s = Convert.ToString(val);
-
-            return string.Format(format ?? "{0}", s);
+            return val;
         }
 
-        return string.Empty;
+        return null;
     }
 
+    [Obsolete("Use Assignable Value Renderers instead.", false)]
     public string GetAssignableProperty(string property, string? format = null)
     {
         var data = GetAssignablePropertyContainer(property);

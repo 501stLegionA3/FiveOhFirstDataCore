@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220517125048_Dev2")]
+    [Migration("20220519010512_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -381,6 +381,80 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AssignableConfigurations");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("BaseAssignableConfiguration");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueConversion", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Bool_FormatOnFalse")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Bool_FormatOnTrue")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("DateTime_ConvertToTimeSpan")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("DateTime_TimeSpanConversionCompareTo")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DateTime_ToStringPattern")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Multi_MaxValues")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Multi_Separator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Numeric_FormatString")
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("RendererId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("String_FormatString")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ValueName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("RendererId");
+
+                    b.ToTable("AssignableValueConversions");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Static")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Key");
+
+                    b.ToTable("AssignableValueRenderers");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
@@ -1079,6 +1153,10 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
 
+                    b.Property<string>("Raw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 
@@ -1222,6 +1300,17 @@ namespace ProjectDataCore.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueConversion", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", "Renderer")
+                        .WithMany("Conversions")
+                        .HasForeignKey("RendererId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Renderer");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
@@ -1427,6 +1516,11 @@ namespace ProjectDataCore.Data.Migrations
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Configuration.BaseAssignableConfiguration", b =>
                 {
                     b.Navigation("AssignableValues");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", b =>
+                {
+                    b.Navigation("Conversions");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Nav.NavModule", b =>

@@ -39,10 +39,6 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropColumn(
-                name: "Label",
-                table: "PageComponentSettingsBase");
-
-            migrationBuilder.DropColumn(
                 name: "MaxChildComponents",
                 table: "PageComponentSettingsBase");
 
@@ -57,12 +53,17 @@ namespace ProjectDataCore.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "PropertyToEdit",
                 table: "PageComponentSettingsBase",
-                newName: "PropertyName");
+                newName: "Raw");
 
             migrationBuilder.RenameColumn(
                 name: "ParentPageId",
                 table: "PageComponentSettingsBase",
                 newName: "ParentNodeId");
+
+            migrationBuilder.RenameColumn(
+                name: "Label",
+                table: "PageComponentSettingsBase",
+                newName: "PropertyName");
 
             migrationBuilder.RenameIndex(
                 name: "IX_PageComponentSettingsBase_ParentPageId",
@@ -99,6 +100,20 @@ namespace ProjectDataCore.Data.Migrations
                 table: "AssignableConfigurations",
                 type: "boolean[]",
                 nullable: true);
+
+            migrationBuilder.CreateTable(
+                name: "AssignableValueRenderers",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    PropertyName = table.Column<string>(type: "text", nullable: false),
+                    Static = table.Column<bool>(type: "boolean", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssignableValueRenderers", x => x.Key);
+                });
 
             migrationBuilder.CreateTable(
                 name: "LayoutNodes",
@@ -153,6 +168,40 @@ namespace ProjectDataCore.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "AssignableValueConversions",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    RendererId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ValueName = table.Column<string>(type: "text", nullable: false),
+                    String_FormatString = table.Column<string>(type: "text", nullable: true),
+                    Numeric_FormatString = table.Column<string>(type: "text", nullable: true),
+                    DateTime_ToStringPattern = table.Column<string>(type: "text", nullable: true),
+                    DateTime_ConvertToTimeSpan = table.Column<bool>(type: "boolean", nullable: false),
+                    DateTime_TimeSpanConversionCompareTo = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Bool_FormatOnTrue = table.Column<string>(type: "text", nullable: false),
+                    Bool_FormatOnFalse = table.Column<string>(type: "text", nullable: false),
+                    Multi_MaxValues = table.Column<int>(type: "integer", nullable: false),
+                    Multi_Separator = table.Column<string>(type: "text", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AssignableValueConversions", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_AssignableValueConversions_AssignableValueRenderers_Rendere~",
+                        column: x => x.RendererId,
+                        principalTable: "AssignableValueRenderers",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AssignableValueConversions_RendererId",
+                table: "AssignableValueConversions",
+                column: "RendererId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_LayoutNodes_PageSettingsId",
                 table: "LayoutNodes",
@@ -184,10 +233,16 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropTable(
+                name: "AssignableValueConversions");
+
+            migrationBuilder.DropTable(
                 name: "LayoutNodes");
 
             migrationBuilder.DropTable(
                 name: "UserKeybinding");
+
+            migrationBuilder.DropTable(
+                name: "AssignableValueRenderers");
 
             migrationBuilder.DropColumn(
                 name: "AuthKey",
@@ -210,9 +265,14 @@ namespace ProjectDataCore.Data.Migrations
                 table: "AssignableConfigurations");
 
             migrationBuilder.RenameColumn(
-                name: "PropertyName",
+                name: "Raw",
                 table: "PageComponentSettingsBase",
                 newName: "PropertyToEdit");
+
+            migrationBuilder.RenameColumn(
+                name: "PropertyName",
+                table: "PageComponentSettingsBase",
+                newName: "Label");
 
             migrationBuilder.RenameColumn(
                 name: "ParentNodeId",
@@ -233,12 +293,6 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.AddColumn<string>(
                 name: "FormatString",
-                table: "PageComponentSettingsBase",
-                type: "text",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Label",
                 table: "PageComponentSettingsBase",
                 type: "text",
                 nullable: true);
