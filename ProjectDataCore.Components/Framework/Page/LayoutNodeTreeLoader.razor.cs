@@ -82,6 +82,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
             {
                 // ... set the component params ...
                 ComponentParams["ComponentData"] = ParentNode.Component;
+                ComponentParams["EditingNode"] = ParentNode;
                 // ... and the component type ...
                 ComponentType = RoutingService.GetComponentType(ParentNode.Component.QualifiedTypeName);
             }

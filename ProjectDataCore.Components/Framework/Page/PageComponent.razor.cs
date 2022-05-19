@@ -36,6 +36,12 @@ public partial class PageComponent : IDisposable
 
     [Parameter]
     public LayoutNode? EditingNode { get; set; }
+    /// <summary>
+    /// True if the publish value should be displayed in the edit field.
+    /// </summary>
+    [Parameter]
+    public bool PublishIsEdit { get; set; } = true;
+
     private string? LastKey { get; set; }
     [CascadingParameter]
     public Func<NodeTreeLoaderRefreshRequestedEventArgs, Task>? NodeTreeLoaderRefresh { get; set; }

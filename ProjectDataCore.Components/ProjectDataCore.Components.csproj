@@ -31,7 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Framework\Page\Components\Display\" />
     <Folder Include="wwwroot\css\scoped\" />
   </ItemGroup>
 

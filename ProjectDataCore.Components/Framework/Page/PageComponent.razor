@@ -1,7 +1,14 @@
 ﻿@if(IsEditingScope && Editing is not null)
 {
 	<div class="absolute group inset-0">
-		@Editing
+		@if(PublishIsEdit)
+		{
+			@Publish
+		}
+		else
+		{
+			@Editing
+		}
 
 		@if (EditingNode is not null)
 		{
