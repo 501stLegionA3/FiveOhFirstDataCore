@@ -39,7 +39,7 @@ public class HTMLService : IHTMLService
 
             // ... then take their raw html contents ...
             await foreach (var item in displays)
-                builder.AppendLine(item.Raw);
+                builder.AppendLine(item.AuthorizedRaw);
         }
         // ... then toss the DB context, we are done with it ...
 

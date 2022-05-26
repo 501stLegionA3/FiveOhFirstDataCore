@@ -4,7 +4,21 @@
     <Publish>
         @if(ComponentData is not null)
         {
-            
+            if(ComponentData.RequireAuth)
+            {
+                <AuthorizationHandler Settings="ComponentData">
+                    <Authorized>
+                        @ComponentData.AuthorizedMarkup
+                    </Authorized>
+                    <NotAuthorized>
+                        @ComponentData.UnAuthorizedMarkup
+                    </NotAuthorized>
+                </AuthorizationHandler>
+            }
+            else
+            {
+                @ComponentData.AuthorizedMarkup
+            }
         }
         else
         {
@@ -12,6 +26,8 @@
         }
     </Publish>
     <Configure>
+        <PageComponentEditorSettingsNode Name="Value Configuration">
 
+        </PageComponentEditorSettingsNode>
     </Configure>
 </PageComponent>

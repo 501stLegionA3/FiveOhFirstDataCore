@@ -169,7 +169,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .HasForeignKey(e => e.UserScopeId);
 
         var displayComponentSettings = builder.Entity<DisplayComponentSettings>();
-        displayComponentSettings.Ignore(e => e.Markup);
+        displayComponentSettings.Ignore(e => e.AuthorizedMarkup);
 
         var editableComponentSettings = builder.Entity<EditableComponentSettings>();
         editableComponentSettings.HasMany(e => e.EditableDisplays)
