@@ -19,6 +19,10 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_UserSco~",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_UserSelectComponentSettings_PageComponentSettingsBase_Layou~",
                 table: "UserSelectComponentSettings");
 
@@ -30,13 +34,17 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
                 table: "PageComponentSettingsBase");
 
+            migrationBuilder.DropIndex(
+                name: "IX_PageComponentSettingsBase_ParentPageId",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropIndex(
+                name: "IX_PageComponentSettingsBase_UserScopeId",
+                table: "PageComponentSettingsBase");
+
             migrationBuilder.DropColumn(
                 name: "LayoutComponentId",
                 table: "UserSelectComponentSettings");
-
-            migrationBuilder.DropColumn(
-                name: "FormatString",
-                table: "PageComponentSettingsBase");
 
             migrationBuilder.DropColumn(
                 name: "MaxChildComponents",
@@ -50,25 +58,29 @@ namespace ProjectDataCore.Data.Migrations
                 name: "ParentLayoutId",
                 table: "PageComponentSettingsBase");
 
+            migrationBuilder.DropColumn(
+                name: "ParentPageId",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.RenameColumn(
+                name: "UserScopeId",
+                table: "PageComponentSettingsBase",
+                newName: "ParentNodeId");
+
             migrationBuilder.RenameColumn(
                 name: "PropertyToEdit",
                 table: "PageComponentSettingsBase",
-                newName: "Raw");
-
-            migrationBuilder.RenameColumn(
-                name: "ParentPageId",
-                table: "PageComponentSettingsBase",
-                newName: "ParentNodeId");
+                newName: "UnAuthorizedRaw");
 
             migrationBuilder.RenameColumn(
                 name: "Label",
                 table: "PageComponentSettingsBase",
                 newName: "PropertyName");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_PageComponentSettingsBase_ParentPageId",
+            migrationBuilder.RenameColumn(
+                name: "FormatString",
                 table: "PageComponentSettingsBase",
-                newName: "IX_PageComponentSettingsBase_ParentNodeId");
+                newName: "AuthorizedRaw");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "AuthKey",
@@ -169,6 +181,25 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserScopes",
+                columns: table => new
+                {
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    PageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserScopes", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_UserScopes_CustomPageSettings_PageId",
+                        column: x => x.PageId,
+                        principalTable: "CustomPageSettings",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AssignableValueConversions",
                 columns: table => new
                 {
@@ -197,6 +228,60 @@ namespace ProjectDataCore.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PageComponentSettingsBaseUserScope",
+                columns: table => new
+                {
+                    ScopeListenersKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    ScopeProvidersKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageComponentSettingsBaseUserScope", x => new { x.ScopeListenersKey, x.ScopeProvidersKey });
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBaseUserScope_PageComponentSettingsBas~",
+                        column: x => x.ScopeListenersKey,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBaseUserScope_UserScopes_ScopeProvider~",
+                        column: x => x.ScopeProvidersKey,
+                        principalTable: "UserScopes",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PageComponentSettingsBaseUserScope1",
+                columns: table => new
+                {
+                    ScopeListenersKey = table.Column<Guid>(type: "uuid", nullable: false),
+                    ScopeProvidersKey = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PageComponentSettingsBaseUserScope1", x => new { x.ScopeListenersKey, x.ScopeProvidersKey });
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBaseUserScope1_PageComponentSettingsBa~",
+                        column: x => x.ScopeProvidersKey,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PageComponentSettingsBaseUserScope1_UserScopes_ScopeListene~",
+                        column: x => x.ScopeListenersKey,
+                        principalTable: "UserScopes",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_ParentNodeId",
+                table: "PageComponentSettingsBase",
+                column: "ParentNodeId",
+                unique: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_AssignableValueConversions_RendererId",
                 table: "AssignableValueConversions",
@@ -214,9 +299,24 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentNodeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBaseUserScope_ScopeProvidersKey",
+                table: "PageComponentSettingsBaseUserScope",
+                column: "ScopeProvidersKey");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBaseUserScope1_ScopeProvidersKey",
+                table: "PageComponentSettingsBaseUserScope1",
+                column: "ScopeProvidersKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserKeybinding_DataCoreUserId",
                 table: "UserKeybinding",
                 column: "DataCoreUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserScopes_PageId",
+                table: "UserScopes",
+                column: "PageId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PageComponentSettingsBase_LayoutNodes_ParentNodeId",
@@ -239,10 +339,23 @@ namespace ProjectDataCore.Data.Migrations
                 name: "LayoutNodes");
 
             migrationBuilder.DropTable(
+                name: "PageComponentSettingsBaseUserScope");
+
+            migrationBuilder.DropTable(
+                name: "PageComponentSettingsBaseUserScope1");
+
+            migrationBuilder.DropTable(
                 name: "UserKeybinding");
 
             migrationBuilder.DropTable(
                 name: "AssignableValueRenderers");
+
+            migrationBuilder.DropTable(
+                name: "UserScopes");
+
+            migrationBuilder.DropIndex(
+                name: "IX_PageComponentSettingsBase_ParentNodeId",
+                table: "PageComponentSettingsBase");
 
             migrationBuilder.DropColumn(
                 name: "AuthKey",
@@ -265,7 +378,7 @@ namespace ProjectDataCore.Data.Migrations
                 table: "AssignableConfigurations");
 
             migrationBuilder.RenameColumn(
-                name: "Raw",
+                name: "UnAuthorizedRaw",
                 table: "PageComponentSettingsBase",
                 newName: "PropertyToEdit");
 
@@ -277,12 +390,12 @@ namespace ProjectDataCore.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "ParentNodeId",
                 table: "PageComponentSettingsBase",
-                newName: "ParentPageId");
+                newName: "UserScopeId");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_PageComponentSettingsBase_ParentNodeId",
+            migrationBuilder.RenameColumn(
+                name: "AuthorizedRaw",
                 table: "PageComponentSettingsBase",
-                newName: "IX_PageComponentSettingsBase_ParentPageId");
+                newName: "FormatString");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "LayoutComponentId",
@@ -290,12 +403,6 @@ namespace ProjectDataCore.Data.Migrations
                 type: "uuid",
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<string>(
-                name: "FormatString",
-                table: "PageComponentSettingsBase",
-                type: "text",
-                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "MaxChildComponents",
@@ -316,6 +423,12 @@ namespace ProjectDataCore.Data.Migrations
                 type: "uuid",
                 nullable: true);
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "ParentPageId",
+                table: "PageComponentSettingsBase",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_UserSelectComponentSettings_LayoutComponentId",
                 table: "UserSelectComponentSettings",
@@ -326,6 +439,17 @@ namespace ProjectDataCore.Data.Migrations
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
                 table: "PageComponentSettingsBase",
                 column: "ParentLayoutId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_ParentPageId",
+                table: "PageComponentSettingsBase",
+                column: "ParentPageId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_UserScopeId",
+                table: "PageComponentSettingsBase",
+                column: "UserScopeId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PageComponentSettingsBase_CustomPageSettings_ParentPageId",
@@ -338,6 +462,13 @@ namespace ProjectDataCore.Data.Migrations
                 name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
                 table: "PageComponentSettingsBase",
                 column: "ParentLayoutId",
+                principalTable: "PageComponentSettingsBase",
+                principalColumn: "Key");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_UserSco~",
+                table: "PageComponentSettingsBase",
+                column: "UserScopeId",
                 principalTable: "PageComponentSettingsBase",
                 principalColumn: "Key");
 

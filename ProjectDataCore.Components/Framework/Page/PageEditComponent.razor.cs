@@ -287,7 +287,7 @@ public partial class PageEditComponent : IDisposable
     }
 
     private ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
-    private string? OpenConfigurationNode { get; set; } = null;
+    private RenderFragment? OpenConfigurationNodeFragment { get; set; } = null;
     private bool ShowConfigurationOptions { get; set; } = false;
     private SettingState SettingMenuState { get; set; } = SettingState.Page;
 
@@ -295,7 +295,7 @@ public partial class PageEditComponent : IDisposable
     {
         if (dispose)
         {
-            _ = ConfigurationNodes.TryRemove(name, out _);
+            _ = ConfigurationNodes?.TryRemove(name, out _);
         }
         else
         {
@@ -308,25 +308,41 @@ public partial class PageEditComponent : IDisposable
     public void OpenPageSettings()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
+        RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Page;
+
+        ConfigurationNodes.Clear();
     }
 
     public void OpenNodeSettings()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
+        RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Node;
+
+        ConfigurationNodes.Clear();
     }
 
     public void OpenComponentSettings()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
+        RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Component;
+
+        ConfigurationNodes.Clear();
     }
 
     private void CloseSettingsMenu()
     {
         LeftMenuState = LeftMenu.ComponentSelection;
         RightMenuState = RightMenu.PageEditor;
+
+        ConfigurationNodes.Clear();
+    }
+
+    private void OpenConfigurationNode(string key)
+    {
+
     }
     #endregion
 

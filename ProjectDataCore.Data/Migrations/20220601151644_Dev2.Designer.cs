@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220519010512_Dev2")]
+    [Migration("20220601151644_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -216,6 +216,36 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PageComponentSettingsBaseUserScope", b =>
+                {
+                    b.Property<Guid>("ScopeListenersKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ScopeProvidersKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ScopeListenersKey", "ScopeProvidersKey");
+
+                    b.HasIndex("ScopeProvidersKey");
+
+                    b.ToTable("PageComponentSettingsBaseUserScope");
+                });
+
+            modelBuilder.Entity("PageComponentSettingsBaseUserScope1", b =>
+                {
+                    b.Property<Guid>("ScopeListenersKey")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ScopeProvidersKey")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("ScopeListenersKey", "ScopeProvidersKey");
+
+                    b.HasIndex("ScopeProvidersKey");
+
+                    b.ToTable("PageComponentSettingsBaseUserScope1");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreRole", b =>
@@ -642,6 +672,25 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("PageComponentSettingsBase");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PageId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("PageId");
+
+                    b.ToTable("UserScopes");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>
                 {
                     b.Property<Guid>("Key")
@@ -1058,6 +1107,46 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("ButtonComponentSettings");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("StaticProperty")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("boolean");
+
+                    b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Parameters.DisplayComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.Property<string>("AuthorizedRaw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PropertyName")
+                        .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("StaticProperty")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UnAuthorizedRaw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -1099,25 +1188,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TextDisplayComponentSettings");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("PropertyName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid?>("UserScopeId")
-                        .HasColumnType("uuid");
-
-                    b.HasIndex("UserScopeId");
-
-                    b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
@@ -1140,24 +1210,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
 
                     b.HasDiscriminator().HasValue("RosterTree");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
-
-                    b.HasDiscriminator().HasValue("EditableComponentSettings");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Parameters.DisplayComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
-
-                    b.Property<string>("Raw")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 
             modelBuilder.Entity("DataCoreUserDynamicAuthorizationPolicy", b =>
@@ -1302,6 +1354,36 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PageComponentSettingsBaseUserScope", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", null)
+                        .WithMany()
+                        .HasForeignKey("ScopeListenersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", null)
+                        .WithMany()
+                        .HasForeignKey("ScopeProvidersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PageComponentSettingsBaseUserScope1", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", null)
+                        .WithMany()
+                        .HasForeignKey("ScopeListenersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", null)
+                        .WithMany()
+                        .HasForeignKey("ScopeProvidersKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueConversion", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", "Renderer")
@@ -1380,6 +1462,17 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("AuthorizationPolicy");
 
                     b.Navigation("ParentNode");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "Page")
+                        .WithMany("UserScopes")
+                        .HasForeignKey("PageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Page");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
@@ -1478,15 +1571,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("EditPolicy");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "UserScope")
-                        .WithMany("AttachedScopes")
-                        .HasForeignKey("UserScopeId");
-
-                    b.Navigation("UserScope");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Account.DataCoreUser", "OccupiedBy")
@@ -1535,14 +1619,11 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("Nodes");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
-                {
-                    b.Navigation("AttachedScopes");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>
                 {
                     b.Navigation("Layout");
+
+                    b.Navigation("UserScopes");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>

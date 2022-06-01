@@ -32,7 +32,6 @@ public class LayoutNode : DataObject<Guid>
 
     public CustomPageSettings? PageSettings { get; set; }
     public Guid? PageSettingsId { get; set; }
-    public List<UserScope> UserScopes { get; set; } = new();
 
     public List<LayoutNode> Nodes { get; set; } = new();
     public int Order { get; set; }

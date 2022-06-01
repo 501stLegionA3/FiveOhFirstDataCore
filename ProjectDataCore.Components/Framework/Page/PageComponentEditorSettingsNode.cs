@@ -4,7 +4,7 @@ namespace ProjectDataCore.Components.Framework.Page;
 public class PageComponentEditorSettingsNode : ComponentBase, IDisposable
 {
     [Parameter]
-    public RenderFragment Configure { get; set; }
+    public RenderFragment ChildContent { get; set; }
     [Parameter]
     public string Name { get; set; }
 
@@ -14,14 +14,14 @@ public class PageComponentEditorSettingsNode : ComponentBase, IDisposable
     public void Dispose()
     {
         if (PushNode is not null)
-            PushNode.Invoke(Name, Configure, true);
+            PushNode.Invoke(Name, ChildContent, true);
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnInitializedAsync()
     {
-        await base.OnParametersSetAsync();
+        await base.OnInitializedAsync();
 
         if (PushNode is not null)
-            await PushNode.Invoke(Name, Configure, false);
+            await PushNode.Invoke(Name, ChildContent, false);
     }
 }

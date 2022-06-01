@@ -1,5 +1,6 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
+using ProjectDataCore.Data.Structures.Page.Components.Scope;
 
 using System;
 using System.Collections.Generic;
@@ -35,4 +36,8 @@ public class CustomPageSettings : DataObject<Guid>
     /// The ID for the layout in <see cref="Layout"/>
     /// </summary>
     public Guid? LayoutId { get; set; }
+    /// <summary>
+    /// The user scopes for this page.
+    /// </summary>
+    public List<UserScope> UserScopes { get; set; } = new();
 }

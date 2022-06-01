@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 using ProjectDataCore.Data.Structures.Assignable.Render;
+using ProjectDataCore.Data.Structures.Page.Components.Scope;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -41,6 +42,7 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
     public DbSet<RosterComponentSettings> RosterComponentSettings { get; internal set; }
     public DbSet<ButtonComponentSettings> ButtonComponentSettings { get; internal set; }
     public DbSet<TextDisplayComponentSettings> TextDisplayComponentSettings { get; internal set; }
+    public DbSet<UserScope> UserScopes { get; internal set; }
     #endregion
 
     #region Forms
@@ -139,6 +141,9 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         customPageSettings.HasOne(e => e.Layout)
             .WithOne(p => p.PageSettings)
             .HasForeignKey<LayoutNode>(e => e.PageSettingsId);
+        customPageSettings.HasMany(e => e.UserScopes)
+            .WithOne(p => p.Page)
+            .HasForeignKey(p => p.PageId);
         customPageSettings.HasIndex(e => e.Route)
             .IsUnique(true);
 
@@ -151,12 +156,12 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithOne(p => p.ParentNode)
             .HasForeignKey<PageComponentSettingsBase>(p => p.ParentNodeId)
             .IsRequired(false);
-        layoutNodes.HasMany(e => e.UserScopes)
-            .WithOne(p => p.ParentNode)
-            .HasForeignKey(p => p.ParentNodeId);
 
         layoutNodes.Ignore(e => e.NodeWidths)
             .Ignore(e => e.EditorKey);
+
+        var userScopes = builder.Entity<UserScope>();
+        userScopes.HasKey(e => e.Key);
 
         var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
         pageComponentSettingsBase.HasKey(e => e.Key);

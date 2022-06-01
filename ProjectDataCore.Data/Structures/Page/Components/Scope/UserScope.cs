@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ProjectDataCore.Data.Structures.Page.Components.Scope;
-public class UserScope
+public class UserScope : DataObject<Guid>
 {
-    public LayoutNode ParentNode { get; set; }
-    public Guid ParentNodeId { get; set; }
+    public CustomPageSettings Page { get; set; }
+    public Guid PageId { get; set; }
 
     public List<PageComponentSettingsBase> ScopeProviders { get; set; } = new();
     public List<PageComponentSettingsBase> ScopeListeners { get; set; } = new();

@@ -1,4 +1,4 @@
-﻿<div Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
+﻿<CascadingValue Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
 	<div class="inline-flex w-full h-full">
 		<div class="@(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left">
 			<div class="flex flex-col">
@@ -171,19 +171,45 @@
 						break;
 
 					case LeftMenu.SettingsSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-							Settings
-						</div>
-
 						@switch (SettingMenuState)
 						{
 							case SettingState.Page:
+								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+									Page Settings
+								</div>
 								break;
 
 							case SettingState.Node:
+								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+									Node Settings
+								</div>
+								break;
+
 							case SettingState.Component:
+								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+									Component Settings
+								</div>
 								break;
 						}
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+							<button class="flex-grow button-op-success"
+								disabled="@(OpenConfigurationNodeFragment is not null)">Save Changes</button>
+						</div>
+						
+						@foreach(var item in ConfigurationNodes.Keys)
+						{
+							var i = item;
+							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+								<div class="flex-grow">@i</div>
+								<button class="flex-none button-util-action" @onclick="() => OpenConfigurationNode(i)" 
+									disabled="@(OpenConfigurationNodeFragment is not null)">Configure</button>
+							</div>
+						}
+
+						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+							<button class="flex-grow button-op-danger"
+								disabled="@(OpenConfigurationNodeFragment is not null)">Abort</button>
+						</div>
 						break;
 				}
 			</div>
@@ -238,10 +264,30 @@
 							break;
 
 						case RightMenu.SettingsEditor:
+							switch(SettingMenuState)
+							{
+								case SettingState.Page:
+									@*The page settings are handled by the editor itself.
+										In this case we can load some Page Component Edit Settings Node
+										components to get the same effect a component or node will have,
+										execpt they are configured directly in this editor.
+									*@
+
+									<PageComponentEditorSettingsNode Name="User Scope">
+										@*Configure the user scope settings here.*@
+
+										<div>Test</div>
+									</PageComponentEditorSettingsNode>
+									break;
+
+								case SettingState.Node:
+								case SettingState.Component:
+									break;
+							}
 							break;
 					}
 				</CascadingValue>
 			</div>
 		</div>
 	</div>
-</div>
+</CascadingValue>
