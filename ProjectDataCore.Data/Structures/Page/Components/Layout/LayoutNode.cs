@@ -1,4 +1,5 @@
-﻿using ProjectDataCore.Data.Structures.Util.Comparers;
+﻿using ProjectDataCore.Data.Structures.Page.Components.Scope;
+using ProjectDataCore.Data.Structures.Util.Comparers;
 
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,7 @@ public class LayoutNode : DataObject<Guid>
 
     public CustomPageSettings? PageSettings { get; set; }
     public Guid? PageSettingsId { get; set; }
+    public List<UserScope> UserScopes { get; set; } = new();
 
     public List<LayoutNode> Nodes { get; set; } = new();
     public int Order { get; set; }

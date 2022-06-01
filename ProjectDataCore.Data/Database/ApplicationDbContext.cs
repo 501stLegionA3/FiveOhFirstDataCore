@@ -151,6 +151,9 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
             .WithOne(p => p.ParentNode)
             .HasForeignKey<PageComponentSettingsBase>(p => p.ParentNodeId)
             .IsRequired(false);
+        layoutNodes.HasMany(e => e.UserScopes)
+            .WithOne(p => p.ParentNode)
+            .HasForeignKey(p => p.ParentNodeId);
 
         layoutNodes.Ignore(e => e.NodeWidths)
             .Ignore(e => e.EditorKey);
@@ -160,13 +163,12 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         pageComponentSettingsBase.HasOne(e => e.AuthorizationPolicy)
             .WithMany(p => p.PageComponenetSettings)
             .HasForeignKey(e => e.AuthorizationPolicyKey);
+        pageComponentSettingsBase.HasMany(e => e.ScopeProviders)
+            .WithMany(p => p.ScopeListeners);
+        pageComponentSettingsBase.HasMany(e => e.ScopeListeners)
+            .WithMany(p => p.ScopeProviders);
         pageComponentSettingsBase.Navigation(e => e.AuthorizationPolicy)
             .AutoInclude(true);
-
-        var parameterComponentSettings = builder.Entity<ParameterComponentSettingsBase>();
-        parameterComponentSettings.HasOne(e => e.UserScope)
-            .WithMany(p => p.AttachedScopes)
-            .HasForeignKey(e => e.UserScopeId);
 
         var displayComponentSettings = builder.Entity<DisplayComponentSettings>();
         displayComponentSettings.Ignore(e => e.AuthorizedMarkup);

@@ -24,6 +24,8 @@ public partial class PageComponent : IDisposable
 
     [CascadingParameter(Name = "PageEdit")]
     public bool IsEditingScope { get; set; }
+    [CascadingParameter(Name = "PageEditComponent")]
+    public PageEditComponent? EditComponent { get; set; }
 
     [Parameter]
     public RenderFragment? Editing { get; set; }
@@ -62,7 +64,6 @@ public partial class PageComponent : IDisposable
     private bool[] CanDelete { get; } = new bool[] { false, false, false, false };
     private bool DraggingDelete { get; set; } = false;
 
-    private bool IsConfiguring { get; set; } = false;
 
     private DotNetObjectReference<PageComponent>? DotNetRef { get; set; }
     
@@ -330,10 +331,23 @@ public partial class PageComponent : IDisposable
     #endregion
 
     #region Node Settings
+    private bool IsConfiguringNode { get; set; } = false;
+
     private async Task OnOpenNodeSettingsAsync()
     {
+        if (EditComponent is not null)
+        {
+            IsConfiguringNode = true;
+            EditComponent.OpenNodeSettings();
 
+            // TODO register node configuration render fragments.
+        }
     }
+    #endregion
+
+    #region Component Settings
+    private bool IsConfiguringComponent { get; set; } = false;
+
     #endregion
 
     #region Component Management

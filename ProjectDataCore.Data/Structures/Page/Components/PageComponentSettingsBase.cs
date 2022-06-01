@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components.Parameters;
+using ProjectDataCore.Data.Structures.Page.Components.Scope;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -50,8 +51,11 @@ public class PageComponentSettingsBase : DataObject<Guid>
     public Guid? ParentNodeId { get; set; }
 
     /// <summary>
-    /// A list of parameter components that are using this page component as a scope
-    /// to retrive a <see cref="Account.DataCoreUser"/> from.
+    /// The <see cref="UserScope"/>s that this component gets data from.
     /// </summary>
-    public List<ParameterComponentSettingsBase> AttachedScopes { get; set; } = new();
+    public List<UserScope> ScopeProviders { get; set; } = new();
+    /// <summary>
+    /// The <see cref="UserScope"/>s that this component sends data to.
+    /// </summary>
+    public List<UserScope> ScopeListeners { get; set; } = new();
 }

@@ -260,8 +260,5 @@ public class PageEditService : IPageEditService
 
         if (model.StaticProperty is not null)
             compData.StaticProperty = model.StaticProperty.Value;
-
-        if(model.UserScope.HasValue)
-            compData.UserScopeId = model.UserScope.Value;
     }
 }

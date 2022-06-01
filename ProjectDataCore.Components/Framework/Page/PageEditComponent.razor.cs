@@ -25,26 +25,8 @@ public partial class PageEditComponent : IDisposable
     public IKeybindingService KeybindingService { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    protected ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
-    public string? OpenConfigurationNode { get; set; } = null;
-    public bool ShowConfigurationOptions { get; set; } = false;
-
     public delegate Task DraggableRefreshRequested(object sender);
     public event DraggableRefreshRequested? OnDragRefreshRequested;
-
-    public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
-    {
-        if (dispose)
-        {
-            _ = ConfigurationNodes.TryRemove(name, out _);
-        }
-        else
-        {
-            ConfigurationNodes[name] = fragment;
-        }
-
-        await InvokeAsync(StateHasChanged);
-    }
 
     #region States
     public enum LeftMenu
@@ -62,8 +44,8 @@ public partial class PageEditComponent : IDisposable
     }
     #endregion
 
-    public LeftMenu LeftMenuState { get; set; } = LeftMenu.PageSelection;
-    public RightMenu RightMenuState { get; set; } = RightMenu.Empty;
+    protected LeftMenu LeftMenuState { get; set; } = LeftMenu.PageSelection;
+    protected RightMenu RightMenuState { get; set; } = RightMenu.Empty;
 
     #region Inital Setup
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -139,7 +121,7 @@ public partial class PageEditComponent : IDisposable
 
     private CustomPageSettings? PageToEdit { get; set; }
 
-    public bool DisplayNewPage { get; set; } = false;
+    private bool DisplayNewPage { get; set; } = false;
     private string NewPageName { get; set; } = "";
     private string NewPageRoute { get; set; } = "";
 
@@ -294,6 +276,58 @@ public partial class PageEditComponent : IDisposable
     private bool DraggingComponent { get; set; } = false;
 
 
+    #endregion
+
+    #region Left Menu - Page Settings
+    public enum SettingState
+    {
+        Page,
+        Node,
+        Component
+    }
+
+    private ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
+    private string? OpenConfigurationNode { get; set; } = null;
+    private bool ShowConfigurationOptions { get; set; } = false;
+    private SettingState SettingMenuState { get; set; } = SettingState.Page;
+
+    public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
+    {
+        if (dispose)
+        {
+            _ = ConfigurationNodes.TryRemove(name, out _);
+        }
+        else
+        {
+            ConfigurationNodes[name] = fragment;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void OpenPageSettings()
+    {
+        LeftMenuState = LeftMenu.SettingsSelection;
+        SettingMenuState = SettingState.Page;
+    }
+
+    public void OpenNodeSettings()
+    {
+        LeftMenuState = LeftMenu.SettingsSelection;
+        SettingMenuState = SettingState.Node;
+    }
+
+    public void OpenComponentSettings()
+    {
+        LeftMenuState = LeftMenu.SettingsSelection;
+        SettingMenuState = SettingState.Component;
+    }
+
+    private void CloseSettingsMenu()
+    {
+        LeftMenuState = LeftMenu.ComponentSelection;
+        RightMenuState = RightMenu.PageEditor;
+    }
     #endregion
 
     #region Undo/Redo

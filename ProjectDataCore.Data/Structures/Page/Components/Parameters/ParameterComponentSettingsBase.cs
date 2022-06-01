@@ -26,14 +26,4 @@ public abstract class ParameterComponentSettingsBase : PageComponentSettingsBase
     /// If it is False, then it will search through assignable values.
     /// </remarks>
     public bool StaticProperty { get; set; }
-
-    /// <summary>
-    /// The component to pull a <see cref="Account.DataCoreUser"/> from. Leave as null to pull
-    /// from the currently signed in user.
-    /// </summary>
-    public PageComponentSettingsBase? UserScope { get; set; }
-    /// <summary>
-    /// The ID of the <see cref="UserScope"/>
-    /// </summary>
-    public Guid? UserScopeId { get; set; }
 }
