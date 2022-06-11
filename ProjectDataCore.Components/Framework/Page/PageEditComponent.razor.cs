@@ -56,6 +56,15 @@ public partial class PageEditComponent : IDisposable
         {
             await RefreshPageListAsync();
         }
+
+        if (OpenConfigurationNodeFragment is not null)
+        {
+            if (!ShowConfigurationOptions)
+            {
+                ShowConfigurationOptions = true;
+                StateHasChanged();
+            }
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -342,7 +351,10 @@ public partial class PageEditComponent : IDisposable
 
     private void OpenConfigurationNode(string key)
     {
-
+        if (ConfigurationNodes.TryGetValue(key, out var fragment))
+        {
+            OpenConfigurationNodeFragment = fragment;
+        }
     }
     #endregion
 

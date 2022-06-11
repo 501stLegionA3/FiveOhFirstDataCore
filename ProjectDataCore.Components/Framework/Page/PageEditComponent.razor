@@ -218,18 +218,18 @@
 			@if(!SidebarVisible)
 			{
 				<div class="absolute left-1 top-1 flex flex-col w-7 h-min gap-1">
-					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md 
+					<button class="rounded-lg w-7 h-7 shadow-md 
 						material-symbols-rounded bg-slate-200 z-30" type="button"
 						@onclick="ToggleSidebar">
 						keyboard_double_arrow_right
 					</button>
-					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200
+					<button class="rounded-lg w-7 h-7shadow-md bg-slate-200
 						material-symbols-rounded z-30"
 						type="button"
 						@onclick="OnUndoClickedAsync">
 						undo
 					</button>
-					<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 
+					<button class="rounded-lg w-7 h-7 shadow-md bg-slate-200 
 						material-symbols-rounded z-30"
 						type="button"
 						@onclick="OnRedoClickedAsync">
@@ -273,16 +273,40 @@
 										execpt they are configured directly in this editor.
 									*@
 
-									<PageComponentEditorSettingsNode Name="User Scope">
+									<PageComponentEditorSettingsNode Name="User Scope Manager">
 										@*Configure the user scope settings here.*@
 
-										<div>Test</div>
+										<div class="flex flex-col w-full h-full">
+											<p class="text-center text-xl w-full mb-1 flex-none">User Scope Manager</p>
+											<p class="text-center w-full mb-1 flex-none">
+												Allows for editing the user scopes for this page
+												to give containers for forms and other systems that require
+												specific user data.
+											</p>
+
+											<div class="flex-grow flex">
+												<div class="p-2 flex-none w-[33%] border-r-2 border-slate-400">
+													Sidebar
+												</div>
+												<EditForm Model="this" class="p-2 flex-grow flex-col">
+													Form
+												</EditForm>
+											</div>
+										</div>
 									</PageComponentEditorSettingsNode>
 									break;
 
 								case SettingState.Node:
 								case SettingState.Component:
 									break;
+							}
+
+							if (OpenConfigurationNodeFragment is not null)
+							{
+								/* @(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left */
+								<div class="@(ShowConfigurationOptions ? "scale-x-100" : "scale-x-0") inset-0 origin-right transition-all duration-700 z-10 absolute bg-slate-200">
+									@OpenConfigurationNodeFragment
+								</div>
 							}
 							break;
 					}
