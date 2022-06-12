@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220601151644_Dev2")]
+    [Migration("20220612201859_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -677,6 +677,13 @@ namespace ProjectDataCore.Data.Migrations
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IncludeLocalUser")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");

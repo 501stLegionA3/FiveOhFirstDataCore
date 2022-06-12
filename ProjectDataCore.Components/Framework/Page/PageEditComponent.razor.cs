@@ -4,6 +4,7 @@ using ProjectDataCore.Data.Services.Keybindings;
 using ProjectDataCore.Data.Services.Routing;
 using ProjectDataCore.Data.Structures.Keybindings;
 using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Components.Scope;
 
 using System.Collections.Concurrent;
 using System.Web;
@@ -356,6 +357,93 @@ public partial class PageEditComponent : IDisposable
             OpenConfigurationNodeFragment = fragment;
         }
     }
+    #endregion
+
+    #region User Scopes
+    private UserScope? UserScopeToEdit { get; set; } = null;
+    private int NotListeningIndex { get; set; } = 0;
+    private List<PageComponentSettingsBase> NotListeningTo { get; set; } = new();
+    private int NotProvidingIndex { get; set; } = 0;
+    private List<PageComponentSettingsBase> NotProvidingTo { get; set; } = new();
+
+
+    private void AddUserScope()
+    {
+        if (PageToEdit is not null)
+        {
+            PageToEdit.UserScopes.Add(new());
+            StateHasChanged();
+        }
+    }
+
+    private void EditUserScope(UserScope scope)
+    {
+        UserScopeToEdit = scope;
+
+        NotListeningTo.Clear();
+        NotProvidingTo.Clear();
+        NotListeningIndex = 0;
+        NotProvidingIndex = 0;
+
+        if (PageToEdit is not null)
+        {
+            var allChildren = PageToEdit.GetChildComponents();
+            NotListeningTo = allChildren.Except(scope.ScopeProviders).ToList();
+            NotProvidingTo = allChildren.Except(scope.ScopeListeners).ToList();
+        }
+
+        StateHasChanged();
+    }
+
+    private void DeleteUserScope(UserScope scope)
+    {
+        if (PageToEdit is not null)
+        {
+            PageToEdit.UserScopes.Remove(scope);
+            if (UserScopeToEdit == scope)
+                StopUserScopeEdit();
+            StateHasChanged();
+        }
+    }
+
+    private void StopUserScopeEdit()
+	{
+        UserScopeToEdit = null;
+	}
+
+    private void ListenToComponent()
+	{
+        if (UserScopeToEdit is not null)
+        {
+            var component = NotListeningTo[NotListeningIndex];
+            UserScopeToEdit.ScopeListeners.Add(component);
+        }
+	}
+
+    private void StopListeningTo(PageComponentSettingsBase component)
+	{
+        if (UserScopeToEdit is not null)
+		{
+            UserScopeToEdit.ScopeListeners.Remove(component);
+		}
+	}
+
+    private void ProvideForComponent()
+	{
+        if (UserScopeToEdit is not null)
+        {
+            var component = NotProvidingTo[NotProvidingIndex];
+            UserScopeToEdit.ScopeProviders.Add(component);
+        }
+    }
+    private void StopProvidingTo(PageComponentSettingsBase component)
+    {
+        if (UserScopeToEdit is not null)
+        {
+            UserScopeToEdit.ScopeProviders.Remove(component);
+        }
+    }
+
     #endregion
 
     #region Undo/Redo

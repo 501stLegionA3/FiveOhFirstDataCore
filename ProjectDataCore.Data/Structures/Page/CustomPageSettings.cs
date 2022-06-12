@@ -40,4 +40,35 @@ public class CustomPageSettings : DataObject<Guid>
     /// The user scopes for this page.
     /// </summary>
     public List<UserScope> UserScopes { get; set; } = new();
+
+    /// <summary>
+    /// Gets a list of component settings from all child layout nodes.
+    /// </summary>
+    /// <remarks>
+    /// If this object has been pulled from the database without being
+    /// proerply loaded, this method will not return a full list of
+    /// components.
+    /// </remarks>
+    /// <returns>A <see cref="List{T}"/> of <see cref="PageComponentSettingsBase"/> for all child <see cref="LayoutNode"/>s
+    /// that have a registered component.</returns>
+    public List<PageComponentSettingsBase> GetChildComponents()
+    {
+        List<PageComponentSettingsBase> components = new();
+
+        if (Layout is not null)
+        {
+            Stack<LayoutNode> nodeStack = new();
+            nodeStack.Push(Layout);
+            while (nodeStack.TryPop(out var node))
+            {
+                if (node.Component is not null)
+                    components.Add(node.Component);
+
+                foreach (var child in node.Nodes)
+                    nodeStack.Push(child);
+            }
+        }
+
+        return components;
+	}
 }

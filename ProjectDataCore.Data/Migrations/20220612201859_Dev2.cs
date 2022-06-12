@@ -186,6 +186,8 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
                     PageId = table.Column<Guid>(type: "uuid", nullable: false),
+                    IncludeLocalUser = table.Column<bool>(type: "boolean", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>

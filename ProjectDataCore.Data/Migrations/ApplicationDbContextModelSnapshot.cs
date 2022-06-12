@@ -676,6 +676,13 @@ namespace ProjectDataCore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IncludeLocalUser")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
 

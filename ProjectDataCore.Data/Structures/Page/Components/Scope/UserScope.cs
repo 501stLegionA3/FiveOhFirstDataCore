@@ -15,6 +15,9 @@ public class UserScope : DataObject<Guid>
     public List<PageComponentSettingsBase> ScopeProviders { get; set; } = new();
     public List<PageComponentSettingsBase> ScopeListeners { get; set; } = new();
 
+    public bool IncludeLocalUser { get; set; } = false;
+    public string DisplayName { get; set; } = "Unnamed User Scope";
+
     #region Non-Database Parameters
     private List<DataCoreUser> UsersInScope { get; init; } = new();
     #endregion

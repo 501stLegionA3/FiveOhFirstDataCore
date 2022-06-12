@@ -37,17 +37,14 @@
 						<div class="border border-slate-400"></div>
 
 						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
-							type="button"
 							@onclick="OnUndoClickedAsync">
 							undo
 						</button>
 						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
-							type="button"
 							@onclick="OnRedoClickedAsync">
 							redo
 						</button>
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md material-symbols-rounded bg-slate-200" 
-							type="button"
+						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md material-symbols-rounded bg-slate-200"
 							@onclick="ToggleSidebar">
 							keyboard_double_arrow_left
 						</button>
@@ -219,19 +216,17 @@
 			{
 				<div class="absolute left-1 top-1 flex flex-col w-7 h-min gap-1">
 					<button class="rounded-lg w-7 h-7 shadow-md 
-						material-symbols-rounded bg-slate-200 z-30" type="button"
+						material-symbols-rounded bg-slate-200 z-30"
 						@onclick="ToggleSidebar">
 						keyboard_double_arrow_right
 					</button>
 					<button class="rounded-lg w-7 h-7shadow-md bg-slate-200
 						material-symbols-rounded z-30"
-						type="button"
 						@onclick="OnUndoClickedAsync">
 						undo
 					</button>
 					<button class="rounded-lg w-7 h-7 shadow-md bg-slate-200 
 						material-symbols-rounded z-30"
-						type="button"
 						@onclick="OnRedoClickedAsync">
 						redo
 					</button>
@@ -284,13 +279,130 @@
 												specific user data.
 											</p>
 
-											<div class="flex-grow flex">
-												<div class="p-2 flex-none w-[33%] border-r-2 border-slate-400">
-													Sidebar
+											<div class="flex-grow flex relative overflow-hidden">
+												<div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
+													<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 
+														relative inline-flex gap-2 my-1 bg-white">
+														<button class="flex-grow button-op-success" @onclick="CloseSettingsMenu">Close Menu</button>
+													</div>
+
+													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
+														relative my-1 first:mt-0 last:mt-0 bg-white">
+														Existing Scopes
+													</div>
+												
+													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
+														relative inline-flex gap-2 my-1 bg-white">
+														<button class="flex-grow button-util-action" @onclick="AddUserScope">Add New</button>
+													</div>
+
+													@if (PageToEdit is not null)
+													{
+														foreach(var scope in PageToEdit.UserScopes)
+														{
+															var i = scope;
+															<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
+																relative inline-flex gap-2 my-1 bg-white">
+																<p class="flex-grow">@i.DisplayName</p>
+																<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+																	@onclick="() => DeleteUserScope(i)">
+																	delete
+																</button>
+																<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-slate-200 material-symbols-rounded"
+																	@onclick="() => EditUserScope(i)">
+																	edit
+																</button>
+															</div>
+														}
+													}
 												</div>
-												<EditForm Model="this" class="p-2 flex-grow flex-col">
-													Form
-												</EditForm>
+
+												@if (UserScopeToEdit is not null)
+												{
+													<EditForm Model="UserScopeToEdit" class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col gap-3 overflow-auto">
+														<div class="input-group">
+															<InputText @bind-Value="UserScopeToEdit.DisplayName" id="name" type="text" class="input-control peer" placeholder="User Scope Display Name" />
+															<label for="name" class="input-label">User Scope Display Name</label>
+														</div>
+
+														<hr />
+
+														<label class="inline-flex items-center">
+															<InputCheckbox @bind-Value="UserScopeToEdit.IncludeLocalUser" />
+															<span class="ml-2">Include Local User</span>
+														</label>
+
+														<hr />
+
+														<div class="flex inline-flex gap-1">
+															<div class="input-group flex-grow">
+																<InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
+																	@for(int index = 0; index < NotListeningTo.Count; index++)
+																	{
+																		var i = index;
+																		<option value="@i">@NotListeningTo[i].DisplayName</option>
+																	}
+																</InputSelect>
+																<label for="listeners" class="input-label">Listening To (Get a user from)</label>
+															</div>
+															<button class="flex-none button-op-success material-symbols-rounded"
+																@onclick="ListenToComponent">
+																add
+															</button>
+														</div>
+
+														<div class="grid grid-cols-3 grid-flow-row gap-2">
+															@foreach(var item in UserScopeToEdit.ScopeProviders)
+															{
+																var i = item;
+																<div class="flex inline-flex">
+																	<p class="flex-grow">@i.DisplayName</p>
+																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+																		@onclick="() => StopProvidingTo(i)">
+																		delete
+																	</button>
+																</div>
+															}
+														</div>
+
+														<hr />
+
+														<div class="flex inline-flex gap-1">
+															<div class="input-group flex-grow">
+																<InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
+																	@for(int index = 0; index < NotProvidingTo.Count; index++)
+																	{
+																		var i = index;
+																		<option value="@i">@NotProvidingTo[i].DisplayName</option>
+																	}
+																</InputSelect>
+																<label for="providers" class="input-label">Providing To (Give a user to)</label>
+															</div>
+															<button class="flex-none button-op-success material-symbols-rounded"
+																@onclick="ProvideForComponent">
+																add
+															</button>
+														</div>
+
+														<div class="grid grid-cols-3 grid-flow-row gap-2">
+															@foreach(var item in UserScopeToEdit.ScopeListeners)
+															{
+																var i = item;
+																<div class="flex inline-flex">
+																	<p class="flex-grow">@i.DisplayName</p>
+																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+																		@onclick="() => StopListeningTo(i)">
+																		delete
+																	</button>
+																</div>
+															}
+														</div>
+													</EditForm>
+												}
+												else
+												{
+													<p class="m-2 p-2 border-2 border-slate-400 shadow-md bg-white flex-grow">Select or create a new user scope to get started.</p>
+												}
 											</div>
 										</div>
 									</PageComponentEditorSettingsNode>
@@ -304,7 +416,7 @@
 							if (OpenConfigurationNodeFragment is not null)
 							{
 								/* @(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left */
-								<div class="@(ShowConfigurationOptions ? "scale-x-100" : "scale-x-0") inset-0 origin-right transition-all duration-700 z-10 absolute bg-slate-200">
+								<div class="@(ShowConfigurationOptions ? "scale-x-100" : "scale-x-0") inset-0 origin-right transition-all duration-700 z-10 absolute bg-slate-100">
 									@OpenConfigurationNodeFragment
 								</div>
 							}
