@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 /// <summary>
-/// Displays a single data value.
+/// Displays a data values.
 /// </summary>
 public class DisplayComponentSettings : ParameterComponentSettingsBase
 {

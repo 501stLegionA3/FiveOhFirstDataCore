@@ -1,4 +1,6 @@
 ﻿
+using ProjectDataCore.Data.Structures.Page.Components.Scope;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

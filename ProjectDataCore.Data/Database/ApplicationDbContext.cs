@@ -1,27 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
-using ProjectDataCore.Data.Account;
-using ProjectDataCore.Data.Structures.Assignable.Configuration;
-using ProjectDataCore.Data.Structures.Assignable.Value;
-using ProjectDataCore.Data.Structures.Page;
-using ProjectDataCore.Data.Structures.Selector.User;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProjectDataCore.Data.Structures.Nav;
 using ProjectDataCore.Data.Structures.Account;
-using ProjectDataCore.Data.Structures.Policy;
-using ProjectDataCore.Data.Structures.Page.Components.Layout;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using ProjectDataCore.Data.Structures.Keybindings;
-using ProjectDataCore.Data.Structures.Page.Components.Parameters;
+using ProjectDataCore.Data.Structures.Assignable.Configuration;
 using ProjectDataCore.Data.Structures.Assignable.Render;
+using ProjectDataCore.Data.Structures.Assignable.Value;
+using ProjectDataCore.Data.Structures.Keybindings;
+using ProjectDataCore.Data.Structures.Nav;
+using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
+using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 using ProjectDataCore.Data.Structures.Page.Components.Scope;
+using ProjectDataCore.Data.Structures.Policy;
+using ProjectDataCore.Data.Structures.Selector.User;
 
 namespace ProjectDataCore.Data.Database;
 
@@ -163,15 +153,29 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         var userScopes = builder.Entity<UserScope>();
         userScopes.HasKey(e => e.Key);
 
+        var userScopeProviderContainers = builder.Entity<UserScopeProviderContainer>();
+        userScopeProviderContainers.HasKey(e => e.Key);
+        userScopeProviderContainers.HasOne(e => e.ProvidingComponent)
+            .WithMany(p => p.ScopeListeners)
+            .HasForeignKey(e => e.ProvidingComponentId);
+        userScopeProviderContainers.HasOne(e => e.ListeningScope)
+            .WithMany(p => p.ScopeProviders)
+            .HasForeignKey(e => e.ListeningScopeId);
+
+        var userScopeListenerContainers = builder.Entity<UserScopeListenerContainer>();
+        userScopeListenerContainers.HasKey(e => e.Key);
+        userScopeListenerContainers.HasOne(e => e.ListeningComponent)
+            .WithMany(p => p.ScopeProviders)
+            .HasForeignKey(e => e.ListeningComponentId);
+        userScopeListenerContainers.HasOne(e => e.ProvidingScope)
+            .WithMany(p => p.ScopeListeners)
+            .HasForeignKey(e => e.ProvidingScopeId);
+
         var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
         pageComponentSettingsBase.HasKey(e => e.Key);
         pageComponentSettingsBase.HasOne(e => e.AuthorizationPolicy)
             .WithMany(p => p.PageComponenetSettings)
             .HasForeignKey(e => e.AuthorizationPolicyKey);
-        pageComponentSettingsBase.HasMany(e => e.ScopeProviders)
-            .WithMany(p => p.ScopeListeners);
-        pageComponentSettingsBase.HasMany(e => e.ScopeListeners)
-            .WithMany(p => p.ScopeProviders);
         pageComponentSettingsBase.Navigation(e => e.AuthorizationPolicy)
             .AutoInclude(true);
 

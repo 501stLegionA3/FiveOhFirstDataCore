@@ -356,9 +356,9 @@
 															{
 																var i = item;
 																<div class="flex inline-flex">
-																	<p class="flex-grow">@i.DisplayName</p>
+																	<p class="flex-grow">@i.ProvidingComponent.DisplayName</p>
 																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-																		@onclick="() => StopProvidingTo(i)">
+																		@onclick="() => StopListeningTo(i)">
 																		delete
 																	</button>
 																</div>
@@ -389,9 +389,9 @@
 															{
 																var i = item;
 																<div class="flex inline-flex">
-																	<p class="flex-grow">@i.DisplayName</p>
+																	<p class="flex-grow">@i.ListeningComponent.DisplayName</p>
 																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-																		@onclick="() => StopListeningTo(i)">
+																		@onclick="() => StopProvidingTo(i)">
 																		delete
 																	</button>
 																</div>

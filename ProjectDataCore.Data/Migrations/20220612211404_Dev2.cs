@@ -231,48 +231,54 @@ namespace ProjectDataCore.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PageComponentSettingsBaseUserScope",
+                name: "UserScopeListenerContainer",
                 columns: table => new
                 {
-                    ScopeListenersKey = table.Column<Guid>(type: "uuid", nullable: false),
-                    ScopeProvidersKey = table.Column<Guid>(type: "uuid", nullable: false)
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProvidingScopeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ListeningComponentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PageComponentSettingsBaseUserScope", x => new { x.ScopeListenersKey, x.ScopeProvidersKey });
+                    table.PrimaryKey("PK_UserScopeListenerContainer", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_PageComponentSettingsBaseUserScope_PageComponentSettingsBas~",
-                        column: x => x.ScopeListenersKey,
+                        name: "FK_UserScopeListenerContainer_PageComponentSettingsBase_Listen~",
+                        column: x => x.ListeningComponentId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PageComponentSettingsBaseUserScope_UserScopes_ScopeProvider~",
-                        column: x => x.ScopeProvidersKey,
+                        name: "FK_UserScopeListenerContainer_UserScopes_ProvidingScopeId",
+                        column: x => x.ProvidingScopeId,
                         principalTable: "UserScopes",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PageComponentSettingsBaseUserScope1",
+                name: "UserScopeProviderContainer",
                 columns: table => new
                 {
-                    ScopeListenersKey = table.Column<Guid>(type: "uuid", nullable: false),
-                    ScopeProvidersKey = table.Column<Guid>(type: "uuid", nullable: false)
+                    Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    ListeningScopeId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProvidingComponentId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Order = table.Column<int>(type: "integer", nullable: false),
+                    LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PageComponentSettingsBaseUserScope1", x => new { x.ScopeListenersKey, x.ScopeProvidersKey });
+                    table.PrimaryKey("PK_UserScopeProviderContainer", x => x.Key);
                     table.ForeignKey(
-                        name: "FK_PageComponentSettingsBaseUserScope1_PageComponentSettingsBa~",
-                        column: x => x.ScopeProvidersKey,
+                        name: "FK_UserScopeProviderContainer_PageComponentSettingsBase_Provid~",
+                        column: x => x.ProvidingComponentId,
                         principalTable: "PageComponentSettingsBase",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PageComponentSettingsBaseUserScope1_UserScopes_ScopeListene~",
-                        column: x => x.ScopeListenersKey,
+                        name: "FK_UserScopeProviderContainer_UserScopes_ListeningScopeId",
+                        column: x => x.ListeningScopeId,
                         principalTable: "UserScopes",
                         principalColumn: "Key",
                         onDelete: ReferentialAction.Cascade);
@@ -301,19 +307,29 @@ namespace ProjectDataCore.Data.Migrations
                 column: "ParentNodeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PageComponentSettingsBaseUserScope_ScopeProvidersKey",
-                table: "PageComponentSettingsBaseUserScope",
-                column: "ScopeProvidersKey");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PageComponentSettingsBaseUserScope1_ScopeProvidersKey",
-                table: "PageComponentSettingsBaseUserScope1",
-                column: "ScopeProvidersKey");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserKeybinding_DataCoreUserId",
                 table: "UserKeybinding",
                 column: "DataCoreUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserScopeListenerContainer_ListeningComponentId",
+                table: "UserScopeListenerContainer",
+                column: "ListeningComponentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserScopeListenerContainer_ProvidingScopeId",
+                table: "UserScopeListenerContainer",
+                column: "ProvidingScopeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserScopeProviderContainer_ListeningScopeId",
+                table: "UserScopeProviderContainer",
+                column: "ListeningScopeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserScopeProviderContainer_ProvidingComponentId",
+                table: "UserScopeProviderContainer",
+                column: "ProvidingComponentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserScopes_PageId",
@@ -341,13 +357,13 @@ namespace ProjectDataCore.Data.Migrations
                 name: "LayoutNodes");
 
             migrationBuilder.DropTable(
-                name: "PageComponentSettingsBaseUserScope");
-
-            migrationBuilder.DropTable(
-                name: "PageComponentSettingsBaseUserScope1");
-
-            migrationBuilder.DropTable(
                 name: "UserKeybinding");
+
+            migrationBuilder.DropTable(
+                name: "UserScopeListenerContainer");
+
+            migrationBuilder.DropTable(
+                name: "UserScopeProviderContainer");
 
             migrationBuilder.DropTable(
                 name: "AssignableValueRenderers");

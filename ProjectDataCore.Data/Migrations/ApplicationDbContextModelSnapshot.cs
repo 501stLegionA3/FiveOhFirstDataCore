@@ -216,36 +216,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("PageComponentSettingsBaseUserScope", b =>
-                {
-                    b.Property<Guid>("ScopeListenersKey")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ScopeProvidersKey")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ScopeListenersKey", "ScopeProvidersKey");
-
-                    b.HasIndex("ScopeProvidersKey");
-
-                    b.ToTable("PageComponentSettingsBaseUserScope");
-                });
-
-            modelBuilder.Entity("PageComponentSettingsBaseUserScope1", b =>
-                {
-                    b.Property<Guid>("ScopeListenersKey")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("ScopeProvidersKey")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ScopeListenersKey", "ScopeProvidersKey");
-
-                    b.HasIndex("ScopeProvidersKey");
-
-                    b.ToTable("PageComponentSettingsBaseUserScope1");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Account.DataCoreRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -694,6 +664,60 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasIndex("PageId");
 
                     b.ToTable("UserScopes");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScopeListenerContainer", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ListeningComponentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProvidingScopeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ListeningComponentId");
+
+                    b.HasIndex("ProvidingScopeId");
+
+                    b.ToTable("UserScopeListenerContainer");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScopeProviderContainer", b =>
+                {
+                    b.Property<Guid>("Key")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastEdit")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ListeningScopeId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("ProvidingComponentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Key");
+
+                    b.HasIndex("ListeningScopeId");
+
+                    b.HasIndex("ProvidingComponentId");
+
+                    b.ToTable("UserScopeProviderContainer");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>
@@ -1359,36 +1383,6 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PageComponentSettingsBaseUserScope", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", null)
-                        .WithMany()
-                        .HasForeignKey("ScopeListenersKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", null)
-                        .WithMany()
-                        .HasForeignKey("ScopeProvidersKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PageComponentSettingsBaseUserScope1", b =>
-                {
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", null)
-                        .WithMany()
-                        .HasForeignKey("ScopeListenersKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", null)
-                        .WithMany()
-                        .HasForeignKey("ScopeProvidersKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueConversion", b =>
                 {
                     b.HasOne("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", "Renderer")
@@ -1478,6 +1472,44 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Page");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScopeListenerContainer", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "ListeningComponent")
+                        .WithMany("ScopeProviders")
+                        .HasForeignKey("ListeningComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", "ProvidingScope")
+                        .WithMany("ScopeListeners")
+                        .HasForeignKey("ProvidingScopeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ListeningComponent");
+
+                    b.Navigation("ProvidingScope");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScopeProviderContainer", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", "ListeningScope")
+                        .WithMany("ScopeProviders")
+                        .HasForeignKey("ListeningScopeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "ProvidingComponent")
+                        .WithMany("ScopeListeners")
+                        .HasForeignKey("ProvidingComponentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ListeningScope");
+
+                    b.Navigation("ProvidingComponent");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
@@ -1622,6 +1654,20 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("Component");
 
                     b.Navigation("Nodes");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
+                {
+                    b.Navigation("ScopeListeners");
+
+                    b.Navigation("ScopeProviders");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Scope.UserScope", b =>
+                {
+                    b.Navigation("ScopeListeners");
+
+                    b.Navigation("ScopeProviders");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.CustomPageSettings", b =>

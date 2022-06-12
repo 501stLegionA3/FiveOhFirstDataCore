@@ -12,8 +12,8 @@ public class UserScope : DataObject<Guid>
     public CustomPageSettings Page { get; set; }
     public Guid PageId { get; set; }
 
-    public List<PageComponentSettingsBase> ScopeProviders { get; set; } = new();
-    public List<PageComponentSettingsBase> ScopeListeners { get; set; } = new();
+    public List<UserScopeProviderContainer> ScopeProviders { get; set; } = new();
+    public List<UserScopeListenerContainer> ScopeListeners { get; set; } = new();
 
     public bool IncludeLocalUser { get; set; } = false;
     public string DisplayName { get; set; } = "Unnamed User Scope";
@@ -33,4 +33,52 @@ public class UserScope : DataObject<Guid>
 
     public IReadOnlyList<DataCoreUser> GetAllUsers()
         => UsersInScope.AsReadOnly();
+
+    private List<PageComponentSettingsBase>? orderedProvidingComponents = null;
+    public List<PageComponentSettingsBase> GetOrderedProvidingComponents()
+    {
+        bool recal = orderedProvidingComponents is null;
+
+        if (!recal)
+        {
+            recal = orderedProvidingComponents!.Count != ScopeProviders.Count;
+        }
+
+        if (recal)
+        {
+            orderedProvidingComponents = ScopeProviders
+                .OrderBy(x => x.Order)
+                .ToList(x => x.ProvidingComponent);
+        }
+
+        // One final check.
+        if (orderedProvidingComponents is null)
+            orderedProvidingComponents = new();
+
+        return orderedProvidingComponents;
+    }
+
+    private List<PageComponentSettingsBase>? orderedListeningComponents = null;
+    public List<PageComponentSettingsBase> GetOrderedListeningComponents()
+    {
+        bool recal = orderedListeningComponents is null;
+
+        if (!recal)
+        {
+            recal = orderedListeningComponents!.Count != ScopeListeners.Count;
+        }
+
+        if (recal)
+        {
+            orderedListeningComponents = ScopeListeners
+                .OrderBy(x => x.Order)
+                .ToList(x => x.ListeningComponent);
+        }
+
+        // One final check.
+        if (orderedListeningComponents is null)
+            orderedListeningComponents = new();
+
+        return orderedListeningComponents;
+    }
 }

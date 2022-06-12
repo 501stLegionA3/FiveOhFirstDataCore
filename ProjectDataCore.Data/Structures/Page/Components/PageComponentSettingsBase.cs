@@ -51,11 +51,59 @@ public class PageComponentSettingsBase : DataObject<Guid>
     public Guid? ParentNodeId { get; set; }
 
     /// <summary>
-    /// The <see cref="UserScope"/>s that this component gets data from.
+    /// The the containers for the <see cref="UserScope"/>s that this component gets data from (with ordering).
     /// </summary>
-    public List<UserScope> ScopeProviders { get; set; } = new();
+    public List<UserScopeListenerContainer> ScopeProviders { get; set; } = new();
     /// <summary>
-    /// The <see cref="UserScope"/>s that this component sends data to.
+    /// The containers for the <see cref="UserScope"/>s that this component sends data to (with ordering).
     /// </summary>
-    public List<UserScope> ScopeListeners { get; set; } = new();
+    public List<UserScopeProviderContainer> ScopeListeners { get; set; } = new();
+
+    private List<UserScope>? orderedScopeProviders = null;
+    public List<UserScope> GetOrderedScopeProviders()
+	{
+        bool recal = orderedScopeProviders is null;
+        
+        if (!recal)
+		{
+            recal = orderedScopeProviders!.Count != ScopeProviders.Count;
+		}
+
+        if (recal)
+		{
+            orderedScopeProviders = ScopeProviders
+                .OrderBy(x => x.Order)
+                .ToList(x => x.ProvidingScope);
+        }
+
+        // One final check.
+        if (orderedScopeProviders is null)
+            orderedScopeProviders = new();
+
+        return orderedScopeProviders;
+	}
+
+    private List<UserScope>? orderedScopeListeners = null;
+    public List<UserScope> GetOrderedScopeListeners()
+    {
+        bool recal = orderedScopeListeners is null;
+
+        if (!recal)
+        {
+            recal = orderedScopeListeners!.Count != ScopeListeners.Count;
+        }
+
+        if (recal)
+        {
+            orderedScopeListeners = ScopeListeners
+                .OrderBy(x => x.Order)
+                .ToList(x => x.ListeningScope);
+        }
+
+        // One final check.
+        if (orderedScopeListeners is null)
+            orderedScopeListeners = new();
+
+        return orderedScopeListeners;
+    }
 }

@@ -388,8 +388,8 @@ public partial class PageEditComponent : IDisposable
         if (PageToEdit is not null)
         {
             var allChildren = PageToEdit.GetChildComponents();
-            NotListeningTo = allChildren.Except(scope.ScopeProviders).ToList();
-            NotProvidingTo = allChildren.Except(scope.ScopeListeners).ToList();
+            NotListeningTo = allChildren.Except(scope.GetOrderedProvidingComponents()).ToList();
+            NotProvidingTo = allChildren.Except(scope.GetOrderedListeningComponents()).ToList();
         }
 
         StateHasChanged();
@@ -416,15 +416,19 @@ public partial class PageEditComponent : IDisposable
         if (UserScopeToEdit is not null)
         {
             var component = NotListeningTo[NotListeningIndex];
-            UserScopeToEdit.ScopeListeners.Add(component);
+            UserScopeToEdit.ScopeProviders.Add(new()
+            {
+                ProvidingComponent = component,
+                Order = UserScopeToEdit.ScopeProviders.Count
+            });
         }
 	}
 
-    private void StopListeningTo(PageComponentSettingsBase component)
+    private void StopListeningTo(UserScopeProviderContainer component)
 	{
         if (UserScopeToEdit is not null)
 		{
-            UserScopeToEdit.ScopeListeners.Remove(component);
+            UserScopeToEdit.ScopeProviders.Remove(component);
 		}
 	}
 
@@ -433,14 +437,19 @@ public partial class PageEditComponent : IDisposable
         if (UserScopeToEdit is not null)
         {
             var component = NotProvidingTo[NotProvidingIndex];
-            UserScopeToEdit.ScopeProviders.Add(component);
+            UserScopeToEdit.ScopeListeners.Add(new()
+			{
+                ListeningComponent = component,
+                Order = UserScopeToEdit.ScopeListeners.Count
+			});
         }
     }
-    private void StopProvidingTo(PageComponentSettingsBase component)
+
+    private void StopProvidingTo(UserScopeListenerContainer component)
     {
         if (UserScopeToEdit is not null)
         {
-            UserScopeToEdit.ScopeProviders.Remove(component);
+            UserScopeToEdit.ScopeListeners.Remove(component);
         }
     }
 
