@@ -1,5 +1,5 @@
 ﻿<CascadingValue Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
-	<div class="inline-flex w-full h-full">
+	<div class="inline-flex w-full h-full" data-drag-container="@DROPPABLE_ID">
 		<div class="@(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left">
 			<div class="flex flex-col">
 				@*Page List Pannel
@@ -146,7 +146,7 @@
 
 						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex my-1 first:mt-0 last:mt-0">
 							<div class="flex-grow">Page Settings</div>
-							<button class="flex-none button-util-action" @onclick="OpenPageSettings">Edit</button>
+							<button class="flex-none button-util-action" @onclick="OpenPageSettingsAsync">Edit</button>
 						</div>
 
 						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
@@ -160,7 +160,15 @@
 								- Configure drag and drop capabilities for the editor
 						*@
 
-
+						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 grid lg:grid-cols-3 grid-cols-2 grid-flow-row gap-1">
+							@for (int index = 0; index < EditorComponents.Count; index++)
+							{
+								var i = index;
+								<div class="shadow-md border-slate-200 rounded-lg border p-1 aspect-square">
+									<img src="@EditorComponents[i].IconPath" class="w-full h-full" />
+								</div>
+							}
+						</div>
 
 						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
 							<button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
@@ -283,7 +291,7 @@
 												<div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
 													<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 
 														relative inline-flex gap-2 my-1 bg-white">
-														<button class="flex-grow button-op-success" @onclick="CloseSettingsMenu">Close Menu</button>
+														<button class="flex-grow button-op-success" @onclick="CloseSettingsMenuAsync">Close Menu</button>
 													</div>
 
 													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 

@@ -1,4 +1,7 @@
-﻿using ProjectDataCore.Data.Services.Alert;
+﻿using Microsoft.JSInterop;
+
+using ProjectDataCore.Components.Framework.Page.Components;
+using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Services.Keybindings;
 using ProjectDataCore.Data.Services.Routing;
@@ -7,6 +10,7 @@ using ProjectDataCore.Data.Structures.Page;
 using ProjectDataCore.Data.Structures.Page.Components.Scope;
 
 using System.Collections.Concurrent;
+using System.Reflection;
 using System.Web;
 
 namespace ProjectDataCore.Components.Framework.Page;
@@ -24,6 +28,8 @@ public partial class PageEditComponent : IDisposable
     public IEditHistoryService EditHistoryService { get; set; }
     [Inject]
     public IKeybindingService KeybindingService { get; set; }
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public delegate Task DraggableRefreshRequested(object sender);
@@ -48,6 +54,32 @@ public partial class PageEditComponent : IDisposable
     protected LeftMenu LeftMenuState { get; set; } = LeftMenu.PageSelection;
     protected RightMenu RightMenuState { get; set; } = RightMenu.Empty;
 
+    #region Utility
+    private List<ComponentAttribute>? _editorComponents = null;
+    public IReadOnlyList<ComponentAttribute> EditorComponents 
+    { 
+        get
+        {
+            if (_editorComponents is null)
+                _editorComponents = GetEditorComponents();
+
+            return _editorComponents;
+        }
+    }
+
+    private static List<ComponentAttribute> GetEditorComponents()
+    {
+        var curType = typeof(CustomComponentBase);
+        var subclasses = Assembly.GetAssembly(curType)!.GetTypes()
+            .Where(x => x.IsSubclassOf(curType))
+            .ToList(x => x.GetCustomAttributes(typeof(ComponentAttribute), true).FirstOrDefault() as ComponentAttribute)
+            .Where(x => x is not null);
+
+        // We filtered out the null values already.
+        return subclasses!.ToList()!;
+    }
+    #endregion
+
     #region Inital Setup
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -65,6 +97,12 @@ public partial class PageEditComponent : IDisposable
                 ShowConfigurationOptions = true;
                 StateHasChanged();
             }
+        }
+
+        if (RegisterDroppablesOnNextRender)
+        {
+            RegisterDroppablesOnNextRender = false;
+            await RegisterDroppableAsync();
         }
     }
 
@@ -208,6 +246,10 @@ public partial class PageEditComponent : IDisposable
 
         LeftMenuState = LeftMenu.ComponentSelection;
         RightMenuState = RightMenu.PageEditor;
+
+        RegisterDroppablesOnNextRender = true;
+
+        StateHasChanged();
     }
 
     private async Task AbortPageEditAsync()
@@ -282,10 +324,45 @@ public partial class PageEditComponent : IDisposable
     }
     #endregion
 
-    #region Left Menu - Component Selection
+    #region Component Droppable Management
+    public const string DROPPABLE_ID = "page-editor-global-draggable";
+    public const string DROPPABLE_DROPZONE = "add-component";
+    private DotNetObjectReference<PageEditComponent>? DotNetRef { get; set; }
+    protected DotNetObjectReference<PageEditComponent> GetDotNetReference()
+    {
+        if (DotNetRef is null)
+        {
+            DotNetRef = DotNetObjectReference.Create(this);
+        }
+
+        return DotNetRef;
+    }
+
     private bool DraggingComponent { get; set; } = false;
+    private bool RegisterDroppablesOnNextRender { get; set; } = false;
 
+    [JSInvokable]
+    private Task OnDragChanged(bool started, string type)
+    {
+        switch (type)
+        {
+            case "component":
+                DraggingComponent = started;
+                break;
+        }
 
+        return Task.CompletedTask;
+    }
+
+    private async Task RegisterDroppableAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("DropInterop.init", DROPPABLE_ID, GetDotNetReference(), true, true, nameof(OnDragChanged));
+    }
+
+    private async Task DisposeDroppableAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("DropInterop.destroyDroppable", DROPPABLE_ID);
+    }
     #endregion
 
     #region Left Menu - Page Settings
@@ -315,39 +392,48 @@ public partial class PageEditComponent : IDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    public void OpenPageSettings()
+    public async Task OpenPageSettingsAsync()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Page;
 
+        await DisposeDroppableAsync();
         ConfigurationNodes.Clear();
     }
 
-    public void OpenNodeSettings()
+    public async Task OpenNodeSettingsAsync()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Node;
 
+        await DisposeDroppableAsync();
         ConfigurationNodes.Clear();
     }
 
-    public void OpenComponentSettings()
+    public async Task OpenComponentSettingsAsync()
     {
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Component;
 
+        await DisposeDroppableAsync();
         ConfigurationNodes.Clear();
     }
 
-    private void CloseSettingsMenu()
+    private Task CloseSettingsMenuAsync()
     {
         LeftMenuState = LeftMenu.ComponentSelection;
         RightMenuState = RightMenu.PageEditor;
 
+        StopUserScopeEdit();
+
+        RegisterDroppablesOnNextRender = true;
+
         ConfigurationNodes.Clear();
+
+        return Task.CompletedTask;
     }
 
     private void OpenConfigurationNode(string key)
@@ -365,7 +451,6 @@ public partial class PageEditComponent : IDisposable
     private List<PageComponentSettingsBase> NotListeningTo { get; set; } = new();
     private int NotProvidingIndex { get; set; } = 0;
     private List<PageComponentSettingsBase> NotProvidingTo { get; set; } = new();
-
 
     private void AddUserScope()
     {
@@ -480,6 +565,16 @@ public partial class PageEditComponent : IDisposable
             {
                 KeybindingService.RemoveKeybindListener(Keybinding.Undo, OnUndoClickedAsync);
                 KeybindingService.RemoveKeybindListener(Keybinding.Redo, OnRedoClickedAsync);
+
+                try
+                {
+                    DisposeDroppableAsync().GetAwaiter().GetResult();
+                }
+                catch
+                {
+                    // If this no longer exists, neither does the JS we want to
+                    // remove.
+                }
             }
 
             ConfigurationNodes = null;

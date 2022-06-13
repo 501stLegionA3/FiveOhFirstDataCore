@@ -1,5 +1,9 @@
 using ProjectDataCore;
 using Microsoft.Extensions.Logging.EventLog;
+using System.Reflection.Metadata;
+using ProjectDataCore.Data.Services.HotReload;
+
+[assembly:MetadataUpdateHandler(typeof(HotReloadHandler))]
 
 public class Program
 {

@@ -16,6 +16,7 @@ using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Global;
 using ProjectDataCore.Data.Services.Bus.Scoped;
 using ProjectDataCore.Data.Services.History;
+using ProjectDataCore.Data.Services.HotReload;
 using ProjectDataCore.Data.Services.Import;
 using ProjectDataCore.Data.Services.InternalAuth;
 using ProjectDataCore.Data.Services.Keybindings;
@@ -27,6 +28,9 @@ using ProjectDataCore.Data.Services.User;
 using ProjectDataCore.Data.Structures.Mail;
 using ProjectDataCore.Data.Structures.Nav;
 
+using System.Diagnostics;
+using System.Reflection.Metadata;
+
 namespace ProjectDataCore;
 
 public class Startup
@@ -36,7 +40,7 @@ public class Startup
         Configuration = configuration;
     }
 
-    public IConfiguration Configuration { get; }
+	public IConfiguration Configuration { get; }
 
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -134,7 +138,8 @@ public class Startup
             .AddSingleton<INavModuleService, NavModuleService>()
             .AddSingleton<IAssignableDataService, AssignableDataService>()
             .AddSingleton<IInternalAuthorizationService, InternalAuthorizationService>()
-            .AddSingleton<IInstanceLogger, InstanceLogger>();
+            .AddSingleton<IInstanceLogger, InstanceLogger>()
+            .AddSingleton<HotReloadHandler>();
 
         #endregion
 
@@ -393,6 +398,11 @@ public class Startup
                 await navSrvc.CreateNavModuleAsync("Assignable Value Editor", "admin/account/avedit", true, account.Key);
                 await navSrvc.CreateNavModuleAsync("Policy Editor", "admin/policy/dpedit", true, admin.Key);
             }
+            #endregion
+
+            #region Hot Reload Setup
+            // We just want to initalize it.
+            _ = scope.ServiceProvider.GetRequiredService<HotReloadHandler>();
             #endregion
         }).GetAwaiter().GetResult();
 

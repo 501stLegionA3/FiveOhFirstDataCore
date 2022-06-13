@@ -1,5 +1,6 @@
 using Microsoft.JSInterop;
 
+using ProjectDataCore.Components.Framework.Page.Components;
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Bus;
 using ProjectDataCore.Data.Services.Bus.Scoped;
@@ -7,6 +8,8 @@ using ProjectDataCore.Data.Services.History;
 using ProjectDataCore.Data.Structures.Events.Parameters;
 using ProjectDataCore.Data.Structures.History.PageEdit;
 using ProjectDataCore.Data.Structures.Page.Components.Layout;
+
+using System.Reflection;
 
 namespace ProjectDataCore.Components.Framework.Page;
 public partial class PageComponent : IDisposable
@@ -66,7 +69,7 @@ public partial class PageComponent : IDisposable
 
 
     private DotNetObjectReference<PageComponent>? DotNetRef { get; set; }
-    
+
     #region Setup
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -338,7 +341,7 @@ public partial class PageComponent : IDisposable
         if (EditComponent is not null)
         {
             IsConfiguringNode = true;
-            EditComponent.OpenNodeSettings();
+            await EditComponent.OpenNodeSettingsAsync();
 
             // TODO register node configuration render fragments.
         }
@@ -352,9 +355,23 @@ public partial class PageComponent : IDisposable
 
     #region Component Management
     [JSInvokable]
-    public async Task AddComponentAsync(string addedTo, string componentType)
+    public Task AddComponentAsync(string itemIndex, string componentType)
     {
+        if (EditingNode is not null
+            && int.TryParse(itemIndex, out var index))
+        {
+            var attribute = EditComponent?.EditorComponents.ElementAtOrDefault(index);
 
+            if (attribute is not null)
+            {
+                var settingsRaw = Activator.CreateInstance(attribute.ComponentSettingsType);
+
+                if (settingsRaw is PageComponentSettingsBase settings)
+                    EditingNode.Component = settings;
+            }
+        }
+
+        return Task.CompletedTask;
     }
 
     private void OnDeleteComponent()
@@ -376,7 +393,7 @@ public partial class PageComponent : IDisposable
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
             await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", "add-component-action", GetDotNetReference(), nameof(AddComponentAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add-component", GetDotNetReference(), nameof(AddComponentAsync), EditingNode.EditorKey);
         }
     }
 
@@ -403,7 +420,7 @@ public partial class PageComponent : IDisposable
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add_split");
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-merge");
             await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-delete");
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", "add-component-action");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add-component");
         }
     }
     #endregion

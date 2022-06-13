@@ -1,4 +1,6 @@
-﻿global using Microsoft.EntityFrameworkCore;
+﻿
+
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.AspNetCore.Components;
 
 global using ProjectDataCore.Data.Database;

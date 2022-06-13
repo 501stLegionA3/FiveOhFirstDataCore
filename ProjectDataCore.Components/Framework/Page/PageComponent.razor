@@ -315,7 +315,7 @@
 					</div>
 				</div>
 			}
-			else
+			else if (EditingNode.Component is null)
 			{
 				@*The node needs a UI for dropping new components into this node:
 					- This should cover the existing node icons that would appear usually
@@ -323,9 +323,9 @@
 					- This should not appear if there is already an existing component.
 				*@
 
-				<div class="w-full h-full absolute inset-0 m-2 border border-slate-400 border-dashed border-width-4 dropzone"
-					data-ref-id="add-component-action"
-					data-drop-zone="add-component"
+				<div class="absolute inset-0 m-2 border border-slate-400 border-dashed border-width-4 dropzone"
+					data-ref-id="@($"{EditingNode.EditorKey}-add-component")"
+					data-drop-zone="@PageEditComponent.DROPPABLE_DROPZONE"
 					data-item-type="add-component"></div>
 			}
 		}
