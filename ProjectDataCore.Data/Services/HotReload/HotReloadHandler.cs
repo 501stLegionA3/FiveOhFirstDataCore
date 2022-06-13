@@ -56,6 +56,11 @@ public class HotReloadHandler
                 $@"npx postcss {Path.Combine(contentRoot, $@"ProjectDataCore.Components\obj\{cfgname}\{framework}\scopedcss\projectbundle\ProjectDataCore.Components.bundle.scp.css")} -o {Path.Combine(contentRoot, $@"ProjectDataCore.Components\wwwroot\css\scoped\bundle.min.css")}",
                 $@"npx postcss {Path.Combine(contentRoot, @$"ProjectDataCore\obj\{cfgname}\{framework}\scopedcss\bundle\ProjectDataCore.styles.css")} -o {Path.Combine(contentRoot, $@"ProjectDataCore\wwwroot\css\scoped\project.min.css")}",
                 $@"npx postcss {Path.Combine(contentRoot, @$"ProjectDataCore\obj\{cfgname}\{framework}\scopedcss\projectbundle\ProjectDataCore.bundle.scp.css")} -o {Path.Combine(contentRoot, $@"ProjectDataCore\wwwroot\css\scoped\bundle.min.css")}",
+#if DEBUG
+                $@"npx webpack --config ../webpack.config.debug.js",
+#else
+                $@"npx webpack --config ../webpack.config.js",
+#endif
             };
 
             // ... then build the post css process (requires npm) ...
@@ -70,7 +75,7 @@ public class HotReloadHandler
                 }
             };
 
-            Console.WriteLine("START HOTRELOAD POSTCSS ...");
+            Console.WriteLine("START HOTRELOAD SCRIPTS ...");
 
             process.ErrorDataReceived += (sender, e) =>
             {
@@ -87,7 +92,7 @@ public class HotReloadHandler
             process.Start();
             await process.WaitForExitAsync();
 
-            Console.WriteLine("... END HOTRELOAD POSTCSS");
+            Console.WriteLine("... END HOTRELOAD SCRIPTS");
         });
     }
 }

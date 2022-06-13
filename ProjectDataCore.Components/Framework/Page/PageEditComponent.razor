@@ -164,8 +164,14 @@
 							@for (int index = 0; index < EditorComponents.Count; index++)
 							{
 								var i = index;
-								<div class="shadow-md border-slate-200 rounded-lg border p-1 aspect-square">
-									<img src="@EditorComponents[i].IconPath" class="w-full h-full" />
+								<div class="dropzone">
+									<div class="shadow-md border-slate-200 bg-indigo-600 text-white rounded-lg border p-1 flex 
+										flex-col cursor-grab drag-component" data-drop-zone="@DROPPABLE_DROPZONE" data-item-type="@i,@EditorComponents[i].Item2" draggable="true">
+										<div class="flex-grow">
+											<img src="@EditorComponents[i].Item1.IconPath" class="aspect-square h-full mx-auto svg-white" />
+										</div>
+										<p class="text-center flex-none">@EditorComponents[i].Item1.ShortName</p>
+									</div>
 								</div>
 							}
 						</div>
@@ -196,9 +202,10 @@
 								</div>
 								break;
 						}
+
 						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-							<button class="flex-grow button-op-success"
-								disabled="@(OpenConfigurationNodeFragment is not null)">Save Changes</button>
+							<button class="flex-grow button-util-action" @onclick="CloseSettingsMenuAsync"
+								disabled="@(OpenConfigurationNodeFragment is not null)">Go Back</button>
 						</div>
 						
 						@foreach(var item in ConfigurationNodes.Keys)
@@ -210,11 +217,6 @@
 									disabled="@(OpenConfigurationNodeFragment is not null)">Configure</button>
 							</div>
 						}
-
-						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-							<button class="flex-grow button-op-danger"
-								disabled="@(OpenConfigurationNodeFragment is not null)">Abort</button>
-						</div>
 						break;
 				}
 			</div>
@@ -291,7 +293,7 @@
 												<div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
 													<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 
 														relative inline-flex gap-2 my-1 bg-white">
-														<button class="flex-grow button-op-success" @onclick="CloseSettingsMenuAsync">Close Menu</button>
+														<button class="flex-grow button-op-success" @onclick="() => OpenConfigurationNode(null)">Close Menu</button>
 													</div>
 
 													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 

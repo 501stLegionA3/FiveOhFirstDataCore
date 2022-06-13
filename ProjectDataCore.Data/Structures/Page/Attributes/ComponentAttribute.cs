@@ -10,6 +10,7 @@ namespace ProjectDataCore.Data.Structures.Page.Attributes;
 public class ComponentAttribute : Attribute
 {
     public string Name { get; set; } = "";
+    public string ShortName { get; set; } = "";
     public bool Form { get; set; } = false;
     public string IconPath { get; set; } = "~/svg/mat-icons/add.svg";
     public Type ComponentSettingsType { get; set; } = typeof(PageComponentSettingsBase);

@@ -1,7 +1,7 @@
-﻿@if(IsEditingScope && Editing is not null)
+﻿@if(IsEditingScope)
 {
 	<div class="absolute group inset-0">
-		@if(PublishIsEdit)
+		@if(Editing is null)
 		{
 			@Publish
 		}
@@ -12,310 +12,311 @@
 
 		@if (EditingNode is not null)
 		{
-			@if(!DraggingComponent)
+			@*The component needs some interactions no matter what is going on:
+				- Split interactions (to split this Node into two nodes)
+				- Merge interactions (to delete other components)
+				- Delete interaction (to delete this component)
+			*@
+
+			@if (EditingNode.Component is not null)
 			{
-				@*The component needs some interactions no matter what is going on:
-					- Split interactions (to split this Node into two nodes)
-					- Merge interactions (to delete other components)
-					- Delete interaction (to delete this component)
-				*@
+				<p class="absolute inset-x-0 mx-auto text-center p-1">@EditingNode.Component.DisplayName</p>
+			}
 
-				<div class="w-full h-full relative z-10 group-hover:block hidden transition-all bg-slate-200/80">
-					<div class="absolute inset-0 grid grid-cols-[repeat(3,32px)] gap-2 place-content-center"
-						data-drag-container="@EditingNode.EditorKey">		
+			<div class="absolute inset-0 @(DraggingComponent ? "hidden" : "block") z-10 grid grid-cols-[repeat(3,32px)] gap-2 place-content-center"
+				data-drag-container="@EditingNode.EditorKey">		
 
-						@*Split Code*@
+				@*Split Code*@
 
-						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-							<Element>
-								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md split-color cursor-grab
-									drag-item" data-drop-zone="@($"{EditingNode.EditorKey}-add_split")" data-item-type="split" draggable="true">
-									splitscreen
-								</button>
-							</Element>
-							<Popup>
-								<div class="split-menu">
-									<button @onclick="@(async () => await AddContextMenuSplitAsync("left"))">Split Left</button>
-									<button @onclick="@(async () => await AddContextMenuSplitAsync("right"))">Split Right</button>
-									<hr />
-									<button @onclick="@(async () => await AddContextMenuSplitAsync("top"))">Split Up</button>
-									<button @onclick="@(async () => await AddContextMenuSplitAsync("bottom"))">Split Down</button>
-								</div>
-							</Popup>
-						</ContextMenu>
-
-						<div class="@(DraggingSplitscreen ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
-
-								<div class="flex-none h-[60%] split-color dropzone" 
-									data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-									data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
-									data-item-type="left"></div>
-
-								<div class="flex-grow"></div>
-							</div>
-							<div class="flex flex-grow flex-col">
-								<div class="flex-none h-[20%] split-color dropzone" 
-									data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-									data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
-									data-item-type="top"></div>
-
-								<div class="flex-grow"></div>
-
-								<div class="flex-none h-[20%] split-color dropzone" 
-									data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-									data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
-									data-item-type="bottom"></div>
-							</div>
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
-
-								<div class="flex-none h-[60%] bg-blue-400 dropzone" 
-									data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-									data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
-									data-item-type="right"></div>
-
-								<div class="flex-grow"></div>
-							</div>
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<Element>
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md split-color cursor-grab
+							drag-item" data-drop-zone="@($"{EditingNode.EditorKey}-add_split")" data-item-type="split" draggable="true">
+							splitscreen
+						</button>
+					</Element>
+					<Popup>
+						<div class="split-menu">
+							<button @onclick="@(async () => await AddContextMenuSplitAsync("left"))">Split Left</button>
+							<button @onclick="@(async () => await AddContextMenuSplitAsync("right"))">Split Right</button>
+							<hr />
+							<button @onclick="@(async () => await AddContextMenuSplitAsync("top"))">Split Up</button>
+							<button @onclick="@(async () => await AddContextMenuSplitAsync("bottom"))">Split Down</button>
 						</div>
-					
-						@*Merge Code*@
+					</Popup>
+				</ContextMenu>
 
-						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-							<Element>
-								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanMerge.All(x => !x) ? "bg-slate-300 text-slate-500" : "merge-color")
-									drag-item" disabled="@CanMerge.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-merge")" data-item-type="merge" draggable="true">
-									merge
-								</button>
-							</Element>
-							<Popup>
-								<div class="merge-menu">
-									@if (CanMerge[0])
-									{
-										<button @onclick="@(async () => await ContextMenuMergeNodeAsync("left"))">Merge Left</button>
-									}
-									@if (CanMerge[3])
-									{
-										<button @onclick="@(async () => await ContextMenuMergeNodeAsync("right"))">Merge Right</button>
-									}
-									@if (CanMerge[1])
-									{
-										<button @onclick="@(async () => await ContextMenuMergeNodeAsync("top"))">Merge Up</button>
-									}
-									@if (CanMerge[2])
-									{
-										<button @onclick="@(async () => await ContextMenuMergeNodeAsync("bottom"))">Merge Down</button>
-									}
-								</div>
-							</Popup>
-						</ContextMenu>
+				<div class="@(DraggingSplitscreen ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
 
-						<div class="@(DraggingMerge ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
+						<div class="flex-none h-[60%] split-color dropzone" 
+							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
+							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-item-type="left"></div>
 
-								@if(CanMerge[0])
-								{
-									<div class="flex-none h-[60%] merge-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
-										data-item-type="left"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[60%]"></div>
-								}
+						<div class="flex-grow"></div>
+					</div>
+					<div class="flex flex-grow flex-col">
+						<div class="flex-none h-[20%] split-color dropzone" 
+							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
+							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-item-type="top"></div>
 
-								<div class="flex-grow"></div>
-							</div>
-							<div class="flex flex-grow flex-col">
-								@if(CanMerge[1])
-								{
-									<div class="flex-none h-[20%] merge-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
-										data-item-type="top"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[20%]"></div>
-								}
-								<div class="flex-grow"></div>
-								@if(CanMerge[2])
-								{
-									<div class="flex-none h-[20%] merge-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
-										data-item-type="bottom"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[20%]"></div>
-								}
-							</div>
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
-								@if(CanMerge[3])
-								{
-									<div class="flex-none h-[60%] merge-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
-										data-item-type="right"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[60%]"></div>
-								}
+						<div class="flex-grow"></div>
 
-								<div class="flex-grow"></div>
-							</div>
-						</div>
+						<div class="flex-none h-[20%] split-color dropzone" 
+							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
+							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-item-type="bottom"></div>
+					</div>
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
 
-						@*Delete Node*@
+						<div class="flex-none h-[60%] bg-blue-400 dropzone" 
+							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
+							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-item-type="right"></div>
 
-						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-							<Element>
-								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanDelete.All(x => !x) ? "bg-slate-300 text-slate-500" : "delete-color")
-									drag-item" disabled="@CanDelete.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-delete")" data-item-type="delete" draggable="true">
-									delete
-								</button>
-							</Element>
-							<Popup>
-								<div class="delete-menu">
-									@if (CanDelete[0])
-									{
-										<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("left"))">Delete (Fill from the Left)</button>
-									}
-									@if (CanDelete[3])
-									{
-										<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("right"))">Delete (Fill from the Right)</button>
-									}
-									@if (CanDelete[1])
-									{
-										<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("top"))">Delete (Fill from the Top)</button>
-									}
-									@if (CanDelete[2])
-									{
-										<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("bottom"))">Delete (Fill from the Bottom)</button>
-									}
-								</div>
-							</Popup>
-						</ContextMenu>
-
-						<div class="@(DraggingDelete ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
-
-								@if(CanDelete[0])
-								{
-									<div class="flex-none h-[60%] delete-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
-										data-item-type="left"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[60%]"></div>
-								}
-
-								<div class="flex-grow"></div>
-							</div>
-							<div class="flex flex-grow flex-col">
-								@if(CanDelete[1])
-								{
-									<div class="flex-none h-[20%] delete-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
-										data-item-type="top"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[20%]"></div>
-								}
-								<div class="flex-grow"></div>
-								@if(CanDelete[2])
-								{
-									<div class="flex-none h-[20%] delete-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
-										data-item-type="bottom"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[20%]"></div>
-								}
-							</div>
-							<div class="flex flex-none w-[15%] flex-col">
-								<div class="flex-grow"></div>
-								@if(CanDelete[3])
-								{
-									<div class="flex-none h-[60%] delete-color dropzone" 
-										data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-										data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
-										data-item-type="right"></div>
-								}
-								else
-								{
-									<div class="flex-none h-[60%]"></div>
-								}
-
-								<div class="flex-grow"></div>
-							</div>
-						</div>
-					
-						@*Node Settings*@
-						<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-							<Element>
-								<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md node-settings-color">
-									display_settings
-								</button>
-							</Element>
-							<Popup>
-								<div class="node-settings-menu">
-									<button @onclick="OnOpenNodeSettingsAsync">Open Node Settings</button>
-								</div>
-							</Popup>
-						</ContextMenu>
-
-						@*Editor Tools*@
-						@if (EditingNode.Component is not null)
-						{
-							@*There is a component here, so we need to render component settings:
-								- Settings wheel for opening the configuration panel
-								- Delete component actions (removes just the component, not this node)
-							*@
-
-							<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-								<Element>
-									<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md component-settings-color">
-										settings
-									</button>
-								</Element>
-								<Popup>
-									<div class="component-settings-menu">
-										<button @onclick="OnOpenComponentSettingsAsync">Open Component Settings</button>
-									</div>
-								</Popup>
-							</ContextMenu>
-
-							<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
-								<Element>
-									<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md delete-component-color">
-										remove_from_queue
-									</button>
-								</Element>
-								<Popup>
-									<div class="delete-component-menu">
-										<button @onclick="OnDeleteComponent">Delete Component</button>
-									</div>
-								</Popup>
-							</ContextMenu>
-						}
+						<div class="flex-grow"></div>
 					</div>
 				</div>
-			}
-			else if (EditingNode.Component is null)
+					
+				@*Merge Code*@
+
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<Element>
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanMerge.All(x => !x) ? "bg-slate-300 text-slate-500" : "merge-color")
+							drag-item" disabled="@CanMerge.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-merge")" data-item-type="merge" draggable="true">
+							merge
+						</button>
+					</Element>
+					<Popup>
+						<div class="merge-menu">
+							@if (CanMerge[0])
+							{
+								<button @onclick="@(async () => await ContextMenuMergeNodeAsync("left"))">Merge Left</button>
+							}
+							@if (CanMerge[3])
+							{
+								<button @onclick="@(async () => await ContextMenuMergeNodeAsync("right"))">Merge Right</button>
+							}
+							@if (CanMerge[1])
+							{
+								<button @onclick="@(async () => await ContextMenuMergeNodeAsync("top"))">Merge Up</button>
+							}
+							@if (CanMerge[2])
+							{
+								<button @onclick="@(async () => await ContextMenuMergeNodeAsync("bottom"))">Merge Down</button>
+							}
+						</div>
+					</Popup>
+				</ContextMenu>
+
+				<div class="@(DraggingMerge ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
+
+						@if(CanMerge[0])
+						{
+							<div class="flex-none h-[60%] merge-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-item-type="left"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[60%]"></div>
+						}
+
+						<div class="flex-grow"></div>
+					</div>
+					<div class="flex flex-grow flex-col">
+						@if(CanMerge[1])
+						{
+							<div class="flex-none h-[20%] merge-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-item-type="top"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[20%]"></div>
+						}
+						<div class="flex-grow"></div>
+						@if(CanMerge[2])
+						{
+							<div class="flex-none h-[20%] merge-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-item-type="bottom"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[20%]"></div>
+						}
+					</div>
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
+						@if(CanMerge[3])
+						{
+							<div class="flex-none h-[60%] merge-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-item-type="right"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[60%]"></div>
+						}
+
+						<div class="flex-grow"></div>
+					</div>
+				</div>
+
+				@*Delete Node*@
+
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<Element>
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanDelete.All(x => !x) ? "bg-slate-300 text-slate-500" : "delete-color")
+							drag-item" disabled="@CanDelete.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-delete")" data-item-type="delete" draggable="true">
+							delete
+						</button>
+					</Element>
+					<Popup>
+						<div class="delete-menu">
+							@if (CanDelete[0])
+							{
+								<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("left"))">Delete (Fill from the Left)</button>
+							}
+							@if (CanDelete[3])
+							{
+								<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("right"))">Delete (Fill from the Right)</button>
+							}
+							@if (CanDelete[1])
+							{
+								<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("top"))">Delete (Fill from the Top)</button>
+							}
+							@if (CanDelete[2])
+							{
+								<button @onclick="@(async () => await ContextMenuDeleteNodeAsync("bottom"))">Delete (Fill from the Bottom)</button>
+							}
+						</div>
+					</Popup>
+				</ContextMenu>
+
+				<div class="@(DraggingDelete ? "inset-0 flex" : "hidden") z-10 absolute flex-row">
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
+
+						@if(CanDelete[0])
+						{
+							<div class="flex-none h-[60%] delete-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-item-type="left"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[60%]"></div>
+						}
+
+						<div class="flex-grow"></div>
+					</div>
+					<div class="flex flex-grow flex-col">
+						@if(CanDelete[1])
+						{
+							<div class="flex-none h-[20%] delete-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-item-type="top"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[20%]"></div>
+						}
+						<div class="flex-grow"></div>
+						@if(CanDelete[2])
+						{
+							<div class="flex-none h-[20%] delete-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-item-type="bottom"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[20%]"></div>
+						}
+					</div>
+					<div class="flex flex-none w-[15%] flex-col">
+						<div class="flex-grow"></div>
+						@if(CanDelete[3])
+						{
+							<div class="flex-none h-[60%] delete-color dropzone" 
+								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
+								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-item-type="right"></div>
+						}
+						else
+						{
+							<div class="flex-none h-[60%]"></div>
+						}
+
+						<div class="flex-grow"></div>
+					</div>
+				</div>
+					
+				@*Node Settings*@
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<Element>
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md node-settings-color">
+							display_settings
+						</button>
+					</Element>
+					<Popup>
+						<div class="node-settings-menu">
+							<button @onclick="OnOpenNodeSettingsAsync">Open Node Settings</button>
+						</div>
+					</Popup>
+				</ContextMenu>
+
+				@*Editor Tools*@
+				@if (EditingNode.Component is not null)
+				{
+					@*There is a component here, so we need to render component settings:
+						- Settings wheel for opening the configuration panel
+						- Delete component actions (removes just the component, not this node)
+					*@
+
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+						<Element>
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md component-settings-color">
+								settings
+							</button>
+						</Element>
+						<Popup>
+							<div class="component-settings-menu">
+								<button @onclick="OnOpenComponentSettingsAsync">Open Component Settings</button>
+							</div>
+						</Popup>
+					</ContextMenu>
+
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+						<Element>
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md delete-component-color">
+								remove_from_queue
+							</button>
+						</Element>
+						<Popup>
+							<div class="delete-component-menu">
+								<button @onclick="OnDeleteComponent">Delete Component</button>
+							</div>
+						</Popup>
+					</ContextMenu>
+				}
+			</div>
+			
+			if (EditingNode.Component is null)
 			{
 				@*The node needs a UI for dropping new components into this node:
 					- This should cover the existing node icons that would appear usually
@@ -323,7 +324,7 @@
 					- This should not appear if there is already an existing component.
 				*@
 
-				<div class="absolute inset-0 m-2 border border-slate-400 border-dashed border-width-4 dropzone"
+				<div class="absolute inset-0 m-2 border-slate-400 border-dashed border-4 dropzone @(DraggingComponent ? "block" : "hidden")"
 					data-ref-id="@($"{EditingNode.EditorKey}-add-component")"
 					data-drop-zone="@PageEditComponent.DROPPABLE_DROPZONE"
 					data-item-type="add-component"></div>

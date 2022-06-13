@@ -41,11 +41,6 @@ public partial class PageComponent : IDisposable
 
     [Parameter]
     public LayoutNode? EditingNode { get; set; }
-    /// <summary>
-    /// True if the publish value should be displayed in the edit field.
-    /// </summary>
-    [Parameter]
-    public bool PublishIsEdit { get; set; } = true;
 
     private string? LastKey { get; set; }
     [CascadingParameter]
@@ -357,17 +352,25 @@ public partial class PageComponent : IDisposable
     [JSInvokable]
     public Task AddComponentAsync(string itemIndex, string componentType)
     {
-        if (EditingNode is not null
-            && int.TryParse(itemIndex, out var index))
+        if (EditingNode is not null && EditComponent is not null)
         {
-            var attribute = EditComponent?.EditorComponents.ElementAtOrDefault(index);
+            var parts = itemIndex.Split(',');
 
-            if (attribute is not null)
+            if (int.TryParse(parts.ElementAtOrDefault(0), out var index))
             {
-                var settingsRaw = Activator.CreateInstance(attribute.ComponentSettingsType);
+                var attribute = EditComponent.EditorComponents.ElementAtOrDefault(index);
 
-                if (settingsRaw is PageComponentSettingsBase settings)
-                    EditingNode.Component = settings;
+                if (attribute.Item1 is not null)
+                {
+                    var settingsRaw = Activator.CreateInstance(attribute.Item1.ComponentSettingsType);
+
+                    if (settingsRaw is PageComponentSettingsBase settings)
+                    {
+                        settings.QualifiedTypeName = parts.ElementAtOrDefault(1) ?? "";
+                        settings.DisplayName = attribute.Item1.Name;
+                        EditingNode.Component = settings;
+                    }
+                }
             }
         }
 

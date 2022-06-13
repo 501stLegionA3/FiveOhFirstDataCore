@@ -55,8 +55,8 @@ public partial class PageEditComponent : IDisposable
     protected RightMenu RightMenuState { get; set; } = RightMenu.Empty;
 
     #region Utility
-    private List<ComponentAttribute>? _editorComponents = null;
-    public IReadOnlyList<ComponentAttribute> EditorComponents 
+    private List<(ComponentAttribute, string)>? _editorComponents = null;
+    public IReadOnlyList<(ComponentAttribute, string)> EditorComponents 
     { 
         get
         {
@@ -67,13 +67,13 @@ public partial class PageEditComponent : IDisposable
         }
     }
 
-    private static List<ComponentAttribute> GetEditorComponents()
+    private static List<(ComponentAttribute, string)> GetEditorComponents()
     {
         var curType = typeof(CustomComponentBase);
         var subclasses = Assembly.GetAssembly(curType)!.GetTypes()
             .Where(x => x.IsSubclassOf(curType))
-            .ToList(x => x.GetCustomAttributes(typeof(ComponentAttribute), true).FirstOrDefault() as ComponentAttribute)
-            .Where(x => x is not null);
+            .ToList(x => (x.GetCustomAttributes(typeof(ComponentAttribute), true).FirstOrDefault() as ComponentAttribute, x.AssemblyQualifiedName))
+            .Where(x => x.Item1 is not null);
 
         // We filtered out the null values already.
         return subclasses!.ToList()!;
@@ -256,6 +256,7 @@ public partial class PageEditComponent : IDisposable
     {
         PageToEdit = null;
         await RefreshPageListAsync();
+        await DisposeDroppableAsync();
 
         LeftMenuState = LeftMenu.PageSelection;
         RightMenuState = RightMenu.Empty;
@@ -342,21 +343,15 @@ public partial class PageEditComponent : IDisposable
     private bool RegisterDroppablesOnNextRender { get; set; } = false;
 
     [JSInvokable]
-    private Task OnDragChanged(bool started, string type)
+    public async Task OnDragChanged(bool started, string type)
     {
-        switch (type)
-        {
-            case "component":
-                DraggingComponent = started;
-                break;
-        }
-
-        return Task.CompletedTask;
+        DraggingComponent = started;
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RegisterDroppableAsync()
     {
-        await JSRuntime.InvokeVoidAsync("DropInterop.init", DROPPABLE_ID, GetDotNetReference(), true, true, nameof(OnDragChanged));
+        await JSRuntime.InvokeVoidAsync("DropInterop.init", DROPPABLE_ID, GetDotNetReference(), true, true, nameof(OnDragChanged), ".drag-component");
     }
 
     private async Task DisposeDroppableAsync()
@@ -397,9 +392,9 @@ public partial class PageEditComponent : IDisposable
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Page;
+        ConfigurationNodes.Clear();
 
         await DisposeDroppableAsync();
-        ConfigurationNodes.Clear();
     }
 
     public async Task OpenNodeSettingsAsync()
@@ -407,9 +402,9 @@ public partial class PageEditComponent : IDisposable
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Node;
+        ConfigurationNodes.Clear();
 
         await DisposeDroppableAsync();
-        ConfigurationNodes.Clear();
     }
 
     public async Task OpenComponentSettingsAsync()
@@ -417,9 +412,9 @@ public partial class PageEditComponent : IDisposable
         LeftMenuState = LeftMenu.SettingsSelection;
         RightMenuState = RightMenu.SettingsEditor;
         SettingMenuState = SettingState.Component;
+        ConfigurationNodes.Clear();
 
         await DisposeDroppableAsync();
-        ConfigurationNodes.Clear();
     }
 
     private Task CloseSettingsMenuAsync()
@@ -429,19 +424,17 @@ public partial class PageEditComponent : IDisposable
 
         StopUserScopeEdit();
 
-        RegisterDroppablesOnNextRender = true;
-
         ConfigurationNodes.Clear();
+
+        RegisterDroppablesOnNextRender = true;
 
         return Task.CompletedTask;
     }
 
-    private void OpenConfigurationNode(string key)
+    private void OpenConfigurationNode(string? key)
     {
-        if (ConfigurationNodes.TryGetValue(key, out var fragment))
-        {
-            OpenConfigurationNodeFragment = fragment;
-        }
+        _ = ConfigurationNodes.TryGetValue(key ?? "", out var fragment);
+        OpenConfigurationNodeFragment = fragment;
     }
     #endregion
 

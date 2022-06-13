@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Components.Framework.Page.Components.Display;
 
 [DisplayComponent(typeof(DisplayComponentSettings), 
-    Name = "Assignable Value Display", 
-    IconPath = "~/svg/mat-icons/text_fields.svg"
+    Name = "Assignable Value Display",
+    ShortName = "Value Display",
+    IconPath = "svg/mat-icons/text_fields.svg"
 )]
 public partial class AssignableValueDisplayComponent : DisplayBase
 {
