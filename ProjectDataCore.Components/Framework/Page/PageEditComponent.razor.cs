@@ -458,6 +458,9 @@ public partial class PageEditComponent : IDisposable
 
         StateHasChanged();
     }
+
+    public void CloseConfigurationNode()
+        => OpenConfigurationNode(null);
     #endregion
 
     #region User Scopes

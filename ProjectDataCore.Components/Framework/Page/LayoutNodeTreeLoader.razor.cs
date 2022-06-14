@@ -47,7 +47,8 @@ public partial class LayoutNodeTreeLoader : IDisposable
     /// </summary>
     private Dictionary<string, object> ComponentParams { get; } = new()
     {
-        { "ComponentData", null }
+        { "ComponentData", null },
+        { "Node", null }
     };
 
     private IJSObjectReference? InteropHandle { get; set; }
@@ -82,7 +83,7 @@ public partial class LayoutNodeTreeLoader : IDisposable
             {
                 // ... set the component params ...
                 ComponentParams["ComponentData"] = ParentNode.Component;
-                ComponentParams["EditingNode"] = ParentNode;
+                ComponentParams["Node"] = ParentNode;
                 // ... and the component type ...
                 ComponentType = RoutingService.GetComponentType(ParentNode.Component.QualifiedTypeName);
             }

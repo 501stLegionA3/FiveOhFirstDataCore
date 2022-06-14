@@ -1,4 +1,49 @@
-﻿<div class="flex flex-col gap-2">
-    <div><p class="font-bold">Policy Required:</p> </div>
-    <div><p class="font-bold">Current Policy:</p></div>
+﻿<div class="flex flex-col gap-2 w-full p-4 m-3 border-2 border-slate-400 shadow-md rounded-lg bg-white">
+    <div><p class="font-bold">Policy Required:</p> @(Settings.RequireAuth ? "Yes" : "No")</div>
+    <div><p class="font-bold">Current Policy:</p> @(Settings.AuthorizationPolicy?.PolicyName ?? "No Policy Selected")</div>
+    
+    <hr />
+
+    <EditForm Model="Settings" class="flex-grow flex flex-col gap-3 overflow-auto">
+        <label class="inline-flex items-center">
+            <InputCheckbox @bind-Value="Settings.RequireAuth" />
+            <span class="ml-2">Require Authorization</span>
+        </label>
+
+        @if(Settings.RequireAuth)
+        {
+            <hr />
+
+            <div class="flex inline-flex gap-1">
+                <div class="input-group flex-grow">
+                    <InputSelect @bind-Value="PolicyIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
+                        <option value="-1">N/A</option>
+                        @for (int index = 0; index < Policies.Count; index++)
+                        {
+                            var i = index;
+                            <option value="@i">@Policies[i].PolicyName</option>
+                        }
+                    </InputSelect>
+                    <label for="listeners" class="input-label">Authorization Policies</label>
+                </div>
+                <button class="flex-none button-op-success material-symbols-rounded"
+                    @onclick="OnSetPolicy">
+                    check
+                </button>
+                <button class="flex-none button-util-action material-symbols-rounded"
+                    @onclick="ReloadPoliciesAsync">
+                    refresh
+                </button>
+            </div>
+        }
+    </EditForm>
+
+    @if (EditComponent is not null)
+    {
+        <hr />
+
+        <button class="button-util-action text-center" @onclick="EditComponent.CloseConfigurationNode">
+                Close Menu
+        </button>
+    }
 </div>
