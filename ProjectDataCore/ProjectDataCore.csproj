@@ -48,4 +48,8 @@
 	  <Folder Include="wwwroot\dist\" />
 	  <Folder Include="wwwroot\ace\" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\.editorconfig" Link=".editorconfig" />
+	</ItemGroup>
 </Project>

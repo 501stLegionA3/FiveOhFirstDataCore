@@ -1,4 +1,5 @@
 ﻿using ProjectDataCore.Data.Structures.Page.Components.Scope;
+using ProjectDataCore.Data.Structures.Policy;
 using ProjectDataCore.Data.Structures.Util.Comparers;
 
 using System;
@@ -32,6 +33,22 @@ public class LayoutNode : DataObject<Guid>
 
     public CustomPageSettings? PageSettings { get; set; }
     public Guid? PageSettingsId { get; set; }
+
+    /// <summary>
+    /// If a user is required to be authroized to view this page. Setting this to <i><b>false</b></i> will
+    /// make it a public page. Setting this to <i><b>true</b></i> without a <see cref="AuthorizationPolicy"/> assigned
+    /// will make it a page that can be seen by anyone who is logged in.
+    /// </summary>
+    public bool RequireAuth { get; set; } = true;
+
+    /// <summary>
+    /// The Authorization Policy for when <see cref="RequireAuth"/> is <i><b>true</b></i>.
+    /// </summary>
+    public DynamicAuthorizationPolicy? AuthorizationPolicy { get; set; }
+    /// <summary>
+    /// The key for the <see cref="AuthorizationPolicy"/>
+    /// </summary>
+    public Guid? AuthorizationPolicyKey { get; set; }
 
     public List<LayoutNode> Nodes { get; set; } = new();
     public int Order { get; set; }

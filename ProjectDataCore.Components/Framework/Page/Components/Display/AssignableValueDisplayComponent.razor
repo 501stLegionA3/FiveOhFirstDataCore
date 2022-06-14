@@ -1,12 +1,13 @@
 ﻿@inherits DisplayBase
 
-<PageComponent Name="Assignable Value Display" EditingNode="EditingNode">
+<PageComponent Name="Assignable Value Display" EditingNode="Node">
     <Publish>
-        @if(ComponentData is not null)
+        @if(ComponentData is not null 
+            && Node is not null)
         {
-            if(ComponentData.RequireAuth)
+            if(Node.RequireAuth)
             {
-                <AuthorizationHandler Settings="ComponentData">
+                <AuthorizationHandler Settings="Node">
                     <Authorized>
                         @ComponentData.AuthorizedMarkup
                     </Authorized>

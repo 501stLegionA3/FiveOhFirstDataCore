@@ -10,7 +10,7 @@
 			@Editing
 		}
 
-		@if (EditingNode is not null)
+		@if (Node is not null)
 		{
 			@*The component needs some interactions no matter what is going on:
 				- Split interactions (to split this Node into two nodes)
@@ -18,20 +18,20 @@
 				- Delete interaction (to delete this component)
 			*@
 
-			@if (EditingNode.Component is not null)
+			@if (Node.Component is not null)
 			{
-				<p class="absolute inset-x-0 mx-auto text-center p-1">@EditingNode.Component.DisplayName</p>
+				<p class="absolute inset-x-0 mx-auto text-center p-1">@Node.Component.DisplayName</p>
 			}
 
-			<div class="absolute inset-0 @(DraggingComponent ? "hidden" : "block") z-10 grid grid-cols-[repeat(3,32px)] gap-2 place-content-center"
-				data-drag-container="@EditingNode.EditorKey">		
+			<div class="absolute inset-0 @((DraggingComponent) ? "hidden" : "block") z-10 grid grid-cols-[repeat(3,32px)] gap-2 place-content-center"
+				data-drag-container="@Node.EditorKey">		
 
 				@*Split Code*@
 
-				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 					<Element>
 						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md split-color cursor-grab
-							drag-item" data-drop-zone="@($"{EditingNode.EditorKey}-add_split")" data-item-type="split" draggable="true">
+							drag-item" data-drop-zone="@($"{Node.EditorKey}-add_split")" data-item-type="split" draggable="true">
 							splitscreen
 						</button>
 					</Element>
@@ -51,31 +51,31 @@
 						<div class="flex-grow"></div>
 
 						<div class="flex-none h-[60%] split-color dropzone" 
-							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-ref-id="@($"{Node.EditorKey}-add_split")"
+							data-drop-zone="@($"{Node.EditorKey}-add_split")"
 							data-item-type="left"></div>
 
 						<div class="flex-grow"></div>
 					</div>
 					<div class="flex flex-grow flex-col">
 						<div class="flex-none h-[20%] split-color dropzone" 
-							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-ref-id="@($"{Node.EditorKey}-add_split")"
+							data-drop-zone="@($"{Node.EditorKey}-add_split")"
 							data-item-type="top"></div>
 
 						<div class="flex-grow"></div>
 
 						<div class="flex-none h-[20%] split-color dropzone" 
-							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-ref-id="@($"{Node.EditorKey}-add_split")"
+							data-drop-zone="@($"{Node.EditorKey}-add_split")"
 							data-item-type="bottom"></div>
 					</div>
 					<div class="flex flex-none w-[15%] flex-col">
 						<div class="flex-grow"></div>
 
 						<div class="flex-none h-[60%] bg-blue-400 dropzone" 
-							data-ref-id="@($"{EditingNode.EditorKey}-add_split")"
-							data-drop-zone="@($"{EditingNode.EditorKey}-add_split")"
+							data-ref-id="@($"{Node.EditorKey}-add_split")"
+							data-drop-zone="@($"{Node.EditorKey}-add_split")"
 							data-item-type="right"></div>
 
 						<div class="flex-grow"></div>
@@ -84,10 +84,10 @@
 					
 				@*Merge Code*@
 
-				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 					<Element>
 						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanMerge.All(x => !x) ? "bg-slate-300 text-slate-500" : "merge-color")
-							drag-item" disabled="@CanMerge.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-merge")" data-item-type="merge" draggable="true">
+							drag-item" disabled="@CanMerge.All(x => !x)" data-drop-zone="@($"{Node.EditorKey}-merge")" data-item-type="merge" draggable="true">
 							merge
 						</button>
 					</Element>
@@ -120,8 +120,8 @@
 						@if(CanMerge[0])
 						{
 							<div class="flex-none h-[60%] merge-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-ref-id="@($"{Node.EditorKey}-merge")"
+								data-drop-zone="@($"{Node.EditorKey}-merge")"
 								data-item-type="left"></div>
 						}
 						else
@@ -135,8 +135,8 @@
 						@if(CanMerge[1])
 						{
 							<div class="flex-none h-[20%] merge-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-ref-id="@($"{Node.EditorKey}-merge")"
+								data-drop-zone="@($"{Node.EditorKey}-merge")"
 								data-item-type="top"></div>
 						}
 						else
@@ -147,8 +147,8 @@
 						@if(CanMerge[2])
 						{
 							<div class="flex-none h-[20%] merge-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-ref-id="@($"{Node.EditorKey}-merge")"
+								data-drop-zone="@($"{Node.EditorKey}-merge")"
 								data-item-type="bottom"></div>
 						}
 						else
@@ -161,8 +161,8 @@
 						@if(CanMerge[3])
 						{
 							<div class="flex-none h-[60%] merge-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-merge")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-merge")"
+								data-ref-id="@($"{Node.EditorKey}-merge")"
+								data-drop-zone="@($"{Node.EditorKey}-merge")"
 								data-item-type="right"></div>
 						}
 						else
@@ -176,10 +176,10 @@
 
 				@*Delete Node*@
 
-				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 					<Element>
 						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md cursor-grab @(CanDelete.All(x => !x) ? "bg-slate-300 text-slate-500" : "delete-color")
-							drag-item" disabled="@CanDelete.All(x => !x)" data-drop-zone="@($"{EditingNode.EditorKey}-delete")" data-item-type="delete" draggable="true">
+							drag-item" disabled="@CanDelete.All(x => !x)" data-drop-zone="@($"{Node.EditorKey}-delete")" data-item-type="delete" draggable="true">
 							delete
 						</button>
 					</Element>
@@ -212,8 +212,8 @@
 						@if(CanDelete[0])
 						{
 							<div class="flex-none h-[60%] delete-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-ref-id="@($"{Node.EditorKey}-delete")"
+								data-drop-zone="@($"{Node.EditorKey}-delete")"
 								data-item-type="left"></div>
 						}
 						else
@@ -227,8 +227,8 @@
 						@if(CanDelete[1])
 						{
 							<div class="flex-none h-[20%] delete-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-ref-id="@($"{Node.EditorKey}-delete")"
+								data-drop-zone="@($"{Node.EditorKey}-delete")"
 								data-item-type="top"></div>
 						}
 						else
@@ -239,8 +239,8 @@
 						@if(CanDelete[2])
 						{
 							<div class="flex-none h-[20%] delete-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-ref-id="@($"{Node.EditorKey}-delete")"
+								data-drop-zone="@($"{Node.EditorKey}-delete")"
 								data-item-type="bottom"></div>
 						}
 						else
@@ -253,8 +253,8 @@
 						@if(CanDelete[3])
 						{
 							<div class="flex-none h-[60%] delete-color dropzone" 
-								data-ref-id="@($"{EditingNode.EditorKey}-delete")"
-								data-drop-zone="@($"{EditingNode.EditorKey}-delete")"
+								data-ref-id="@($"{Node.EditorKey}-delete")"
+								data-drop-zone="@($"{Node.EditorKey}-delete")"
 								data-item-type="right"></div>
 						}
 						else
@@ -267,9 +267,10 @@
 				</div>
 					
 				@*Node Settings*@
-				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+				<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 					<Element>
-						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md node-settings-color">
+						<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md node-settings-color"
+							@onclick="OnOpenNodeSettingsAsync">
 							display_settings
 						</button>
 					</Element>
@@ -281,16 +282,17 @@
 				</ContextMenu>
 
 				@*Editor Tools*@
-				@if (EditingNode.Component is not null)
+				@if (Node.Component is not null)
 				{
 					@*There is a component here, so we need to render component settings:
 						- Settings wheel for opening the configuration panel
 						- Delete component actions (removes just the component, not this node)
 					*@
 
-					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 						<Element>
-							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md component-settings-color">
+							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md component-settings-color"
+								@onclick="OnOpenComponentSettingsAsync">
 								settings
 							</button>
 						</Element>
@@ -301,7 +303,7 @@
 						</Popup>
 					</ContextMenu>
 
-					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@EditingNode.EditorKey">
+					<ContextMenu class="dropzone h-8 w-8 z-20" Identifier="@Node.EditorKey">
 						<Element>
 							<button class="h-full w-full material-symbols-rounded rounded-lg shadow-md delete-component-color">
 								remove_from_queue
@@ -316,7 +318,7 @@
 				}
 			</div>
 			
-			if (EditingNode.Component is null)
+			if (Node.Component is null)
 			{
 				@*The node needs a UI for dropping new components into this node:
 					- This should cover the existing node icons that would appear usually
@@ -325,20 +327,37 @@
 				*@
 
 				<div class="absolute inset-0 m-2 border-slate-400 border-dashed border-4 dropzone @(DraggingComponent ? "block" : "hidden")"
-					data-ref-id="@($"{EditingNode.EditorKey}-add-component")"
+					data-ref-id="@($"{Node.EditorKey}-add-component")"
 					data-drop-zone="@PageEditComponent.DROPPABLE_DROPZONE"
 					data-item-type="add-component"></div>
 			}
 		}
 	</div>
-
-	@*Call the configure render builder. There should be no visible HTML to render.*@
-	@if(IsConfiguringComponent)
-	{
-		<div class="hidden">
+	
+	<div class="hidden">
+		@*Call the configure render builder. There should be no visible HTML to render.*@
+		@if(IsConfiguringComponent)
+		{
 			@Configure
-		</div>
-	}
+		}
+		else if (IsConfiguringNode)
+		{
+			<PageComponentEditorSettingsNode Name="Authentication">
+				<div class="flex flex-col w-full h-full">
+                    <p class="text-center text-xl w-full mb-1 flex-none">Node Authentication Manager</p>
+                    <p class="text-center w-full mb-1 flex-none">
+                        Allows for selecting the authentication scheme to use for this page.
+                    </p>
+
+					<div class="flex-grow flex relative overflow-hidden">
+						<div class="p-2">
+							<AuthorizationPolicySelector Settings="Node" />
+						</div>
+					</div>
+				</div>
+			</PageComponentEditorSettingsNode>
+		}
+	</div>
 }
 else
 {

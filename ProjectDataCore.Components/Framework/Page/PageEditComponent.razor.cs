@@ -92,7 +92,14 @@ public partial class PageEditComponent : IDisposable
 
         if (OpenConfigurationNodeFragment is not null)
         {
-            if (!ShowConfigurationOptions)
+            if (HideConfigurationOptions &&
+                !ShowConfigurationOptions)
+			{
+                OpenConfigurationNodeFragment = null;
+                HideConfigurationOptions = false;
+                StateHasChanged();
+			}
+            else if (!ShowConfigurationOptions)
             {
                 ShowConfigurationOptions = true;
                 StateHasChanged();
@@ -371,7 +378,11 @@ public partial class PageEditComponent : IDisposable
     private ConcurrentDictionary<string, RenderFragment> ConfigurationNodes { get; set; } = new();
     private RenderFragment? OpenConfigurationNodeFragment { get; set; } = null;
     private bool ShowConfigurationOptions { get; set; } = false;
+    private bool HideConfigurationOptions { get; set; } = false;
     private SettingState SettingMenuState { get; set; } = SettingState.Page;
+
+    public delegate Task OnConfigureMenuClosedEventArgs(PageEditComponent sender);
+    public event OnConfigureMenuClosedEventArgs? OnConfigureMenuClosed;
 
     public async Task OnConfigureNodePushed(string name, RenderFragment fragment, bool dispose)
     {
@@ -417,7 +428,7 @@ public partial class PageEditComponent : IDisposable
         await DisposeDroppableAsync();
     }
 
-    private Task CloseSettingsMenuAsync()
+    private async Task CloseSettingsMenuAsync()
     {
         LeftMenuState = LeftMenu.ComponentSelection;
         RightMenuState = RightMenu.PageEditor;
@@ -426,15 +437,26 @@ public partial class PageEditComponent : IDisposable
 
         ConfigurationNodes.Clear();
 
-        RegisterDroppablesOnNextRender = true;
+        if (OnConfigureMenuClosed is not null)
+            await OnConfigureMenuClosed.Invoke(this);
 
-        return Task.CompletedTask;
+        RegisterDroppablesOnNextRender = true;
     }
 
     private void OpenConfigurationNode(string? key)
     {
-        _ = ConfigurationNodes.TryGetValue(key ?? "", out var fragment);
-        OpenConfigurationNodeFragment = fragment;
+        if (key is not null)
+        {
+            _ = ConfigurationNodes.TryGetValue(key, out var fragment);
+            OpenConfigurationNodeFragment = fragment;
+        }
+		else
+		{
+            HideConfigurationOptions = true;
+            ShowConfigurationOptions = false;
+        }
+
+        StateHasChanged();
     }
     #endregion
 

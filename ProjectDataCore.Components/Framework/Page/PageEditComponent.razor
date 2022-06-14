@@ -1,439 +1,435 @@
 ﻿<CascadingValue Value="OnConfigureNodePushed" Name="EditorSettingsNodeHook">
-	<div class="inline-flex w-full h-full" data-drag-container="@DROPPABLE_ID">
-		<div class="@(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left">
-			<div class="flex flex-col">
-				@*Page List Pannel
-					TODO: Search open pages
-						- Order pages by route
-						- Nest routed pages
-						- Add edit buttons for pages
+    <div class="inline-flex w-full h-full" data-drag-container="@DROPPABLE_ID">
+        <div class="@(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left">
+            <div class="flex flex-col">
+                @*Page List Pannel
+                TODO: Search open pages
+                - Order pages by route
+                - Nest routed pages
+                - Add edit buttons for pages
 
-						- Add settings panel switch
+                - Add settings panel switch
 
-						- Add drag and drop components for pages
-				*@
+                - Add drag and drop components for pages
+                *@
 
-				<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative flex flex-row justify-between my-1 first:mt-0 last:mt-0">
-					<span class="flex-grow">Page Editor</span>
-					<div class="flex flex-row flex-none gap-1">
-						
-						@if (LeftMenuState == LeftMenu.PageSelection)
-						{
-							<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+                <div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 relative flex flex-row justify-between my-1 first:mt-0 last:mt-0">
+                    <span class="flex-grow">Page Editor</span>
+                    <div class="flex flex-row flex-none gap-1">
+
+                        @if (LeftMenuState == LeftMenu.PageSelection)
+                        {
+                            <button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
 							transition-all ease-in-out duration-500
 							@(DisplayNewPage ? "scale-0 invisible" : "scale-100 visible")"
-							@onclick="() => DisplayNewPage = true">
-								add_to_queue
-							</button>
+                                @onclick="() => DisplayNewPage = true">
+                                add_to_queue
+                            </button>
 
-							<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
+                            <button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded
 							transition-all ease-in-out duration-500
 							@(DisplaySearch ? "scale-0 invisible" : "scale-100 visible")"
-							@onclick="() => DisplaySearch = true">
-								search
-							</button>
-						}
+                                @onclick="() => DisplaySearch = true">
+                                search
+                            </button>
+                        }
 
-						<div class="border border-slate-400"></div>
+                        <div class="border border-slate-400"></div>
 
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
-							@onclick="OnUndoClickedAsync">
-							undo
-						</button>
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
-							@onclick="OnRedoClickedAsync">
-							redo
-						</button>
-						<button class="rounded-lg w-7 h-7 border-slate-400 shadow-md material-symbols-rounded bg-slate-200"
-							@onclick="ToggleSidebar">
-							keyboard_double_arrow_left
-						</button>
-					</div>
-				</div>
+                        <button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
+                                @onclick="OnUndoClickedAsync">
+                            undo
+                        </button>
+                        <button class="rounded-lg w-7 h-7 border-slate-400 shadow-md bg-slate-200 material-symbols-rounded"
+                                @onclick="OnRedoClickedAsync">
+                            redo
+                        </button>
+                        <button class="rounded-lg w-7 h-7 border-slate-400 shadow-md material-symbols-rounded bg-slate-200"
+                                @onclick="ToggleSidebar">
+                            keyboard_double_arrow_left
+                        </button>
+                    </div>
+                </div>
 
-				@switch(LeftMenuState)
-				{
-					case LeftMenu.PageSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-							Pages
-						</div>
-						<div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+                @switch (LeftMenuState)
+                {
+                    case LeftMenu.PageSelection:
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                            Pages
+                        </div>
+                        <div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
 							relative transition-all origin-top-left duration-500 first:mt-0 last:mt-0
-							@(DisplayNewPage ? "w-full h-full scale-100 my-1 p-2" : "w-0 h-0 invisible scale-0 my-0")">							
-							<p>Create New Page</p>
+							@(DisplayNewPage ? "w-full h-full scale-100 my-1 p-2" : "w-0 h-0 invisible scale-0 my-0")">
+                            <p>Create New Page</p>
 
-							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+                            <button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md
 								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-								@onclick="() => DisplayNewPage = false">
-									close
-							</button>
+                            @onclick="() => DisplayNewPage = false">
+                                close
+                            </button>
 
-							<EditForm class="grid grid-cols-1 grid-flow-row gap-2"
-								Model="this">
-									<div class="input-group">
-										<InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
-										<label for="page-name" class="input-label">Page Name</label>
-									</div>
+                            <EditForm class="grid grid-cols-1 grid-flow-row gap-2"
+                              Model="this">
+                                <div class="input-group">
+                                    <InputText @bind-Value="NewPageName" id="page-name" type="text" class="input-control peer" placeholder="Page Name" />
+                                    <label for="page-name" class="input-label">Page Name</label>
+                                </div>
 
-									<div class="input-group">
-										<InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
-										<label for="page-route" class="input-label">Page Route</label>
-									</div>
+                                <div class="input-group">
+                                    <InputText @bind-Value="NewPageRoute" id="page-route" type="text" class="input-control peer" placeholder="Page Route" />
+                                    <label for="page-route" class="input-label">Page Route</label>
+                                </div>
 
-									<button class="button-op-success" @onclick="CreateNewPageAsync" type="submit">Create</button>
-							</EditForm>
-						</div>
+                                <button class="button-op-success" @onclick="CreateNewPageAsync" type="submit">Create</button>
+                            </EditForm>
+                        </div>
 
-						<div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
+                        <div class="shadow-md border-slate-400 rounded-r-lg border-2 grid grid-cols-1 grid-flow-row gap-2
 							relative transition-all origin-top-left duration-500 after:transition-all first:mt-0 last:mt-0
 							@(DisplaySearch ? "w-full h-full scale-100 my-1 p-2" : "w-0 h-0 invisible scale-0 my-0")">
 
-							<button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md 
+                            <button class="absolute rounded-lg w-7 h-7 border-slate-400 shadow-md
 								right-1 top-1 material-symbols-rounded bg-slate-200" type="button"
-								@onclick="() => DisplaySearch = false">
-									close
-							</button>
-								
-							<p>Search Pages</p>
+                            @onclick="() => DisplaySearch = false">
+                                close
+                            </button>
 
-							<EditForm class="grid grid-cols-1 grid-flow-row gap-2"
-								Model="this">
-								<div class="input-group">
-									<InputText id="page-name-search" type="text" class="input-control peer" placeholder="Search by Name"
-										Value="@NameSearch" ValueExpression="() => NameSearch" ValueChanged="OnNameSearchChanged"/>
-									<label for="page-name-search" class="input-label">Search by Name</label>
-								</div>
+                            <p>Search Pages</p>
 
-								<div class="input-group">
-									<InputText id="page-route-search" type="text" class="input-control peer" placeholder="Search by Route"
-										Value="@RouteSearch" ValueExpression="() => RouteSearch" ValueChanged="OnRouteSearchChanged"/>
-									<label for="page-route-search" class="input-label">Search by Route</label>
-								</div>
-								<button class="invisble h-0 w-0" type="submit" id="mock-submit-handler"></button>
-							</EditForm>
-						</div>
+                            <EditForm class="grid grid-cols-1 grid-flow-row gap-2"
+                              Model="this">
+                                <div class="input-group">
+                                    <InputText id="page-name-search" type="text" class="input-control peer" placeholder="Search by Name"
+                                       Value="@NameSearch" ValueExpression="() => NameSearch" ValueChanged="OnNameSearchChanged" />
+                                    <label for="page-name-search" class="input-label">Search by Name</label>
+                                </div>
 
-						@foreach(var pagePair in PageDisplayOrder)
-						{
-							var depth = pagePair.Item1;
-							var pageData = pagePair.Item2;
-							var visible = FilteredPages.Contains(pageData);
+                                <div class="input-group">
+                                    <InputText id="page-route-search" type="text" class="input-control peer" placeholder="Search by Route"
+                                       Value="@RouteSearch" ValueExpression="() => RouteSearch" ValueChanged="OnRouteSearchChanged" />
+                                    <label for="page-route-search" class="input-label">Search by Route</label>
+                                </div>
+                                <button class="invisble h-0 w-0" type="submit" id="mock-submit-handler"></button>
+                            </EditForm>
+                        </div>
 
-							<div class="@(visible ? "h-full" : "h-0 invisible") transition-all inline-flex group my-1 first:mt-0 last:mt-0">
-								@for (int i = 0; i < depth; i++)
-								{
-									<div class="px-2 flex-none"></div>
-								}
+                        @foreach (var pagePair in PageDisplayOrder)
+                        {
+                            var depth = pagePair.Item1;
+                            var pageData = pagePair.Item2;
+                            var visible = FilteredPages.Contains(pageData);
 
-								<div class="flex-grow p-2 shadow-md border-slate-400 rounded-r-lg border-2 group-last:rounded-tr-lg group-last:rounded-br-none
+                            <div class="@(visible ? "h-full" : "h-0 invisible") transition-all inline-flex group my-1 first:mt-0 last:mt-0">
+                                @for (int i = 0; i < depth; i++)
+                                {
+                                    <div class="px-2 flex-none"></div>
+                                }
+
+                                <div class="flex-grow p-2 shadow-md border-slate-400 rounded-r-lg border-2 group-last:rounded-tr-lg group-last:rounded-br-none
 									grid grid-cols-3 grid-rows-1 align-center">
-									<div class="font-mono text-left">@pageData.Route</div>
-									<div class="text-center">@pageData.Name</div>
-									<button class="button-util-action" @onclick="async () => await StartPageEditAsync(pageData)">Edit</button>
-								</div>
-							</div>
-						}
-						break;
+                                    <div class="font-mono text-left">@pageData.Route</div>
+                                    <div class="text-center">@pageData.Name</div>
+                                    <button class="button-util-action" @onclick="async () => await StartPageEditAsync(pageData)">Edit</button>
+                                </div>
+                            </div>
+                        }
+                        break;
 
-					case LeftMenu.ComponentSelection:
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-							Page Editor
-						</div>
+                    case LeftMenu.ComponentSelection:
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                            Page Editor
+                        </div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-							<button class="flex-grow button-op-success" @onclick="SavePageEditAsync">Save Changes</button>
-						</div>
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+                            <button class="flex-grow button-op-success" @onclick="SavePageEditAsync">Save Changes</button>
+                        </div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex my-1 first:mt-0 last:mt-0">
-							<div class="flex-grow">Page Settings</div>
-							<button class="flex-none button-util-action" @onclick="OpenPageSettingsAsync">Edit</button>
-						</div>
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex my-1 first:mt-0 last:mt-0">
+                            <div class="flex-grow">Page Settings</div>
+                            <button class="flex-none button-util-action" @onclick="OpenPageSettingsAsync">Edit</button>
+                        </div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-							Components
-						</div>
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                            Components
+                        </div>
 
-						@*Component Listing
-							TODO:
-								- Create component listing sections
-								- One section per type (layout, edit, display, etc.)
-								- Configure drag and drop capabilities for the editor
-						*@
+                        @*Component Listing
+                TODO:
+                - Create component listing sections
+                - One section per type (layout, edit, display, etc.)
+                - Configure drag and drop capabilities for the editor
+                *@
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 grid lg:grid-cols-3 grid-cols-2 grid-flow-row gap-1">
-							@for (int index = 0; index < EditorComponents.Count; index++)
-							{
-								var i = index;
-								<div class="dropzone">
-									<div class="shadow-md border-slate-200 bg-indigo-600 text-white rounded-lg border p-1 flex 
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 grid lg:grid-cols-3 grid-cols-2 grid-flow-row gap-1">
+                            @for (int index = 0; index < EditorComponents.Count; index++)
+                            {
+                                var i = index;
+                                <div class="dropzone">
+                                    <div class="shadow-md border-slate-200 bg-indigo-600 text-white rounded-lg border p-1 flex
 										flex-col cursor-grab drag-component" data-drop-zone="@DROPPABLE_DROPZONE" data-item-type="@i,@EditorComponents[i].Item2" draggable="true">
-										<div class="flex-grow">
-											<img src="@EditorComponents[i].Item1.IconPath" class="aspect-square h-full mx-auto svg-white" />
-										</div>
-										<p class="text-center flex-none">@EditorComponents[i].Item1.ShortName</p>
-									</div>
-								</div>
-							}
-						</div>
+                                        <div class="flex-grow">
+                                            <img src="@EditorComponents[i].Item1.IconPath" class="aspect-square h-full mx-auto svg-white" />
+                                        </div>
+                                        <p class="text-center flex-none">@EditorComponents[i].Item1.ShortName</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
 
-						<div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-							<button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
-						</div>
-						break;
+                        <div class="p-2 shadow-md border-slate-400 rounded-tr-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+                            <button class="flex-grow button-op-danger" @onclick="AbortPageEditAsync">Abort</button>
+                        </div>
+                        break;
 
-					case LeftMenu.SettingsSelection:
-						@switch (SettingMenuState)
-						{
-							case SettingState.Page:
-								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-									Page Settings
-								</div>
-								break;
+                    case LeftMenu.SettingsSelection:
+                        @switch (SettingMenuState)
+                        {
+                            case SettingState.Page:
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                                    Page Settings
+                                </div>
+                                break;
 
-							case SettingState.Node:
-								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-									Node Settings
-								</div>
-								break;
+                            case SettingState.Node:
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                                    Node Settings
+                                </div>
+                                break;
 
-							case SettingState.Component:
-								<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
-									Component Settings
-								</div>
-								break;
-						}
+                            case SettingState.Component:
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative my-1 first:mt-0 last:mt-0">
+                                    Component Settings
+                                </div>
+                                break;
+                        }
 
-						<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-							<button class="flex-grow button-util-action" @onclick="CloseSettingsMenuAsync"
-								disabled="@(OpenConfigurationNodeFragment is not null)">Go Back</button>
-						</div>
-						
-						@foreach(var item in ConfigurationNodes.Keys)
-						{
-							var i = item;
-							<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
-								<div class="flex-grow">@i</div>
-								<button class="flex-none button-util-action" @onclick="() => OpenConfigurationNode(i)" 
-									disabled="@(OpenConfigurationNodeFragment is not null)">Configure</button>
-							</div>
-						}
-						break;
-				}
-			</div>
-		</div>
-		<div class="flex-grow relative transition-all">
-			@if(!SidebarVisible)
-			{
-				<div class="absolute left-1 top-1 flex flex-col w-7 h-min gap-1">
-					<button class="rounded-lg w-7 h-7 shadow-md 
+                        <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+                            <button class="flex-grow button-util-action" @onclick="CloseSettingsMenuAsync"
+                                disabled="@(OpenConfigurationNodeFragment is not null)">
+                                Go Back
+                            </button>
+                        </div>
+
+                        @foreach (var item in ConfigurationNodes.Keys)
+                        {
+                            var i = item;
+                            <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 relative inline-flex gap-2 my-1 first:mt-0 last:mt-0">
+                                <div class="flex-grow">@i</div>
+                                <button class="flex-none button-util-action" @onclick="() => OpenConfigurationNode(i)"
+                            disabled="@(OpenConfigurationNodeFragment is not null)">
+                                    Configure
+                                </button>
+                            </div>
+                        }
+                        break;
+                }
+            </div>
+        </div>
+        <div class="flex-grow relative transition-all">
+            @if (!SidebarVisible)
+            {
+                <div class="absolute left-1 top-1 flex flex-col w-7 h-min gap-1">
+                    <button class="rounded-lg w-7 h-7 shadow-md
 						material-symbols-rounded bg-slate-200 z-30"
-						@onclick="ToggleSidebar">
-						keyboard_double_arrow_right
-					</button>
-					<button class="rounded-lg w-7 h-7shadow-md bg-slate-200
+                        @onclick="ToggleSidebar">
+                        keyboard_double_arrow_right
+                    </button>
+                    <button class="rounded-lg w-7 h-7shadow-md bg-slate-200
 						material-symbols-rounded z-30"
-						@onclick="OnUndoClickedAsync">
-						undo
-					</button>
-					<button class="rounded-lg w-7 h-7 shadow-md bg-slate-200 
+                        @onclick="OnUndoClickedAsync">
+                        undo
+                    </button>
+                    <button class="rounded-lg w-7 h-7 shadow-md bg-slate-200
 						material-symbols-rounded z-30"
-						@onclick="OnRedoClickedAsync">
-						redo
-					</button>
-				</div>
-			}
+                        @onclick="OnRedoClickedAsync">
+                        redo
+                    </button>
+                </div>
+            }
 
-			<div class="@(SidebarVisible ? "border-l-2 border-slate-400 max-w-full max-h-full overflow-hidden" : "") h-full">
-				@*Page Editor Main
-					TODO: Edit exisitng pages
-						- Edit all pages that have components to use a new edit system.
-								 
-						- Add setting configuration switch that is controlled from the settings
-						panel switch above
-								 
-						- Support the ability to drop components
-				*@
-				
-				<CascadingValue Value="this" Name="PageEditComponent">
-					@switch(RightMenuState)
-					{
-						case RightMenu.PageEditor:
-							@if (PageToEdit is not null)
-							{
-									<CascadingValue Value="DraggingComponent" Name="DraggingComponent">
-										<CascadingValue Value="true" Name="PageEdit">
-											<LayoutNodeTreeLoader EditComponent="this" ParentNode="PageToEdit.Layout" />
-										</CascadingValue>
-									</CascadingValue>
-							}
-							break;
+            <div class="@(SidebarVisible ? "border-l-2 border-slate-400 max-w-full max-h-full overflow-hidden" : "") h-full">
+                @*Page Editor Main
+                TODO: Edit exisitng pages
+                - Edit all pages that have components to use a new edit system.
 
-						case RightMenu.SettingsEditor:
-							switch(SettingMenuState)
-							{
-								case SettingState.Page:
-									@*The page settings are handled by the editor itself.
-										In this case we can load some Page Component Edit Settings Node
-										components to get the same effect a component or node will have,
-										execpt they are configured directly in this editor.
-									*@
+                - Add setting configuration switch that is controlled from the settings
+                panel switch above
 
-									<PageComponentEditorSettingsNode Name="User Scope Manager">
-										@*Configure the user scope settings here.*@
+                - Support the ability to drop components
+                *@
 
-										<div class="flex flex-col w-full h-full">
-											<p class="text-center text-xl w-full mb-1 flex-none">User Scope Manager</p>
-											<p class="text-center w-full mb-1 flex-none">
-												Allows for editing the user scopes for this page
-												to give containers for forms and other systems that require
-												specific user data.
-											</p>
+                <CascadingValue Value="this" Name="PageEditComponent">
+                    @if (RightMenuState == RightMenu.SettingsEditor
+                    || RightMenuState == RightMenu.PageEditor)
+                    {
+                        if (RightMenuState == RightMenu.SettingsEditor
+                            && SettingMenuState == SettingState.Page)
+                        {
+                            @*The page settings are handled by the editor itself.
+                            In this case we can load some Page Component Edit Settings Node
+                            components to get the same effect a component or node will have,
+                            execpt they are configured directly in this editor.
+                            *@
 
-											<div class="flex-grow flex relative overflow-hidden">
-												<div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
-													<div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2 
+                            <PageComponentEditorSettingsNode Name="User Scope Manager">
+                                @*Configure the user scope settings here.*@
+
+                                <div class="flex flex-col w-full h-full">
+                                    <p class="text-center text-xl w-full mb-1 flex-none">User Scope Manager</p>
+                                    <p class="text-center w-full mb-1 flex-none">
+                                        Allows for editing the user scopes for this page
+                                        to give containers for forms and other systems that require
+                                        specific user data.
+                                    </p>
+
+                                    <div class="flex-grow flex relative overflow-hidden">
+                                        <div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
+                                            <div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2
+												relative inline-flex gap-2 my-1 bg-white">
+                                                <button class="flex-grow button-op-success" @onclick="() => OpenConfigurationNode(null)">Close Menu</button>
+                                            </div>
+
+                                            <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+												relative my-1 first:mt-0 last:mt-0 bg-white">
+                                                Existing Scopes
+                                            </div>
+
+                                            <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+												relative inline-flex gap-2 my-1 bg-white">
+                                                <button class="flex-grow button-util-action" @onclick="AddUserScope">Add New</button>
+                                            </div>
+
+                                            @if (PageToEdit is not null)
+                                            {
+                                                foreach (var scope in PageToEdit.UserScopes)
+                                                {
+                                                    var i = scope;
+                                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
 														relative inline-flex gap-2 my-1 bg-white">
-														<button class="flex-grow button-op-success" @onclick="() => OpenConfigurationNode(null)">Close Menu</button>
-													</div>
+                                                        <p class="flex-grow">@i.DisplayName</p>
+                                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                                            @onclick="() => DeleteUserScope(i)">
+                                                            delete
+                                                        </button>
+                                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-slate-200 material-symbols-rounded"
+                                                            @onclick="() => EditUserScope(i)">
+                                                            edit
+                                                        </button>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
 
-													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
-														relative my-1 first:mt-0 last:mt-0 bg-white">
-														Existing Scopes
-													</div>
-												
-													<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
-														relative inline-flex gap-2 my-1 bg-white">
-														<button class="flex-grow button-util-action" @onclick="AddUserScope">Add New</button>
-													</div>
+                                        @if (UserScopeToEdit is not null)
+                                        {
+                                            <EditForm Model="UserScopeToEdit" class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col gap-3 overflow-auto">
+                                                <div class="input-group">
+                                                    <InputText @bind-Value="UserScopeToEdit.DisplayName" id="name" type="text" class="input-control peer" placeholder="User Scope Display Name" />
+                                                    <label for="name" class="input-label">User Scope Display Name</label>
+                                                </div>
 
-													@if (PageToEdit is not null)
-													{
-														foreach(var scope in PageToEdit.UserScopes)
-														{
-															var i = scope;
-															<div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2 
-																relative inline-flex gap-2 my-1 bg-white">
-																<p class="flex-grow">@i.DisplayName</p>
-																<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-																	@onclick="() => DeleteUserScope(i)">
-																	delete
-																</button>
-																<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-slate-200 material-symbols-rounded"
-																	@onclick="() => EditUserScope(i)">
-																	edit
-																</button>
-															</div>
-														}
-													}
-												</div>
+                                                <hr />
 
-												@if (UserScopeToEdit is not null)
-												{
-													<EditForm Model="UserScopeToEdit" class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col gap-3 overflow-auto">
-														<div class="input-group">
-															<InputText @bind-Value="UserScopeToEdit.DisplayName" id="name" type="text" class="input-control peer" placeholder="User Scope Display Name" />
-															<label for="name" class="input-label">User Scope Display Name</label>
-														</div>
+                                                <label class="inline-flex items-center">
+                                                    <InputCheckbox @bind-Value="UserScopeToEdit.IncludeLocalUser" />
+                                                    <span class="ml-2">Include Local User</span>
+                                                </label>
 
-														<hr />
+                                                <hr />
 
-														<label class="inline-flex items-center">
-															<InputCheckbox @bind-Value="UserScopeToEdit.IncludeLocalUser" />
-															<span class="ml-2">Include Local User</span>
-														</label>
+                                                <div class="flex inline-flex gap-1">
+                                                    <div class="input-group flex-grow">
+                                                        <InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
+                                                            @for (int index = 0; index < NotListeningTo.Count; index++)
+                                                            {
+                                                                var i = index;
+                                                                <option value="@i">@NotListeningTo[i].DisplayName</option>
+                                                            }
+                                                        </InputSelect>
+                                                        <label for="listeners" class="input-label">Listening To (Get a user from)</label>
+                                                    </div>
+                                                    <button class="flex-none button-op-success material-symbols-rounded"
+                                                            @onclick="ListenToComponent">
+                                                        add
+                                                    </button>
+                                                </div>
 
-														<hr />
+                                                <div class="grid grid-cols-3 grid-flow-row gap-2">
+                                                    @foreach (var item in UserScopeToEdit.ScopeProviders)
+                                                    {
+                                                        var i = item;
+                                                        <div class="flex inline-flex">
+                                                            <p class="flex-grow">@i.ProvidingComponent.DisplayName</p>
+                                                            <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                                                @onclick="() => StopListeningTo(i)">
+                                                                delete
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
 
-														<div class="flex inline-flex gap-1">
-															<div class="input-group flex-grow">
-																<InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
-																	@for(int index = 0; index < NotListeningTo.Count; index++)
-																	{
-																		var i = index;
-																		<option value="@i">@NotListeningTo[i].DisplayName</option>
-																	}
-																</InputSelect>
-																<label for="listeners" class="input-label">Listening To (Get a user from)</label>
-															</div>
-															<button class="flex-none button-op-success material-symbols-rounded"
-																@onclick="ListenToComponent">
-																add
-															</button>
-														</div>
+                                                <hr />
 
-														<div class="grid grid-cols-3 grid-flow-row gap-2">
-															@foreach(var item in UserScopeToEdit.ScopeProviders)
-															{
-																var i = item;
-																<div class="flex inline-flex">
-																	<p class="flex-grow">@i.ProvidingComponent.DisplayName</p>
-																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-																		@onclick="() => StopListeningTo(i)">
-																		delete
-																	</button>
-																</div>
-															}
-														</div>
+                                                <div class="flex inline-flex gap-1">
+                                                    <div class="input-group flex-grow">
+                                                        <InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
+                                                            @for (int index = 0; index < NotProvidingTo.Count; index++)
+                                                            {
+                                                                var i = index;
+                                                                <option value="@i">@NotProvidingTo[i].DisplayName</option>
+                                                            }
+                                                        </InputSelect>
+                                                        <label for="providers" class="input-label">Providing To (Give a user to)</label>
+                                                    </div>
+                                                    <button class="flex-none button-op-success material-symbols-rounded"
+                                                            @onclick="ProvideForComponent">
+                                                        add
+                                                    </button>
+                                                </div>
 
-														<hr />
+                                                <div class="grid grid-cols-3 grid-flow-row gap-2">
+                                                    @foreach (var item in UserScopeToEdit.ScopeListeners)
+                                                    {
+                                                        var i = item;
+                                                        <div class="flex inline-flex">
+                                                            <p class="flex-grow">@i.ListeningComponent.DisplayName</p>
+                                                            <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                                                @onclick="() => StopProvidingTo(i)">
+                                                                delete
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </EditForm>
+                                        }
+                                        else
+                                        {
+                                            <p class="m-2 p-2 border-2 border-slate-400 shadow-md bg-white flex-grow">Select or create a new user scope to get started.</p>
+                                        }
+                                    </div>
+                                </div>
+                            </PageComponentEditorSettingsNode>
+                        }
 
-														<div class="flex inline-flex gap-1">
-															<div class="input-group flex-grow">
-																<InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
-																	@for(int index = 0; index < NotProvidingTo.Count; index++)
-																	{
-																		var i = index;
-																		<option value="@i">@NotProvidingTo[i].DisplayName</option>
-																	}
-																</InputSelect>
-																<label for="providers" class="input-label">Providing To (Give a user to)</label>
-															</div>
-															<button class="flex-none button-op-success material-symbols-rounded"
-																@onclick="ProvideForComponent">
-																add
-															</button>
-														</div>
+                        if (OpenConfigurationNodeFragment is not null)
+                        {
+                            /* @(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left */
+                            <div class="@(ShowConfigurationOptions ? "scale-x-100" : "scale-x-0") inset-0 origin-right transition-all duration-700 z-20 absolute bg-slate-100">
+                                @OpenConfigurationNodeFragment
+                            </div>
+                        }
 
-														<div class="grid grid-cols-3 grid-flow-row gap-2">
-															@foreach(var item in UserScopeToEdit.ScopeListeners)
-															{
-																var i = item;
-																<div class="flex inline-flex">
-																	<p class="flex-grow">@i.ListeningComponent.DisplayName</p>
-																	<button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-																		@onclick="() => StopProvidingTo(i)">
-																		delete
-																	</button>
-																</div>
-															}
-														</div>
-													</EditForm>
-												}
-												else
-												{
-													<p class="m-2 p-2 border-2 border-slate-400 shadow-md bg-white flex-grow">Select or create a new user scope to get started.</p>
-												}
-											</div>
-										</div>
-									</PageComponentEditorSettingsNode>
-									break;
-
-								case SettingState.Node:
-								case SettingState.Component:
-									break;
-							}
-
-							if (OpenConfigurationNodeFragment is not null)
-							{
-								/* @(SidebarVisible ? "w-[33%] p-2 scale-y-100" : "invisible scale-y-0 w-[0%]") transition-all origin-top-left */
-								<div class="@(ShowConfigurationOptions ? "scale-x-100" : "scale-x-0") inset-0 origin-right transition-all duration-700 z-10 absolute bg-slate-100">
-									@OpenConfigurationNodeFragment
-								</div>
-							}
-							break;
-					}
-				</CascadingValue>
-			</div>
-		</div>
-	</div>
+                        @if (PageToEdit is not null)
+                        {
+                            <CascadingValue Value="DraggingComponent" Name="DraggingComponent">
+                                <CascadingValue Value="true" Name="PageEdit">
+                                    <LayoutNodeTreeLoader EditComponent="this" ParentNode="PageToEdit.Layout" />
+                                </CascadingValue>
+                            </CascadingValue>
+                        }
+                    }
+                </CascadingValue>
+            </div>
+        </div>
+    </div>
 </CascadingValue>

@@ -13,5 +13,5 @@ public class DisplayBase : CustomComponentBase
     [Parameter]
     public DisplayComponentSettings? ComponentData { get; set; }
     [Parameter]
-    public LayoutNode? EditingNode { get; set; }
+    public LayoutNode? Node { get; set; }
 }

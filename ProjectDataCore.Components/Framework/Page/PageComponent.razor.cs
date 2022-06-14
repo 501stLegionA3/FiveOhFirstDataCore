@@ -40,7 +40,7 @@ public partial class PageComponent : IDisposable
     public string Name { get; set; }
 
     [Parameter]
-    public LayoutNode? EditingNode { get; set; }
+    public LayoutNode? Node { get; set; }
 
     private string? LastKey { get; set; }
     [CascadingParameter]
@@ -75,9 +75,9 @@ public partial class PageComponent : IDisposable
             await RegisterDraggableElementsAsync();
         }
 
-        if (LastKey != EditingNode?.EditorKey)
+        if (LastKey != Node?.EditorKey)
         {
-            LastKey = EditingNode?.EditorKey;
+            LastKey = Node?.EditorKey;
 
             await RegisterDroppableContainersAsync();
         }
@@ -92,13 +92,13 @@ public partial class PageComponent : IDisposable
         if (string.IsNullOrWhiteSpace(Name))
             throw new ArgumentException("The name must have a non-blank value.", nameof(Name));
 
-        if(IsEditingScope && EditingNode is not null)
+        if(IsEditingScope && Node is not null)
         {
-            if (EditingNode.ParentNode is not null)
+            if (Node.ParentNode is not null)
             {
-                var parent = EditingNode.ParentNode;
+                var parent = Node.ParentNode;
 
-                if (EditingNode.Order < parent.Nodes.Count - 1)
+                if (Node.Order < parent.Nodes.Count - 1)
                 {
                     if (parent.Rows)
                     {
@@ -112,7 +112,7 @@ public partial class PageComponent : IDisposable
                     }
                 }
 
-                if (EditingNode.Order > 0)
+                if (Node.Order > 0)
                 {
                     if (parent.Rows)
                     {
@@ -145,7 +145,7 @@ public partial class PageComponent : IDisposable
     [JSInvokable]
     public async Task AddSplitAsync(string type, string dest)
     {
-        if (EditingNode is not null)
+        if (Node is not null)
         {
             ActionResult<LayoutNodeModifiedResult>? addRes = null;
             try
@@ -153,16 +153,16 @@ public partial class PageComponent : IDisposable
                 switch (dest)
                 {
                     case "left":
-                        addRes = EditingNode.AddNode(false, true);
+                        addRes = Node.AddNode(false, true);
                         break;
                     case "top":
-                        addRes = EditingNode.AddNode(true, true);
+                        addRes = Node.AddNode(true, true);
                         break;
                     case "bottom":
-                        addRes = EditingNode.AddNode(true, false);
+                        addRes = Node.AddNode(true, false);
                         break;
                     case "right":
-                        addRes = EditingNode.AddNode(false, false);
+                        addRes = Node.AddNode(false, false);
                         break;
                 }
             }
@@ -194,8 +194,8 @@ public partial class PageComponent : IDisposable
     {
         await AddSplitAsync("", dest);
 
-        if(EditingNode is not null)
-            await ScopedDataBus.CloseMenuAsync(this, EditingNode.EditorKey);
+        if(Node is not null)
+            await ScopedDataBus.CloseMenuAsync(this, Node.EditorKey);
     }
 
     [JSInvokable]
@@ -203,8 +203,8 @@ public partial class PageComponent : IDisposable
     {
         // Call the other node and tell it to delete itself.
         // This nodes deletes itself.
-        if (EditingNode is not null
-            && EditingNode.ParentNode is not null)
+        if (Node is not null
+            && Node.ParentNode is not null)
         {
             ActionResult<LayoutNodeModifiedResult>? addRes = null;
             try
@@ -213,12 +213,12 @@ public partial class PageComponent : IDisposable
                 {
                     case "left":
                     case "top":
-                        var node = EditingNode.ParentNode.Nodes[EditingNode.Order - 1];
+                        var node = Node.ParentNode.Nodes[Node.Order - 1];
                         addRes = node.DeleteNode(false);
                         break;
                     case "bottom":
                     case "right":
-                        node = EditingNode.ParentNode.Nodes[EditingNode.Order + 1];
+                        node = Node.ParentNode.Nodes[Node.Order + 1];
                         addRes = node.DeleteNode(true);
                         break;
                 }
@@ -251,15 +251,15 @@ public partial class PageComponent : IDisposable
     {
         await MergeNodeAsync("", dest);
 
-        if (EditingNode is not null)
-            await ScopedDataBus.CloseMenuAsync(this, EditingNode.EditorKey);
+        if (Node is not null)
+            await ScopedDataBus.CloseMenuAsync(this, Node.EditorKey);
     }
 
     [JSInvokable]
     public async Task DeleteNodeAsync(string type, string dest)
     {
         // This nodes deletes itself.
-        if (EditingNode is not null)
+        if (Node is not null)
         {
             ActionResult<LayoutNodeModifiedResult>? addRes = null;
             try
@@ -268,11 +268,11 @@ public partial class PageComponent : IDisposable
                 {
                     case "left":
                     case "top":
-                        addRes = EditingNode.DeleteNode(true);
+                        addRes = Node.DeleteNode(true);
                         break;
                     case "bottom":
                     case "right":
-                        addRes = EditingNode.DeleteNode(false);
+                        addRes = Node.DeleteNode(false);
                         break;
                 }
             }
@@ -304,8 +304,8 @@ public partial class PageComponent : IDisposable
     {
         await DeleteNodeAsync("", dest);
 
-        if (EditingNode is not null)
-            await ScopedDataBus.CloseMenuAsync(this, EditingNode.EditorKey);
+        if (Node is not null)
+            await ScopedDataBus.CloseMenuAsync(this, Node.EditorKey);
     }
 
     [JSInvokable]
@@ -333,26 +333,23 @@ public partial class PageComponent : IDisposable
 
     private async Task OnOpenNodeSettingsAsync()
     {
-        if (EditComponent is not null)
+        if (EditComponent is not null
+            && !IsConfiguringComponent)
         {
             IsConfiguringNode = true;
             await EditComponent.OpenNodeSettingsAsync();
-
-            // TODO register node configuration render fragments.
+            StateHasChanged();
         }
     }
     #endregion
 
-    #region Component Settings
+    #region Component Management
     private bool IsConfiguringComponent { get; set; } = false;
 
-    #endregion
-
-    #region Component Management
     [JSInvokable]
     public Task AddComponentAsync(string itemIndex, string componentType)
     {
-        if (EditingNode is not null && EditComponent is not null)
+        if (Node is not null && EditComponent is not null)
         {
             var parts = itemIndex.Split(',');
 
@@ -368,7 +365,7 @@ public partial class PageComponent : IDisposable
                     {
                         settings.QualifiedTypeName = parts.ElementAtOrDefault(1) ?? "";
                         settings.DisplayName = attribute.Item1.Name;
-                        EditingNode.Component = settings;
+                        Node.Component = settings;
                     }
                 }
             }
@@ -379,51 +376,69 @@ public partial class PageComponent : IDisposable
 
     private void OnDeleteComponent()
     {
-        
+        if (Node is not null)
+            Node.Component = null;
     }
 
     private async Task OnOpenComponentSettingsAsync()
     {
+        if (EditComponent is not null
+            && !IsConfiguringNode)
+        {
+            IsConfiguringComponent = true;
+            await EditComponent.OpenComponentSettingsAsync();
+            EditComponent.OnConfigureMenuClosed += OnConfigureMenuClosed;
+            StateHasChanged();
+        }
+    }
+    #endregion
 
+    #region Utility
+    private async Task OnConfigureMenuClosed(PageEditComponent sender)
+    {
+        IsConfiguringNode = false;
+        IsConfiguringComponent = false;
+        sender.OnConfigureMenuClosed -= OnConfigureMenuClosed;
+        await InvokeAsync(StateHasChanged);
     }
     #endregion
 
     #region Draggables
     private async Task RegisterDroppableContainersAsync()
     {
-        if (EditingNode is not null)
+        if (Node is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
-            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{EditingNode.EditorKey}-add-component", GetDotNetReference(), nameof(AddComponentAsync), EditingNode.EditorKey);
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{Node.EditorKey}-add_split", GetDotNetReference(), nameof(AddSplitAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{Node.EditorKey}-merge", GetDotNetReference(), nameof(MergeNodeAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{Node.EditorKey}-delete", GetDotNetReference(), nameof(DeleteNodeAsync));
+            await JSRuntime.InvokeVoidAsync("DropInterop.registerDropzone", $"{Node.EditorKey}-add-component", GetDotNetReference(), nameof(AddComponentAsync), Node.EditorKey);
         }
     }
 
     private async Task RegisterDraggableElementsAsync()
     {
-        if (EditingNode is not null)
+        if (Node is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.init", EditingNode.EditorKey, GetDotNetReference(), true, true, nameof(DragChanged));
+            await JSRuntime.InvokeVoidAsync("DropInterop.init", Node.EditorKey, GetDotNetReference(), true, true, nameof(DragChanged));
         }
     }
 
     private async Task UnregisterDraggableElementsAsync()
     {
-        if (EditingNode is not null)
+        if (Node is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDroppable", EditingNode.EditorKey);
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDroppable", Node.EditorKey);
         }
     }
 
     private async Task UnregisterDroppableContainersAsync()
     {
-        if (EditingNode is not null)
+        if (Node is not null)
         {
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add_split");
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-merge");
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-delete");
-            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{EditingNode.EditorKey}-add-component");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{Node.EditorKey}-add_split");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{Node.EditorKey}-merge");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{Node.EditorKey}-delete");
+            await JSRuntime.InvokeVoidAsync("DropInterop.destroyDropzone", $"{Node.EditorKey}-add-component");
         }
     }
     #endregion

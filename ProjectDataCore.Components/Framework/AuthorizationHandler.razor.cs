@@ -2,6 +2,7 @@
 using ProjectDataCore.Data.Services.Alert;
 using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.User;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using ProjectDataCore.Data.Structures.Policy;
 
 using System;
@@ -31,7 +32,7 @@ public partial class AuthorizationHandler
     [Parameter]
     public RenderFragment? NotAuthorized { get; set; }
     [Parameter]
-    public PageComponentSettingsBase? Settings { get; set; }
+    public LayoutNode? Settings { get; set; }
 
     [CascadingParameter(Name = "PageEdit")]
     public bool Editing { get; set; } = false;

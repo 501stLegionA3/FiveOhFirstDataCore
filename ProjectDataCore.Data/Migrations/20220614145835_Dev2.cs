@@ -15,6 +15,10 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_PageComponentSettingsBase_DynamicAuthorizationPolicies_Auth~",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_PageComponentSettingsBase_PageComponentSettingsBase_ParentL~",
                 table: "PageComponentSettingsBase");
 
@@ -29,6 +33,10 @@ namespace ProjectDataCore.Data.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_UserSelectComponentSettings_LayoutComponentId",
                 table: "UserSelectComponentSettings");
+
+            migrationBuilder.DropIndex(
+                name: "IX_PageComponentSettingsBase_AuthorizationPolicyKey",
+                table: "PageComponentSettingsBase");
 
             migrationBuilder.DropIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
@@ -47,6 +55,10 @@ namespace ProjectDataCore.Data.Migrations
                 table: "UserSelectComponentSettings");
 
             migrationBuilder.DropColumn(
+                name: "AuthorizationPolicyKey",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
                 name: "MaxChildComponents",
                 table: "PageComponentSettingsBase");
 
@@ -60,6 +72,10 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.DropColumn(
                 name: "ParentPageId",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
+                name: "RequireAuth",
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.RenameColumn(
@@ -135,6 +151,8 @@ namespace ProjectDataCore.Data.Migrations
                     ComponentId = table.Column<Guid>(type: "uuid", nullable: true),
                     ParentNodeId = table.Column<Guid>(type: "uuid", nullable: true),
                     PageSettingsId = table.Column<Guid>(type: "uuid", nullable: true),
+                    RequireAuth = table.Column<bool>(type: "boolean", nullable: false),
+                    AuthorizationPolicyKey = table.Column<Guid>(type: "uuid", nullable: true),
                     Order = table.Column<int>(type: "integer", nullable: false),
                     Rows = table.Column<bool>(type: "boolean", nullable: false),
                     RawNodeWidths = table.Column<string>(type: "text", nullable: false),
@@ -147,6 +165,11 @@ namespace ProjectDataCore.Data.Migrations
                         name: "FK_LayoutNodes_CustomPageSettings_PageSettingsId",
                         column: x => x.PageSettingsId,
                         principalTable: "CustomPageSettings",
+                        principalColumn: "Key");
+                    table.ForeignKey(
+                        name: "FK_LayoutNodes_DynamicAuthorizationPolicies_AuthorizationPolic~",
+                        column: x => x.AuthorizationPolicyKey,
+                        principalTable: "DynamicAuthorizationPolicies",
                         principalColumn: "Key");
                     table.ForeignKey(
                         name: "FK_LayoutNodes_LayoutNodes_ParentNodeId",
@@ -296,6 +319,11 @@ namespace ProjectDataCore.Data.Migrations
                 column: "RendererId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LayoutNodes_AuthorizationPolicyKey",
+                table: "LayoutNodes",
+                column: "AuthorizationPolicyKey");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LayoutNodes_PageSettingsId",
                 table: "LayoutNodes",
                 column: "PageSettingsId",
@@ -422,6 +450,12 @@ namespace ProjectDataCore.Data.Migrations
                 nullable: false,
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
 
+            migrationBuilder.AddColumn<Guid>(
+                name: "AuthorizationPolicyKey",
+                table: "PageComponentSettingsBase",
+                type: "uuid",
+                nullable: true);
+
             migrationBuilder.AddColumn<int>(
                 name: "MaxChildComponents",
                 table: "PageComponentSettingsBase",
@@ -447,11 +481,23 @@ namespace ProjectDataCore.Data.Migrations
                 type: "uuid",
                 nullable: true);
 
+            migrationBuilder.AddColumn<bool>(
+                name: "RequireAuth",
+                table: "PageComponentSettingsBase",
+                type: "boolean",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.CreateIndex(
                 name: "IX_UserSelectComponentSettings_LayoutComponentId",
                 table: "UserSelectComponentSettings",
                 column: "LayoutComponentId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PageComponentSettingsBase_AuthorizationPolicyKey",
+                table: "PageComponentSettingsBase",
+                column: "AuthorizationPolicyKey");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PageComponentSettingsBase_ParentLayoutId",
@@ -474,6 +520,13 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase",
                 column: "ParentPageId",
                 principalTable: "CustomPageSettings",
+                principalColumn: "Key");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_PageComponentSettingsBase_DynamicAuthorizationPolicies_Auth~",
+                table: "PageComponentSettingsBase",
+                column: "AuthorizationPolicyKey",
+                principalTable: "DynamicAuthorizationPolicies",
                 principalColumn: "Key");
 
             migrationBuilder.AddForeignKey(

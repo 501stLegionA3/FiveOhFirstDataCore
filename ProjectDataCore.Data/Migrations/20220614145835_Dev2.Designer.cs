@@ -13,7 +13,7 @@ using ProjectDataCore.Data.Database;
 namespace ProjectDataCore.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220612211404_Dev2")]
+    [Migration("20220614145835_Dev2")]
     partial class Dev2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -568,6 +568,9 @@ namespace ProjectDataCore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AuthorizationPolicyKey")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid?>("ComponentId")
                         .HasColumnType("uuid");
 
@@ -587,10 +590,15 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("RequireAuth")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("Rows")
                         .HasColumnType("boolean");
 
                     b.HasKey("Key");
+
+                    b.HasIndex("AuthorizationPolicyKey");
 
                     b.HasIndex("PageSettingsId")
                         .IsUnique();
@@ -604,9 +612,6 @@ namespace ProjectDataCore.Data.Migrations
                 {
                     b.Property<Guid>("Key")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("AuthorizationPolicyKey")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Discriminator")
@@ -627,12 +632,7 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("RequireAuth")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Key");
-
-                    b.HasIndex("AuthorizationPolicyKey");
 
                     b.HasIndex("ParentNodeId")
                         .IsUnique();
@@ -1437,6 +1437,10 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", b =>
                 {
+                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
+                        .WithMany("LayoutNodes")
+                        .HasForeignKey("AuthorizationPolicyKey");
+
                     b.HasOne("ProjectDataCore.Data.Structures.Page.CustomPageSettings", "PageSettings")
                         .WithOne("Layout")
                         .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "PageSettingsId");
@@ -1445,6 +1449,8 @@ namespace ProjectDataCore.Data.Migrations
                         .WithMany("Nodes")
                         .HasForeignKey("ParentNodeId");
 
+                    b.Navigation("AuthorizationPolicy");
+
                     b.Navigation("PageSettings");
 
                     b.Navigation("ParentNode");
@@ -1452,15 +1458,9 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", b =>
                 {
-                    b.HasOne("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", "AuthorizationPolicy")
-                        .WithMany("PageComponenetSettings")
-                        .HasForeignKey("AuthorizationPolicyKey");
-
                     b.HasOne("ProjectDataCore.Data.Structures.Page.Components.Layout.LayoutNode", "ParentNode")
                         .WithOne("Component")
                         .HasForeignKey("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase", "ParentNodeId");
-
-                    b.Navigation("AuthorizationPolicy");
 
                     b.Navigation("ParentNode");
                 });
@@ -1681,7 +1681,7 @@ namespace ProjectDataCore.Data.Migrations
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Policy.DynamicAuthorizationPolicy", b =>
                 {
-                    b.Navigation("PageComponenetSettings");
+                    b.Navigation("LayoutNodes");
 
                     b.Navigation("TextDisplayComponentSettings");
 

@@ -1,6 +1,7 @@
 ﻿using ProjectDataCore.Data.Account;
 using ProjectDataCore.Data.Services;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 
 using System;
 using System.Collections.Generic;
@@ -34,8 +35,8 @@ public class DynamicAuthorizationPolicy : DataObject<Guid>
     #endregion
 
     #region Authentication Mapping
-    public List<PageComponentSettingsBase> PageComponenetSettings { get; set; }
-    public List<TextDisplayComponentSettings> TextDisplayComponentSettings { get; set; }
+    public List<LayoutNode> LayoutNodes { get; set; } = new();
+    public List<TextDisplayComponentSettings> TextDisplayComponentSettings { get; set; } = new();
     #endregion
 
     #region Non-Database Fields

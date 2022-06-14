@@ -5,6 +5,7 @@ using ProjectDataCore.Data.Services.Policy;
 using ProjectDataCore.Data.Services.Roster;
 using ProjectDataCore.Data.Structures.Model.User;
 using ProjectDataCore.Data.Structures.Page.Components;
+using ProjectDataCore.Data.Structures.Page.Components.Layout;
 using ProjectDataCore.Data.Structures.Util;
 
 using System;
@@ -29,7 +30,7 @@ public class UserService : IUserService
 		=> (_dbContextFactory, _assignableDataService, _userManager, _policyService)
 		=  (dbContextFactory, assignableDataService, userManager, policyService);
 
-    public async Task<bool> AuthorizeUserAsync(ClaimsPrincipal claims, PageComponentSettingsBase settings, bool forceReload = false)
+    public async Task<bool> AuthorizeUserAsync(ClaimsPrincipal claims, LayoutNode settings, bool forceReload = false)
 	{
 
 		if (settings.RequireAuth)
