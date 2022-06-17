@@ -4,6 +4,7 @@ using ProjectDataCore.Data.Structures.Util.Comparers;
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -447,5 +448,30 @@ public class LayoutNode : DataObject<Guid>
 
         // ... then treturn the node.
         return node;
+    }
+
+    /// <summary>
+    /// Moves upwards on the <see cref="LayoutNode"/> tree, starting from this node, until the <see cref="CustomPageSettings"/> object is found.
+    /// </summary>
+    /// <remarks>
+    /// If a node tree is not fully loaded, specifically in the upwards direction, this method can fail to find the <see cref="CustomPageSettings"/>.
+    /// </remarks>
+    /// <param name="settings">The <see cref="CustomPageSettings"/> object for this node tree.</param>
+    /// <returns>True if the node with a <see cref="CustomPageSettings"/> was found, false if it was not.</returns>
+    public bool TryGetPageSettings([NotNullWhen(true)] out CustomPageSettings? settings)
+    {
+        var cur = this;
+        settings = null;
+
+        while (cur.PageSettings is null)
+        {
+            cur = cur.ParentNode;
+
+            if (cur is null)
+                return false;
+        }
+
+        settings = cur.PageSettings;
+        return true;
     }
 }

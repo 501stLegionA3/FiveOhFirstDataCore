@@ -21,7 +21,7 @@
                         @for (int index = 0; index < Policies.Count; index++)
                         {
                             var i = index;
-                            <option value="@i">@Policies[i].PolicyName</option>
+                            <option value="@i" selected="@(i == PolicyIndex)">@Policies[i].PolicyName</option>
                         }
                     </InputSelect>
                     <label for="listeners" class="input-label">Authorization Policies</label>
