@@ -27,9 +27,11 @@
         }
     </Publish>
     <Configure>
-        <PageComponentEditorSettingsNode Name="Value Configuration">
-
+        <PageComponentEditorSettingsNode Name="Node Authorization">
+            <AuthorizationPolicySelector Settings="Node" />
         </PageComponentEditorSettingsNode>
-        <ComponentUserScopeConfigurationTemplate />
+        <PageComponentEditorSettingsNode Name="User Scope">
+            <ComponentUserScopeConfigurationTemplate Settings="ComponentData" />
+        </PageComponentEditorSettingsNode>
     </Configure>
 </PageComponent>

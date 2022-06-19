@@ -1,100 +1,98 @@
-﻿<PageComponentEditorSettingsNode Name="User Scope">
-	<div class="flex flex-col w-full h-full">
-		<p class="text-center text-xl w-full mb-1 flex-none">Component User Scope</p>
-        <p class="text-center w-full mb-1 flex-none">
-            Allows for managing the user scopes that are connected to this component.
-        </p>
+﻿<div class="flex flex-col w-full h-full">
+	<p class="text-center text-xl w-full mb-1 flex-none">Component User Scope</p>
+    <p class="text-center w-full mb-1 flex-none">
+        Allows for managing the user scopes that are connected to this component.
+    </p>
 
-		<div class="flex-grow flex relative overflow-hidden">
-			<div class="flex flex-col gap-2 w-full p-4 m-3 border-2 border-slate-400 shadow-md rounded-lg bg-white">
-				@if(_component is not null)
-				{
-					<EditForm Model="_component" class="flex-grow flex flex-col gap-3 overflow-auto">
-						@if (AllowSendData)
-						{
-							<div class="flex inline-flex gap-1">
-                                <div class="input-group flex-grow">
-                                    <InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
-                                        @for (int index = 0; index < NotProvidingTo.Count; index++)
-                                        {
-                                            var i = index;
-                                            <option value="@i">@NotProvidingTo[i].DisplayName</option>
-                                        }
-                                    </InputSelect>
-                                    <label for="providers" class="input-label">Providing To (Give a user to)</label>
+	<div class="flex-grow flex relative overflow-hidden">
+		<div class="flex flex-col gap-2 w-full p-4 m-3 border-2 border-slate-400 shadow-md rounded-lg bg-white">
+			@if(_component is not null)
+			{
+				<EditForm Model="_component" class="flex-grow flex flex-col gap-3 overflow-auto">
+					@if (AllowSendData)
+					{
+						<div class="flex inline-flex gap-1">
+                            <div class="input-group flex-grow">
+                                <InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
+                                    @for (int index = 0; index < NotProvidingTo.Count; index++)
+                                    {
+                                        var i = index;
+                                        <option value="@i">@NotProvidingTo[i].DisplayName</option>
+                                    }
+                                </InputSelect>
+                                <label for="providers" class="input-label">Providing To (Give a user to)</label>
+                            </div>
+                            <button class="flex-none button-op-success material-symbols-rounded"
+                                    @onclick="ProvideForScope">
+                                add
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-3 grid-flow-row gap-2">
+                            @foreach (var item in _component.ScopeListeners)
+                            {
+                                var i = item;
+                                <div class="flex inline-flex">
+                                    <p class="flex-grow">@i.ListeningScope.DisplayName</p>
+                                    <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                        @onclick="() => StopProvidingTo(i)">
+                                        delete
+                                    </button>
                                 </div>
-                                <button class="flex-none button-op-success material-symbols-rounded"
-                                        @onclick="ProvideForScope">
-                                    add
-                                </button>
+                            }
+                        </div>
+					}
+
+                    @if (AllowSendData && AllowReceiveData)
+                    {
+                        <hr />
+                    }
+
+					@if (AllowReceiveData)
+					{
+						<div class="flex inline-flex gap-1">
+                            <div class="input-group flex-grow">
+                                <InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
+                                    @for (int index = 0; index < NotListeningTo.Count; index++)
+                                    {
+                                        var i = index;
+                                        <option value="@i">@NotListeningTo[i].DisplayName</option>
+                                    }
+                                </InputSelect>
+                                <label for="listeners" class="input-label">Listening To (Get a user from)</label>
                             </div>
+                            <button class="flex-none button-op-success material-symbols-rounded"
+                                    @onclick="ListenToScope">
+                                add
+                            </button>
+                        </div>
 
-                            <div class="grid grid-cols-3 grid-flow-row gap-2">
-                                @foreach (var item in _component.ScopeListeners)
-                                {
-                                    var i = item;
-                                    <div class="flex inline-flex">
-                                        <p class="flex-grow">@i.ListeningScope.DisplayName</p>
-                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-                                            @onclick="() => StopProvidingTo(i)">
-                                            delete
-                                        </button>
-                                    </div>
-                                }
-                            </div>
-						}
-
-                        @if (AllowSendData && AllowReceiveData)
-                        {
-                            <hr />
-                        }
-
-						@if (AllowReceiveData)
-						{
-							<div class="flex inline-flex gap-1">
-                                <div class="input-group flex-grow">
-                                    <InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
-                                        @for (int index = 0; index < NotListeningTo.Count; index++)
-                                        {
-                                            var i = index;
-                                            <option value="@i">@NotListeningTo[i].DisplayName</option>
-                                        }
-                                    </InputSelect>
-                                    <label for="listeners" class="input-label">Listening To (Get a user from)</label>
+                        <div class="grid grid-cols-3 grid-flow-row gap-2">
+                            @foreach (var item in _component.ScopeProviders)
+                            {
+                                var i = item;
+                                <div class="flex inline-flex">
+                                    <p class="flex-grow">@i.ProvidingScope.DisplayName</p>
+                                    <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                        @onclick="() => StopListeningTo(i)">
+                                        delete
+                                    </button>
                                 </div>
-                                <button class="flex-none button-op-success material-symbols-rounded"
-                                        @onclick="ListenToScope">
-                                    add
-                                </button>
-                            </div>
-
-                            <div class="grid grid-cols-3 grid-flow-row gap-2">
-                                @foreach (var item in _component.ScopeProviders)
-                                {
-                                    var i = item;
-                                    <div class="flex inline-flex">
-                                        <p class="flex-grow">@i.ProvidingScope.DisplayName</p>
-                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
-                                            @onclick="() => StopListeningTo(i)">
-                                            delete
-                                        </button>
-                                    </div>
-                                }
-                            </div>
-						}
-					</EditForm>
-				}
-				else
-				{
-					<p>There is no component loaded. How did you get here?</p>
-				}
+                            }
+                        </div>
+					}
+				</EditForm>
+			}
+			else
+			{
+				<p>There is no component loaded. How did you get here?</p>
+			}
 				
-				<hr />
+			<hr />
 
-				<button class="button-util-action text-center" @onclick="EditComponent.CloseConfigurationNode">
-					Close Menu
-				</button>
-			</div>
+			<button class="button-util-action text-center" @onclick="EditComponent.CloseConfigurationNode">
+				Close Menu
+			</button>
 		</div>
 	</div>
-</PageComponentEditorSettingsNode>
+</div>
