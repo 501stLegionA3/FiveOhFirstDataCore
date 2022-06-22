@@ -488,14 +488,25 @@ public partial class PageEditComponent : IDisposable
         NotListeningIndex = 0;
         NotProvidingIndex = 0;
 
+        ReloadComponentLists(scope);
+
+        StateHasChanged();
+    }
+
+    private void ReloadComponentLists(UserScope scope)
+    {
         if (PageToEdit is not null)
         {
             var allChildren = PageToEdit.GetChildComponents();
-            NotListeningTo = allChildren.Except(scope.GetOrderedProvidingComponents()).ToList();
-            NotProvidingTo = allChildren.Except(scope.GetOrderedListeningComponents()).ToList();
+            NotListeningTo = allChildren
+                .Except(scope.GetOrderedProvidingComponents())
+                .Except(scope.GetOrderedListeningComponents())
+                .ToList();
+            NotProvidingTo = allChildren
+                .Except(scope.GetOrderedListeningComponents())
+                .Except(scope.GetOrderedProvidingComponents())
+                .ToList();
         }
-
-        StateHasChanged();
     }
 
     private void DeleteUserScope(UserScope scope)
@@ -516,7 +527,9 @@ public partial class PageEditComponent : IDisposable
 
     private void ListenToComponent()
 	{
-        if (UserScopeToEdit is not null)
+        if (UserScopeToEdit is not null
+            && NotListeningIndex > 0 
+            && NotListeningIndex < NotListeningTo.Count)
         {
             var component = NotListeningTo[NotListeningIndex];
             UserScopeToEdit.ScopeProviders.Add(new()
@@ -524,6 +537,8 @@ public partial class PageEditComponent : IDisposable
                 ProvidingComponent = component,
                 Order = UserScopeToEdit.ScopeProviders.Count
             });
+
+            ReloadComponentLists(UserScopeToEdit);
         }
 	}
 
@@ -532,12 +547,16 @@ public partial class PageEditComponent : IDisposable
         if (UserScopeToEdit is not null)
 		{
             UserScopeToEdit.ScopeProviders.Remove(component);
-		}
+
+            ReloadComponentLists(UserScopeToEdit);
+        }
 	}
 
     private void ProvideForComponent()
 	{
-        if (UserScopeToEdit is not null)
+        if (UserScopeToEdit is not null
+            && NotProvidingIndex > 0
+            && NotProvidingIndex < NotProvidingTo.Count)
         {
             var component = NotProvidingTo[NotProvidingIndex];
             UserScopeToEdit.ScopeListeners.Add(new()
@@ -545,6 +564,8 @@ public partial class PageEditComponent : IDisposable
                 ListeningComponent = component,
                 Order = UserScopeToEdit.ScopeListeners.Count
 			});
+
+            ReloadComponentLists(UserScopeToEdit);
         }
     }
 
@@ -553,6 +574,8 @@ public partial class PageEditComponent : IDisposable
         if (UserScopeToEdit is not null)
         {
             UserScopeToEdit.ScopeListeners.Remove(component);
+
+            ReloadComponentLists(UserScopeToEdit);
         }
     }
 
