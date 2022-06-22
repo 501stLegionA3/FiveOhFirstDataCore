@@ -81,4 +81,30 @@ public class UserScope : DataObject<Guid>
 
         return orderedListeningComponents;
     }
+
+    public void AttachListener(PageComponentSettingsBase component)
+    {
+        UserScopeListenerContainer container = new()
+        {
+            ListeningComponent = component,
+            ProvidingScope = this,
+            Order = ScopeListeners.Count
+        };
+
+        this.ScopeListeners.Add(container);
+        component.ScopeProviders.Add(container);
+    }
+
+    public void AttachProvider(PageComponentSettingsBase component)
+    {
+        UserScopeProviderContainer container = new()
+        {
+            ProvidingComponent = component,
+            ListeningScope = this,
+            Order = ScopeListeners.Count
+        };
+
+        this.ScopeProviders.Add(container);
+        component.ScopeListeners.Add(container);
+    }
 }

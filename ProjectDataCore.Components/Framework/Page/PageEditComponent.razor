@@ -339,11 +339,11 @@
 
                                                 <div class="flex inline-flex gap-1">
                                                     <div class="input-group flex-grow">
-                                                        <InputSelect @bind-Value="NotListeningIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
-                                                            @for (int index = 0; index < NotListeningTo.Count; index++)
+                                                        <InputSelect @bind-Value="AvalibleComponentsIndex" id="listeners" type="text" class="input-control peer" placeholder="Listening to">
+                                                            @for (int index = 0; index < AvalibleComponents.Count; index++)
                                                             {
                                                                 var i = index;
-                                                                <option value="@i">@NotListeningTo[i].DisplayName</option>
+                                                                <option value="@i">@AvalibleComponents[i].DisplayName</option>
                                                             }
                                                         </InputSelect>
                                                         <label for="listeners" class="input-label">Listening To (Get a user from)</label>
@@ -372,11 +372,11 @@
 
                                                 <div class="flex inline-flex gap-1">
                                                     <div class="input-group flex-grow">
-                                                        <InputSelect @bind-Value="NotProvidingIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
-                                                            @for (int index = 0; index < NotProvidingTo.Count; index++)
+                                                        <InputSelect @bind-Value="AvalibleComponentsIndex" id="providers" type="text" class="input-control peer" placeholder="Providing to">
+                                                            @for (int index = 0; index < AvalibleComponents.Count; index++)
                                                             {
                                                                 var i = index;
-                                                                <option value="@i">@NotProvidingTo[i].DisplayName</option>
+                                                                <option value="@i">@AvalibleComponents[i].DisplayName</option>
                                                             }
                                                         </InputSelect>
                                                         <label for="providers" class="input-label">Providing To (Give a user to)</label>

@@ -13,6 +13,12 @@ public class UserScopeProviderContainer : DataObject<Guid>
     public Guid ProvidingComponentId { get; set; }
 
     public int Order { get; set; }
+
+    public void Deatch()
+    {
+        ListeningScope?.ScopeProviders.Remove(this);
+        ProvidingComponent?.ScopeListeners.Remove(this);
+    }
 }
 
 public class UserScopeListenerContainer : DataObject<Guid>
@@ -23,4 +29,10 @@ public class UserScopeListenerContainer : DataObject<Guid>
     public Guid ListeningComponentId { get; set; }
 
     public int Order { get; set; }
+
+    public void Deatch()
+    {
+        ProvidingScope?.ScopeListeners.Remove(this);
+        ListeningComponent?.ScopeProviders.Remove(this);
+    }
 }

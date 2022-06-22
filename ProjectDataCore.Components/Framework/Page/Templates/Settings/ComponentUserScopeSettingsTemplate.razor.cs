@@ -13,20 +13,18 @@ public partial class ComponentUserScopeSettingsTemplate
 #pragma warning disable CS8618 // Editor Required is never null.
     [Parameter, EditorRequired]
     public LayoutNode Node { get; set; }
-    [Parameter, EditorRequired]
-    public PageEditComponent EditComponent { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     [Parameter]
     public bool AllowSendData { get; set; } = true;
     [Parameter]
     public bool AllowReceiveData { get; set; } = true;
+    [CascadingParameter(Name = "PageEditComponent")]
+    public PageEditComponent? EditComponent { get; set; }
 
     private PageComponentSettingsBase? _component;
 
-    private int NotListeningIndex { get; set; } = 0;
-    private List<UserScope> NotListeningTo { get; set; } = new();
-    private int NotProvidingIndex { get; set; } = 0;
-    private List<UserScope> NotProvidingTo { get; set; } = new();
+    private int ScopeIndex { get; set; } = 0;
+    private List<UserScope> AvalibleScopes { get; set; } = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -42,22 +40,24 @@ public partial class ComponentUserScopeSettingsTemplate
         if (_component is not null
             && Node.TryGetPageSettings(out var settings))
         {
-            NotListeningTo = settings.UserScopes.Where(x => !x.ScopeListeners.Any(y => y.ListeningComponent == _component)).ToList();
-            NotProvidingTo = settings.UserScopes.Where(x => !x.ScopeProviders.Any(y => y.ProvidingComponent == _component)).ToList();
+            AvalibleScopes = settings.UserScopes
+                .Where(x => !x.ScopeListeners.Any(y => y.ListeningComponent == _component))
+                .Where(x => !x.ScopeProviders.Any(y => y.ProvidingComponent == _component))
+                .ToList();
         }
     }
 
     // Listen to provider.
     private void ListenToScope()
     {
-        if (_component is not null)
+        if (_component is not null
+            && ScopeIndex >= 0
+            && ScopeIndex < AvalibleScopes.Count)
         {
-            var scope = NotListeningTo[NotListeningIndex];
-            _component.ScopeProviders.Add(new()
-            {
-                ProvidingScope = scope,
-                Order = _component.ScopeProviders.Count
-            });
+            var scope = AvalibleScopes[ScopeIndex];
+            scope.AttachListener(_component);
+
+            RefreshScopes();
         }
     }
 
@@ -65,21 +65,23 @@ public partial class ComponentUserScopeSettingsTemplate
     {
         if (_component is not null)
         {
-            _component.ScopeProviders.Remove(scopeContainer);
+            scopeContainer.Deatch();
+
+            RefreshScopes();
         }
     }
 
     // Provide for listener.
     private void ProvideForScope()
     {
-        if (_component is not null)
+        if (_component is not null
+            && ScopeIndex >= 0
+            && ScopeIndex < AvalibleScopes.Count)
         {
-            var scope = NotProvidingTo[NotProvidingIndex];
-            _component.ScopeListeners.Add(new()
-            {
-                ListeningScope = scope,
-                Order = _component.ScopeListeners.Count
-            });
+            var scope = AvalibleScopes[ScopeIndex];
+            scope.AttachProvider(_component);
+
+            RefreshScopes();
         }
     }
 
@@ -87,7 +89,9 @@ public partial class ComponentUserScopeSettingsTemplate
     {
         if (_component is not null)
         {
-            _component.ScopeListeners.Remove(scopeContainer);
+            scopeContainer.Deatch();
+
+            RefreshScopes();
         }
     }
 }
