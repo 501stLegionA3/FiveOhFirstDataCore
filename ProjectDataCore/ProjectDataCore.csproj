@@ -7,7 +7,7 @@
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="npm install" />
-    <Exec Command="if $(ConfigurationName) == Debug ( npx webpack --config ../webpack.config.debug.js ) ELSE ( npx webpack --config ../webpack.config.js )" />
+    <Exec Command="if $(ConfigurationName) == Debug ( npx webpack --mode=development --config ../webpack.config.js ) ELSE ( npx webpack --mode=production --config ../webpack.config.js )" />
   </Target>
   
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
