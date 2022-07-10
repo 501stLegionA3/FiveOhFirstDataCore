@@ -167,7 +167,7 @@ public class AssignableValueConversion : DataObject<Guid>
         return FormatDateTimes(dateOnlys.ToList(x => x.ToDateTime(time)));
     }
 
-    public List<string> FormatTimeSpans(List<TimeSpan> timeSpans)
+    private List<string> FormatTimeSpans(List<TimeSpan> timeSpans)
         => timeSpans.ToList(x => x.ToString(DateTime_ToStringPattern));
 
     private List<string> FormatTimeOnlys(List<TimeOnly> timeOnlys)
