@@ -23,7 +23,8 @@ public partial class AssignableValueDisplayComponent : DisplayBase
     #region Assignable Values
     private static readonly Type[] AllowedStaticTypes = new[]
     {
-        typeof(Guid),
+        // TODO add Guid support for assignable types
+        // typeof(Guid),
         typeof(string),
         typeof(ulong)
     };

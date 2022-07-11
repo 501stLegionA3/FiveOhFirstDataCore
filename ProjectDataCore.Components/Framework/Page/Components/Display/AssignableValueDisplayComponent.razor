@@ -148,7 +148,157 @@
                                         }
                                         else
                                         {
-                                            
+                                            switch (ValueConversionContainer)
+                                            {
+                                                case IAssignableValue<string> sv:
+                                                    <p>
+                                                        String Configuration. For more details on format strings please read about Composite Formatting in 
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#composite-format-string"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700" 
+                                                            target="_blank">this document</a>.
+                                                    </p>
+                                                    <p>
+                                                        The value will always be <code>{0}</code> and the name of this variable will always
+                                                        be <code>{1}</code>.
+                                                    </p>
+
+                                                    <hr />
+
+                                                    <div class="input-group">
+                                                        <InputText @bind-Value="AssignableValueConversionToEdit.String_FormatString" id="string-format-string" type="text" class="input-control peer" placeholder="Format String" />
+                                                        <label for="string-format-string" class="input-label">Format String</label>
+                                                    </div>
+                                                    break;
+                                                case IAssignableValue<int> iv:
+                                                case IAssignableValue<double> dv:
+                                                    <p>
+                                                        Numeric Configuration. For more details on format strings please read about Composite Formatting in 
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/composite-formatting#composite-format-string"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700" 
+                                                            target="_blank">this document</a>.
+                                                    </p>
+                                                    <p>
+                                                        Numerical formats have additional formatting:
+                                                        <br />
+
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
+                                                            target="_blank">Standard Numeric Format Strings</a>
+                                                        <br />
+                                                            
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
+                                                            target="_blank">Custom Numeric Format Strings</a>
+                                                        <br />
+
+                                                        <i>The Data Core utilizes Composite Formatting. The Standard and Custom documents will provide other 
+                                                            examples alongside Composite Formatting. When designing your output, make sure to only use composite format strings.</i>
+                                                    </p>
+                                                    <p>
+                                                        The value will always be <code>{0}</code> and the name of this variable will always
+                                                        be <code>{1}</code>.
+                                                    </p>
+
+                                                    <hr />
+
+                                                    <div class="input-group">
+                                                        <InputText @bind-Value="AssignableValueConversionToEdit.Numeric_FormatString" id="numeric-format-string" type="text" class="input-control peer" placeholder="Format String" />
+                                                        <label for="numeric-format-string" class="input-label">Format String</label>
+                                                    </div>
+                                                    break;
+                                                case IAssignableValue<DateTime> dt:
+                                                case IAssignableValue<DateOnly> donly:
+                                                case IAssignableValue<TimeOnly> tonly:
+                                                    <p>
+                                                        Date and Time, Date Only, or Time Only Configuration. Date and Time formatting utilizes <code>ToString</code>
+                                                        which can be seen in the below documents.
+                                                    </p>
+                                                    <p>
+                                                        Date and Time formats have additional formatting:
+                                                        <br />
+
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
+                                                            target="_blank">Standard Date and Time Format Strings</a>
+                                                        <br />
+                                                            
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-numeric-format-strings"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
+                                                            target="_blank">Custom Date and Time Format Strings</a>
+                                                        <br />
+
+                                                        <br />
+                                                        When using a Time Span, there is a separate set of formatting rules:
+                                                        <br />
+                                                        <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-timespan-format-strings"
+                                                            class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
+                                                            target="_blank">Custom TimeSpan Format Strings</a>
+
+                                                        <i>The Data Core utilizes <code>ToString</code> formatting for Date and Time values. The above documents may have
+                                                            other format examples that use other methods. Make sure to design your format string based on the <code>ToString</code>
+                                                            examples.</i>
+                                                    </p>
+
+                                                    <hr />
+
+                                                    <div class="input-group">
+                                                        <InputText @bind-Value="AssignableValueConversionToEdit.DateTime_ToStringPattern" id="datetime-format-string" type="text" class="input-control peer" placeholder="ToString Format" />
+                                                        <label for="datetime-format-string" class="input-label">ToString Format</label>
+                                                    </div>
+
+                                                    @*TODO:
+                                                        Handle state has changed for all boolean checkboxes to update the displayed forms.
+                                                    *@
+
+                                                    <label class="inline-flex items-center">
+                                                        <InputCheckbox @bind-Value="AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan" />
+                                                        <span class="ml-2">Convert To Time Span</span>
+                                                    </label>
+
+                                                    @if(AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan)
+                                                    {
+                                                        <p>
+                                                            This value is being converted to a Time Span. By default, it will check against the current date and time
+                                                            of UTC-0, or GMT. You can set a custom Date to compare against if needed.
+                                                        </p>
+
+                                                        <label class="inline-flex items-center">
+                                                            <InputCheckbox Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue"
+                                                                ValueChanged="(x) => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo = x ? default : null"
+                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue" />
+                                                            <span class="ml-2">Use Custom Date and Time</span>
+                                                        </label>
+
+                                                        if (AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue)
+                                                        {
+                                                            <InputDate id="datetime-timespan-conversion" class="input-control peer" placeholder="Time Span Conversion Base"
+			                                                    Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.Value"
+                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.Value"
+			                                                    ValueChanged="(x) => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo = x"
+			                                                    TValue="DateTime" />
+                                                        }
+                                                    }
+                                                    break;
+                                                case IAssignableValue<bool> bv:
+                                                    <p>
+                                                        Boolean Configuration. The value in Dispaly When True will be displayed if the value is ture. The value in
+                                                        Display When False will be displayed if the value is false. No formatting is done to these values. What you
+                                                        type is what you get.
+                                                    </p>
+
+                                                    <hr />
+
+                                                    <div class="input-group">
+                                                        <InputText @bind-Value="AssignableValueConversionToEdit.Bool_FormatOnTrue" id="bool-format-true" type="text" class="input-control peer" placeholder="Display When True" />
+                                                        <label for="bool-format-true" class="input-label">Display When True</label>
+                                                    </div>
+
+                                                    <div class="input-group">
+                                                        <InputText @bind-Value="AssignableValueConversionToEdit.Bool_FormatOnFalse" id="bool-format-false" type="text" class="input-control peer" placeholder="Display When False" />
+                                                        <label for="bool-format-false" class="input-label">Display When False</label>
+                                                    </div>
+                                                    break;
+                                            }
                                         }
                                     }
                                 </div>
