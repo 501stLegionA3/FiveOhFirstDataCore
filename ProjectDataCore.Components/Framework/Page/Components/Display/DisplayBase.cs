@@ -12,6 +12,8 @@ public class DisplayBase : CustomComponentBase
 {
     [Parameter]
     public DisplayComponentSettings? ComponentData { get; set; }
+    [CascadingParameter(Name = "PageEditComponent")]
+    public PageEditComponent? EditComponent { get; set; }
     [Parameter]
     public LayoutNode? Node { get; set; }
 }

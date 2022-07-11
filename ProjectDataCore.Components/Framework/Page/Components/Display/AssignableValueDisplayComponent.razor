@@ -5,20 +5,24 @@
         @if(ComponentData is not null 
             && Node is not null)
         {
+            @*TODO:
+                - Fix auth/noauth display values.
+            *@
+
             if(Node.RequireAuth)
             {
                 <AuthorizationHandler Settings="Node">
                     <Authorized>
-                        @ComponentData.AuthorizedMarkup
+                        ComponentData.AuthorizedMarkup
                     </Authorized>
                     <NotAuthorized>
-                        @ComponentData.UnAuthorizedMarkup
+                        ComponentData.UnAuthorizedMarkup
                     </NotAuthorized>
                 </AuthorizationHandler>
             }
             else
             {
-                @ComponentData.AuthorizedMarkup
+                @*ComponentData.AuthorizedMarkup*@
             }
         }
         else
@@ -27,12 +31,159 @@
         }
     </Publish>
     <Configure>
-        <PageComponentEditorSettingsNode Name="Node Authorization">
-            <AuthorizationPolicySelector Settings="Node" />
-        </PageComponentEditorSettingsNode>
-        <ComponentUserScopeSettingsTemplate Node="Node" />
-        <PageComponentEditorSettingsNode Name="Display Settings">
+        @if (EditComponent is not null)
+        {
+            <PageComponentEditorSettingsNode Name="Node Authorization">
+                <AuthorizationPolicySelector Settings="Node" />
+            </PageComponentEditorSettingsNode>
+            <ComponentUserScopeSettingsTemplate Node="Node" />
+            <PageComponentEditorSettingsNode Name="Assignable Value Settings">
+                <div class="flex flex-col w-full h-full">
+	                <p class="text-center text-xl w-full mb-1 flex-none">Display Settings</p>
+                    <p class="text-center w-full mb-1 flex-none">
+                        Allows for managing the assignable values for a component, including which ones are selected
+                        and how the data is retrieved from them.
+                    </p>
 
-        </PageComponentEditorSettingsNode>
+	                <div class="flex-grow flex relative overflow-hidden">
+			            <div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
+				            <div class="p-2 shadow-md border-slate-400 rounded-br-lg border-2
+								relative inline-flex gap-2 my-1 bg-white">
+                                <button class="flex-grow button-op-success" @onclick="EditComponent.CloseConfigurationNode">Close Menu</button>
+                            </div>
+                                
+                            @if (ComponentData is not null 
+                                && AssignableValueRendererToEdit is null)
+                            {
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+									relative my-1 first:mt-0 last:mt-0 bg-white">
+                                    Existing Assignable Value Renderers
+                                </div>
+
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+									relative inline-flex gap-2 my-1 bg-white">
+                                    <button class="flex-grow button-util-action" @onclick="AddAssignableValueRenderer">Add New</button>
+                                </div>
+
+                                foreach (var renderer in ComponentData.AssignableValueRenderers)
+                                {
+                                    var i = renderer;
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+										relative inline-flex gap-2 my-1 bg-white">
+                                        <p class="flex-grow">@i.DisplayName</p>
+                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                            @onclick="() => DeleteAssignableValueRenderer(i)">
+                                            delete
+                                        </button>
+                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-slate-200 material-symbols-rounded"
+                                            @onclick="() => EditAssignableValueRenderer(i)">
+                                            edit
+                                        </button>
+                                    </div>
+                                }
+                            }
+                            else if (AssignableValueRendererToEdit is not null)
+                            {
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+									relative my-1 first:mt-0 last:mt-0 bg-white">
+                                    Existing Assignable Value Conversions
+                                </div>
+
+                                <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+									relative inline-flex gap-2 my-1 bg-white">
+                                    <button class="flex-grow button-util-action" @onclick="AddAssignableValueConversion">Add New</button>
+                                </div>
+
+                                foreach (var conversion in AssignableValueRendererToEdit.Conversions)
+                                {
+                                    var i = conversion;
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+										relative inline-flex gap-2 my-1 bg-white">
+                                        <p class="flex-grow">@i.ValueName</p>
+                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-red-700 text-white material-symbols-rounded"
+                                            @onclick="() => DeleteAssignableValueConversion(i)">
+                                            delete
+                                        </button>
+                                        <button class="flex-none rounded-lg w-7 h-7 shadow-md bg-slate-200 material-symbols-rounded"
+                                            @onclick="() => EditAssignableValueConversion(i)">
+                                            edit
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
+
+                        @if (AssignableValueRendererToEdit is not null)
+                        {
+                            <EditForm Model="AssignableValueRendererToEdit" class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col overflow-auto">
+                                <div class="flex flex-col overflow-auto h-[40%] p-3 gap-2">
+                                    @*Renderer Edit Area*@
+                                    <div class="input-group">
+                                        <InputText @bind-Value="AssignableValueRendererToEdit.DisplayName" id="name" type="text" class="input-control peer" placeholder="User Scope Display Name" />
+                                        <label for="name" class="input-label">Assignable Value Renderer Display Name</label>
+                                    </div>
+
+                                    <UserPropertySelector PropertyName="@AssignableValueRendererToEdit.PropertyName"
+                                        UseStaticProperties="AssignableValueRendererToEdit.Static"
+                                        SetPropertyName="(x) => AssignableValueRendererToEdit.PropertyName = x"
+                                        SetPropertyType="(x) => AssignableValueRendererToEdit.Static = x"
+                                        AllowedStaticTypes="AllowedStaticTypes"/>
+
+                                    
+                                    <button class="button-util-action" @onclick="() => EditAssignableValueRenderer(null)">Stop Editing</button>
+                                </div>
+                                <div class="flex flex-col overflow-auto h-[60%] p-3 border-t-2 border-black gap-2">
+                                    @*Conversion Edit Area*@
+                                    @if(AssignableValueConversionToEdit is null)
+                                    {
+                                        <p>Select a conversion to edit.</p>
+                                    }
+                                    else
+                                    {
+                                        if (ValueConversionContainer is null)
+                                        {
+                                            <p>No conversion container was able to be found. Make sure to select a property name from
+                                                the above list.
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            
+                                        }
+                                    }
+                                </div>
+                            </EditForm>
+                        }
+                    </div>
+                </div>
+            </PageComponentEditorSettingsNode>
+            <PageComponentEditorSettingsNode Name="Display Settings">
+                <div class="flex flex-col w-full h-full">
+	                <p class="text-center text-xl w-full mb-1 flex-none">Display Settings</p>
+                    <p class="text-center w-full mb-1 flex-none">
+                        Allows for managing the display settings for this component, including which assignable values are used
+                        and how they are displayed to the user.
+                    </p>
+
+	                <div class="flex-grow flex relative overflow-hidden">
+		                <div class="flex flex-col gap-2 w-full p-4 m-3 border-2 border-slate-400 shadow-md rounded-lg bg-white">
+			                <div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
+				                
+
+			                    <hr />
+
+			                    <button class="button-util-action text-center" @onclick="EditComponent.CloseConfigurationNode">
+				                    Close Menu
+			                    </button>
+                            </div>
+
+                            <div class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col gap-3 overflow-auto">
+                                
+                            </div>
+		                </div>
+	                </div>
+                </div>
+            </PageComponentEditorSettingsNode>
+        }
     </Configure>
 </PageComponent>

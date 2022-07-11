@@ -1,4 +1,6 @@
 ﻿using ProjectDataCore.Data.Structures.Assignable.Value;
+using ProjectDataCore.Data.Structures.Page;
+using ProjectDataCore.Data.Structures.Page.Components.Parameters;
 
 using System;
 using System.Collections.Generic;
@@ -9,74 +11,47 @@ using System.Threading.Tasks;
 namespace ProjectDataCore.Data.Structures.Assignable.Render;
 public class AssignableValueRenderer : DataObject<Guid>
 {
+    /// <summary>
+    /// The base component that this renderer is attached to.
+    /// </summary>
+    public ParameterComponentSettingsBase ParameterComponentSettings { get; set; }
+    /// <summary>
+    /// The ID of the <see cref="ParameterComponentSettings"/>.
+    /// </summary>
+    public Guid ParemeterComponentSettingsId { get; set; }
+
+    /// <summary>
+    /// The display name for this <see cref="AssignableValueRenderer"/> object.
+    /// </summary>
+    public string DisplayName { get; set; } = "New Renderer";
+
+    /// <summary>
+    /// The name of the assignable value or static property to access.
+    /// </summary>
     public string PropertyName { get; set; }
+    /// <summary>
+    /// If <b>true</b>, the <see cref="PropertyName"/> references a static property.
+    /// </summary>
     public bool Static { get; set; }
 
+    /// <summary>
+    /// The converion objects for this assignable value.
+    /// </summary>
     public List<AssignableValueConversion> Conversions { get; set; } = new();
 
+    /// <summary>
+    /// Gets the value pairs for this assignable value.
+    /// </summary>
+    /// <param name="user">The user object to retrieve values from.</param>
+    /// <returns>A dictionary with string keys that can be matched to tokens in a string and
+    /// values of <see cref="AssignableValueRenderData"/> that contain the value information
+    /// for the configured conversion.</returns>
     public Dictionary<string, AssignableValueRenderData> GetValuePairs(DataCoreUser user)
     {
         BaseAssignableValue? assignable;
         if(Static)
         {
-            var obj = user.GetStaticPropertyObject(PropertyName);
-            assignable = obj switch
-            {
-                int a => new IntegerAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        a
-                    }
-                },
-                double d => new DoubleAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        d
-                    }
-                },
-
-                string s => new StringAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        s
-                    }
-                },
-
-                bool b => new BooleanAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        b
-                    }
-                },
-
-                DateTime dt => new DateTimeAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        dt
-                    }
-                },
-                TimeOnly tonly => new TimeOnlyAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        tonly
-                    }
-                },
-                DateOnly donly => new DateOnlyAssignableValue()
-                {
-                    SetValue = new()
-                    {
-                        donly
-                    }
-                },
-
-                _ => null,
-            };
+            assignable = user.GetStaticPropertyContainer(PropertyName);
         }
         else
         {

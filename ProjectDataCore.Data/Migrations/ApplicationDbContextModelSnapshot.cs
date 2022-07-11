@@ -440,8 +440,15 @@ namespace ProjectDataCore.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("LastEdit")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ParemeterComponentSettingsId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("PropertyName")
                         .IsRequired()
@@ -451,6 +458,8 @@ namespace ProjectDataCore.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.HasKey("Key");
+
+                    b.HasIndex("ParemeterComponentSettingsId");
 
                     b.ToTable("AssignableValueRenderers");
                 });
@@ -1136,46 +1145,6 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("ButtonComponentSettings");
                 });
 
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("PropertyName")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("boolean");
-
-                    b.HasDiscriminator().HasValue("EditableComponentSettings");
-                });
-
-            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Parameters.DisplayComponentSettings", b =>
-                {
-                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
-
-                    b.Property<string>("AuthorizedRaw")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PropertyName")
-                        .IsRequired()
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("StaticProperty")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UnAuthorizedRaw")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
-                });
-
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.RosterComponentSettings", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
@@ -1217,6 +1186,13 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasDiscriminator().HasValue("TextDisplayComponentSettings");
                 });
 
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.Components.PageComponentSettingsBase");
+
+                    b.HasDiscriminator().HasValue("ParameterComponentSettingsBase");
+                });
+
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>
                 {
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
@@ -1239,6 +1215,28 @@ namespace ProjectDataCore.Data.Migrations
                     b.HasBaseType("ProjectDataCore.Data.Structures.Roster.RosterObject");
 
                     b.HasDiscriminator().HasValue("RosterTree");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.EditableComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
+
+                    b.HasDiscriminator().HasValue("EditableComponentSettings");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.Components.Parameters.DisplayComponentSettings", b =>
+                {
+                    b.HasBaseType("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase");
+
+                    b.Property<string>("AuthorizedRaw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UnAuthorizedRaw")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue("DisplayComponentSettings");
                 });
 
             modelBuilder.Entity("DataCoreUserDynamicAuthorizationPolicy", b =>
@@ -1392,6 +1390,17 @@ namespace ProjectDataCore.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Renderer");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Render.AssignableValueRenderer", b =>
+                {
+                    b.HasOne("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", "ParameterComponentSettings")
+                        .WithMany("AssignableValueRenderers")
+                        .HasForeignKey("ParemeterComponentSettingsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ParameterComponentSettings");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Assignable.Value.BaseAssignableValue", b =>
@@ -1691,6 +1700,11 @@ namespace ProjectDataCore.Data.Migrations
                     b.Navigation("DefaultDisplayedProperties");
 
                     b.Navigation("UserListDisplayedProperties");
+                });
+
+            modelBuilder.Entity("ProjectDataCore.Data.Structures.Page.ParameterComponentSettingsBase", b =>
+                {
+                    b.Navigation("AssignableValueRenderers");
                 });
 
             modelBuilder.Entity("ProjectDataCore.Data.Structures.Roster.RosterSlot", b =>

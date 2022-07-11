@@ -57,9 +57,9 @@ public class HotReloadHandler
                 $@"npx postcss {Path.Combine(contentRoot, @$"ProjectDataCore\obj\{cfgname}\{framework}\scopedcss\bundle\ProjectDataCore.styles.css")} -o {Path.Combine(contentRoot, $@"ProjectDataCore\wwwroot\css\scoped\project.min.css")}",
                 $@"npx postcss {Path.Combine(contentRoot, @$"ProjectDataCore\obj\{cfgname}\{framework}\scopedcss\projectbundle\ProjectDataCore.bundle.scp.css")} -o {Path.Combine(contentRoot, $@"ProjectDataCore\wwwroot\css\scoped\bundle.min.css")}",
 #if DEBUG
-                $@"npx webpack --config ../webpack.config.debug.js",
+                $@"npx webpack --mode=development --config ../webpack.config.js",
 #else
-                $@"npx webpack --config ../webpack.config.js",
+                $@"npx webpack --mode=production --config ../webpack.config.js",
 #endif
             };
 

@@ -255,10 +255,6 @@ public class PageEditService : IPageEditService
     private static void ApplyParameterComponentEdits(ParameterComponentSettingsBase compData, 
         ParameterComponentSettingsEditModel model)
     {
-        if (model.PropertyToEdit is not null)
-            compData.PropertyName = model.PropertyToEdit;
 
-        if (model.StaticProperty is not null)
-            compData.StaticProperty = model.StaticProperty.Value;
     }
 }

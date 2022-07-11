@@ -179,8 +179,10 @@ public class ApplicationDbContext : IdentityDbContext<DataCoreUser, DataCoreRole
         var pageComponentSettingsBase = builder.Entity<PageComponentSettingsBase>();
         pageComponentSettingsBase.HasKey(e => e.Key);
 
-        var displayComponentSettings = builder.Entity<DisplayComponentSettings>();
-        displayComponentSettings.Ignore(e => e.AuthorizedMarkup);
+        var parametererComponentSettingsBase = builder.Entity<ParameterComponentSettingsBase>();
+        parametererComponentSettingsBase.HasMany(e => e.AssignableValueRenderers)
+            .WithOne(p => p.ParameterComponentSettings)
+            .HasForeignKey(p => p.ParemeterComponentSettingsId);
 
         var editableComponentSettings = builder.Entity<EditableComponentSettings>();
         editableComponentSettings.HasMany(e => e.EditableDisplays)

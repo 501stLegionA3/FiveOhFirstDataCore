@@ -59,6 +59,10 @@ namespace ProjectDataCore.Data.Migrations
                 table: "PageComponentSettingsBase");
 
             migrationBuilder.DropColumn(
+                name: "FormatString",
+                table: "PageComponentSettingsBase");
+
+            migrationBuilder.DropColumn(
                 name: "MaxChildComponents",
                 table: "PageComponentSettingsBase");
 
@@ -78,6 +82,10 @@ namespace ProjectDataCore.Data.Migrations
                 name: "RequireAuth",
                 table: "PageComponentSettingsBase");
 
+            migrationBuilder.DropColumn(
+                name: "StaticProperty",
+                table: "PageComponentSettingsBase");
+
             migrationBuilder.RenameColumn(
                 name: "UserScopeId",
                 table: "PageComponentSettingsBase",
@@ -90,11 +98,6 @@ namespace ProjectDataCore.Data.Migrations
 
             migrationBuilder.RenameColumn(
                 name: "Label",
-                table: "PageComponentSettingsBase",
-                newName: "PropertyName");
-
-            migrationBuilder.RenameColumn(
-                name: "FormatString",
                 table: "PageComponentSettingsBase",
                 newName: "AuthorizedRaw");
 
@@ -134,6 +137,8 @@ namespace ProjectDataCore.Data.Migrations
                 columns: table => new
                 {
                     Key = table.Column<Guid>(type: "uuid", nullable: false),
+                    ParemeterComponentSettingsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
                     PropertyName = table.Column<string>(type: "text", nullable: false),
                     Static = table.Column<bool>(type: "boolean", nullable: false),
                     LastEdit = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
@@ -141,6 +146,12 @@ namespace ProjectDataCore.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AssignableValueRenderers", x => x.Key);
+                    table.ForeignKey(
+                        name: "FK_AssignableValueRenderers_PageComponentSettingsBase_Paremete~",
+                        column: x => x.ParemeterComponentSettingsId,
+                        principalTable: "PageComponentSettingsBase",
+                        principalColumn: "Key",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,6 +330,11 @@ namespace ProjectDataCore.Data.Migrations
                 column: "RendererId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AssignableValueRenderers_ParemeterComponentSettingsId",
+                table: "AssignableValueRenderers",
+                column: "ParemeterComponentSettingsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LayoutNodes_AuthorizationPolicyKey",
                 table: "LayoutNodes",
                 column: "AuthorizationPolicyKey");
@@ -429,11 +445,6 @@ namespace ProjectDataCore.Data.Migrations
                 newName: "PropertyToEdit");
 
             migrationBuilder.RenameColumn(
-                name: "PropertyName",
-                table: "PageComponentSettingsBase",
-                newName: "Label");
-
-            migrationBuilder.RenameColumn(
                 name: "ParentNodeId",
                 table: "PageComponentSettingsBase",
                 newName: "UserScopeId");
@@ -441,7 +452,7 @@ namespace ProjectDataCore.Data.Migrations
             migrationBuilder.RenameColumn(
                 name: "AuthorizedRaw",
                 table: "PageComponentSettingsBase",
-                newName: "FormatString");
+                newName: "Label");
 
             migrationBuilder.AddColumn<Guid>(
                 name: "LayoutComponentId",
@@ -454,6 +465,12 @@ namespace ProjectDataCore.Data.Migrations
                 name: "AuthorizationPolicyKey",
                 table: "PageComponentSettingsBase",
                 type: "uuid",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "FormatString",
+                table: "PageComponentSettingsBase",
+                type: "text",
                 nullable: true);
 
             migrationBuilder.AddColumn<int>(
@@ -487,6 +504,12 @@ namespace ProjectDataCore.Data.Migrations
                 type: "boolean",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.AddColumn<bool>(
+                name: "StaticProperty",
+                table: "PageComponentSettingsBase",
+                type: "boolean",
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSelectComponentSettings_LayoutComponentId",

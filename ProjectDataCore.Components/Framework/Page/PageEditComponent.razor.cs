@@ -78,6 +78,16 @@ public partial class PageEditComponent : IDisposable
         // We filtered out the null values already.
         return subclasses!.ToList()!;
     }
+
+    public void RequestStateHasChanged()
+    {
+        StateHasChanged();
+    }
+
+    public async Task RequestStateHasChangedAsync()
+    {
+        await InvokeAsync(StateHasChanged);
+    }
     #endregion
 
     #region Inital Setup

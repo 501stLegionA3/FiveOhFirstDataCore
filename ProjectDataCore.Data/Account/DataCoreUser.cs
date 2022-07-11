@@ -34,7 +34,7 @@ public class DataCoreUser : IdentityUser<Guid>
     [Obsolete("Use Assignable Value Renderers instead.", false)]
     public string GetStaticProperty(string property, string? format = null)
     {
-        var s = GetStaticPropertyObject(property);
+        var s = GetStaticPropertyContainer(property)?.GetValue();
         if (s is not null)
         {
             return string.Format(format ?? "{0}", s);
@@ -43,18 +43,74 @@ public class DataCoreUser : IdentityUser<Guid>
         return string.Empty;
     }
 
-    public object? GetStaticPropertyObject(string property)
+    public BaseAssignableValue? GetStaticPropertyContainer(string property)
     {
         var typ = GetType();
         var p = typ.GetProperty(property);
+        object? val = null;
         if (p is not null)
         {
-            var val = p.GetValue(this);
+            val = p.GetValue(this);
 
-            return val;
         }
 
-        return null;
+        return val switch
+        {
+            int a => new IntegerAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        a
+                    }
+            },
+            double d => new DoubleAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        d
+                    }
+            },
+
+            string s => new StringAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        s
+                    }
+            },
+
+            bool b => new BooleanAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        b
+                    }
+            },
+
+            DateTime dt => new DateTimeAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        dt
+                    }
+            },
+            TimeOnly tonly => new TimeOnlyAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        tonly
+                    }
+            },
+            DateOnly donly => new DateOnlyAssignableValue()
+            {
+                SetValue = new()
+                    {
+                        donly
+                    }
+            },
+
+            _ => null,
+        };
     }
 
     [Obsolete("Use Assignable Value Renderers instead.", false)]
@@ -87,8 +143,9 @@ public class DataCoreUser : IdentityUser<Guid>
 
     public BaseAssignableValue? GetAssignablePropertyContainer(string property)
     {
+        var nprop = property.Normalize();
         var data = AssignableValues
-            .Where(x => x.AssignableConfiguration.NormalizedPropertyName == property)
+            .Where(x => x.AssignableConfiguration.NormalizedPropertyName == nprop)
             .FirstOrDefault();
 
         return data;
