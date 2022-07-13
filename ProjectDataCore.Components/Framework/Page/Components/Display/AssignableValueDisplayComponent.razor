@@ -116,7 +116,7 @@
                         @if (AssignableValueRendererToEdit is not null)
                         {
                             <EditForm Model="AssignableValueRendererToEdit" class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col overflow-auto">
-                                <div class="flex flex-col overflow-auto h-[40%] p-3 gap-2">
+                                <div class="flex flex-col overflow-auto flex-none p-3 gap-2">
                                     @*Renderer Edit Area*@
                                     <div class="input-group">
                                         <InputText @bind-Value="AssignableValueRendererToEdit.DisplayName" id="name" type="text" class="input-control peer" placeholder="User Scope Display Name" />
@@ -132,7 +132,7 @@
                                     
                                     <button class="button-util-action" @onclick="() => EditAssignableValueRenderer(null)">Stop Editing</button>
                                 </div>
-                                <div class="flex flex-col overflow-auto h-[60%] p-3 border-t-2 border-black gap-2">
+                                <div class="flex flex-col overflow-auto flex-grow p-3 border-t-2 border-black gap-2">
                                     @*Conversion Edit Area*@
                                     @if(AssignableValueConversionToEdit is null)
                                     {
@@ -233,7 +233,8 @@
                                                         <a href="https://docs.microsoft.com/en-us/dotnet/standard/base-types/custom-timespan-format-strings"
                                                             class="underline decoration-blue-700 text-blue-700 visited:decoration-purple-700 visited:text-purple-700"
                                                             target="_blank">Custom TimeSpan Format Strings</a>
-
+                                                    </p>
+                                                    <p>
                                                         <i>The Data Core utilizes <code>ToString</code> formatting for Date and Time values. The above documents may have
                                                             other format examples that use other methods. Make sure to design your format string based on the <code>ToString</code>
                                                             examples.</i>
@@ -251,7 +252,9 @@
                                                     *@
 
                                                     <label class="inline-flex items-center">
-                                                        <InputCheckbox @bind-Value="AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan" />
+                                                        <InputCheckbox Value="AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan"
+                                                            ValueChanged="DateTime_ConvertToTimeSpan_ValueChanged"
+                                                            ValueExpression="() => AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan"/>
                                                         <span class="ml-2">Convert To Time Span</span>
                                                     </label>
 
@@ -263,17 +266,17 @@
                                                         </p>
 
                                                         <label class="inline-flex items-center">
-                                                            <InputCheckbox Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue"
-                                                                ValueChanged="(x) => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo = x ? default : null"
-                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue" />
+                                                            <InputCheckbox Value="AssignableValueConversionToEdit.DateTime_ManualTimeSpanComparision"
+                                                                ValueChanged="DateTime_ManualTimeSpanComparision_ValueChanged"
+                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_ManualTimeSpanComparision" />
                                                             <span class="ml-2">Use Custom Date and Time</span>
                                                         </label>
 
-                                                        if (AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.HasValue)
+                                                        if (AssignableValueConversionToEdit.DateTime_ManualTimeSpanComparision)
                                                         {
                                                             <InputDate id="datetime-timespan-conversion" class="input-control peer" placeholder="Time Span Conversion Base"
-			                                                    Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.Value"
-                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo.Value"
+			                                                    Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo"
+                                                                ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo"
 			                                                    ValueChanged="(x) => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo = x"
 			                                                    TValue="DateTime" />
                                                         }

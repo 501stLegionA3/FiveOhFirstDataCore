@@ -57,10 +57,15 @@ public class AssignableValueConversion : DataObject<Guid>
     /// </remarks>
     public bool DateTime_ConvertToTimeSpan { get; set; } = false;
     /// <summary>
-    /// The <see cref="DateTime"/> that the saved value should be compared to. Leave as null to compare
+    /// When false, the <see cref="DateTime"/> will be converted to a <see cref="TimeSpan"/> using <see cref="DateTime.UtcNow"/>. When true,
+    /// <see cref="DateTime_TimeSpanConversionCompareTo"/> will be used instead of <see cref="DateTime.UtcNow"/>.
+    /// </summary>
+    public bool DateTime_ManualTimeSpanComparision { get; set; } = false;
+    /// <summary>
+    /// The <see cref="DateTime"/> that the saved value should be compared to.
     /// against <see cref="DateTime.UtcNow"/>.
     /// </summary>
-    public DateTime? DateTime_TimeSpanConversionCompareTo { get; set; } = null;
+    public DateTime DateTime_TimeSpanConversionCompareTo { get; set; }
     #endregion
 
     #region Boolean
@@ -148,7 +153,7 @@ public class AssignableValueConversion : DataObject<Guid>
     {
         if(DateTime_ConvertToTimeSpan)
         {
-            var compare = DateTime_TimeSpanConversionCompareTo ?? DateTime.UtcNow;
+            var compare = DateTime_ManualTimeSpanComparision ? DateTime_TimeSpanConversionCompareTo : DateTime.UtcNow;
             return FormatTimeSpans(dateTimes.ToList(x => x - compare));
         }
 

@@ -108,5 +108,25 @@ public partial class AssignableValueDisplayComponent : DisplayBase
             }
         }
     }
+
+    private void DateTime_ConvertToTimeSpan_ValueChanged(bool x)
+    {
+        if (AssignableValueConversionToEdit is not null)
+        {
+            AssignableValueConversionToEdit.DateTime_ConvertToTimeSpan = x;
+
+            EditComponent?.RequestStateHasChanged();
+        }
+    }
+
+    private void DateTime_ManualTimeSpanComparision_ValueChanged(bool x)
+    {
+        if (AssignableValueConversionToEdit is not null)
+        {
+            AssignableValueConversionToEdit.DateTime_ManualTimeSpanComparision = x;
+
+            EditComponent?.RequestStateHasChanged();
+        }
+    }
     #endregion
 }
