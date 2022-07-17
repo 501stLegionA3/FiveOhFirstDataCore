@@ -302,6 +302,25 @@
                                                     </div>
                                                     break;
                                             }
+
+                                            <hr />
+
+                                            <p>
+                                                Multiple values can be saved within this assignable configuration. Set the Mutli Max Values field to anything higher than 0
+                                                to limit the ammount of values displayed when all values are displayed. Set it to 0 to display all values. The separator will be
+                                                used to divide each value in the display. If only one value is allowed in the configuration, the first value display will match
+                                                the complete value display.
+                                            </p>
+
+                                            <div class="input-group">
+                                                <InputNumber @bind-Value="AssignableValueConversionToEdit.Multi_MaxValues" id="multi-max" type="text" class="input-control peer" placeholder="Multi Max Values" />
+                                                <label for="multi-max" class="input-label">Multi Max Values</label>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <InputText @bind-Value="AssignableValueConversionToEdit.Multi_Separator" id="multi-sep" type="text" class="input-control peer" placeholder="Multi Value Separator" />
+                                                <label for="multi-sep" class="input-label">Multi Value Separator</label>
+                                            </div>
                                         }
                                     }
                                 </div>
