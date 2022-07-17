@@ -148,6 +148,13 @@
                                         }
                                         else
                                         {
+                                            <div class="input-group">
+                                                <InputText @bind-Value="AssignableValueConversionToEdit.ValueName" id="value-name" type="text" class="input-control peer" placeholder="Value Name" />
+                                                <label for="value-name" class="input-label">Value Name</label>
+                                            </div>
+
+                                            <hr />
+
                                             switch (ValueConversionContainer)
                                             {
                                                 case IAssignableValue<string> sv:
@@ -274,7 +281,7 @@
 
                                                         if (AssignableValueConversionToEdit.DateTime_ManualTimeSpanComparision)
                                                         {
-                                                            <InputDate id="datetime-timespan-conversion" class="input-control peer" placeholder="Time Span Conversion Base"
+                                                            <InputDate id="datetime-timespan-conversion" class="input-control peer min-h-fit" placeholder="Time Span Conversion Base"
 			                                                    Value="AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo"
                                                                 ValueExpression="() => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo"
 			                                                    ValueChanged="(x) => AssignableValueConversionToEdit.DateTime_TimeSpanConversionCompareTo = x"
@@ -330,31 +337,88 @@
                 </div>
             </PageComponentEditorSettingsNode>
             <PageComponentEditorSettingsNode Name="Display Settings">
-                <div class="flex flex-col w-full h-full">
-	                <p class="text-center text-xl w-full mb-1 flex-none">Display Settings</p>
-                    <p class="text-center w-full mb-1 flex-none">
-                        Allows for managing the display settings for this component, including which assignable values are used
-                        and how they are displayed to the user.
-                    </p>
+                @if (ComponentData is not null)
+                {
+                    <div class="flex flex-col w-full h-full">
+	                    <p class="text-center text-xl w-full mb-1 flex-none">Display Settings</p>
+                        <p class="text-center w-full mb-1 flex-none">
+                            Allows for managing the display settings for this component, including which assignable values are used
+                            and how they are displayed to the user.
+                        </p>
 
-	                <div class="flex-grow flex relative overflow-hidden">
-		                <div class="flex flex-col gap-2 w-full p-4 m-3 border-2 border-slate-400 shadow-md rounded-lg bg-white">
+	                    <div class="flex-grow flex relative overflow-hidden">
 			                <div class="p-2 w-[33%] border-r-2 border-slate-400 flex flex-col overflow-auto">
-				                
+			                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+							        relative inline-flex gap-2 my-1 bg-white">
+                                    <button class="flex-grow button-op-success" @onclick="EditComponent.CloseConfigurationNode">Close Menu</button>
+                                </div>
 
-			                    <hr />
+                                <hr />
 
-			                    <button class="button-util-action text-center" @onclick="EditComponent.CloseConfigurationNode">
-				                    Close Menu
-			                    </button>
+                                @if (!EditingAuthorized && !EditingUnathroized)
+                                {
+                                    @*
+                                        Display the edit buttons.
+                                    *@
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+							        relative inline-flex gap-2 my-1 bg-white">
+                                        <button class="flex-grow button-util-action" @onclick="ToggleEditAuthorizedDisplay">Edit Authorized Display</button>
+                                    </div>
+
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+							        relative inline-flex gap-2 my-1 bg-white">
+                                        <button class="flex-grow button-util-action" @onclick="ToggleEditUnathorizedDisplay">Edit Unathorized Display</button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+							            relative inline-flex gap-2 my-1 bg-white">
+                                        <button class="flex-grow button-op-success" 
+                                            @onclick="EditingAuthorized ? ToggleEditAuthorizedDisplay : ToggleEditUnathorizedDisplay">
+                                            Go Back
+                                        </button>
+                                    </div>
+
+                                    <hr />
+
+                                    @*
+                                        Display the avalibe assignable render values.
+                                    *@
+                                    <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+							        relative my-1 first:mt-0 last:mt-0 bg-white">
+                                        Existing Assignable Value Conversions
+                                    </div>
+
+                                    @foreach (var renderer in ComponentData.AssignableValueRenderers)
+                                    {
+                                        foreach (var conversion in renderer.Conversions)
+                                        {
+                                            var i = conversion;
+                                            <div class="p-2 shadow-md border-slate-400 rounded-r-lg border-2
+									        relative inline-flex gap-2 my-1 bg-white">
+                                                <p class="flex-grow">{{@renderer.DisplayName:@i.ValueName}}</p>
+                                            </div>
+                                        }
+                                    }
+                                }
                             </div>
 
                             <div class="m-2 p-3 border-2 border-slate-400 shadow-md bg-white flex-grow flex flex-col gap-3 overflow-auto">
-                                
+                                @if(EditingAuthorized)
+                                {
+                                    <div class="h-[50%] relative">
+                                        <HTMLEditor Value="@ComponentData.AuthorizedRaw" OnUpdate="OnAuthHTMLChangedAsync" />
+                                    </div>
+                                }
+                                else if (EditingUnathroized)
+                                {
+                                    
+                                }
                             </div>
-		                </div>
-	                </div>
-                </div>
+	                    </div>
+                    </div>
+                }
             </PageComponentEditorSettingsNode>
         }
     </Configure>

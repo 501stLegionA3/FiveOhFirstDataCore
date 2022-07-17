@@ -1,0 +1,14 @@
+﻿<div class="absolute inset-0 flex flex-col">
+    <EditForm Model="this" class="flex-none flex gap-2 m-1">
+        <div class="flex-none">Theme</div>
+        <InputSelect Value="EditorTheme" class="flex-grow"
+            ValueExpression="() => EditorTheme"
+            ValueChanged="ChangeTheme"
+            TValue="string">
+            <option value="vs">Visual Studio</option>
+            <option value="vs-dark">Visual Studio Dark</option>
+            <option value="hc-black">High Contrast Dark</option>
+        </InputSelect>
+    </EditForm>
+    <div id="@EditorKey" class="flex-grow"></div>
+</div>

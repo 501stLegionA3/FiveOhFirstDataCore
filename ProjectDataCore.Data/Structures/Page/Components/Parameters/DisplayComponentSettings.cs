@@ -14,6 +14,6 @@ namespace ProjectDataCore.Data.Structures.Page.Components.Parameters;
 /// </summary>
 public class DisplayComponentSettings : ParameterComponentSettingsBase
 {
-    public string AuthorizedRaw { get; set; }
-    public string UnAuthorizedRaw { get; set; }
+    public string AuthorizedRaw { get; set; } = "";
+    public string UnAuthorizedRaw { get; set; } = "";
 }

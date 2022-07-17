@@ -129,4 +129,32 @@ public partial class AssignableValueDisplayComponent : DisplayBase
         }
     }
     #endregion
+
+    #region Display Values
+    private bool EditingAuthorized = false;
+    private bool EditingUnathroized = false;
+
+    private void ToggleEditAuthorizedDisplay()
+    {
+        if (EditingUnathroized) return;
+
+        EditingAuthorized = !EditingAuthorized;
+
+        EditComponent?.RequestStateHasChanged();
+    }
+
+    private void ToggleEditUnathorizedDisplay()
+    {
+        if (EditingAuthorized) return;
+
+        EditingUnathroized = !EditingUnathroized;
+
+        EditComponent?.RequestStateHasChanged();
+    }
+
+    private async Task OnAuthHTMLChangedAsync(string html)
+    {
+
+    }
+    #endregion
 }

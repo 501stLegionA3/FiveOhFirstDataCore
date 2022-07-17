@@ -2,7 +2,7 @@ const path = require('path');
 const root = path.resolve(__dirname, './ProjectDataCore/wwwroot');
 const dist = path.resolve(root, 'dist');
 
-const TerserPlugin = require('terser-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = mode => {
     return [
@@ -45,17 +45,11 @@ module.exports = mode => {
         {
             name: 'Monaco Interop',
             entry: {
-                app: path.resolve(root, './monaco/lightweightMonacoInterop.js'),
-                "editor.worker": 'monaco-editor/esm/vs/editor/editor.worker.js',
-                "json.worker": 'monaco-editor/esm/vs/language/json/json.worker',
-                "css.worker": 'monaco-editor/esm/vs/language/css/css.worker',
-                "html.worker": 'monaco-editor/esm/vs/language/html/html.worker',
-                "ts.worker": 'monaco-editor/esm/vs/language/typescript/ts.worker',
+                path: path.resolve(root, './monaco/lightweightMonacoInterop.js'),
             },
             output: {
-                globalObject: 'self',
                 path: path.resolve(dist, './monaco'),
-                filename: '[name].js',
+                filename: 'app.js',
             },
             mode: mode,
             module: {
@@ -70,10 +64,7 @@ module.exports = mode => {
                     }
                 ]
             },
-            optimization: {
-                minimize: true,
-                minimizer: [new TerserPlugin()]
-            }
+            plugins: [new MonacoWebpackPlugin()]
         }
     ];
 };

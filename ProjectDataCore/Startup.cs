@@ -2,6 +2,8 @@
 
 using AspNet.Security.OpenId;
 
+using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+
 using DSharpPlus;
 
 using MailKit.Net.Smtp;
@@ -141,6 +143,8 @@ public class Startup
             .AddSingleton<IInstanceLogger, InstanceLogger>()
             .AddSingleton<HotReloadHandler>();
 
+        // Service Extensions
+        services.AddStorage();
         #endregion
 
         #region Email Setup
