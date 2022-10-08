@@ -171,6 +171,9 @@ namespace FiveOhFirstDataCore.Data.Structures
         [Description("Chief Petty Officer")]
         Chief,
         [RankDisplay("CX-W")]
+        [Description("Senior Chief Petty Officer")]
+        SeniorChief,
+        [RankDisplay("CX-W")]
         [Description("Master Chief Petty Officer")]
         Master,
         [RankDisplay("CX-W")]

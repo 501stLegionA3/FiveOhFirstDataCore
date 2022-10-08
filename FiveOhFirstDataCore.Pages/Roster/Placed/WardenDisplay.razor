@@ -52,7 +52,7 @@
 
     <tr class="table-warning" role="@(Warden.Wardens[n].SectionLead is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].SectionLead?.BirthNumber)">
         <th scope="row" colspan="2" class="text-end">
-            Section Leader (@c-6)
+            Logistics Flight Lead (@c-6)
         </th>
         <td colspan="2" class="text-start">
             @if (Warden.Wardens[n].SectionLead is null)
@@ -68,7 +68,7 @@
 
     <tr>
         <th scope="row" class="table-danger text-end mx-auto" role="@(Warden.Wardens[n].TeamOne[0] is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].TeamOne[0]?.BirthNumber)">
-            Team Lead (1-1)
+            Logistics Section Lead (1-1)
         </th>
         <td class="table-danger text-start mx-auto" role="@(Warden.Wardens[n].TeamOne[0] is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].TeamOne[0]?.BirthNumber)">
             @if (Warden.Wardens[n].TeamOne[0] is null)
@@ -81,7 +81,7 @@
             }
         </td>
         <th scope="row" class="table-primary text-end mx-auto" role="@(Warden.Wardens[n].TeamTwo[0] is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].TeamTwo[0]?.BirthNumber)">
-            Team Lead (2-1)
+            Logistics Section Lead (2-1)
         </th>
         <td class="table-primary text-start mx-auto" role="@(Warden.Wardens[n].TeamTwo[0] is null ? "" : "button")" @onclick="(x) => TrooperNav(Warden.Wardens[n].TeamTwo[0]?.BirthNumber)">
             @if (Warden.Wardens[n].TeamTwo[0] is null)
