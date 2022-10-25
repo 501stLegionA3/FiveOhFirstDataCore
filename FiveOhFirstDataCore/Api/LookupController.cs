@@ -142,19 +142,26 @@ public class LookupController : ControllerBase
     public async Task<ActionResult> UserInfo([FromQuery] int user, [FromQuery(Name = "csv")] bool enableCsv)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
+        //Find trooper
         var trooperQ = dbContext.Users.Where(e => e.BirthNumber == user);
+        //Check if trooper is found
         if (await trooperQ.FirstOrDefaultAsync() == null)
             return NotFound(user.ToString());
+        //Get qualification of trooper
         var qualificationsQ = Enum.GetValues<Qualification>().AsQueryable()
             .Where(x => x != Qualification.None && (trooperQ.First().Qualifications & x) == x).Select(x => x.AsFull());
         var qualifications = "";
+        //If they have quals aggregate into single string
         if (qualificationsQ.Any())
             qualifications = qualificationsQ.Aggregate((a, b) => a + ", " + b);
+        //Get c-shop positions of trooper
         var shopPositionsQ = Enum.GetValues<CShop>().AsQueryable()
             .Where(x => x != CShop.None && (trooperQ.First().CShops & x) == x).Select(x => x.AsFull());
         var shopPositions = "";
+        //If they are in a c-shop aggregate into single string
         if (shopPositionsQ.Any())
             shopPositions = shopPositionsQ.Aggregate((a, b) => a + ", " + b);
+        //Make trooper Data transfer object
         var trooper = trooperQ.Select(e =>
             new FullUserDTO()
             {
@@ -173,15 +180,18 @@ public class LookupController : ControllerBase
                 CShops = shopPositions
             }
         ).First();
+        //If not csv return json object
         if (!enableCsv)
             return Ok(trooper);
+        //Make Csv string
         await using var sw = new StringWriter();
         await using var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
         csv.WriteHeader<FullUserDTO>();
         await csv.NextRecordAsync();
         csv.WriteRecord(trooper);
         await csv.FlushAsync();
-
+        
+        //Return Csv string
         return Ok(sw.ToString());
     }
 
@@ -196,30 +206,32 @@ public class LookupController : ControllerBase
     [HttpGet("billetinfo")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDTO[]))]
     [Produces("application/json", new[] { "text/plain" })]
-    public async Task<ActionResult> BilletInfo([FromQuery(Name = "enum")] string slot, [FromQuery] string? role,
+    public async Task<ActionResult> BilletInfo([FromQuery(Name = "enum")] Slot slot, [FromQuery] Role? role,
         [FromQuery(Name = "csv")] bool enableCsv)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
-        var slotEnum = slot.ValueFromString<Slot>();
         IEnumerable<UserDTO> members;
+        //If given a role filter by role
         if (role != null)
         {
-            var roleEnum = role.ValueFromString<Role>();
-            members = dbContext.Users.Where(t => t.Slot == slotEnum && t.Role == roleEnum)
+            //Get members who are in the slot and have the role
+            members = dbContext.Users.Where(t => t.Slot == slot && t.Role == role)
+                //Create data transfer object
                 .Select(t => new UserDTO()
-                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber })
-                .AsEnumerable();
+                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
         }
         else
         {
-            members = dbContext.Users.Where(t => t.Slot == slotEnum)
+            //Get members who are in the slot
+            members = dbContext.Users.Where(t => t.Slot == slot)
+                //Create data transfer object
                 .Select(t => new UserDTO()
-                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber })
-                .AsEnumerable();
+                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
         }
-
+        //If not csv return json object
         if (!enableCsv)
             return Ok(members.ToList());
+        //Make Csv string
         await using var sw = new StringWriter();
         await using var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
         csv.WriteHeader<UserDTO>();
@@ -227,6 +239,8 @@ public class LookupController : ControllerBase
         await csv.WriteRecordsAsync(members);
         await csv.FlushAsync();
         await sw.FlushAsync();
+        
+        //Return Csv string
         return Ok(sw.ToString());
     }
 
@@ -240,15 +254,19 @@ public class LookupController : ControllerBase
     [HttpGet("cshopinfo")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDTO[]))]
     [Produces("application/json", new[] { "text/plain" })]
-    public async Task<ActionResult> CShopInfo([FromQuery(Name = "cshop")] string cShopQuery,
+    public async Task<ActionResult> CShopInfo([FromQuery(Name = "cshop")] CShop cShop,
         [FromQuery(Name = "csv")] bool enableCsv)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
-        var cShop = cShopQuery.ValueFromString<CShop>();
-        var members = dbContext.Users.Where(t => (t.CShops & cShop) == cShop).Select(t => new UserDTO()
+        //Get members who are in the c-shop
+        var members = dbContext.Users.Where(t => (t.CShops & cShop) == cShop)
+            //Create User data transfer object
+            .Select(t => new UserDTO()
             { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
+        //If not csv return json object
         if (!enableCsv)
             return Ok(members.ToList());
+        //Make Csv string
         await using var sw = new StringWriter();
         await using var csv = new CsvWriter(sw, CultureInfo.InvariantCulture);
         csv.WriteHeader<UserDTO>();
@@ -256,6 +274,8 @@ public class LookupController : ControllerBase
         await csv.WriteRecordsAsync(members);
         await csv.FlushAsync();
         await sw.FlushAsync();
+
+        //Return Csv string
         return Ok(sw.ToString());
     }
 }
