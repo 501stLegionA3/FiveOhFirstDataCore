@@ -51,6 +51,7 @@
     <Folder Include="Data\" />
     <Folder Include="Development\unsafe_uploads\" />
     <Folder Include="Models\" />
+    <Folder Include="Config\" />
     <Folder Include="Pages\Logistics\" />
     <Folder Include="Pages\Communications\" />
     <Folder Include="Pages\Civil.Affairs\" />
