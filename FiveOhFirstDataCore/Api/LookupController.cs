@@ -190,6 +190,7 @@ public class LookupController : ControllerBase
         await csv.NextRecordAsync();
         csv.WriteRecord(trooper);
         await csv.FlushAsync();
+        
         //Return Csv string
         return Ok(sw.ToString());
     }
@@ -238,6 +239,7 @@ public class LookupController : ControllerBase
         await csv.WriteRecordsAsync(members);
         await csv.FlushAsync();
         await sw.FlushAsync();
+        
         //Return Csv string
         return Ok(sw.ToString());
     }
@@ -272,6 +274,7 @@ public class LookupController : ControllerBase
         await csv.WriteRecordsAsync(members);
         await csv.FlushAsync();
         await sw.FlushAsync();
+
         //Return Csv string
         return Ok(sw.ToString());
     }
