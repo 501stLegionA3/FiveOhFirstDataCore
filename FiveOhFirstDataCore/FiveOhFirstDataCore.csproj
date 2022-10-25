@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OpenId.Steam" Version="5.0.0" />
+    <PackageReference Include="CsvHelper" Version="29.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0-preview.7.21378.6" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.0-preview.7.21378.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.0-preview.7.21378.6" />
