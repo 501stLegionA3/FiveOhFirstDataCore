@@ -14,6 +14,7 @@ public class FullUserDTO
     public DateTime LastBilletChange { get; set; }
     public string Slot { get; set; }
     public string Role { get; set; }
+    public string Rank { get; set; }
     public List<string> Qualifications { get; set; }
     public int TIG { get; set; }
     public int TIB { get; set; }
@@ -55,7 +56,8 @@ public class LookupController : ControllerBase
                 LastPromotion = e.LastPromotion,
                 LastBilletChange = e.LastBilletChange,
                 Slot = e.Slot.AsFull(),
-                Role = e.Role.AsFull(),
+                Role = e.GetRoleName(),
+                Rank = e.GetRankName(),
                 Qualifications = qualifications,
                 TIG = (DateTime.Now - e.LastPromotion).Days,
                 TIB = (DateTime.Now - e.LastBilletChange).Days
