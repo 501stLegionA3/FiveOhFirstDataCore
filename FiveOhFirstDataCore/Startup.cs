@@ -332,8 +332,6 @@ namespace FiveOhFirstDataCore
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
-                app.UseSwagger();
-                app.UseSwaggerUI();
             }
             else
             {
@@ -341,6 +339,9 @@ namespace FiveOhFirstDataCore
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             using var scope = app.ApplicationServices.CreateScope();
             var dbFac = scope.ServiceProvider.GetRequiredService<IDbContextFactory<ApplicationDbContext>>();
