@@ -26,8 +26,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using FiveOhFirstDataCore.Data.Structures.Discord;
+using Microsoft.OpenApi.Models;
 
 namespace FiveOhFirstDataCore
 {
@@ -299,6 +301,28 @@ namespace FiveOhFirstDataCore
             services.AddScoped<InitalAccountPopulationService>();
             #endregion
 
+
+            #region Swagger
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v0.1.0",
+                    Title = "501 Data Core API",
+                    Description = "An API for retrieving data from the data core.",
+                    License = new OpenApiLicense()
+                    {
+                        Name = "MIT License",
+                        Url = new(@"https://github.com/Soyvolon/VirtualPDrive/blob/development/LICENSE.txt")
+                    }
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -308,6 +332,8 @@ namespace FiveOhFirstDataCore
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {

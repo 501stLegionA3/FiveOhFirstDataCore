@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace FiveOhFirstDataCore.Data.Structures
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Role
     {
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace FiveOhFirstDataCore.Data.Structures
 {
@@ -7,6 +8,7 @@ namespace FiveOhFirstDataCore.Data.Structures
     // If a name change is needed, a claim update will have to be completed for that name,
     // so members still have correct permissions.
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [Flags]
     public enum CShop : long
     {
