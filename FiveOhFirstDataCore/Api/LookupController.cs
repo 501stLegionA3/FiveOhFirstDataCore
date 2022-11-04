@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.IO;
 using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.AspNetCore.Http;
 
 namespace FiveOhFirstDataCore.Api;
@@ -24,7 +25,8 @@ public class LookupController : ControllerBase
     /// <param name="dbContextFactory">Db Context Factory</param>
     public LookupController(IDbContextFactory<ApplicationDbContext> dbContextFactory)
     {
-        _dbContextFactory = dbContextFactory; }
+        _dbContextFactory = dbContextFactory;
+    }
 
     /// <summary>
     /// Full user data transfer object
@@ -190,15 +192,15 @@ public class LookupController : ControllerBase
         await csv.NextRecordAsync();
         csv.WriteRecord(trooper);
         await csv.FlushAsync();
-        
+
         //Return Csv string
         return Ok(sw.ToString());
     }
 
     /// <summary>
-    /// Returns partial user data for users that belong to the given slot.
+    /// Returns partial user data for users that belong to the given slot/slots.
     /// </summary>
-    /// <param name="slot" example="AvalancheThreeThree">Slot to return.</param>
+    /// <param name="slot" example="AvalancheThreeThree">Slot/slots to return.</param>
     /// <param name="role" example="Trooper">An optional parameter to filter by role.</param>
     /// <param name="enableCsv" example="false">Output data as csv.</param>
     /// <returns>An <see cref="ActionResult"/> for this request</returns>
@@ -206,28 +208,19 @@ public class LookupController : ControllerBase
     [HttpGet("billetinfo")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDTO[]))]
     [Produces("application/json", new[] { "text/plain" })]
-    public async Task<ActionResult> BilletInfo([FromQuery(Name = "enum")] Slot slot, [FromQuery] Role? role,
+    public async Task<ActionResult> BilletInfo([FromQuery(Name = "enum")] Slot[] slot, [FromQuery] Role? role,
         [FromQuery(Name = "csv")] bool enableCsv)
     {
         await using var dbContext = _dbContextFactory.CreateDbContext();
-        IEnumerable<UserDTO> members;
+        //Get members who are in the slot
+        var slotQuery = dbContext.Users.Where(t => slot.Contains(t.Slot));
         //If given a role filter by role
         if (role != null)
-        {
             //Get members who are in the slot and have the role
-            members = dbContext.Users.Where(t => t.Slot == slot && t.Role == role)
-                //Create data transfer object
-                .Select(t => new UserDTO()
-                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
-        }
-        else
-        {
-            //Get members who are in the slot
-            members = dbContext.Users.Where(t => t.Slot == slot)
-                //Create data transfer object
-                .Select(t => new UserDTO()
-                    { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
-        }
+            slotQuery = slotQuery.Where(t => t.Role == role);
+        //Create data transfer object
+        var members = slotQuery.Select(t => new UserDTO()
+            { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
         //If not csv return json object
         if (!enableCsv)
             return Ok(members.ToList());
@@ -239,9 +232,65 @@ public class LookupController : ControllerBase
         await csv.WriteRecordsAsync(members);
         await csv.FlushAsync();
         await sw.FlushAsync();
-        
+
         //Return Csv string
         return Ok(sw.ToString());
+    }
+
+    /// <summary>
+    /// Get all values from specified input;
+    /// </summary>
+    /// <param name="selectedEnum">Enum to lookup</param>
+    /// <param name="enableCsv" example="false">Output data as csv.</param>
+    /// <returns></returns>
+    /// <response code="200">Returns all values in the enum.</response>
+    /// <response code="404">The specified enum could not be found.</response>
+    [HttpGet("enums")]
+    public ActionResult Enums([FromQuery(Name = "enum")] string selectedEnum,
+        [FromQuery(Name = "csv")] bool enableCsv)
+    {
+        string tmp;
+        selectedEnum = selectedEnum.ToLower();
+        var types = new[]
+        {
+            typeof(Slot), typeof(Role), typeof(CShop), typeof(Qualification), typeof(Team), typeof(Flight),
+            typeof(PreferredRole)
+        };
+        var ranks = new[]
+        {
+            typeof(TrooperRank), typeof(WardenRank), typeof(PilotRank), typeof(RTORank), typeof(MedicRank), typeof(WarrantRank)
+        };
+        if (selectedEnum == "rank")
+        {
+            if (!enableCsv)
+            {
+                Dictionary<string, List<string>> e = new();
+                foreach (var rank in ranks)
+                {
+                    var name = rank.Name;
+                    e.Add(name, new List<string>());
+                    foreach (dynamic value in Enum.GetValues(rank))
+                    {
+                        e[name].Add(value.ToString());
+                    }
+                }
+                return Ok(e);
+            }
+            tmp = ranks.Aggregate("Rank,\n", (current1, rank) => (current1 + Enum.GetValues(rank).Cast<dynamic>().Aggregate((current, enumValue) => (current + (enumValue.ToString() + ",\n")))));
+        }
+        else
+        {
+            var type = types.FirstOrDefault((a) => a.Name.ToLower() == selectedEnum);
+            if (type == null)
+                return BadRequest("Enum not found");
+            if (!enableCsv)
+            {
+                return Ok(Enum.GetValues(type).Cast<dynamic>().Select(e => e.ToString()));
+            }
+            tmp = type.Name + ",\n" + Enum.GetValues(type).Cast<dynamic>().Aggregate((current, enumValue) => (string)(current + (enumValue.ToString() + ",\n")));
+        }
+
+        return Ok(tmp);
     }
 
     /// <summary>
@@ -262,7 +311,7 @@ public class LookupController : ControllerBase
         var members = dbContext.Users.Where(t => (t.CShops & cShop) == cShop)
             //Create User data transfer object
             .Select(t => new UserDTO()
-            { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
+                { DisplayName = t.GetRankDesignation() + " " + t.NickName, BirthNumber = t.BirthNumber });
         //If not csv return json object
         if (!enableCsv)
             return Ok(members.ToList());
