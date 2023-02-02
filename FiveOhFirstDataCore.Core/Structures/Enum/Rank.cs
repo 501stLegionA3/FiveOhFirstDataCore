@@ -10,49 +10,52 @@ namespace FiveOhFirstDataCore.Data.Structures
         Recruit = 0,
         [RankDisplay("CR-C")]
         [Description("Cadet")]
-        Cadet,
+        Cadet = 1,
         [RankDisplay("CT")]
         [Description("Trooper")]
-        Trooper,
+        Trooper = 2,
         [RankDisplay("CT")]
         [Description("Senior Trooper")]
-        SeniorTrooper,
+        SeniorTrooper = 3,
         [RankDisplay("CT")]
         [Description("Veteran Trooper")]
-        VeteranTrooper,
+        VeteranTrooper = 4,
+        [RankDisplay("CLC")]
+        [Description("Lance Corporal")]
+        LanceCorporal = 16,
         [RankDisplay("CP")]
         [Description("Corporal")]
-        Corporal,
+        Corporal = 5,
         [RankDisplay("CP")]
         [Description("Senior Corporal")]
-        SeniorCorporal,
+        SeniorCorporal = 6,
         [RankDisplay("CS")]
         [Description("Sergeant")]
-        Sergeant,
+        Sergeant = 7,
         [RankDisplay("CS")]
         [Description("Senior Sergeant")]
-        SeniorSergeant,
+        SeniorSergeant = 8,
         [RankDisplay("CS-M")]
         [Description("Sergeant-Major")]
-        SergeantMajor,
+        SergeantMajor = 9,
         [RankDisplay("CS-M")]
         [Description("Company Sergeant-Major")]
-        CompanySergeantMajor,
+        CompanySergeantMajor = 10,
         [RankDisplay("CS-M")]
         [Description("Battalion Command Sergeant-Major")]
-        BattalionSergeantMajor,
+        BattalionSergeantMajor = 11,
         [RankDisplay("CC")]
         [Description("Second Lieutenant")]
-        SecondLieutenant,
+        SecondLieutenant = 12,
         [RankDisplay("CC")]
         [Description("First Lieutenant")]
-        FirstLieutenant,
+        FirstLieutenant = 13,
         [RankDisplay("CC")]
         [Description("Captain")]
-        Captain,
+        Captain = 14,
         [RankDisplay("BC")]
         [Description("Major")]
-        Major
+        Major = 15
     }
 
 
@@ -63,19 +66,22 @@ namespace FiveOhFirstDataCore.Data.Structures
         Cadet = 100,
         [RankDisplay("CM")]
         [Description("Medic")]
-        Medic,
+        Medic = 101,
         [RankDisplay("CM-T")]
         [Description("Medical Technician")]
-        Technician,
+        Technician = 102,
+        [RankDisplay("CM-L")]
+        [Description("Medical Lance Corporal")]
+        LanceCorporal = 106,
         [RankDisplay("CM-P")]
         [Description("Medical Corporal")]
-        Corporal,
+        Corporal = 103,
         [RankDisplay("CM-S")]
         [Description("Medical Sergeant")]
-        Sergeant,
+        Sergeant = 104,
         [RankDisplay("CM-O")]
         [Description("Batallion Medical Sergeant-Major")]
-        BattalionSergeantMajor
+        BattalionSergeantMajor = 105
     }
 
     public enum RTORank : int
@@ -85,19 +91,19 @@ namespace FiveOhFirstDataCore.Data.Structures
         Cadet = 200,
         [RankDisplay("CI")]
         [Description("Intercommunicator")]
-        Intercommunicator,
+        Intercommunicator = 201,
         [RankDisplay("CI-T")]
         [Description("Intercommunicator Technician")]
-        Technician,
+        Technician = 202,
         [RankDisplay("CI-P")]
         [Description("Intercommunicator Corporal")]
-        Corporal,
+        Corporal = 203,
         [RankDisplay("CI-S")]
         [Description("Intercommunicator Sergeant")]
-        Sergeant,
+        Sergeant = 204,
         [RankDisplay("CI-O")]
         [Description("Batallion Radio Sergeant Major")]
-        BattalionSergeantMajor
+        BattalionSergeantMajor = 205
     }
 
     public enum WarrantRank : int
