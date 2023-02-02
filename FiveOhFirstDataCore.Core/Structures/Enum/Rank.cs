@@ -20,9 +20,12 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CT")]
         [Description("Veteran Trooper")]
         VeteranTrooper = 4,
+        [RankDisplay("CT-S")]
+        [Description("Specalist")]
+        Specalist = 16,
         [RankDisplay("CLC")]
         [Description("Lance Corporal")]
-        LanceCorporal = 16,
+        LanceCorporal = 17,
         [RankDisplay("CP")]
         [Description("Corporal")]
         Corporal = 5,
