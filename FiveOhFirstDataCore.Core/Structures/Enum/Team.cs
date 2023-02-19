@@ -19,6 +19,8 @@ namespace FiveOhFirstDataCore.Data.Structures
         [Description("Charlie Flight")]
         Charlie,
         [Description("Delta Flight")]
-        Delta
+        Delta,
+        [Description("Echo Flight")]
+        Echo
     }
 }
