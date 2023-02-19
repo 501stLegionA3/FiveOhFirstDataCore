@@ -34,6 +34,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
         public Trooper Bravo { get; set; }
         public Trooper Charlie { get; set; }
         public Trooper Delta { get; set; }
+        public List<Trooper> Echo { get; set; } = new();
 
         public void Assign(Trooper t)
         {
@@ -50,6 +51,9 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     break;
                 case Flight.Delta:
                     Delta = t;
+                    break;
+                case Flight.Echo:
+                    Echo.Add(t);
                     break;
             }
         }

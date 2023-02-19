@@ -68,6 +68,18 @@
             }
         </td>
     </tr>
+    @for(int i = 0; i < Section.Echo.Count; i++)
+    {
+        var pilot = Section.Echo[i];
+        <tr role="button" @onclick="(x) => TrooperNav(pilot.BirthNumber)">
+            <th scope="row" class="text-end" colspan="2">
+                Pilot (@($"{SectionNumber}E{i}"))
+            </th>
+            <td class="text-start" colspan="2">
+                @pilot.DisplayRankName()
+            </td>
+        </tr>
+    }
 </tbody>
 
 @code {
