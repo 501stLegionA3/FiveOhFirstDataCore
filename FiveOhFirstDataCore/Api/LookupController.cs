@@ -246,11 +246,10 @@ public class LookupController : ControllerBase
     /// <response code="200">Returns all values in the enum.</response>
     /// <response code="404">The specified enum could not be found.</response>
     [HttpGet("enums")]
-    public ActionResult Enums([FromQuery(Name = "enum")] string selectedEnum,
+    public ActionResult Enums([FromQuery(Name = "enum")] string? selectedEnum,
         [FromQuery(Name = "csv")] bool enableCsv)
     {
         string tmp;
-        selectedEnum = selectedEnum.ToLower();
         var types = new[]
         {
             typeof(Slot), typeof(Role), typeof(CShop), typeof(Qualification), typeof(Team), typeof(Flight),
@@ -258,8 +257,24 @@ public class LookupController : ControllerBase
         };
         var ranks = new[]
         {
-            typeof(TrooperRank), typeof(WardenRank), typeof(PilotRank), typeof(RTORank), typeof(MedicRank), typeof(WarrantRank)
+            typeof(TrooperRank), typeof(WardenRank), typeof(PilotRank), typeof(RTORank), typeof(MedicRank),
+            typeof(WarrantRank)
         };
+        if (selectedEnum == null)
+        {
+            if (!enableCsv)
+            {
+                List<string> e = new();
+                e.AddRange(types.Select(t => t.Name));
+                e.Add("Rank");
+                return Ok(e);
+            }
+
+            tmp = types.Select(t => t.Name).Aggregate("Enum,\n",(c, t) => c + t + ",\n") +"Rank";
+            return Ok(tmp);
+        }
+        selectedEnum = selectedEnum.ToLower();
+        
         if (selectedEnum == "rank")
         {
             if (!enableCsv)
@@ -274,9 +289,13 @@ public class LookupController : ControllerBase
                         e[name].Add(value.ToString());
                     }
                 }
+
                 return Ok(e);
             }
-            tmp = ranks.Aggregate("Rank,\n", (current1, rank) => (current1 + Enum.GetValues(rank).Cast<dynamic>().Aggregate((current, enumValue) => (current + (enumValue.ToString() + ",\n")))));
+
+            tmp = ranks.Aggregate("Rank,\n",
+                (current1, rank) => (current1 + Enum.GetValues(rank).Cast<dynamic>()
+                    .Aggregate((current, enumValue) => (current + (enumValue.ToString() + ",\n")))));
         }
         else
         {
@@ -287,7 +306,9 @@ public class LookupController : ControllerBase
             {
                 return Ok(Enum.GetValues(type).Cast<dynamic>().Select(e => e.ToString()));
             }
-            tmp = type.Name + ",\n" + Enum.GetValues(type).Cast<dynamic>().Aggregate((current, enumValue) => (string)(current + (enumValue.ToString() + ",\n")));
+
+            tmp = type.Name + ",\n" + Enum.GetValues(type).Cast<dynamic>().Aggregate((current, enumValue) =>
+                (string)(current + (enumValue.ToString() + ",\n")));
         }
 
         return Ok(tmp);
