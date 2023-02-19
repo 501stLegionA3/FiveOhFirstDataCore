@@ -240,7 +240,7 @@ public class LookupController : ControllerBase
     /// <summary>
     /// Get all values from specified input;
     /// </summary>
-    /// <param name="selectedEnum">Enum to lookup</param>
+    /// <param name="selectedEnum">Enum to lookup, or leave empty to list all enums available to lookup.</param>
     /// <param name="enableCsv" example="false">Output data as csv.</param>
     /// <returns></returns>
     /// <response code="200">Returns all values in the enum.</response>
