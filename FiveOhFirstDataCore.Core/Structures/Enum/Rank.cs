@@ -70,6 +70,9 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CM")]
         [Description("Medic")]
         Medic = 101,
+        [RankDisplay("CM-V")]
+        [Description("Medical Veteran")]
+        Veteran = 107,
         [RankDisplay("CM-T")]
         [Description("Medical Technician")]
         Technician = 102,
@@ -95,9 +98,15 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CI")]
         [Description("Intercommunicator")]
         Intercommunicator = 201,
+        [RankDisplay("CI-E")]
+        [Description("Intercommunicator Expert")]
+        Expert = 207,
         [RankDisplay("CI-T")]
         [Description("Intercommunicator Technician")]
         Technician = 202,
+        [RankDisplay("CI-L")]
+        [Description("Intercommunicator Lance Corporal")]
+        LanceCorporal = 206,
         [RankDisplay("CI-P")]
         [Description("Intercommunicator Corporal")]
         Corporal = 203,
