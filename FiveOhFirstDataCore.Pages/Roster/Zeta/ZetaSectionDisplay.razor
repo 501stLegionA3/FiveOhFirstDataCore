@@ -43,18 +43,18 @@
         }
     </td>
 </tr>
-<tr class="table-warning" role="@(Section.PltARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.PltARC?.BirthNumber)">
+<tr class="table-warning" role="@(Section.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Section.ARC?.BirthNumber)">
     <th scope="row" class="text-end">
         Section ARC
     </th>
     <td class="text-start">
-        @if (Section.PltARC is null)
+        @if (Section.ARC is null)
         {
             <span>TBD</span>
         }
         else
         {
-            @Section.PltARC.DisplayRankName()                
+            @Section.ARC.DisplayRankName()                
         }
     </td>
 </tr>
