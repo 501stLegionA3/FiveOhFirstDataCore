@@ -6,6 +6,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
     {
         public Trooper Commander { get; set; }
         public Trooper Subordinate { get; set; }
+        public Trooper PltARC { get; set; }
         public ZetaSquadData[] Squads { get; private set; } = Array.Empty<ZetaSquadData>();
 
         public ZetaSectionData(int squads)
@@ -27,6 +28,9 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                         break;
                     case Role.Subordinate:
                         Subordinate = item;
+                        break;
+                    case Role.PltARC:
+                        PltARC = item;
                         break;
                 }
             }
