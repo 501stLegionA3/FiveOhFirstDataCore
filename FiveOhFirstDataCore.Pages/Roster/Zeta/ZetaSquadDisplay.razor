@@ -68,6 +68,21 @@
             }
         </td>
     </tr>
+    <tr role="@(Squad.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.ARC?.BirthNumber)">
+        <th scope="row" class="text-end">
+            ARC
+        </th>
+        <td >
+            @if (Squad.ARC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squad.ARC.DisplayRankName()                
+            }
+        </td>
+    </tr>
 
     @for(int i = 0; i < Squad.Troopers.Length; i++)
     {

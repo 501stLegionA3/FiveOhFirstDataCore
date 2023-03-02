@@ -9,6 +9,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
         public Trooper RT { get; set; }
         public Trooper Medic { get; set; }
         public Trooper[] Troopers { get; private set; } = new Trooper[11];
+        public Trooper ARC {get; set; }
 
         public void Assign(Trooper item)
         {
@@ -28,6 +29,9 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                         break;
                     case Role.Medic:
                         Medic = item;
+                        break;
+                    case Role.ARC:
+                        ARC = item;
                         break;
                     default:
                         for (int i = 0; i < Troopers.Length; i++)
