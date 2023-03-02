@@ -119,6 +119,21 @@
             }
         </td>
     </tr>
+    <tr role="@(Hailstorm.ARC is null ? "" : "button")" @onclick="(x) => TrooperNav(Hailstorm.ARC?.BirthNumber)">
+        <th scope="row" colspan="@(Single ? 1 : 2)" class="text-end">
+            Battalion ARC
+        </th>
+        <td colspan="@(Single ? 1 : 2)" class="text-start">
+            @if (Hailstorm.ARC is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Hailstorm.ARC.DisplayRankName()
+            }
+        </td>
+    </tr>
 </tbody>
 
 

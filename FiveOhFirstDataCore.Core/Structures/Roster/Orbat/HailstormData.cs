@@ -11,6 +11,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
         public Trooper NCOIC { get; set; }
         public Trooper Medic { get; set; }
         public Trooper RT { get; set; }
+        public Trooper ARC { get; set; }
 
         public void Assign(Trooper t)
         {
@@ -36,6 +37,9 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     break;
                 case Role.RTO:
                     RT = t;
+                    break;
+                case Role.ARC: 
+                    ARC = t;
                     break;
             }
         }
