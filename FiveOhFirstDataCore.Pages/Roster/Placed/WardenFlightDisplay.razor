@@ -35,7 +35,7 @@ else
     </tr>
 
     <tr class="table-warning" role="@(WardenFlight.FlightLead is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.FlightLead?.BirthNumber)">
-        <th scope="row" colspan="2" class="text-end">
+        <th scope="row" colspan="2" class="text-end w-50">
             Logistics Flight Lead (@(FlightNumber+1)-6)
         </th>
         <td colspan="2" class="text-start">
@@ -53,7 +53,7 @@ else
     {
         var j = ja;
         <tr>
-        <th scope="row" class="table-danger text-end mx-auto" role="@(WardenFlight.Sections[0][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][j]?.BirthNumber)">
+        <th scope="row" class="table-danger text-end mx-auto w-25" role="@(WardenFlight.Sections[0][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][j]?.BirthNumber)">
             Logistics Section Lead (@(FlightNumber*2+1)-@(j+1))
         </th>
         <td class="table-danger text-start mx-auto" role="@(WardenFlight.Sections[0][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][j]?.BirthNumber)">
@@ -66,7 +66,7 @@ else
                 @WardenFlight.Sections[0][j].DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end mx-auto" role="@(WardenFlight.Sections[1][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[1][j]?.BirthNumber)">
+        <th scope="row" class="table-primary text-end mx-auto w-25" role="@(WardenFlight.Sections[1][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[1][j]?.BirthNumber)">
             Logistics Section Lead (@(FlightNumber*2+2)-@(j+1))
         </th>
         <td class="table-primary text-start mx-auto" role="@(WardenFlight.Sections[1][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[1][j]?.BirthNumber)">

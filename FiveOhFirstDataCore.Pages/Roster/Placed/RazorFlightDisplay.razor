@@ -12,13 +12,13 @@
 </thead>
 <tbody>
     <tr>
-        <th class="text-end" role="@(Flight1.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.FlightLeader?.BirthNumber)">
+        <th class="text-end w-25" role="@(Flight1.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.FlightLeader?.BirthNumber)">
             Flight Leader (@(FlightNumber)-1)
         </th>
         <td class="text-start" role="@(Flight1.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.FlightLeader?.BirthNumber)">
             @if (Flight1.FlightLeader is null) { <span>TBD</span> } else { @Flight1.FlightLeader.DisplayRankName() }
         </td>
-        <th class="text-end" role="@(Flight2.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.FlightLeader?.BirthNumber)">
+        <th class="text-end w-25" role="@(Flight2.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.FlightLeader?.BirthNumber)">
             Flight Leader (@(FlightNumber+1)-1)
         </th>
         <td class="text-start" role="@(Flight2.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.FlightLeader?.BirthNumber)">

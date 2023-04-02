@@ -9,7 +9,7 @@
 </thead>
 <tbody>
     <tr>
-        <th colspan="1" class="text-end" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
+        <th colspan="1" class="text-end w-50" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
             Flight Leader (@(FlightNumber)-1)
         </th>
         <td colspan="1" class="text-start" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">

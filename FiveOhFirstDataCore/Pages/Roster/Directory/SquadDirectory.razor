@@ -22,8 +22,8 @@
     @foreach(Slot slot in Enum.GetValues<Slot>())
     {
         if(((int)slot % 10) != 0 && slot.AsFull().StartsWith(Search)
-            && (slot < Slot.Mynock
-            || slot >= Slot.ZetaCompany
+            && (slot < Slot.Mynock 
+                || slot > Slot.Razor
             && slot < Slot.InactiveReserve))
         {
             <a href="/squad/@((int)slot)" class="btn btn-outline-primary">@slot.AsFull() Home</a>
