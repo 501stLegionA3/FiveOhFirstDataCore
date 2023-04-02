@@ -12,15 +12,15 @@ namespace FiveOhFirstDataCore.Data.Structures
 
     public enum Flight
     {
-        [Description("Alpha Flight")]
+        [Description("Flight Lead")]
         Alpha,
-        [Description("Bravo Flight")]
+        [Description("Section Lead")]
         Bravo,
-        [Description("Charlie Flight")]
+        [Description("Third Pilot")]
         Charlie,
-        [Description("Delta Flight")]
+        [Description("Fourth Pilot")]
         Delta,
-        [Description("Echo Flight")]
+        [Description("Echo Pilot(s)")]
         Echo
     }
 }

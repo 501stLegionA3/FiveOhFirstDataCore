@@ -9,7 +9,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
         public CompanyData Cyclone { get; set; } = new(3, 3);
         public CompanyData Acklay { get; set; } = new(1, 3);
         public MynockDetachmentData Mynock { get; set; } = new();
-        public RazorSquadronData Razor { get; set; } = new();
+        public RazorWingData Razor { get; set; } = new();
         public MilitaryPolice MilitaryPolice { get; set; } = new();
         public ChiefWarrantOfficerData ChiefWarrantOfficers { get; set; } = new();
 

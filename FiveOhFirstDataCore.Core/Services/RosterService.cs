@@ -397,7 +397,7 @@ namespace FiveOhFirstDataCore.Data.Services
             using var _dbContext = _dbContextFactory.CreateDbContext();
             Trooper? superior = null;
             List<Role> InfRoles = new() { Role.Commander, Role.XO, Role.NCOIC, Role.SergeantMajor };
-            List<Role> RazorRoles = new() { Role.Commander, Role.SubCommander, Role.SCLO };
+            List<Role> RazorRoles = new() { Role.Commander, Role.SubCommander, Role.WCOO, Role.WCLO };
             List<Role> WardenRoles = new() { Role.MasterWarden, Role.ChiefWarden };
             List<Role> MynockRoles = new() { Role.Commander, Role.NCOIC };
 
@@ -433,7 +433,7 @@ namespace FiveOhFirstDataCore.Data.Services
             }
             else if (t.Slot.IsSquad() && t.Team is null)
             {
-                foreach(var role in InfRoles)
+                foreach (var role in InfRoles)
                 {
                     superior = await _dbContext.Users
                         .Where(e => e.Role == role)
@@ -481,7 +481,7 @@ namespace FiveOhFirstDataCore.Data.Services
             // Company Staff
             if (t.Slot.IsCompany() && t.Role != Role.Commander)
             {
-                foreach(var role in InfRoles)
+                foreach (var role in InfRoles)
                 {
                     superior = await _dbContext.Users
                         .Where(e => e.Role == role)
@@ -522,38 +522,9 @@ namespace FiveOhFirstDataCore.Data.Services
             #endregion
 
             #region Razor
-
-            if (t.Slot.IsRazorSection())
-            {
-                foreach (var role in RazorRoles)
-                {
-                    superior = await _dbContext.Users
-                        .Where(e => e.Slot == t.Slot.GetFlight())
-                        .Where(e => e.Role == role)
-                        .Where(e => e.Id != t.Id)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync();
-                    if (superior is null) continue;
-                    else break;
-                }
-            }
-
-            if (t.Slot.IsFlight())
-            {
-                foreach (var role in RazorRoles)
-                {
-                    superior = await _dbContext.Users
-                        .Where(e => e.Slot == Slot.Razor)
-                        .Where(e => e.Role == role)
-                        .Where(e => e.Id != t.Id)
-                        .AsNoTracking()
-                        .FirstOrDefaultAsync();
-                    if (superior is null) continue;
-                    else break;
-                }
-            }
-
-            if (t.Slot.IsSquadron() && t.Role != Role.Commander)
+            // Get the CO of a member not in a leadership position of a part of Razor
+            if ((t.Slot.IsFlight() || t.Slot.IsSquadron() || t.Slot.IsWing())
+                && t.Role != Role.Commander)
             {
                 foreach (var role in RazorRoles)
                 {
@@ -567,7 +538,38 @@ namespace FiveOhFirstDataCore.Data.Services
                     else break;
                 }
             }
+            // Get the CO of a flight leader
+            else if (t.Slot.IsFlight())
+            {
+                foreach (var role in RazorRoles)
+                {
+                    superior = await _dbContext.Users
+                        .Where(e => e.Slot == t.Slot.GetPlatoon())
+                        .Where(e => e.Role == role)
+                        .Where(e => e.Id != t.Id)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                    if (superior is null) continue;
+                    else break;
+                }
+            }
+            // Get the CO of a squadron commander
             else if (t.Slot.IsSquadron())
+            {
+                foreach (var role in RazorRoles)
+                {
+                    superior = await _dbContext.Users
+                        .Where(e => e.Slot == t.Slot.GetCompany())
+                        .Where(e => e.Role == role)
+                        .Where(e => e.Id != t.Id)
+                        .AsNoTracking()
+                        .FirstOrDefaultAsync();
+                    if (superior is null) continue;
+                    else break;
+                }
+            }
+            // Get the CO of the Wing 
+            else if (t.Slot.IsWing())
             {
                 foreach (var role in InfRoles)
                 {
@@ -783,6 +785,13 @@ namespace FiveOhFirstDataCore.Data.Services
                 data = new ZetaSquadData();
             else if (slot >= Slot.ZetaTwo && slot < Slot.InactiveReserve)
                 data = new ZetaUTCSquadData();
+            else if (slot >= Slot.Razor && slot < Slot.Warden)
+                data = new RazorFlightData();
+            else if (slot >= Slot.Warden && slot < Slot.ZetaCompany)
+                if (slot == Slot.WardenThree)
+                    data = new WardenFlightData(1, true);
+                else
+                    data = new WardenFlightData(2, false);
             else
                 data = new SquadData();
 
@@ -818,6 +827,10 @@ namespace FiveOhFirstDataCore.Data.Services
                 data = new ZetaSectionData(4);
             else if (slot >= Slot.ZetaTwo && slot < Slot.InactiveReserve)
                 data = new ZetaUTCSectionData(4);
+            else if (slot >= Slot.Razor && slot < Slot.Warden)
+                data = new RazorSquadronData();
+            else if (slot >= Slot.Warden && slot < Slot.ZetaCompany)
+                data = new WardenData();
             else
                 data = new PlatoonData(3);
 
@@ -852,6 +865,8 @@ namespace FiveOhFirstDataCore.Data.Services
 
             if (slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
                 data = new ZetaCompanyData(1, 4, 4);
+            else if (slot >= Slot.Razor && slot < Slot.Warden)
+                data = new RazorWingData();
             else
                 data = new CompanyData(3, 3);
 
@@ -906,11 +921,11 @@ namespace FiveOhFirstDataCore.Data.Services
             return pending;
         }
 
-        public async Task<RazorSquadronData> GetRazorDataAsync()
+        public async Task<RazorWingData> GetRazorDataAsync()
         {
             using var _dbContext = _dbContextFactory.CreateDbContext();
 
-            var razor = new RazorSquadronData();
+            var razor = new RazorWingData();
 
             await _dbContext.Users
                 .Include(p => p.PendingPromotions)

@@ -7,7 +7,7 @@
         </th>
     </tr>
     <tr class="table-warning" role="@(Squad.Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Lead?.BirthNumber)">
-        <th scope="row" colspan="2" class="text-end">
+        <th scope="row" colspan="2" class="text-end w-50">
             Squad Leader
         </th>
         <td colspan="2" class="text-start">
@@ -38,7 +38,7 @@
     </tr>
 
     <tr>
-        <th scope="row" class="table-danger text-end mx-auto" role="@(Squad.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Lead?.BirthNumber)">
+        <th scope="row" class="table-danger text-end mx-auto w-25" role="@(Squad.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Lead?.BirthNumber)">
             Alpha Team Leader
         </th>
         <td class="table-danger text-start mx-auto" role="@(Squad.Teams[0].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[0].Lead?.BirthNumber)">
@@ -51,7 +51,7 @@
                 @Squad.Teams[0].Lead.DisplayRankName()                
             }
         </td>
-        <th scope="row" class="table-primary text-end mx-auto" role="@(Squad.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Lead?.BirthNumber)">
+        <th scope="row" class="table-primary text-end mx-auto w-25" role="@(Squad.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Lead?.BirthNumber)">
             Bravo Team Leader
         </th>
         <td class="table-primary text-start mx-auto" role="@(Squad.Teams[1].Lead is null ? "" : "button")" @onclick="(x) => TrooperNav(Squad.Teams[1].Lead?.BirthNumber)">

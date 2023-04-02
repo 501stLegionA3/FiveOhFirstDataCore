@@ -69,8 +69,13 @@ namespace FiveOhFirstDataCore.Data.Structures
         /// <summary>
         /// Razor Adjutant
         /// </summary>
-        [Description("Squadron Chief Logistics Officer")]
-        SCLO
+        [Description("Wing Chief Logistics Officer")]
+        WCLO,
+        /// <summary>
+        /// Razor NCOIC
+        /// </summary>
+        [Description("Wing Chief Operations Officer")]
+        WCOO,
     }
 
     public static class RoleExtensions

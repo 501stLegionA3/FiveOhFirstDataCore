@@ -23,6 +23,10 @@ public partial class CompanyPromotionBoard
 
     [Parameter]
     public ZetaCompanyData? Zeta { get; set; }
+
+    [Parameter]
+    public RazorWingData? Wing { get; set; }
+
     [Parameter]
     public int Slot { get; set; } = -1;
 
@@ -127,6 +131,60 @@ public partial class CompanyPromotionBoard
                 }
             }
         }
+        else if (Wing is not null)
+        {
+            if (Wing.SubCommander is not null)
+                Troopers.Add(Wing.SubCommander);
+            if (Wing.COO is not null)
+                Troopers.Add(Wing.COO);
+            if (Wing.CLO is not null)
+                Troopers.Add(Wing.CLO);
+
+            foreach (var squadron in Wing.Squadrons)
+            {
+                if (squadron.Commander is not null)
+                    Troopers.Add(squadron.Commander);
+                if (squadron.SubCommander is not null)
+                    Troopers.Add(squadron.SubCommander);
+
+                foreach (var flight in squadron.Flights)
+                {
+                    if (flight.FlightLeader is not null)
+                        Troopers.Add(flight.FlightLeader);
+                    if (flight.SectionLeader is not null)
+                        Troopers.Add(flight.SectionLeader);
+                    if (flight.Charlie is not null)
+                        Troopers.Add(flight.Charlie);
+                    if (flight.Delta is not null)
+                        Troopers.Add(flight.Delta);
+                    if (flight.Echo is not null)
+                        Troopers.AddRange(flight.Echo);
+                }
+            }
+            WardenData warden = Wing.WardenData;
+            if (warden.Master is not null)
+                Troopers.Add(warden.Chief);
+            if (warden.Chief is not null)
+                Troopers.Add(warden.Chief);
+
+            foreach (var flight in warden.Flights)
+            {
+                if (flight.FlightLead is not null)
+                    Troopers.Add(flight.FlightLead);
+                foreach (var section in flight.Sections)
+                {
+                    if (section.SectionLeader is not null)
+                        Troopers.Add(section.SectionLeader);
+                    if (section.Charlie is not null)
+                        Troopers.Add(section.Charlie);
+                    if (section.Delta is not null)
+                        Troopers.Add(section.Delta);
+                    if (section.Echo is not null)
+                        Troopers.Add(section.Echo);
+                }
+
+            }
+        }
 
         switch (PromoType)
         {
@@ -184,6 +242,14 @@ public partial class CompanyPromotionBoard
                 || (Zeta?.XO?.Id ?? 0) == CurrentUser?.Id
                 || (Zeta?.NCOIC?.Id ?? 0) == CurrentUser?.Id
                 || (Zeta?.Adjutant?.Id ?? 0) == CurrentUser?.Id;
+        }
+        else if (Wing is not null)
+        {
+            CanPromote = manager
+                || (Wing?.Commander?.Id ?? 0) == CurrentUser?.Id
+                || (Wing?.SubCommander?.Id ?? 0) == CurrentUser?.Id
+                || (Wing?.COO?.Id ?? 0) == CurrentUser?.Id
+                || (Wing?.CLO?.Id ?? 0) == CurrentUser?.Id;
         }
 
         BuildTrooperList();

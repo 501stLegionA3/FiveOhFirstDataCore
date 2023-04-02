@@ -94,44 +94,35 @@ namespace FiveOhFirstDataCore.Data.Structures
         // Aviators
         [Description("Razor HQ")]
         Razor = 500,
-        [Description("Razor 1 HQ")]
-        RazorOne = 510,
-        [Description("Razor 1-1")]
-        RazorOneOne,
-        [Description("Razor 1-2")]
-        RazorOneTwo,
-        [Description("Razor 2 HQ")]
-        RazorTwo = 520,
-        [Description("Razor 2-1")]
-        RazorTwoOne,
-        [Description("Razor 2-2")]
-        RazorTwoTwo,
-        [Description("Razor 3 HQ")]
-        RazorThree = 530,
-        [Description("Razor 3-1")]
-        RazorThreeOne,
-        [Description("Razor 3-2")]
-        RazorThreeTwo,
-        [Description("Razor 4 HQ")]
-        RazorFour = 540,
-        [Description("Razor 4-1")]
-        RazorFourOne,
-        [Description("Razor 4-2")]
-        RazorFourTwo,
-        [Description("Razor 5 HQ")]
-        RazorFive = 550,
-        [Description("Razor 5-1")]
-        RazorFiveOne,
-        [Description("Razor 5-2")]
-        RazorFiveTwo,
+        [Description("Noble HQ")]
+        RazorN = 510,
+        [Description("Noble 1")]
+        RazorNOne,
+        [Description("Noble 2")]
+        RazorNTwo,
+        [Description("Noble 3")]
+        RazorNThree,
+        [Description("Noble 4")]
+        RazorNFour,
+        [Description("Hydra HQ")]
+        RazorH = 520,
+        [Description("Hydra 1")]
+        RazorHOne,
+        [Description("Hydra 2")]
+        RazorHTwo,
+        [Description("Hydra 3")]
+        RazorHThree,
+        [Description("Hydra 4")]
+        RazorHFour,
+        // Warden
         [Description("Warden HQ")]
-        Warden = 560,
+        Warden = 530,
         [Description("Warden 1")]
         WardenOne,
         [Description("Warden 2")]
         WardenTwo,
-        //[Description("Warden 3")]
-        //WardenThree,
+        [Description("Warden 3")]
+        WardenThree,
         // Reserve.
         [Description("Zeta HQ")]
         ZetaCompany = 600,
@@ -245,29 +236,27 @@ namespace FiveOhFirstDataCore.Data.Structures
             return false;
         }
 
-        public static bool IsRazorSection(this Slot slot)
-        {
-            if (slot >= Slot.Razor && slot < Slot.Warden)
-            {
-                var val = (int)slot % 10;
-                if (val > 0) return true;
-            }
-
-            return false;
-        }
-
         public static bool IsFlight(this Slot slot)
         {
             if (slot >= Slot.Razor && slot < Slot.Warden)
             {
-                var s = (int)slot;
-                var val = s % 10;
-                if (val == 0 && s % 100 != 0) return true;
+                var val = (int)slot % 10;
+                if (val != 0) return true;
             }
             return false;
         }
 
         public static bool IsSquadron(this Slot slot)
+        {
+            if (slot >= Slot.Razor && slot < Slot.Warden)
+            {
+                var val = (int)slot % 10;
+                if (val == 0 && (int)slot % 100 != 0) return true;
+            }
+            return false;
+        }
+
+        public static bool IsWing(this Slot slot)
         {
             if (slot >= Slot.Razor && slot < Slot.Warden)
             {
@@ -310,13 +299,6 @@ namespace FiveOhFirstDataCore.Data.Structures
         public static Slot GetCompany(this Slot slot)
         {
             int lsd = (int)slot % 100;
-            int newSlot = (int)slot - lsd;
-            return (Slot)newSlot;
-        }
-
-        public static Slot GetFlight(this Slot slot)
-        {
-            int lsd = (int)slot % 10;
             int newSlot = (int)slot - lsd;
             return (Slot)newSlot;
         }

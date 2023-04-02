@@ -6,7 +6,7 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
     {
         public Trooper Master { get; set; }
         public Trooper Chief { get; set; }
-        public WardenSection[] Wardens { get; set; } = new WardenSection[] { new(), new() };
+        public WardenFlightData[] Flights { get; set; } = new WardenFlightData[] { new(2), new(2), new(1, true) };
 
         public void Assign(Trooper t)
         {
@@ -22,8 +22,8 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     try
                     {
                         int i = ((int)t.Slot % 10) - 1;
-                        if (i < Wardens.Length && i >= 0)
-                            Wardens[i].Assign(t);
+                        if (i < Flights.Length && i >= 0)
+                            Flights[i].Assign(t);
                     }
                     catch
                     { 

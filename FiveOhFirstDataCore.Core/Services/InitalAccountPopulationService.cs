@@ -19,13 +19,17 @@ namespace FiveOhFirstDataCore.Data.Services
         public async Task InitializeAsync()
         {
 #if DEBUG
-            var data = TestData;
-            foreach (var set in data)
+            try
             {
-                var trooper = await EnsureUser(set.Item1, "foo");
-                await _manager.AddClaimsAsync(trooper, set.Item2);
-                await _manager.AddToRolesAsync(trooper, set.Item3);
+                var data = TestData;
+                foreach (var set in data)
+                {
+                    var trooper = await EnsureUser(set.Item1, "foo");
+                    await _manager.AddClaimsAsync(trooper, set.Item2);
+                    await _manager.AddToRolesAsync(trooper, set.Item3);
+                }
             }
+            catch { }
 #else
             var access = Guid.NewGuid().ToString();
             var t = new Trooper()
@@ -505,12 +509,12 @@ namespace FiveOhFirstDataCore.Data.Services
                     {
                         Id = 34554,
                         BirthNumber = 34554,
-                        UserName = "Hobnob",
-                        NickName = "Hobnob",
+                        UserName = "(not) Hobnob",
+                        NickName = "(not) Hobnob",
                         SecurityStamp = Guid.NewGuid().ToString(),
                         Role = Role.Pilot,
-                        Slot = Slot.RazorTwoOne,
-                        Flight = Flight.Bravo,
+                        Slot = Slot.RazorNOne,
+                        Flight = Flight.Charlie,
                         Team = null,
                         StartOfService = DateTime.Now,
                         LastPromotion = DateTime.Now,

@@ -14,8 +14,8 @@
 </thead>
 <tbody>
     <tr role="@(Razor.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.Commander?.BirthNumber)">
-        <th scope="row" class="text-end" colspan="2">
-            Squadron Commander
+        <th scope="row" class="text-end w-50" colspan="2">
+            Wing Commander (6)
         </th>
         <td class="text-start" colspan="2">
             @if (Razor.Commander is null)
@@ -30,7 +30,7 @@
     </tr>
     <tr role="@(Razor.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.SubCommander?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
-            Squadron Sub-Commander
+            Wing Sub-Commander (5)
         </th>
         <td class="text-start" colspan="2">
             @if (Razor.SubCommander is null)
@@ -43,31 +43,48 @@
             }
         </td>
     </tr>
-    <tr role="@(Razor.FOIC is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.FOIC?.BirthNumber)">
+    <tr role="@(Razor.COO is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.COO?.BirthNumber)">
         <th scope="row" class="text-end" colspan="2">
-            Squadron FOIC
+            Wing Chief Operations Officer (7)
         </th>
         <td class="text-start" colspan="2">
-            @if (Razor.FOIC is null)
+            @if (Razor.COO is null)
             {
                 <span>TBD</span>
             }
             else
             {
-                @Razor.FOIC.DisplayRankName()                
+                @Razor.COO.DisplayRankName()                
+            }
+        </td>
+    </tr>
+    <tr role="@(Razor.CLO is null ? "" : "button")" @onclick="(x) => TrooperNav(Razor.CLO?.BirthNumber)">
+        <th scope="row" class="text-end" colspan="2">
+            Wing Chief Logistics Officer (8)
+        </th>
+        <td class="text-start" colspan="2">
+            @if (Razor.CLO is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Razor.CLO.DisplayRankName()
             }
         </td>
     </tr>
 </tbody>
 
-@for(int i = 0; i < Razor.Flights.Length; i++)
+@for(int i = 0; i < Razor.Squadrons.Length; i++)
 {
-    <RazorFlightDisplay Flight="Razor.Flights[i]" FlightNumber="i + 1" />
+    <RazorSquadronDisplay Squadron="Razor.Squadrons[i]" Name="@Names[i]" />
 }
 
-<WardenDisplay Warden="Razor.Warden" />
+<WardenDisplay Warden="Razor.WardenData" />
 
 @code {
+    private string[] Names = new string[] { "Noble", "Hydra" };
+
     [Parameter]
-    public RazorSquadronData Razor { get; set; }
+    public RazorWingData Razor { get; set; }
 }

@@ -182,10 +182,10 @@ namespace FiveOhFirstDataCore.Data.Services
         public Task<List<Trooper>> GetTroopersWithPendingPromotionsAsync();
 
         /// <summary>
-        /// Gets the <see cref="RazorSquadronData"/> for the unit.
+        /// Gets the <see cref="RazorWingData"/> for the unit.
         /// </summary>
-        /// <returns>A task that returns a <see cref="RazorSquadronData"/> object.</returns>
-        public Task<RazorSquadronData> GetRazorDataAsync();
+        /// <returns>A task that returns a <see cref="RazorWingData"/> object.</returns>
+        public Task<RazorWingData> GetRazorDataAsync();
 
         /// <summary>
         /// Gets the <see cref="WardenData"/> for the unit.
