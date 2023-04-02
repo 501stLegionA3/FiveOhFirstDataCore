@@ -1,8 +1,4 @@
 ﻿@page "/squad/{SquadDesignation}"
-@inject IRosterService _roster
-@inject IAuthorizationService _auth
-@inject IAdvancedRefreshService _advRefresh
-@implements IRefreshBase
 
 <ul class="nav nav-tabs row">
     <li class="nav-item col">
@@ -35,18 +31,18 @@
                         </thead>
                         <ZetaUtcSquadDisplay UTCSquad="ZetaThree" Number="Number" />
                     }
-                    else if(ZetaData is null)
+                    else if(Data is not null)
                     {
                         <thead>
-                            <tr class="table-dark text-light text-center">
-                                <th colspan="4">@Slot.AsFull()</th>
-                            </tr>
-                        </thead>
+                        <tr class="table-dark text-light text-center">
+                            <th colspan="4">@Slot.AsFull()</th>
+                        </tr>
+                    </thead>
                         <CascadingValue Value="Airborne" Name="Airborne">
                             <SquadDisplay Squad="Data" Number="Number" />
                         </CascadingValue>
                     }
-                    else
+                    else if (ZetaData is not null)
                     {
                         <thead>
                             <tr class="table-dark text-light text-center">
@@ -55,14 +51,32 @@
                         </thead>
                         <ZetaSquadDisplay Squad="ZetaData" Number="Number" />
                     }
+                    else if (FlightData is not null)
+                    {
+                        <thead>
+                            <tr class="table-dark text-light text-center">
+                                <th colspan="2">@Slot.AsFull()</th>
+                            </tr>
+                        </thead>
+                        <RazorFlightDisplaySingle Flight="FlightData" FlightNumber="Number" />
+                    }
+                    else if (WardenData is not null)
+                    {
+                        <thead>
+                            <tr class="table-dark text-light text-center">
+                                <th colspan="4">@Slot.AsFull()</th>
+                            </tr>
+                        </thead>
+                        <WardenFlightDisplay WardenFlight="WardenData" FlightNumber="Number"/>
+                    }
                 </table>
                 break;
             case SquadDisplayOption.PromotionBoard:
                 <h4>@Slot.AsFull()'s Promotion Board</h4>
-                @if(Data is not null || ZetaData is not null)
+                @if(Data is not null || ZetaData is not null || FlightData is not null || WardenData is not null)
                 {
                     <CascadingValue Value="Airborne" Name="Airborne">
-                        <SquadPromotionBoard Squad="Data" Zeta="ZetaData" Slot="(int)Slot" />
+                        <SquadPromotionBoard Squad="Data" Zeta="ZetaData" Flight="FlightData" Warden="WardenData" Slot="(int)Slot" />
                     </CascadingValue>
                 }
                 else
@@ -76,115 +90,4 @@
 else
 {
     <em>Loading...</em>
-}
-
-@code {
-    public enum SquadDisplayOption
-    {
-        Roster,
-        PromotionBoard,
-    }
-
-    [Parameter]
-    public string SquadDesignation { get; set; } = "";
-
-    [CascadingParameter]
-    public Task<AuthenticationState> AuthStateTask { get; set; }
-
-    private SquadDisplayOption Active { get; set; } = SquadDisplayOption.Roster;
-    private SquadData? Data { get; set; } = null;
-    private ZetaSquadData? ZetaData { get; set; } = null;
-    private bool Loaded { get; set; } = false;
-    private Slot Slot { get; set; }
-    private bool Airborne { get; set; } = false;
-    private int Number { get; set; } = 0;
-    
-    private ZetaUTCSquadData? ZetaThree { get; set; } = null;
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-
-        if(firstRender)
-        {
-            var user = (await AuthStateTask).User;
-
-            IAssignable<Trooper>? dat = null;
-            if (int.TryParse(SquadDesignation, out int id))
-            {
-                Slot = (Slot)id;
-                dat = await _roster.GetSquadDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
-            }
-            else if (SquadDesignation == "me")
-            {
-                dat = await _roster.GetSquadDataAsync(user);
-
-                var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
-                if(t is not null)
-                    Slot = t.Slot;
-            }
-
-            if (dat is SquadData d)
-                Data = d;
-            else if (dat is ZetaSquadData z)
-                ZetaData = z;
-            else if (dat is ZetaUTCSquadData u)
-                ZetaThree = u;
-
-            if(ZetaThree is null)
-            {
-                _advRefresh.AddDataReloadListener("Promotion_Squad", DataReloadRequested);
-            }
-
-            Airborne = Slot >= Slot.AcklayCompany && Slot < Slot.Mynock;
-            Number = (int)Slot % 10;
-
-            Loaded = true;
-
-            StateHasChanged();
-        }
-    }
-
-    private void OnTypeChange(SquadDisplayOption option)
-    {
-        Active = option;
-        StateHasChanged();
-    }
-
-    public async Task CallRefreshRequest()
-    {
-        await InvokeAsync(StateHasChanged);
-    }
-
-    public async Task DataReloadRequested()
-    {
-        var user = (await AuthStateTask).User;
-
-        IAssignable<Trooper>? dat = null;
-        if (int.TryParse(SquadDesignation, out int id))
-        {
-            Slot = (Slot)id;
-            dat = await _roster.GetSquadDataAsync(Slot, (await _auth.AuthorizeAsync(user, "RequireManager")).Succeeded);
-        }
-        else if (SquadDesignation == "me")
-        {
-            dat = await _roster.GetSquadDataAsync(user);
-
-            var t = await _roster.GetTrooperFromClaimsPrincipalAsync(user);
-            if(t is not null)
-                Slot = t.Slot;
-        }
-
-        if (dat is SquadData d)
-            Data = d;
-        else if (dat is ZetaSquadData z)
-            ZetaData = z;
-
-        await CallRefreshRequest();
-    }
-
-    public void Dispose()
-    {
-        _advRefresh.RemoveDataReloadListener(DataReloadRequested);
-    }
 }

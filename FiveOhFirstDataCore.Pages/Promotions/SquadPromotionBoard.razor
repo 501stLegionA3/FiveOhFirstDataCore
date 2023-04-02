@@ -19,6 +19,10 @@
     [Parameter]
     public ZetaSquadData? Zeta { get; set; }
     [Parameter]
+    public RazorFlightData? Flight { get; set; }
+    [Parameter]
+    public WardenFlightData? Warden { get; set; }
+    [Parameter]
     public int Slot { get; set; } = -1;
 
     [CascadingParameter]
@@ -41,8 +45,6 @@
 
         if (Squad is not null)
         {
-            if (Squad.Lead is not null)
-                Troopers.Add(Squad.Lead);
             if (Squad.RT is not null)
                 Troopers.Add(Squad.RT);
             if (Squad.ARC is not null)
@@ -62,8 +64,6 @@
         }
         else if (Zeta is not null)
         {
-            if (Zeta.SquadLeader is not null)
-                Troopers.Add(Zeta.SquadLeader);
             if (Zeta.Leader is not null)
                 Troopers.Add(Zeta.Leader);
             if (Zeta.RT is not null)
@@ -73,6 +73,31 @@
             foreach (var t in Zeta.Troopers)
                 if (t is not null)
                     Troopers.Add(t);
+        }
+        else if (Flight is not null)
+        {
+            if (Flight.SectionLeader is not null)
+                Troopers.Add(Flight.SectionLeader);
+            if (Flight.Charlie is not null)
+                Troopers.Add(Flight.Charlie);
+            if (Flight.Delta is not null)
+                Troopers.Add(Flight.Delta);
+            if (Flight.Echo is not null)
+                Troopers.AddRange(Flight.Echo);
+        }
+        else if (Warden is not null)
+        {
+            foreach (var s in Warden.Sections)
+            {
+                if (s.SectionLeader is not null)
+                    Troopers.Add(s.SectionLeader);
+                if (s.Charlie is not null)
+                    Troopers.Add(s.Charlie);
+                if (s.Delta is not null)
+                    Troopers.Add(s.Delta);
+                if (s.Echo is not null)
+                    Troopers.Add(s.Echo);
+            }
         }
 
         // if someone can promote on this board, they can promote anyone on this board.
@@ -92,6 +117,10 @@
             CanPromote = manager || (Squad?.Lead?.Id ?? 0) == CurrentUser?.Id;
         else if (Zeta is not null)
             CanPromote = manager || (Zeta?.SquadLeader?.Id ?? 0) == CurrentUser?.Id;
+        else if (Flight is not null)
+            CanPromote = manager || (Flight.FlightLeader?.Id ?? 0) == CurrentUser?.Id;
+        else if (Warden is not null)
+            CanPromote = manager || (Warden.FlightLead?.Id ?? 0) == CurrentUser?.Id;
 
         BuildTrooperList();
     }

@@ -6,13 +6,11 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
     {
         public Trooper Commander { get; set; }
         public Trooper SubCommander { get; set; }
-        public Trooper FOIC { get; set; }
-        public RazorFlightData[] Flights { get; set; } = new RazorFlightData[] { new(), new(), new(), new(), new() };
-        public WardenData Warden { get; set; } = new();
+        public RazorFlightData[] Flights { get; set; } = new RazorFlightData[] { new(), new(), new(), new() };
 
         public void Assign(Trooper t)
         {
-            var val = (int)t.Slot / 10 % 10;
+            var val = (int)t.Slot % 10;
             if (val == 0)
             {
                 switch (t.Role)
@@ -23,18 +21,11 @@ namespace FiveOhFirstDataCore.Data.Structures.Roster
                     case Role.SubCommander:
                         SubCommander = t;
                         break;
-                    case Role.SCLO:
-                        FOIC = t;
-                        break;
                 }
             }
             else if (val >= 1 && val <= Flights.Length)
             {
                 Flights[val - 1].Assign(t);
-            }
-            else if (val == Flights.Length + 1)
-            {
-                Warden.Assign(t);
             }
         }
     }

@@ -19,6 +19,10 @@
     [Parameter]
     public ZetaSectionData? Zeta { get; set; }
     [Parameter]
+    public RazorSquadronData? Squadron { get; set; }
+    [Parameter]
+    public WardenData? Warden { get; set; }
+    [Parameter]
     public int Slot { get; set; } = -1;
 
     [CascadingParameter]
@@ -98,6 +102,48 @@
                         Troopers.Add(t);
             }
         }
+        else if (Squadron is not null)
+        {
+            if (Squadron.SubCommander is not null)
+                Troopers.Add(Squadron.SubCommander);
+
+            foreach (var flight in Squadron.Flights)
+            {
+                if (flight.FlightLeader is not null)
+                    Troopers.Add(flight.FlightLeader);
+                if (flight.SectionLeader is not null)
+                    Troopers.Add(flight.SectionLeader);
+                if (flight.Charlie is not null)
+                    Troopers.Add(flight.Charlie);
+                if (flight.Delta is not null)
+                    Troopers.Add(flight.Delta);
+                if (flight.Echo is not null)
+                    Troopers.AddRange(flight.Echo);
+            }
+        }
+        else if (Warden is not null)
+        {
+            if (Warden.Chief is not null)
+                Troopers.Add(Warden.Chief);
+
+            foreach (var flight in Warden.Flights)
+            {
+                if (flight.FlightLead is not null)
+                    Troopers.Add(flight.FlightLead);
+                foreach (var section in flight.Sections)
+                {
+                    if (section.SectionLeader is not null)
+                        Troopers.Add(section.SectionLeader);
+                    if (section.Charlie is not null)
+                        Troopers.Add(section.Charlie);
+                    if (section.Delta is not null)
+                        Troopers.Add(section.Delta);
+                    if (section.Echo is not null)
+                        Troopers.Add(section.Echo);
+                }
+
+            }
+        }
 
         switch(PromoType)
         {
@@ -151,6 +197,18 @@
             CanPromote = manager
                 || (Zeta.Commander?.Id ?? 0) == CurrentUser?.Id
                 || (Zeta.Subordinate?.Id ?? 0) == CurrentUser?.Id;
+        }
+        else if (Squadron is not null)
+        {
+            CanPromote = manager 
+                || (Squadron?.Commander?.Id ?? 0) == CurrentUser?.Id
+                || (Squadron?.SubCommander?.Id ?? 0) == CurrentUser?.Id;
+        }
+        else if (Warden is not null)
+        {
+            CanPromote = manager
+                || (Warden?.Master?.Id ?? 0) == CurrentUser?.Id
+                || (Warden?.Chief?.Id ?? 0) == CurrentUser?.Id;
         }
 
         BuildTrooperList();

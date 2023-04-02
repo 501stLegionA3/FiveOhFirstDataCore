@@ -1,0 +1,46 @@
+﻿@inherits RosterModel
+
+<thead class="table-dark text-light text-center">
+    <tr>
+        <th colspan="4">
+            @Name Squadron
+        </th>
+    </tr>
+</thead>
+<tbody>
+    <tr role="@(Squadron.Commander is null ? "" : "button")" @onclick="(x) => TrooperNav(Squadron.Commander?.BirthNumber)">
+        <th scope="row" colspan="2" class="text-end">
+            Squadron CO (6)
+        </th>
+        <td class="text-start" colspan="2">
+            @if (Squadron.Commander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squadron.Commander.DisplayRankName()
+            }
+        </td>
+    </tr>
+    <tr role="@(Squadron.SubCommander is null ? "" : "button")" @onclick="(x) => TrooperNav(Squadron.SubCommander?.BirthNumber)">
+        <th scope="row" colspan="2" class="text-end">
+            Squadron XO (5)
+        </th>
+        <td class="text-start" colspan="2">
+            @if (Squadron.SubCommander is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @Squadron.SubCommander.DisplayRankName()
+            }
+        </td>
+    </tr>
+</tbody>
+
+@for (int i = 0; i < Squadron.Flights.Length; i=i+2)
+{
+    <RazorFlightDisplay Flight1="Squadron.Flights[i]" Flight2="Squadron.Flights[i+1]" FlightNumber="i+1" />
+}

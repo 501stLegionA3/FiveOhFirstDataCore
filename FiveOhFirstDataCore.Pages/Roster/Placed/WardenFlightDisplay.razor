@@ -1,0 +1,92 @@
+﻿@inherits RosterModel
+<tbody>
+@if(WardenFlight.IsWardenToPilot)
+{
+    <tr class="table-dark text-light text-center">
+        <th colspan="4">
+            Warden to Pilot Program
+        </th>
+    </tr>
+    @for (int i = 0; i < 3; i++)
+    {
+        <tr role="@(WardenFlight.Sections[0][i] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][i]?.BirthNumber)">
+            <th scope="row" colspan="2" class="text-end">
+                Warden (@(FlightNumber*2 + 1)-@(i+1))
+            </th>
+            <td scope="row" colspan="2">
+                @if (WardenFlight.Sections[0][i] is null)
+                {
+                    <span>TBD</span>
+                }
+                else
+                {
+                    @WardenFlight.Sections[0][i].DisplayRankName()
+                }
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="table-dark text-light text-center">
+        <th colspan="4">
+            Warden @((FlightNumber+1).AsOrdinal()) Flight
+        </th>
+    </tr>
+
+    <tr class="table-warning" role="@(WardenFlight.FlightLead is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.FlightLead?.BirthNumber)">
+        <th scope="row" colspan="2" class="text-end">
+            Logistics Flight Lead (@(FlightNumber+1)-6)
+        </th>
+        <td colspan="2" class="text-start">
+            @if (WardenFlight.FlightLead is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @WardenFlight.FlightLead.DisplayRankName()                
+            }
+        </td>
+    </tr>
+    @for(int ja = 0; ja < WardenSectionData.Length; ja++)
+    {
+        var j = ja;
+        <tr>
+        <th scope="row" class="table-danger text-end mx-auto" role="@(WardenFlight.Sections[0][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][j]?.BirthNumber)">
+            Logistics Section Lead (@(FlightNumber*2+1)-@(j+1))
+        </th>
+        <td class="table-danger text-start mx-auto" role="@(WardenFlight.Sections[0][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[0][j]?.BirthNumber)">
+            @if (WardenFlight.Sections[0][j] is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @WardenFlight.Sections[0][j].DisplayRankName()                
+            }
+        </td>
+        <th scope="row" class="table-primary text-end mx-auto" role="@(WardenFlight.Sections[1][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[1][j]?.BirthNumber)">
+            Logistics Section Lead (@(FlightNumber*2+2)-@(j+1))
+        </th>
+        <td class="table-primary text-start mx-auto" role="@(WardenFlight.Sections[1][j] is null ? "" : "button")" @onclick="(x) => TrooperNav(WardenFlight.Sections[1][j]?.BirthNumber)">
+            @if (WardenFlight.Sections[1][j] is null)
+            {
+                <span>TBD</span>
+            }
+            else
+            {
+                @WardenFlight.Sections[1][j].DisplayRankName()                
+            }
+        </td>
+    </tr>
+    }
+}
+</tbody>
+
+@code {
+    [Parameter]
+    public WardenFlightData WardenFlight { get; set; }
+    [Parameter]
+    public int FlightNumber { get; set; }
+}

@@ -1,0 +1,64 @@
+﻿@inherits RosterModel
+
+<thead class="table-dark text-light text-center">
+    <tr>
+        <th colspan="2">
+            @FlightNumber.AsOrdinal() Flight
+        </th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <th colspan="1" class="text-end" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
+            Flight Leader (@(FlightNumber)-1)
+        </th>
+        <td colspan="1" class="text-start" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
+            @if (Flight.FlightLeader is null) { <span>TBD</span> } else { @Flight.FlightLeader.DisplayRankName() }
+        </td>
+    </tr>
+    <tr>
+        <th colspan="1" class="text-end" role="@(Flight.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.SectionLeader?.BirthNumber)">
+            Section Leader (@(FlightNumber)-2)
+        </th>
+        <td colspan="1" class="text-start" role="@(Flight.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.SectionLeader?.BirthNumber)">
+            @if (Flight.SectionLeader is null) { <span>TBD</span> } else { @Flight.SectionLeader.DisplayRankName() }
+        </td>
+    </tr>
+    <tr>
+        <th colspan="1" class="text-end" role="@(Flight.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Charlie?.BirthNumber)">
+            Pilot (@(FlightNumber)-3)
+        </th>
+        <td colspan="1" class="text-start" role="@(Flight.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Charlie?.BirthNumber)">
+            @if (Flight.Charlie is null) { <span>TBD</span> } else { @Flight.Charlie.DisplayRankName() }
+        </td>
+    </tr>
+    <tr>
+        <th colspan="1" class="text-end" role="@(Flight.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Delta?.BirthNumber)">
+            Pilot (@(FlightNumber)-4)
+        </th>
+        <td colspan="1" class="text-start" role="@(Flight.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.Delta?.BirthNumber)">
+            @if (Flight.Delta is null) { <span>TBD</span> } else { @Flight.Delta.DisplayRankName() }
+        </td>
+    </tr>
+    @for(int i = 0; i < Flight.Echo.Count; i++)
+    {
+        Trooper Echo1 = Flight.Echo.ElementAtOrDefault(i);
+        <tr>
+            <th colspan="1" class="text-end" role="@(Echo1 is null ? "" : "button")" @onclick="(x) => TrooperNav(Echo1?.BirthNumber)">
+                Pilot (@(FlightNumber)-@(4+i))
+            </th>
+            <td colspan="1" class="text-start" role="@(Echo1 is null ? "" : "button")" @onclick="(x) => TrooperNav(Echo1?.BirthNumber)">
+                @if (Echo1 is null) { <span>TBD</span> } else { @Echo1.DisplayRankName() }
+            </td>
+        </tr>
+    }
+</tbody>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public RazorFlightData Flight { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public int FlightNumber { get; set; }
+}
