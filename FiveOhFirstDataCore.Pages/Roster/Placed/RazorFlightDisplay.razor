@@ -13,13 +13,13 @@
 <tbody>
     <tr>
         <th class="text-end w-25" role="@(Flight1.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.FlightLeader?.BirthNumber)">
-            Flight Leader (@(FlightNumber)-1)
+            Flight Leader (@(FlightNumber))
         </th>
         <td class="text-start" role="@(Flight1.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.FlightLeader?.BirthNumber)">
             @if (Flight1.FlightLeader is null) { <span>TBD</span> } else { @Flight1.FlightLeader.DisplayRankName() }
         </td>
         <th class="text-end w-25" role="@(Flight2.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.FlightLeader?.BirthNumber)">
-            Flight Leader (@(FlightNumber+1)-1)
+            Flight Leader (@(FlightNumber+1))
         </th>
         <td class="text-start" role="@(Flight2.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.FlightLeader?.BirthNumber)">
             @if (Flight2.FlightLeader is null) { <span>TBD</span> } else { @Flight2.FlightLeader.DisplayRankName() }
@@ -27,13 +27,13 @@
     </tr>
     <tr>
         <th class="text-end" role="@(Flight1.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.SectionLeader?.BirthNumber)">
-            Section Leader (@(FlightNumber)-2)
+            Section Leader (@(FlightNumber)-1)
         </th>
         <td class="text-start" role="@(Flight1.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.SectionLeader?.BirthNumber)">
             @if (Flight1.SectionLeader is null) { <span>TBD</span> } else { @Flight1.SectionLeader.DisplayRankName() }
         </td>
         <th class="text-end" role="@(Flight2.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.SectionLeader?.BirthNumber)">
-            Section Leader (@(FlightNumber+1)-2)
+            Section Leader (@(FlightNumber+1)-1)
         </th>
         <td class="text-start" role="@(Flight2.SectionLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.SectionLeader?.BirthNumber)">
             @if (Flight2.SectionLeader is null) { <span>TBD</span> } else { @Flight2.SectionLeader.DisplayRankName() }
@@ -41,13 +41,13 @@
     </tr>
     <tr>
         <th class="text-end" role="@(Flight1.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.Charlie?.BirthNumber)">
-            Pilot (@(FlightNumber)-3)
+            Pilot (@(FlightNumber)-2)
         </th>
         <td class="text-start" role="@(Flight1.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.Charlie?.BirthNumber)">
             @if (Flight1.Charlie is null) { <span>TBD</span> } else { @Flight1.Charlie.DisplayRankName() }
         </td>
         <th class="text-end" role="@(Flight2.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.Charlie?.BirthNumber)">
-            Pilot (@(FlightNumber+1)-3)
+            Pilot (@(FlightNumber+1)-2)
         </th>
         <td class="text-start" role="@(Flight2.Charlie is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.Charlie?.BirthNumber)">
             @if (Flight2.Charlie is null) { <span>TBD</span> } else { @Flight2.Charlie.DisplayRankName() }
@@ -55,13 +55,13 @@
     </tr>
     <tr>
         <th class="text-end" role="@(Flight1.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.Delta?.BirthNumber)">
-            Pilot (@(FlightNumber)-4)
+            Pilot (@(FlightNumber)-3)
         </th>
         <td class="text-start" role="@(Flight1.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight1.Delta?.BirthNumber)">
             @if (Flight1.Delta is null) { <span>TBD</span> } else { @Flight1.Delta.DisplayRankName() }
         </td>
         <th class="text-end" role="@(Flight2.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.Delta?.BirthNumber)">
-            Pilot (@(FlightNumber+1)-4)
+            Pilot (@(FlightNumber+1)-3)
         </th>
         <td class="text-start" role="@(Flight2.Delta is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight2.Delta?.BirthNumber)">
             @if (Flight2.Delta is null) { <span>TBD</span> } else { @Flight2.Delta.DisplayRankName() }
