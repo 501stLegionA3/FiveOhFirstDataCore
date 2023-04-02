@@ -94,26 +94,26 @@ namespace FiveOhFirstDataCore.Data.Structures
         // Aviators
         [Description("Razor HQ")]
         Razor = 500,
-        [Description("Broadside HQ")]
-        RazorB = 510,
-        [Description("Broadside 1")]
-        RazorBOne,
-        [Description("Broadside 2")]
-        RazorBTwo,
-        [Description("Broadside 3")]
-        RazorBThree,
-        [Description("Broadside 4")]
-        RazorBFour,
-        [Description("Zillo HQ")]
-        RazorZ = 520,
-        [Description("Zillo 1")]
-        RazorZOne,
-        [Description("Zillo 2")]
-        RazorZTwo,
-        [Description("Zillo 3")]
-        RazorZThree,
-        [Description("Zillo 4")]
-        RazorZFour,
+        [Description("Noble HQ")]
+        RazorN = 510,
+        [Description("Noble 1")]
+        RazorNOne,
+        [Description("Noble 2")]
+        RazorNTwo,
+        [Description("Noble 3")]
+        RazorNThree,
+        [Description("Noble 4")]
+        RazorNFour,
+        [Description("Hydra HQ")]
+        RazorH = 520,
+        [Description("Hydra 1")]
+        RazorHOne,
+        [Description("Hydra 2")]
+        RazorHTwo,
+        [Description("Hydra 3")]
+        RazorHThree,
+        [Description("Hydra 4")]
+        RazorHFour,
         // Warden
         [Description("Warden HQ")]
         Warden = 530,
