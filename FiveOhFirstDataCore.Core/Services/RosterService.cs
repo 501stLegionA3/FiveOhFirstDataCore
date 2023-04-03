@@ -865,7 +865,7 @@ namespace FiveOhFirstDataCore.Data.Services
 
             if (slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
                 data = new ZetaCompanyData(1, 4, 4);
-            else if (slot >= Slot.Razor && slot < Slot.Warden)
+            else if (slot >= Slot.Razor && slot < Slot.ZetaCompany)
                 data = new RazorWingData();
             else
                 data = new CompanyData(3, 3);

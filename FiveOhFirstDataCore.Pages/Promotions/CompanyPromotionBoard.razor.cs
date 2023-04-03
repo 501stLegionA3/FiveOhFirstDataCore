@@ -163,7 +163,7 @@ public partial class CompanyPromotionBoard
             }
             WardenData warden = Wing.WardenData;
             if (warden.Master is not null)
-                Troopers.Add(warden.Chief);
+                Troopers.Add(warden.Master);
             if (warden.Chief is not null)
                 Troopers.Add(warden.Chief);
 
