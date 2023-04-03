@@ -158,7 +158,7 @@ public partial class CompanyPromotionBoard
                     if (flight.Delta is not null)
                         Troopers.Add(flight.Delta);
                     if (flight.Echo is not null)
-                        Troopers.AddRange(flight.Echo);
+                        Troopers.AddRange(flight.Echo.Where(x => x is not null));
                 }
             }
             WardenData warden = Wing.WardenData;

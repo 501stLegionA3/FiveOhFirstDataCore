@@ -183,8 +183,7 @@ namespace FiveOhFirstDataCore.Data.Structures
 
         public static bool IsSquad(this Slot slot)
         {
-            if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
-                || slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
+            if (slot >= Slot.AvalancheCompany && slot < Slot.InactiveReserve)
             {
                 var val = (int)slot % 10;
                 if (val > 0) return true;
@@ -195,8 +194,7 @@ namespace FiveOhFirstDataCore.Data.Structures
 
         public static bool IsPlatoon(this Slot slot)
         {
-            if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
-                || slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
+            if (slot >= Slot.AvalancheCompany && slot < Slot.InactiveReserve)
             {
                 var s = (int)slot;
                 var val = s % 10;
@@ -208,8 +206,7 @@ namespace FiveOhFirstDataCore.Data.Structures
 
         public static bool IsCompany(this Slot slot)
         {
-            if (slot >= Slot.AvalancheCompany && slot < Slot.Mynock
-                || slot >= Slot.ZetaCompany && slot < Slot.InactiveReserve)
+            if (slot >= Slot.AvalancheCompany && slot < Slot.InactiveReserve)
             {
                 var val = (int)slot / 10 % 10;
                 if (val == 0) return true;

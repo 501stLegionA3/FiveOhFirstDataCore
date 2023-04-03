@@ -83,7 +83,7 @@
             if (Flight.Delta is not null)
                 Troopers.Add(Flight.Delta);
             if (Flight.Echo is not null)
-                Troopers.AddRange(Flight.Echo);
+                Troopers.AddRange(Flight.Echo.Where(x => x is not null));
         }
         else if (Warden is not null)
         {
