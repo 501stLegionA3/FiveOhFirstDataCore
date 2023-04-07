@@ -167,6 +167,10 @@ namespace FiveOhFirstDataCore.Data.Services
                     actual.PromotionFor.WarrantRank = r;
                     actual.PromotionFor.LastPromotion = now;
                     break;
+                case NCORank r:
+                    actual.PromotionFor.NCORank = r;
+                    actual.PromotionFor.LastPromotion = now;
+                    break;
             }
 
             _dbContext.Remove(actual);

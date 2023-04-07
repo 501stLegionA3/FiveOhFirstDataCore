@@ -258,7 +258,7 @@ public class LookupController : ControllerBase
         var ranks = new[]
         {
             typeof(TrooperRank), typeof(WardenRank), typeof(PilotRank), typeof(RTORank), typeof(MedicRank),
-            typeof(WarrantRank)
+            typeof(WarrantRank), typeof(NCORank)
         };
         if (selectedEnum == null)
         {

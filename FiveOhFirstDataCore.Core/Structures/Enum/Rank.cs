@@ -253,13 +253,19 @@ namespace FiveOhFirstDataCore.Data.Structures
                     return (Enum)val;
             }
 
+            foreach (var val in Enum.GetValues(typeof(NCORank)))
+            {
+                if ((int)val == value)
+                    return (Enum)val;
+            }
+
             return null;
         }
 
         public static Enum? GetRank(this string value)
         {
             Type[] types = new Type[] { typeof(TrooperRank), typeof(MedicRank), typeof(RTORank), typeof(PilotRank),
-                typeof(WardenRank), typeof(WarrantRank)};
+                typeof(WardenRank), typeof(WarrantRank), typeof(NCORank)};
 
             foreach (var type in types)
             {

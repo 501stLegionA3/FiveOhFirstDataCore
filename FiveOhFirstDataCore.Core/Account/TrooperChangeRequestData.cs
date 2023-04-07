@@ -11,6 +11,7 @@ namespace FiveOhFirstDataCore.Data.Account
         public WarrantRank? WarrantRank { get; set; }
         public WardenRank? WardenRank { get; set; }
         public PilotRank? PilotRank { get; set; }
+        public NCORank? NCORank { get; set; }
 
         public Role? Role { get; set; }
         public Team? Team { get; set; }
@@ -53,6 +54,7 @@ namespace FiveOhFirstDataCore.Data.Account
                     && WarrantRank is null
                     && WardenRank is null
                     && PilotRank is null
+                    && NCORank is null
                     && Role is null
                     && Team is null
                     && Flight is null

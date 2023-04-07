@@ -43,6 +43,8 @@ namespace FiveOhFirstDataCore.Components.Data.Settings
                 roles.Add(i);
             foreach (var i in Enum.GetValues<WardenRank>())
                 roles.Add(i);
+            foreach (var i in Enum.GetValues<NCORank>())
+                roles.Add(i);
             try
             {
                 foreach (var i in roles)

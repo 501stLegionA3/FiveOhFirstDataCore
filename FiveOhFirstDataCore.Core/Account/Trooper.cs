@@ -145,6 +145,10 @@ namespace FiveOhFirstDataCore.Data.Account
 
         public string GetRankDesignation()
         {
+            if (NCORank is not null)
+            {
+                return NCORank?.AsShorthand() ?? "";
+            }
             if (Role == Role.RTO)
             {
                 return RTORank?.AsShorthand() ?? "";
@@ -174,7 +178,11 @@ namespace FiveOhFirstDataCore.Data.Account
 
         public string GetRankName()
         {
-            if (Slot >= Slot.Razor && Slot < Slot.Warden
+            if (NCORank is not null)
+            {
+                return NCORank?.AsFull() ?? "";
+            }
+            else if (Slot >= Slot.Razor && Slot < Slot.Warden
                 || Slot == Slot.RazorReserve)
             {
                 return PilotRank?.AsFull() ?? WardenRank?.AsFull() ?? "";
