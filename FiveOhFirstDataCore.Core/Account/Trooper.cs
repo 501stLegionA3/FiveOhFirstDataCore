@@ -25,6 +25,7 @@ namespace FiveOhFirstDataCore.Data.Account
         public PilotRank? PilotRank { get; set; }
         public WarrantRank? WarrantRank { get; set; }
         public WardenRank? WardenRank { get; set; }
+        public NCORank? NCORank { get; set; }
         #endregion
         #region Slots
         public Slot Slot { get; set; }

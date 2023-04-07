@@ -20,12 +20,6 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CT")]
         [Description("Veteran Trooper")]
         VeteranTrooper = 4,
-        [RankDisplay("CT-S")]
-        [Description("Specalist")]
-        Specalist = 16,
-        [RankDisplay("CLC")]
-        [Description("Lance Corporal")]
-        LanceCorporal = 17,
         [RankDisplay("CP")]
         [Description("Corporal")]
         Corporal = 5,
@@ -197,6 +191,13 @@ namespace FiveOhFirstDataCore.Data.Structures
         [RankDisplay("CX-W")]
         [Description("Command Master Chief Petty Officer")]
         Command
+    }
+    
+    public enum NCORank : int
+    {
+        [RankDisplay("CLC")]
+        [Description("Lance Corporal")]
+        Lance
     }
 
     [AttributeUsage(AttributeTargets.All)]

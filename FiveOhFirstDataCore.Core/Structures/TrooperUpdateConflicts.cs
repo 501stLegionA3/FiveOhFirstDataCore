@@ -91,7 +91,8 @@ namespace FiveOhFirstDataCore.Data.Structures
                 || Edit.MedicRank != Current.MedicRank
                 || Edit.PilotRank != Current.PilotRank
                 || Edit.WarrantRank != Current.WarrantRank
-                || Edit.WardenRank != Current.WardenRank)
+                || Edit.WardenRank != Current.WardenRank
+                || Edit.NCORank != Current.NCORank)
             {
                 groups.Add(EditGroups.Rank);
             }
@@ -146,6 +147,7 @@ namespace FiveOhFirstDataCore.Data.Structures
                         MergeResult.PilotRank = Edit.PilotRank > Current.PilotRank ? Edit.PilotRank : Current.PilotRank;
                         MergeResult.WardenRank = Edit.WardenRank > Current.WardenRank ? Edit.WardenRank : Current.WardenRank;
                         MergeResult.WarrantRank = Edit.WarrantRank > Current.WarrantRank ? Edit.WarrantRank : Current.WarrantRank;
+                        MergeResult.NCORank = Edit.NCORank > Current.NCORank ? Edit.NCORank : Current.NCORank;
                     }
                     else if (EditRank)
                     {
@@ -155,6 +157,7 @@ namespace FiveOhFirstDataCore.Data.Structures
                         MergeResult.PilotRank = Edit.PilotRank;
                         MergeResult.WardenRank = Edit.WardenRank;
                         MergeResult.WarrantRank = Edit.WarrantRank;
+                        MergeResult.NCORank = Edit.NCORank;
                     }
                     else if (CurrentRank)
                     {
@@ -164,6 +167,7 @@ namespace FiveOhFirstDataCore.Data.Structures
                         MergeResult.PilotRank = Current.PilotRank;
                         MergeResult.WardenRank = Current.WardenRank;
                         MergeResult.WarrantRank = Current.WarrantRank;
+                        MergeResult.NCORank = Current.NCORank;
                     }
                     else
                     {
@@ -173,6 +177,7 @@ namespace FiveOhFirstDataCore.Data.Structures
                         MergeResult.PilotRank = default;
                         MergeResult.WardenRank = default;
                         MergeResult.WarrantRank = default;
+                        MergeResult.NCORank = default;
                     }
                     break;
                 case EditGroups.Slot:

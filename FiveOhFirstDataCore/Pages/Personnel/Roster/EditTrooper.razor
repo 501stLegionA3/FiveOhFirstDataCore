@@ -68,31 +68,35 @@
             <div class="form-group">
                 <h4>Rank Details</h4>
                 <div class="row">
-                    <div class="col-lg-4 col-md-12 p-2">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperRank">Trooper Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.Rank" id="trooperRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
-                    <div class="col-lg-4 col-md-12 p-2">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperRTORank">RTO Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.RTORank" id="trooperRTORank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
-                    <div class="col-lg-4 col-md-12 p-2">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperMedicRank">Medic Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.MedicRank" id="trooperMedicRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-4 col-md-12 p-2">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperPilotRank">Pilot Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.PilotRank" id="trooperPilotRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
-                    <div class="col-lg-4 col-md-12 p-2">
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperWardenRank">Warden Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.WardenRank" id="trooperWardenRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
-                    <div class="col-lg-4 col-md-12 p-2">
+                    <div class="col-lg-3 col-md-12 p-2">
                         <label for="trooperWarrantRank">Warrant Rank</label>
                         <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="@(Conflicts is not null)" />
+                    </div>
+                    <div class="col-lg-3 col-md-12 p-2">
+                        <label for="trooperNCORank">NCO Rank</label>
+                        <InputEnumSelect @bind-Value="Trooper.NCORank" id="trooperNCORank" class="form-control p-2" disabled="@(Conflicts is not null)" />
                     </div>
                 </div>
             </div>
@@ -299,6 +303,10 @@
                                             <label for="trooperWarrantRank">Warrant Rank</label>
                                             <InputEnumSelect @bind-Value="Trooper.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="true" />
                                         </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperNCORank">NCO Rank</label>
+                                            <InputEnumSelect @bind-Value="Trooper.NCORank" id="trooperNCORank" class="form-control p-2" disabled="true" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-12 p-2">
@@ -334,6 +342,10 @@
                                             <label for="trooperWarrantRank">Warrant Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.Current.WarrantRank" id="trooperWarrantRank" class="form-control p-2" disabled="true" />
                                         </div>
+                                        <div class="col-lg-6 col-md-12 p-2">
+                                            <label for="trooperNCORank">NCO Rank</label>
+                                                <InputEnumSelect @bind-Value="Conflicts.Current.NCORank" id="trooperNCORank" class="form-control p-2" disabled="true" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -342,31 +354,35 @@
                                     <h4>Merge Result</h4>
                                     <div class="row">
                                     <!-- For Final Edits -->
-                                        <div class="col-lg-4 col-md-12 p-2">
+                                        <div class="col-lg-3 col-md-12 p-2">
                                             <label for="trooperRank">Trooper Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.Rank" id="trooperRank" class="form-control p-2" />
                                         </div>
-                                        <div class="col-lg-4 col-md-12 p-2">
+                                        <div class="col-lg-3 col-md-12 p-2">
                                             <label for="trooperRTORank">RTO Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.RTORank" id="trooperRTORank" class="form-control p-2" />
                                         </div>
-                                        <div class="col-lg-4 col-md-12 p-2">
+                                        <div class="col-lg-3 col-md-12 p-2">
                                             <label for="trooperMedicRank">Medic Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.MedicRank" id="trooperMedicRank" class="form-control p-2" />
                                         </div>
-                                    </div>
-                                    <div class="row">
                                         <div class="col-lg-4 col-md-12 p-2">
                                             <label for="trooperPilotRank">Pilot Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.PilotRank" id="trooperPilotRank" class="form-control p-2" />
                                         </div>
-                                        <div class="col-lg-4 col-md-12 p-2">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-12 p-2">
                                             <label for="trooperWardenRank">Warden Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.WardenRank" id="trooperWardenRank" class="form-control p-2" />
                                         </div>
-                                        <div class="col-lg-4 col-md-12 p-2">
+                                        <div class="col-lg-3 col-md-12 p-2">
                                             <label for="trooperWarrantRank">Warrant Rank</label>
                                             <InputEnumSelect @bind-Value="Conflicts.MergeResult.WarrantRank" id="trooperWarrantRank" class="form-control p-2" />
+                                        </div>
+                                        <div class="col-lg-3 col-md-12 p-2">
+                                            <label for="trooperWarrantRank">NCO Rank</label>
+                                            <InputEnumSelect @bind-Value="Conflicts.MergeResult.NCORank" id="trooperNCORank" class="form-control p-2" />
                                         </div>
                                     </div>
                                 </div>
