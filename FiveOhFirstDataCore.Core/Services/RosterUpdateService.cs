@@ -92,6 +92,11 @@ namespace FiveOhFirstDataCore.Data.Services
                 primary.WardenRank = edit.WardenRank;
             }
 
+            if (UpdateRank((int?)primary.NCORank, (int?)edit.NCORank, ref primary, ref submitter, out rankChange))
+            {
+                primary.NCORank = edit.NCORank;
+            }
+
             // Time Updates
             TimeUpdate? timeUpdate = null;
 

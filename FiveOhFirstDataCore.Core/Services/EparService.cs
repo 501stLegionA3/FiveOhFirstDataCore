@@ -129,6 +129,8 @@ namespace FiveOhFirstDataCore.Data.Services
                 user.WardenRank = data.WardenRank;
             if (data.PilotRank is not null)
                 user.PilotRank = data.PilotRank;
+            if (data.NCORank is not null)
+                user.NCORank = data.NCORank;
 
             if (data.Role is not null)
                 user.Role = data.Role.Value;

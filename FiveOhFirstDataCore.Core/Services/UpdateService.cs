@@ -418,6 +418,9 @@ namespace FiveOhFirstDataCore.Data.Services
                 case PilotRank r:
                     update.ChangedFor.PilotRank = r;
                     break;
+                case NCORank r:
+                    update.ChangedFor.NCORank = r;
+                    break;
             }
 
             update.ChangedFor.RankChanges.Add(new()

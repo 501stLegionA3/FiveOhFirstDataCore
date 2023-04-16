@@ -1123,6 +1123,8 @@ namespace FiveOhFirstDataCore.Data.Services
                 ranks.Add((int)forTrooper.WardenRank);
             if (forTrooper.PilotRank is not null)
                 ranks.Add((int)forTrooper.PilotRank);
+            if (forTrooper.NCORank is not null)
+                ranks.Add((int)forTrooper.NCORank);
 
             foreach (var rank in ranks)
             {
