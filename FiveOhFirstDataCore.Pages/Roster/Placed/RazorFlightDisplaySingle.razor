@@ -10,7 +10,7 @@
 <tbody>
     <tr>
         <th colspan="1" class="text-end w-50" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
-            Flight Leader (@(FlightNumber))
+            Flight Commander (@(FlightNumber))
         </th>
         <td colspan="1" class="text-start" role="@(Flight.FlightLeader is null ? "" : "button")" @onclick="(x) => TrooperNav(Flight.FlightLeader?.BirthNumber)">
             @if (Flight.FlightLeader is null) { <span>TBD</span> } else { @Flight.FlightLeader.DisplayRankName() }
