@@ -136,35 +136,35 @@ namespace FiveOhFirstDataCore.Data.Structures
 
     public enum PilotRank : int
     {
-        [RankDisplay("CX-C")]
-        [Description("Cadet")]
+        [RankDisplay("CX-R")]
+        [Description("Recruit")]
         Cadet = 400,
         [RankDisplay("CX-C")]
-        [Description("Senior Cadet")]
+        [Description("Midshipman")]
         SeniorCadet,
-        [RankDisplay("CX-X")]
+        [RankDisplay("CX-E")]
         [Description("Ensign")]
         Ensign,
         [RankDisplay("CX-X")]
-        [Description("Senior Ensign")]
+        [Description("Lieutenant (Junior Grade)")]
         SeniorEnsign,
         [RankDisplay("CX-M")]
         [Description("Master Aviator")]
         Master,
         [RankDisplay("CX-P")]
-        [Description("Flight Officer")]
+        [Description("Lieutenant (Senior Grade)")]
         FlightOfficer,
         [RankDisplay("CX-S")]
-        [Description("Lieutenant Junior Grade")]
+        [Description("Lieutenant Commander")]
         JuniorLieutenant,
         [RankDisplay("CX")]
-        [Description("Second Lieutenant")]
+        [Description("Commander")]
         SecondLieutenant,
         [RankDisplay("CX")]
-        [Description("First Lieutenant")]
+        [Description("Captain (Junior Grade)")]
         FirstLieutenant,
         [RankDisplay("CX")]
-        [Description("Captain")]
+        [Description("Captain (Senior Grade)")]
         Captain,
     }
 
