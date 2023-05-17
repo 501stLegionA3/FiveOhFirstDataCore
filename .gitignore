@@ -7,6 +7,7 @@
 [Cc]onfig/
 unsafe_uploads/
 *.min.css
+docker-data/
 
 # User-specific files
 *.rsuser

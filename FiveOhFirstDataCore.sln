@@ -13,7 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. sln", "1. sln", "{EFCCD6
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		CONTRIBUTING.md = CONTRIBUTING.md
-		Dockerfile = Dockerfile
 		LICENSE = LICENSE
 		NuGet.config = NuGet.config
 		README.md = README.md
@@ -22,6 +21,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Components", "FiveOhFirstDataCore.Pages\FiveOhFirstDataCore.Components.csproj", "{A5267496-D2BC-4EC4-A32A-86DA98747DE9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FiveOhFirstDataCore.Exporter", "FiveOhFirstDataCore.Exporter\FiveOhFirstDataCore.Exporter.csproj", "{2AC6DD53-3BF6-4129-8D42-25166BAB2873}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. docker", "2. docker", "{ED6EB359-15B8-40C5-9244-C25DCA78F1F4}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose-dev.yml = docker-compose-dev.yml
+		docker-compose.yml = docker-compose.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "smtp", "smtp", "{142C2169-E88F-4885-9EB6-B32350F01FA3}"
+	ProjectSection(SolutionItems) = preProject
+		smtp\mailserver-dev.env = smtp\mailserver-dev.env
+		smtp\mailserver.env = smtp\mailserver.env
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +60,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{142C2169-E88F-4885-9EB6-B32350F01FA3} = {ED6EB359-15B8-40C5-9244-C25DCA78F1F4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FE362D4D-0793-4EAC-83E4-87E990C07BFD}

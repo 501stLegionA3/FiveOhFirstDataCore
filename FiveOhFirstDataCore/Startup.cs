@@ -46,16 +46,17 @@ namespace FiveOhFirstDataCore
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var Secrets = new ConfigurationBuilder()
-                .AddJsonFile(Path.Join("Config", "website_config.json"))
-                .Build();
-
             services.AddDbContextFactory<ApplicationDbContext>(options =>
                 options.UseNpgsql(
-                    Secrets.GetConnectionString("database"))
 #if DEBUG
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
+                Configuration.GetConnectionString("development")
+#else
+                Configuration.GetConnectionString("release")
+#endif
+            )
+#if DEBUG
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors()
 #endif
                 , ServiceLifetime.Singleton);
             services.AddScoped(p
@@ -124,8 +125,8 @@ namespace FiveOhFirstDataCore
                     options.CallbackPath = new PathString("/authorization-code/discord-callback"); // local auth endpoint
                     options.AccessDeniedPath = new PathString("/api/link/denied");
 
-                    options.ClientId = Secrets["Discord:ClientId"];
-                    options.ClientSecret = Secrets["Discord:ClientSecret"];
+                    options.ClientId = Configuration["Discord:ClientId"];
+                    options.ClientSecret = Configuration["Discord:ClientSecret"];
                     options.TokenEndpoint = $"{Configuration["Config:Discord:TokenEndpoint"]}";
 
                     options.Scope.Add("identify");
@@ -252,7 +253,7 @@ namespace FiveOhFirstDataCore
                 options.Password.RequiredUniqueChars = 0;
             });
 
-            var mailSection = Secrets.GetRequiredSection("Email");
+            var mailSection = Configuration.GetRequiredSection("Email");
             services.AddSingleton<AccountLinkService>()
                 .AddScoped<IRefreshRequestService, RefreshRequestService>()
                 .AddScoped<IRosterService, RosterService>()
@@ -284,7 +285,7 @@ namespace FiveOhFirstDataCore
             #region Discord Setup
             services.AddSingleton<DiscordConfiguration>(x => new()
             {
-                Token = Secrets["Discord:Token"],
+                Token = Configuration["Discord:Token"],
                 TokenType = TokenType.Bot,
                 MessageCacheSize = 0
             })
@@ -292,7 +293,7 @@ namespace FiveOhFirstDataCore
                 .AddSingleton<DiscordClient>()
                 .AddSingleton<DiscordBotConfiguration>(x => new()
                 {
-                    HomeGuild = ulong.Parse(Secrets["Discord:HomeGuild"])
+                    HomeGuild = ulong.Parse(Configuration["Discord:HomeGuild"])
                 })
                 .AddSingleton<IDiscordService, DiscordService>();
             #endregion

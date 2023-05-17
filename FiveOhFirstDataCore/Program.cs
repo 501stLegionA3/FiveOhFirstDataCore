@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging.EventLog;
+
+using System.IO;
 
 namespace FiveOhFirstDataCore
 {
@@ -15,6 +18,10 @@ namespace FiveOhFirstDataCore
         public static IHostBuilder CreateHostBuilder(string[] args) =>
 #pragma warning disable CA1416 // Validate platform compatibility
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration(config =>
+                {
+                    config.AddJsonFile(Path.Join("Config", "website_config.json"));
+                })
                 .ConfigureServices((hostContext, services) =>
                 {
                     try
