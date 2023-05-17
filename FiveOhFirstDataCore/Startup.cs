@@ -259,14 +259,38 @@ namespace FiveOhFirstDataCore
                 .AddScoped<IRosterService, RosterService>()
                 .AddScoped<INicknameComparisonService, NicknameComparisionService>()
                 .AddScoped<IUpdateService, UpdateService>()
-                .AddSingleton(new MailConfiguration()
+                .AddSingleton((provider) =>
                 {
-                    Client = mailSection["Client"],
-                    Port = mailSection["Port"].ToInteger(0),
-                    Email = mailSection["Email"],
-                    RequireLogin = mailSection["RequireLogin"].ToBoolean(false),
-                    User = mailSection["User"],
-                    Password = mailSection["Password"]
+                    var cfg = new MailConfiguration()
+                    {
+                        UseEmailServer = mailSection["UseEmailServer"].ToBoolean(false)
+                    };
+
+                    if (cfg.UseEmailServer)
+                    {
+                        var emailServer = mailSection.GetRequiredSection("Server");
+                        cfg.Server = new SmtpMailConfiguration()
+                        {
+                            Client = emailServer["Client"],
+                            Port = emailServer["Port"].ToInteger(0),
+                            Email = emailServer["Email"],
+                            RequireLogin = emailServer["RequireLogin"].ToBoolean(false),
+                            User = emailServer["User"],
+                            Password = emailServer["Password"]
+                        };
+                    }
+                    else
+                    {
+                        var googleSettings = mailSection.GetRequiredSection("Google");
+                        cfg.Google = new GoogleConfiguration()
+                        {
+                            ClientID = googleSettings["ClientID"],
+                            ApiKey = googleSettings["ApiKey"],
+                            FromEmail = googleSettings["FromEmail"]
+                        };
+                    }
+
+                    return cfg;
                 })
                 .AddScoped<SmtpClient>()
                 .AddScoped<ICustomMailSender, MailSender>()

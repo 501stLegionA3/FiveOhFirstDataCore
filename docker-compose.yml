@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   data-core-v1:
+    container_name: datacore
     # data core build information
     build: .
     #image: registry.gitlab.com/soyvolon/datacore:nightly
@@ -16,10 +17,13 @@ services:
 
   postgres:
     image: "postgres:12"
+    container_name: postgres
     restart: always
     env_file: docker-data/db/postgres.env
     ports:
       - "5000:5432"
+    volumes:
+      - /var/lib/postgresql/data-core-v1/data:/var/lib/postgresql/data
 
   mailserver:
     image: ghcr.io/docker-mailserver/docker-mailserver:latest
@@ -52,12 +56,24 @@ services:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
+    depends_on:
+      - certbot
 
   nginx:
+    container_name: nginx
     image: nginx
     ports:
       - 80:80
-      - 433:433
+      - 443:443
     # restart: always
     volumes:
       - ./docker-data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker-data/certbot/conf:/etc/letsencrypt
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"

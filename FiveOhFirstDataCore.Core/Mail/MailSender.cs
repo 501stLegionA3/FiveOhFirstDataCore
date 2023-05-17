@@ -1,5 +1,9 @@
 ﻿using FiveOhFirstDataCore.Data.Account;
 
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Gmail.v1.Data;
+
 using MailKit.Net.Smtp;
 
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +11,8 @@ using Microsoft.Extensions.Logging;
 
 using MimeKit;
 
+using System.Buffers.Text;
+using System.IO;
 using System.Text.Encodings.Web;
 
 namespace FiveOhFirstDataCore.Data.Mail
@@ -31,7 +37,9 @@ namespace FiveOhFirstDataCore.Data.Mail
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            if (MailboxAddress.TryParse(_config.Email, out var sender))
+            string senderRaw = _config.UseEmailServer ? _config.Server!.Email : _config.Google!.FromEmail;
+
+            if (MailboxAddress.TryParse(senderRaw, out var sender))
             {
                 if (MailboxAddress.TryParse(email, out var receiver))
                 {
@@ -45,14 +53,39 @@ namespace FiveOhFirstDataCore.Data.Mail
                     };
                     try
                     {
-                        if (!_noReplyClient.IsConnected)
+                        if (_config.UseEmailServer)
                         {
-                            await _noReplyClient.ConnectAsync(_config.Client, _config.Port, false);
-                            if (_config.RequireLogin)
-                                await _noReplyClient.AuthenticateAsync(_config.User, _config.Password);
-                        }
+                            if (!_noReplyClient.IsConnected)
+                            {
+                                await _noReplyClient.ConnectAsync(_config.Server!.Client, _config.Server.Port, false);
+                                if (_config.Server.RequireLogin)
+                                    await _noReplyClient.AuthenticateAsync(_config.Server.User, _config.Server.Password);
+                            }
 
-                        await _noReplyClient.SendAsync(message);
+                            await _noReplyClient.SendAsync(message);
+                        }
+                        else
+                        {
+                            var gmail = new GmailService(new()
+                            {
+                                ApiKey = _config.Google!.ApiKey,
+                                ApplicationName = "Data Core"
+                            });
+
+                            byte[] rawBuffer;
+                            using (MemoryStream buffer = new())
+                            {
+                                await message.WriteToAsync(buffer);
+                                rawBuffer = buffer.ToArray();
+                            }
+                            string encoded = Convert.ToBase64String(rawBuffer);
+
+                            var msg = new Message()
+                            {
+                                Raw = encoded,
+                            };
+                            await gmail.Users.Messages.Send(msg, sender.Address).ExecuteAsync();
+                        }
                     }
                     catch (Exception ex)
                     {
