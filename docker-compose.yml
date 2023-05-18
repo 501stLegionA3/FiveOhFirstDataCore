@@ -11,7 +11,6 @@ services:
       # needs an image folder volume as well - maybe.
       - ./docker-data/dc/unsafe_uploads:/app/unsafe_uploads
     depends_on:
-      - nginx
       - postgres
       - mailserver
 
@@ -56,8 +55,8 @@ services:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
-    depends_on:
-      - certbot
+    # depends_on:
+    #   - certbot
 
   nginx:
     container_name: nginx
@@ -65,15 +64,23 @@ services:
     ports:
       - 80:80
       - 443:443
-    # restart: always
+    restart: unless-stopped
     volumes:
-      - ./docker-data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./docker-data/certbot/conf:/etc/letsencrypt
+      - ./docker-data/nginx/conf.d/map.conf/:/etc/nginx/conf.d/map.conf
+      - ./docker-data/nginx/sites-enabled/:/etc/nginx/sites-enabled/
+      - ./docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./docker-data/certbot/www:/var/www/certbot
+    depends_on:
+      # - certbot
+      - data-core-v1
+    links:
+      - data-core-v1
 
-  certbot:
-    container_name: certbot
-    image: certbot/certbot
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  # certbot:
+  #   container_name: certbot
+  #   image: certbot/certbot
+  #   volumes:
+  #     - /etc/letsencrypt:/etc/letsencrypt
+  #     - ./docker-data/certbot/www/:/var/www/certbot
+  #   command: "certonly --webroot -w /var/www/certbot --force-renewal --email andybounds@gmail.com -d ariabounds.me -d *.ariabounds.me --agree-tos"
