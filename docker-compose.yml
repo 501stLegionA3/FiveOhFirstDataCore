@@ -4,6 +4,7 @@ services:
     container_name: datacore
     # data core build information
     build: .
+    restart: always
     #image: registry.gitlab.com/soyvolon/datacore:nightly
     volumes:
       # this is going to need to be configured properly at some point.
@@ -44,8 +45,8 @@ services:
       - ./docker-data/dms/mail-state/:/var/mail-state/
       - ./docker-data/dms/mail-logs/:/var/log/mail/
       - ./docker-data/dms/config/:/tmp/docker-mailserver/
+      - ./docker-data/certbot/conf:/etc/letsencrypt
       - /etc/localtime:/etc/localtime:ro
-      - /etc/letsencrypt:/etc/letsencrypt
     restart: always
     stop_grace_period: 1m
     # Uncomment if using `ENABLE_FAIL2BAN=1`:
@@ -55,8 +56,6 @@ services:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
-    # depends_on:
-    #   - certbot
 
   nginx:
     container_name: nginx
@@ -69,18 +68,7 @@ services:
       - ./docker-data/nginx/conf.d/map.conf/:/etc/nginx/conf.d/map.conf
       - ./docker-data/nginx/sites-enabled/:/etc/nginx/sites-enabled/
       - ./docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certbot/conf:/etc/letsencrypt
+      - ./docker-data/certbot/conf:/etc/letsencrypt
       - ./docker-data/certbot/www:/var/www/certbot
     depends_on:
-      # - certbot
       - data-core-v1
-    links:
-      - data-core-v1
-
-  # certbot:
-  #   container_name: certbot
-  #   image: certbot/certbot
-  #   volumes:
-  #     - /etc/letsencrypt:/etc/letsencrypt
-  #     - ./docker-data/certbot/www/:/var/www/certbot
-  #   command: "certonly --webroot -w /var/www/certbot --force-renewal --email andybounds@gmail.com -d ariabounds.me -d *.ariabounds.me --agree-tos"

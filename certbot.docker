@@ -1,0 +1,3 @@
+FROM certbot/certbot
+CMD certonly --dry-run --non-interactive --webroot -w /var/www/certbot \
+    --force-renewal --email andybounds@gmail.com -d ariabounds.me --agree-toss
