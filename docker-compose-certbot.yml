@@ -1,0 +1,9 @@
+version: "3.9"
+services:
+  certbot:
+    container_name: certbot
+    image: certbot/certbot
+    volumes:
+      - ./docker-data/certbot/conf:/etc/letsencrypt
+      - ./docker-data/certbot/www/:/var/www/certbot
+    command: "certonly --non-interactive --webroot -w /var/www/certbot --force-renewal --email andybounds@gmail.com -d ariabounds.me -d mail.ariabounds.me --agree-tos"

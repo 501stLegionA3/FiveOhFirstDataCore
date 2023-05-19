@@ -4,6 +4,7 @@ services:
     container_name: datacore
     # data core build information
     build: .
+    restart: always
     #image: registry.gitlab.com/soyvolon/datacore:nightly
     volumes:
       # this is going to need to be configured properly at some point.
@@ -11,7 +12,6 @@ services:
       # needs an image folder volume as well - maybe.
       - ./docker-data/dc/unsafe_uploads:/app/unsafe_uploads
     depends_on:
-      - nginx
       - postgres
       - mailserver
 
@@ -45,8 +45,8 @@ services:
       - ./docker-data/dms/mail-state/:/var/mail-state/
       - ./docker-data/dms/mail-logs/:/var/log/mail/
       - ./docker-data/dms/config/:/tmp/docker-mailserver/
+      - ./docker-data/certbot/conf:/etc/letsencrypt
       - /etc/localtime:/etc/localtime:ro
-      - /etc/letsencrypt:/etc/letsencrypt
     restart: always
     stop_grace_period: 1m
     # Uncomment if using `ENABLE_FAIL2BAN=1`:
@@ -56,8 +56,6 @@ services:
       test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
       timeout: 3s
       retries: 0
-    depends_on:
-      - certbot
 
   nginx:
     container_name: nginx
@@ -65,15 +63,12 @@ services:
     ports:
       - 80:80
       - 443:443
-    # restart: always
+    restart: unless-stopped
     volumes:
-      - ./docker-data/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./docker-data/nginx/conf.d/map.conf/:/etc/nginx/conf.d/map.conf
+      - ./docker-data/nginx/sites-enabled/:/etc/nginx/sites-enabled/
+      - ./docker-data/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./docker-data/certbot/conf:/etc/letsencrypt
-
-  certbot:
-    container_name: certbot
-    image: certbot/certbot
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
-      - /var/lib/letsencrypt:/var/lib/letsencrypt
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+      - ./docker-data/certbot/www:/var/www/certbot
+    depends_on:
+      - data-core-v1
